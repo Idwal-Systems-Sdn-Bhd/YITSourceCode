@@ -1,0 +1,42 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+
+        var table = $('.table').DataTable({
+            "paging": false,
+            rowReorder: false,
+            columnDefs: [
+                { orderable: false, targets: '_all' }
+            ],
+            "scrollY": "50vh",
+            "scrollX": true,
+            "scrollCollapse": true,
+            "paging": false,
+            dom: 'lrt'
+        });
+
+        table.on('order.dt search.dt', function () {
+            table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1;
+            });
+        }).draw();
+
+    });
+
+    function printPDF() {
+        var votId = $("#votId").val();
+        var tahun = $("#tahun").val();
+        var jKWId = $("#jKWId").val();
+        var jPTJId = $("#jPTJId").val();
+        var jBahagianId = $("#jBahagianId").val();
+        var tarDari = $("#tarDari").val();
+        var tarHingga = $("#tarHingga").val();
+        var URL = "@Url.Action("PrintBukuVotDetailsPdf", "AbBukuVot")?id=" + votId +
+            "&tahun=" + tahun +
+            "&jKWId=" + jKWId +
+            "&jPTJId=" + jPTJId +
+            "&jBahagianId=" + jBahagianId +
+            "&tarDari=" + tarDari + "&tarHingga=" + tarHingga;
+        $('<a href="' + URL + '" target="_blank"></a>')[0].click();
+    }
+
+</script>

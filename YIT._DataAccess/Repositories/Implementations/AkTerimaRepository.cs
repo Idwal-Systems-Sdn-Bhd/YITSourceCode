@@ -47,7 +47,10 @@ namespace YIT._DataAccess.Repositories.Implementations
             // searchstring filters
             if (searchString != null)
             {
-                akTerima = akTerima.Where(t => t.Nama!.Contains(searchString)).ToList();
+                akTerima = akTerima.Where(t => 
+                t.Nama!.Contains(searchString, StringComparison.OrdinalIgnoreCase) 
+                || t.NoRujukan!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
             }
             // searchString filters end
 

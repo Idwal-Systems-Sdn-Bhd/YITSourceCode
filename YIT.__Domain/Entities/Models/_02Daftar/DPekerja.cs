@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities._Enums;
+using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT.__Domain.Entities.Models._02Daftar
 {
@@ -78,5 +79,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
 
         [DisplayName("Nama Bank")]
         public JBank? JBank { get; set; }
+
+        public ICollection<JCawangan>? JCawangan { get; set; }
     }
 }

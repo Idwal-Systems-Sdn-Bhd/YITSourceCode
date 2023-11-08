@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using YIT.__Domain.Entities._Statics;
 using YIT._DataAccess.Data;
 using YIT.Akaun.Models.ViewModels.Administrations;
 using System.Drawing;
@@ -13,6 +14,9 @@ namespace YIT.Akaun.Controller
     [Authorize(Roles = "SuperAdmin, Admin")]
     public class SiAppInfoController : Microsoft.AspNetCore.Mvc.Controller
     {
+        public const string modul = Modules.kodSiAppInfo;
+        public const string namamodul = Modules.namaSiAppInfo;
+
         private readonly ApplicationDbContext _db;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;

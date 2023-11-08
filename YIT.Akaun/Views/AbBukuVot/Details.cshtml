@@ -1,0 +1,197 @@
+﻿@model IEnumerable<AbBukuVot>
+
+@{
+    ViewData["Title"] = "Buku Vot - Papar";
+    var bahagian = BelanjawanFormatter.ConvertToBahagian(ViewBag.JBahagian.JPTJ.JKW.Kod, ViewBag.JBahagian.JPTJ.Kod, ViewBag.JBahagian.Kod);
+    var carta = ViewBag.AkCarta.Kod + " - " + ViewBag.AkCarta.Perihal;
+    ViewData["Vot"] = bahagian + " : " + carta;
+}
+
+<partial name="_JSDetails" />
+
+<div class="card box-shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-dark mb-0">Buku Vot - Papar</h5>
+                <p class="text-info mb-0"> @ViewData["Vot"]</p>
+                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / Papar</span>
+            </div>
+            <div class="col-4">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+        <form asp-action="Details" method="get" class="needs-validation" novalidate>
+
+            <div class="card mb-3">
+                <div class="card-body ps-3 pb-2 ">
+                    <div class="form-actions no-color mb-2">
+                        <div class="form-actions no-color ">
+                            <input type="hidden" name="AkCartaId" value="@ViewBag.AkCartaId" id="AkCartaId" />
+                            <input type="hidden" name="Tahun1" value="@ViewBag.Tahun1" id="Tahun1" />
+                            <input type="hidden" name="jKWId" value="@ViewBag.JKWId" id="jKWId" />
+                            <input type="hidden" name="jPTJId" value="@ViewBag.JPTJId" id="jPTJId" />
+                            <input type="hidden" name="jBahagianId" value="@ViewBag.JBahagianId" id="jBahagianId" />
+                            <div class="row g-3">
+                                <div class="col-md-2">
+                                    <div class="input-group input-group-sm ">
+                                        <label class="form-control-label">Tarikh:</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="input-group mb-2 input-group-sm ">
+                                        <span class="input-group-text">Dari</span>
+                                        <input class="form-control form-control-sm" type="date" name="TarDari" value="@ViewBag.TarDari" required id="TarDari" />
+                                        <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="input-group mb-2 input-group-sm ">
+                                        <span class="input-group-text">Hingga</span>
+                                        <input class="form-control form-control-sm" type="date" name="TarHingga" value="@ViewBag.TarHingga" required id="TarHingga" />
+                                        <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <hr />
+            <div>
+                <div class="text-center hidden-mobile">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <button class="btn ac-primary" disabled="disabled"><i class="fa fa-eye"></i></button>
+                        <button class="btn ac-primary" type="submit"> Papar </button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <button class="btn ac-info" disabled="disabled"><i class="fas fa-print"></i></button>
+                        <a class="btn ac-info" onclick="printPDF()" href="" id="printButton" target="_blank"> Cetak</a>
+                    </div>
+                </div>
+                <div class="text-center show-mobile">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <button class="btn text-primary" type="submit" data-toggle="tooltip" data-placement="top" title="Papar"><i class="fa fa-eye fa-2x"></i></button>
+                        <button class="btn text-info" onclick="printPDF()" href="" id="printButton" target="_blank" data-toggle="tooltip" data-placement="top" title="Cetak"><i class="fas fa-print fa-2x"></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model != null && Model.Count() > 0)
+{
+    <div class="card box-shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover compact" width="100%">
+                    <caption>Rekod dipamerkan : @Model.Count()</caption>
+                    <thead class="table-secondary">
+                        <tr>
+                            <th>
+                                Bil
+                            </th>
+                            <th>
+                                Tarikh
+                            </th>
+                            <th>
+                                Kod
+                            </th>
+                            <th>
+                                Penerima
+                            </th>
+                            <th>
+                                No Rujukan
+                            </th>
+                            <th>
+                                Debit RM
+                            </th>
+                            <th>
+                                Kredit RM
+                            </th>
+                            <th>
+                                Tanggungan RM
+                            </th>
+                            <th>
+                                Liabiliti RM
+                            </th>
+                            <th>
+                                Baki RM
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            decimal baki = 0;
+                            decimal jumDebit = 0;
+                            decimal jumKredit = 0;
+                            decimal jumTanggungan = 0;
+                            decimal jumLiabiliti = 0;
+
+                        }
+                        @foreach (var item in Model)
+                        {
+                            jumDebit += item.Debit;
+                            jumKredit += item.Kredit;
+                            jumTanggungan += item.Tanggungan;
+                            jumLiabiliti += item.Liabiliti;
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                    @item.Tarikh.ToString("dd/MM/yyyy")
+                                </td>
+                                <td>
+                                    @item.DDaftarAwam?.Kod
+                                </td>
+                                <td class="text-uppercase">
+                                    @item.DDaftarAwam?.Nama
+                                </td>
+                                <td class="text-uppercase">
+                                    @item.NoRujukan
+                                </td>
+                                <td class="text-end">
+                                    @Convert.ToDecimal(item.Debit).ToString("#,##0.00")
+                                </td>
+                                <td class="text-end">
+                                    @Convert.ToDecimal(item.Kredit).ToString("#,##0.00")
+                                </td>
+                                <td class="text-end">
+                                    @Convert.ToDecimal(item.Tanggungan).ToString("#,##0.00")
+                                </td>
+                                <td class="text-end">
+                                    @Convert.ToDecimal(item.Liabiliti).ToString("#,##0.00")
+                                </td>
+                                <td class="text-end">
+                                    @{
+                                        baki += item.Kredit - item.Debit - item.Tanggungan;
+                                    }
+                                    @Convert.ToDecimal(baki).ToString("#,##0.00")
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                    <tfoot>
+                        <tr class="fw-bold table-warning">
+                            <td colspan="5" class="text-end">JUMLAH RM</td>
+                            <td class="text-end">@Convert.ToDecimal(jumDebit).ToString("#,##0.00")</td>
+                            <td class="text-end">@Convert.ToDecimal(jumKredit).ToString("#,##0.00")</td>
+                            <td class="text-end">@Convert.ToDecimal(jumTanggungan).ToString("#,##0.00")</td>
+                            <td class="text-end">@Convert.ToDecimal(jumLiabiliti).ToString("#,##0.00")</td>
+                            <td class="text-end">@Convert.ToDecimal(baki).ToString("#,##0.00")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+}

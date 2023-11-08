@@ -18,5 +18,6 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public ICollection<JPTJ> JPTJ { get; set; } = new List<JPTJ>();
         public ICollection<AkAkaun> AkAkaun { get; set; } = new List<AkAkaun>();
         public ICollection<AkTerima> AkTerima { get; set; } = new List<AkTerima>();
+        public ICollection<AbBukuVot> AbBukuVot { get; set; } = new List<AbBukuVot>();
     }
 }

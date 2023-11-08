@@ -1,0 +1,10 @@
+﻿<li class="nav-item">
+    <a class="nav-link collapsed text-truncate
+    @Html.ActiveClass("AkTerima")
+    " href="#submenuTerimaan" data-toggle="collapse" data-target="#submenuTerimaan"><img src="~/img/svg/terimaan.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Terimaan</span></a>
+    <div class="collapse" id="submenuTerimaan" aria-expanded="false">
+        <ul class="flex-column ps-2 nav">
+            <li class="nav-item"><a class="nav-link py-1 ms-3 @Html.ActiveSideBarClass("AkTerima")" asp-controller="AkTerima" asp-action="Index"><span>Resit Rasmi</span></a></li>
+        </ul>
+    </div>
+</li>

@@ -18,8 +18,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             _context = context;
             DPekerjaRepo = new DPekerjaRepository(_context);
             DDaftarAwamRepo = new DDaftarAwamRepository(_context);
-            DPenyemakRepo = new DPenyemakRepository(_context);
-            DPelulusRepo = new DPelulusRepository(_context);
+            DKonfigKelulusanRepo = new DKonfigKelulusanRepository(_context);
 
             JKWRepo = new JKWRepository(_context);
             JPTJRepo = new JPTJRepository(_context);
@@ -29,11 +28,14 @@ namespace YIT._DataAccess.Repositories.Implementations
             JCaraBayarRepo = new JCaraBayarRepository(_context);
             JNegeriRepo = new JNegeriRepository(_context);
             JBahagianRepo = new JBahagianRepository(_context);
+            JCawanganRepo = new JCawanganRepository(_context);
 
             AkCartaRepo = new AkCartaRepository(_context);
             AkBankRepo = new AkBankRepository(_context);
             
             AkTerimaRepo = new AkTerimaRepository(_context);
+
+            AbWaranRepo = new AbWaranRepository(_context);
         }
 
         public IJKWRepository JKWRepo { get; private set; }
@@ -53,10 +55,9 @@ namespace YIT._DataAccess.Repositories.Implementations
         public IJNegeriRepository JNegeriRepo {  get; private set; }
 
         public IJBahagianRepository JBahagianRepo { get; private set; }
+        public IJCawanganRepository JCawanganRepo { get; private set; }
 
-        public IDPenyemakRepository DPenyemakRepo {get; private set; }
-
-        public IDPelulusRepository DPelulusRepo { get; private set; }
+        public IDKonfigKelulusanRepository DKonfigKelulusanRepo {get; private set; }
 
         public IDDaftarAwamRepository DDaftarAwamRepo {get; private set; }
 
@@ -65,6 +66,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         public IAkBankRepository AkBankRepo {get; private set; }
 
         public IAkTerimaRepository AkTerimaRepo {get; private set;}
+        public IAbWaranRepository AbWaranRepo { get; private set; }
 
         public void Dispose()
         {

@@ -1,23 +1,51 @@
 ﻿<script type="text/javascript">
     $(document).ready(function () {
-        $("body").on('change', "#NamaSyarikat", function () {
-            var namaSyarikat = $("#NamaSyarikat").val();
-            GetKodSyarikat(namaSyarikat);
+        $("body").on('change', "#Nama", function () {
+            var nama = $("#Nama").val();
+            var daftarAwam = $("#EnKategoriDaftarAwam").val();
+            GetKod(nama,daftarAwam);
         });
 
-        function GetKodSyarikat(namaSyarikat) {
+        function GetKod(nama,daftarAwam) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetKodSyarikat", "DDaftarAwam")',
-                data: { namaSyarikat: namaSyarikat },
+                url: '@Url.Action("GetKod", "DDaftarAwam")',
+                data: { Nama: nama, EnKategoriDaftarAwam: daftarAwam },
                 dataType: "json",
                 success: function (msg) {
-                    $("#KodSyarikat").val(msg.record);
+                    $("#Kod").val(msg.record);
                 },
                 error: function (req, status, error) {
                     alert(error);
                 }
             });
         }
+
+        $("#Nama").on("keyup", function () {
+            $("#lst-card").removeAttr("hidden");
+            $("#lst").removeAttr("hidden");
+            var srchTerm = $(this).val().toLowerCase(),
+                $rows = $("#lst").children("li");
+            if (srchTerm.length > 0) {
+                $rows.stop().hide();
+                $("#lst").find("li:contains('" + srchTerm + "')").stop().show();
+            } else {
+                $rows.stop().hide();
+                $("#lst-card").prop("hidden", true);
+                $("#lst").prop("hidden", true);
+            }
+        });
+
+        $('#lst li').click(function () {
+            $("#Nama").val($(this).text().toUpperCase());
+            var nama = $("#Nama").val();
+            var daftarAwam = $("#EnKategoriDaftarAwam").val();
+            GetKod(nama, daftarAwam);
+            $("#lst-card").prop("hidden", true);
+            $("#lst").prop("hidden", true);
+        });
+
     });
+
+    
 </script>
