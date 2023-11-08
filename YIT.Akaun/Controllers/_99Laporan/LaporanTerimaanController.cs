@@ -35,7 +35,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             _unitOfWork = unitOfWork;
             _cache = cache;
         }
-        public IActionResult Index(UserFormModel model)
+        public IActionResult Index(PrintFormModel model)
         {
 
             //
@@ -43,7 +43,7 @@ namespace YIT.Akaun.Controllers._99Laporan
         }
 
         [HttpPost]
-        public async Task<JsonResult> ExportExcel(UserFormModel model)
+        public async Task<JsonResult> ExportExcel(PrintFormModel model)
         {
             LP0001PrintModel printModel = await PrepareData(model.kodLaporan, model.tarikhDari, model.tarikhHingga, model.susunan);
 

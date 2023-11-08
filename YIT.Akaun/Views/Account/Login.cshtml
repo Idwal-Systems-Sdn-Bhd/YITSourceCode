@@ -8,7 +8,8 @@
 <div class="login-wrapper">
     <form class="form fade-in" asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
         <img src="~/img/MainLogo_Syarikat.webp" alt="IMG" />
-        <h2>SPMB</h2>
+        <h2>@Init.CompSystemCode</h2>
+        <h6 class="mb-0 text-uppercase">@Init.CompName</h6>
         <hr />
         <h6>Log Masuk Pengguna</h6>
         <div asp-validation-summary="All" class="text-danger mb-3 ml-4"></div>
