@@ -55,16 +55,16 @@ namespace YIT.Akaun.Controllers._02Daftar
             if (daftarAwam.EnKategoriDaftarAwam == EnKategoriDaftarAwam.LainLain)
             {
                 TempData[SD.Error] = "Sila Pilih Kategori..!";
-                ViewBag.KodSyarikat = GenerateRunningNumber(daftarAwam.NamaSyarikat?.Substring(1) ?? "A");
+                ViewBag.KodSyarikat = GenerateRunningNumber(daftarAwam.Nama?.Substring(1) ?? "A");
                 PopulateDropdownList();
                 return View(daftarAwam);
             }
 
-            if (daftarAwam.NamaSyarikat != null && NamaSyarikatExists(daftarAwam.NamaSyarikat) == false)
+            if (daftarAwam.Nama != null && NamaKategoriDaftarAwamExists(daftarAwam.Nama,daftarAwam.EnKategoriDaftarAwam) == false)
             {
                 if (ModelState.IsValid)
                 {
-                    daftarAwam.KodSyarikat = GenerateRunningNumber(daftarAwam.NamaSyarikat);
+                    daftarAwam.Kod = GenerateRunningNumber(daftarAwam.Nama);
 
                     var user = await _userManager.GetUserAsync(User);
                     int? daftarAwamId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
@@ -74,7 +74,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                     daftarAwam.DPekerjaMasukId = daftarAwamId;
 
                     _context.Add(daftarAwam);
-                    _appLog.Insert("Tambah", daftarAwam.KodSyarikat + " - " + daftarAwam.NamaSyarikat, daftarAwam.KodSyarikat, 0, 0, daftarAwamId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Tambah", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam.Kod, 0, 0, daftarAwamId, modul, syscode, namamodul, user);
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya ditambah..!";
                     return RedirectToAction(nameof(Index));
@@ -83,10 +83,10 @@ namespace YIT.Akaun.Controllers._02Daftar
             }
             else
             {
-                TempData[SD.Error] = "Kod Syarikat ini telah wujud..!";
+                TempData[SD.Error] = "Nama ini telah wujud..!";
             }
 
-            ViewBag.KodSyarikat = GenerateRunningNumber(daftarAwam.NamaSyarikat?.Substring(1) ?? "A");
+            ViewBag.KodSyarikat = GenerateRunningNumber(daftarAwam.Nama?.Substring(1) ?? "A");
             PopulateDropdownList();
             return View(daftarAwam);
         }
@@ -132,7 +132,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                 return NotFound();
             }
 
-            if (daftarAwam.NamaSyarikat != null && ModelState.IsValid)
+            if (daftarAwam.Nama != null && ModelState.IsValid)
             {
                 try
                 {
@@ -142,8 +142,8 @@ namespace YIT.Akaun.Controllers._02Daftar
                     var objAsal = await _context.DDaftarAwam.FirstOrDefaultAsync(x => x.Id == daftarAwam.Id);
                     if (objAsal != null)
                     {
-                        daftarAwam.NamaSyarikat = objAsal.NamaSyarikat;
-                        daftarAwam.KodSyarikat = objAsal.KodSyarikat;
+                        daftarAwam.Nama = objAsal.Nama;
+                        daftarAwam.Kod = objAsal.Kod;
                         daftarAwam.UserId = objAsal.UserId;
                         daftarAwam.TarMasuk = objAsal.TarMasuk;
                         daftarAwam.DPekerjaMasukId = objAsal.DPekerjaMasukId;
@@ -159,14 +159,14 @@ namespace YIT.Akaun.Controllers._02Daftar
 
                     _unitOfWork.DDaftarAwamRepo.Update(daftarAwam);
 
-                    _appLog.Insert("Ubah", daftarAwam.KodSyarikat + " - " + daftarAwam.NamaSyarikat, daftarAwam?.KodSyarikat ?? "", id, 0, daftarAwamId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Ubah", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam?.Kod ?? "", id, 0, daftarAwamId, modul, syscode, namamodul, user);
 
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya diubah..!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NamaSyarikatExists(daftarAwam.NamaSyarikat ?? ""))
+                    if (!NamaKategoriDaftarAwamExists(daftarAwam.Nama ?? "", daftarAwam.EnKategoriDaftarAwam))
                     {
                         return NotFound();
                     }
@@ -206,14 +206,14 @@ namespace YIT.Akaun.Controllers._02Daftar
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-            if (daftarAwam != null && daftarAwam.KodSyarikat != null)
+            if (daftarAwam != null && daftarAwam.Kod != null)
             {
                 daftarAwam.UserIdKemaskini = user?.UserName ?? "";
                 daftarAwam.TarKemaskini = DateTime.Now;
                 daftarAwam.DPekerjaKemaskiniId = pekerjaId;
 
                 _context.DDaftarAwam.Remove(daftarAwam);
-                _appLog.Insert("Hapus", daftarAwam.KodSyarikat + " - " + daftarAwam.NamaSyarikat, daftarAwam.KodSyarikat, id, 0, pekerjaId, modul, syscode, namamodul, user);
+                _appLog.Insert("Hapus", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam.Kod, id, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya dihapuskan..!";
             }
@@ -240,7 +240,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                 _context.DDaftarAwam.Update(obj);
 
                 // Batal operation end
-                _appLog.Insert("Rollback", obj.KodSyarikat + " - " + obj.NamaSyarikat, obj.KodSyarikat ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+                _appLog.Insert("Rollback", obj.Kod + " - " + obj.Nama, obj.Kod ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
 
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya dikembalikan..!";
@@ -249,9 +249,14 @@ namespace YIT.Akaun.Controllers._02Daftar
             return RedirectToAction(nameof(Index));
         }
 
-        private bool NamaSyarikatExists(string namaSyarikat)
+        private bool NamaKategoriDaftarAwamExists(string nama, EnKategoriDaftarAwam daftarAwam)
         {
-            return _unitOfWork.DDaftarAwamRepo.IsExist(df => df.NamaSyarikat == namaSyarikat);
+            return _unitOfWork.DDaftarAwamRepo.IsExist(df => df.Nama == nama && df.EnKategoriDaftarAwam == daftarAwam);
+        }
+
+        private bool NamaExists(string nama)
+        {
+            return _unitOfWork.DDaftarAwamRepo.IsExist(df => df.Nama == nama);
         }
 
         private void PopulateDropdownList()
@@ -261,24 +266,32 @@ namespace YIT.Akaun.Controllers._02Daftar
             var kategoriDaftarAwam = EnumHelper<EnKategoriDaftarAwam>.GetList();
 
             ViewBag.EnKategoriDaftarAwam = kategoriDaftarAwam;
+
+            var daftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsGroupByKod();
+            ViewBag.DDaftarAwam = daftarAwam;
         }
 
-        private string GenerateRunningNumber(string namaSyarikat)
+        private string GenerateRunningNumber(string nama)
         {
-            var maxRefNo = _unitOfWork.DDaftarAwamRepo.GetMaxRefNo(namaSyarikat);
-            var nama = namaSyarikat.Substring(0, 1).ToUpper();
-            return namaSyarikat.Substring(0,1).ToUpper() + RunningNumberFormatter.GenerateRunningNumber("", maxRefNo, 0);
+            if (NamaExists(nama))
+            {
+                return _context.DDaftarAwam.FirstOrDefault( df => df.Nama == nama)?.Kod ?? "";
+            }
+
+            var maxRefNo = _unitOfWork.DDaftarAwamRepo.GetMaxRefNo(nama);
+            
+            return nama.Substring(0,1).ToUpper() + RunningNumberFormatter.GenerateRunningNumber("", maxRefNo, 0);
         }
 
         [HttpPost]
-        public JsonResult GetKodSyarikat(string namaSyarikat)
+        public JsonResult GetKod(string nama, EnKategoriDaftarAwam EnKategoriDaftarAwam)
         {
             try
             {
                 var result = "";
-                if (namaSyarikat != null)
+                if (nama != null && EnKategoriDaftarAwam != 0)
                 {
-                    result = GenerateRunningNumber(namaSyarikat);
+                    result = GenerateRunningNumber(nama);
                 }
                 return Json(new { result = "OK", record = result });
             } catch (Exception ex)

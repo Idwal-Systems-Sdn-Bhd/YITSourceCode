@@ -1,7 +1,7 @@
-﻿@model DPelulus
+﻿@model AkBank
 
 @{
-    ViewData["Title"] = "Pelulus - Hapus";
+    ViewData["Title"] = "Akaun Bank - Hapus";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="card box-shadow">
@@ -9,42 +9,60 @@
         <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
 
         <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Perihal" class="control-label"></label>
+                    <input asp-for="Perihal" class="form-control form-control-sm text-uppercase" readonly />
+                    <span asp-validation-for="Perihal" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="NoAkaun" class="control-label"></label>
+                    <input asp-for="NoAkaun" class="form-control form-control-sm text-uppercase" readonly />
+                    <span asp-validation-for="NoAkaun" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
         <div class="form-group">
-            <label asp-for="DPekerjaId" class="control-label"></label>
-            <input class="form-control form-control-sm text-uppercase" value="@Model.DPekerja?.NoGaji - @Model.DPekerja?.Nama" readonly />
+            <label asp-for="JKWId" class="control-label"></label>
+            <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" disabled>
+                <option value="0">- SILA PILIH -</option>
+                @foreach (var item in ViewBag.JKW)
+                {
+                    <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                }
+            </select>
         </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label asp-for="MinAmaun" class="control-label"></label>
-                    <input asp-for="MinAmaun" class="form-control form-control-sm" readonly />
+                    <label asp-for="AkCartaId" class="control-label"></label>
+                    <select asp-for="AkCartaId" class="form-control form-control-sm text-uppercase" disabled>
+                        <option value="0">- SILA PILIH -</option>
+                        @foreach (var item in ViewBag.AkCarta)
+                        {
+                            <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                        }
+                    </select>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label asp-for="MaksAmaun" class="control-label text-white"></label>
-                    <input asp-for="MaksAmaun" class="form-control form-control-sm text-uppercase" readonly />
+                    <label asp-for="JBankId" class="control-label"></label>
+                    <select asp-for="JBankId" class="form-control form-control-sm text-uppercase" disabled>
+                        <option value="0">- SILA PILIH -</option>
+                        @foreach (var item in ViewBag.JBank)
+                        {
+                            <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                        }
+                    </select>
                 </div>
             </div>
         </div>
-        <div class="form-group">
 
-            <div class="card">
-                <div class="card-body">
-                    <label class="control-label">Capaian : </label>
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" asp-for="IsInvois" disabled /> @Html.DisplayNameFor(model => model.IsInvois)
-                        </label>
-                    </div>
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" asp-for="IsTerimaan" disabled /> @Html.DisplayNameFor(model => model.IsTerimaan)
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
         <hr />
 
         <form asp-action="Delete">

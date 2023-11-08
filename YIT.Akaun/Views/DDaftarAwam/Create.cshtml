@@ -16,9 +16,9 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label asp-for="KodSyarikat" class="control-label"></label>
-                        <input asp-for="KodSyarikat" class="form-control form-control-sm" required readonly />
-                        <span asp-validation-for="KodSyarikat" class="text-danger"></span>
+                        <label asp-for="Kod" class="control-label"></label>
+                        <input asp-for="Kod" class="form-control form-control-sm" required readonly />
+                        <span asp-validation-for="Kod" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -42,10 +42,25 @@
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="NamaSyarikat" class="control-label"></label>
-                <input asp-for="NamaSyarikat" class="form-control form-control-sm text-uppercase" />
-                <span asp-validation-for="NamaSyarikat" class="text-danger"></span>
+                <label asp-for="Nama" class="control-label"></label>
+                <input asp-for="Nama" class="form-control form-control-sm text-uppercase" />
+                <span asp-validation-for="Nama" class="text-danger"></span>
             </div>
+              
+            <ul id="lst" class="list-group"
+                style="
+        position: absolute;
+    "
+                hidden>
+                @if (ViewBag.DDaftarAwam != null)
+                {
+                    @foreach (var item in ViewBag.DDaftarAwam)
+                    {
+                        <li class="list-group-item text-uppercase"><a href="#" class="text-dark">@item.TextValue</a></li>
+                    }
+                }
+                </ul>
+
             <div class="form-group">
                 <label asp-for="Alamat1" class="control-label"></label>
                 <input asp-for="Alamat1" class="form-control form-control-sm mb-2 text-uppercase" />

@@ -60,6 +60,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
         {
             context.Database.EnsureCreated();
 
+            // -- First Layer Insert
             if (context.SiAppInfo.Any())
             {
 
@@ -136,6 +137,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     }
                 );
             }
+            
             if (context.Roles.Any())
             {
 
@@ -149,7 +151,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     new IdentityRole { Name = "User", NormalizedName = "User".ToUpper() }
                     );
             }
-
+            //kalau dlm database, nama table J Negeri ada isi
             if (context.JNegeri.Any())
             {
                 //return;   // DB has been seeded
@@ -276,7 +278,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
 
                 );
             }
-
+            //seed tuk jbank, jbank ada 5, 1 maybank, 02 bank islam, 03 affin, 04 hong leong
             if (context.JBangsa.Any())
             {
                 //return;   // DB has been seeded
@@ -312,12 +314,51 @@ namespace YIT._DataAccess.Data.DataConfigurations
             }
             else
             {
+                // ** Ubah di sini
                 context.JKW.AddRange(
                     new JKW
                     {
                         Kod = "1",
-                        Perihal = "KUMPULAN WANG UTAMA"
+                        Perihal = "CARUMAN KERAJAAN NEGERI"
+                    },
+                    new JKW
+                    {
+                        Kod = "2",
+                        Perihal = "JAKIM"
                     });
+                
+            }
+
+            if (context.JBank.Any())
+            {
+
+            }
+            else
+            {
+                // ** Ubah di sini
+                context.JBank.AddRange(
+                    new JBank
+                    {
+                        Kod = "01",
+                        Perihal = "MAYBANK"
+                    },
+                    new JBank
+                    {
+                        Kod = "02",
+                        Perihal = "BANK ISLAM"
+                    },
+                     new JBank
+                     {
+                         Kod = "03",
+                         Perihal = "AFFIN"
+                     },
+                      new JBank
+                      {
+                          Kod = "04",
+                          Perihal = "HONG LEONG"
+                      }
+                    );
+
             }
 
             if (context.AkCarta.Any())
@@ -538,7 +579,9 @@ namespace YIT._DataAccess.Data.DataConfigurations
             }
 
             context.SaveChanges();
+            // -- First Layer Insert END
 
+            // -- Second Layer Insert
             if (context.JPTJ.Any())
             {
 
@@ -548,12 +591,141 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     new JPTJ
                     {
                         Kod = "01",
-                        Perihal = "PUSAT TANGGUNGJAWAB UTAMA",
+                        Perihal = "CARUMAN KERAJAAN NEGERI",
                         JKWId = 1
+                    },
+                    new JPTJ
+                    {
+                        Kod = "02",
+                        Perihal = "JAKIM",
+                        JKWId = 2
                     });
             }
 
             context.SaveChanges();
+            // -- Second Layer Insert END
+
+            // -- Third Layer Insert
+            if (context.JBahagian.Any())
+            {
+
+            }
+            else
+            {
+                // ** Ubah di sini
+                context.JBahagian.AddRange(
+                    new JBahagian
+                    {
+                        Kod = "01",
+                        Perihal = "PENTADBIRAN",
+                        JPTJId = 1
+                    },
+                    new JBahagian
+                    {
+                        Kod = "02",
+                        Perihal = "TADIKA",
+                        JPTJId = 1
+                    }, 
+                    new JBahagian
+                    {
+                        Kod = "03",
+                        Perihal = "PELABURAN",
+                        JPTJId = 1
+                    }, new JBahagian
+                    {
+                        Kod = "04",
+                        Perihal = "KHIDMAT MASYARAKAT",
+                        JPTJId = 1
+                    }, new JBahagian
+                    {
+                        Kod = "05",
+                        Perihal = "DAKWAH",
+                        JPTJId = 1
+                    }, new JBahagian
+                    {
+                        Kod = "06",
+                        Perihal = "PENERBITAN",
+                        JPTJId = 1
+                    }, new JBahagian
+                    {
+                        Kod = "07",
+                        Perihal = "INSPI/PDI",
+                        JPTJId = 1
+                    }
+                    , new JBahagian
+                    {
+                        Kod = "08",
+                        Perihal = "SRAYIT",
+                        JPTJId = 1
+                    }, 
+                    new JBahagian
+                    {
+                        Kod = "09",
+                        Perihal = "KAFA",
+                        JPTJId = 1
+                    },
+                    new JBahagian
+                    {
+                        Kod = "01",
+                        Perihal = "PENTADBIRAN",
+                        JPTJId = 2
+                    },
+                    new JBahagian
+                    {
+                        Kod = "02",
+                        Perihal = "TADIKA",
+                        JPTJId = 2
+                    },
+                    new JBahagian
+                    {
+                        Kod = "03",
+                        Perihal = "PELABURAN",
+                        JPTJId = 2
+                    }, 
+                    new JBahagian
+                    {
+                        Kod = "04",
+                        Perihal = "KHIDMAT MASYARAKAT",
+                        JPTJId = 2
+                    }, 
+                    new JBahagian
+                    {
+                        Kod = "05",
+                        Perihal = "DAKWAH",
+                        JPTJId = 2
+                    }, 
+                    new JBahagian
+                    {
+                        Kod = "06",
+                        Perihal = "PENERBITAN",
+                        JPTJId = 2
+                    }, 
+                    new JBahagian
+                    {
+                        Kod = "07",
+                        Perihal = "INSPI/PDI",
+                        JPTJId = 2
+                    }
+                    , 
+                    new JBahagian
+                    {
+                        Kod = "08",
+                        Perihal = "SRAYIT",
+                        JPTJId = 2
+                    },
+                    new JBahagian
+                    {
+                        Kod = "09",
+                        Perihal = "KAFA",
+                        JPTJId = 2
+                    }
+                    // ** Tambah di sini
+                    );
+            }
+
+            context.SaveChanges();
+
+            // -- Third Layer Insert END
         }
     }
 }

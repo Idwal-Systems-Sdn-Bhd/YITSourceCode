@@ -10,8 +10,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
     {
         IDPekerjaRepository DPekerjaRepo { get; }
         IDDaftarAwamRepository DDaftarAwamRepo { get; }
-        IDPenyemakRepository DPenyemakRepo { get; }
-        IDPelulusRepository DPelulusRepo { get; }
+        IDKonfigKelulusanRepository DKonfigKelulusanRepo { get; }
         IJKWRepository JKWRepo { get; }
         IJPTJRepository JPTJRepo { get; }
         IJAgamaRepository JAgamaRepo { get; }
@@ -23,6 +22,8 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IAkCartaRepository AkCartaRepo { get; }
         IAkBankRepository AkBankRepo { get; }
         IAkTerimaRepository AkTerimaRepo { get; }
+        IJCawanganRepository JCawanganRepo { get; }
+        IAbWaranRepository AbWaranRepo { get; }
         int Save();
     }
 }

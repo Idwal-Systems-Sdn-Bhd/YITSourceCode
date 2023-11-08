@@ -32,19 +32,23 @@ namespace YIT._DataAccess.Data
         public DbSet<JKW> JKW { get; set;}
         public DbSet<JPTJ> JPTJ { get; set; }
         public DbSet<JBahagian> JBahagian { get; set; }
+        public DbSet<JCawangan> JCawangan { get; set; }
         //
 
         // 02Daftar (D)
         public DbSet<DPekerja> DPekerja { get; set;}
         public DbSet<DDaftarAwam> DDaftarAwam { get; set; }
-        public DbSet<DPenyemak> DPenyemak { get; set; }
-        public DbSet<DPelulus> DPelulus { get; set; }
+        public DbSet<DKonfigKelulusan> DKonfigKelulusan { get; set; }
         //
 
         // 03Kewangan (AK)
         public DbSet<AkCarta> AkCarta { get;set; }  
         public DbSet<AkBank> AkBank { get; set; }
         public DbSet<AkAkaun> AkAkaun { get; set; }
+        public DbSet<AbWaran> AbWaran { get; set; }
+        public DbSet<AbWaranObjek> AbWaranObjek { get; set; }
+        public DbSet<AbBukuVot> AbBukuVot { get; set; }
+
         //
 
         // 04Penerimaan (PR)

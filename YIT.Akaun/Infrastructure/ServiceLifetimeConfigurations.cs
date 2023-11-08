@@ -16,6 +16,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddTransient<_AppLogIRepository<AppLog, int>, _AppLogRepository>();
 
             services.AddTransient<IAkAkaunRepository<AkAkaun>, AkAkaunRepository>();
+            services.AddTransient<IAbBukuVotRepository<AbBukuVot>, AbBukuVotRepository>();
 
             services.AddTransient<_IUnitOfWork, _UnitOfWork>();
 

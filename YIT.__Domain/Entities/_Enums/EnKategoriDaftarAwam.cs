@@ -14,6 +14,10 @@ namespace YIT.__Domain.Entities._Enums
         Pekerja = 4,
         [Display(Name = "Daftar Awam")]
         DaftarAwam = 5,
+        [Display(Name = "Penceramah")]
+        Penceramah = 6,
+        [Display(Name = "Ahli Majlis")]
+        AhliMajlis = 7,
         [Display(Name = "Lain-lain")]
         LainLain = 0
     }

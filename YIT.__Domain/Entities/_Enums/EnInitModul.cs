@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ namespace YIT.__Domain.Entities._Enums
 {
     public enum EnInitModul
     {
-
         SI = 0, // sistem
         J = 1,  // jadual
         D = 2,  // daftar

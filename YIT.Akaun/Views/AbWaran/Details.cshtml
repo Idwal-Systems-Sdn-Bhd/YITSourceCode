@@ -1,0 +1,73 @@
+﻿@model AbWaran
+
+@{
+    ViewData["Title"] = "Waran - Papar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card box-shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-dark mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / Papar</span>
+            </div>
+            <div class="col-4">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label asp-for="Tahun" class="control-label"></label>
+                <input asp-for="Tahun" class="form-control form-control-sm" readonly />
+                <span asp-validation-for="Tahun" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="NoRujukan" class="control-label"></label>
+                <input asp-for="NoRujukan" class="form-control form-control-sm text-uppercase" readonly/>
+                <span asp-validation-for="NoRujukan" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="Tarikh" class="control-label"></label>
+                <input asp-for="Tarikh" class="form-control form-control-sm text-uppercase" type="date" readonly/>
+                <span asp-validation-for="Tarikh" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="form-group col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <label asp-for="EnJenisPeruntukan" class="control-label"></label>
+                        <div class="custom-control custom-radio">
+                            <input asp-for="EnJenisPeruntukan" type="radio" class="custom-control-input" value="@EnJenisPeruntukan.PeruntukanAsal" readonly>
+                            <label class="custom-control-label" for="EnJenisPeruntukan2">@EnJenisPeruntukan.PeruntukanAsal.GetDisplayName()</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input asp-for="EnJenisPeruntukan" type="radio" class="custom-control-input" value="@EnJenisPeruntukan.PeruntukanTambahan" readonly>
+                            <label class="custom-control-label" for="EnJenisPeruntukan3">@EnJenisPeruntukan.PeruntukanTambahan.GetDisplayName()</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input asp-for="EnJenisPeruntukan" type="radio" class="custom-control-input" value="@EnJenisPeruntukan.Viremen" readonly>
+                            <label class="custom-control-label" for="EnJenisPeruntukan4">@EnJenisPeruntukan.Viremen.GetDisplayName()</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-8">
+                <label asp-for="Sebab" class="control-label"></label>
+                <input asp-for="Sebab" class="form-control form-control-sm text-uppercase" readonly/>
+                <span asp-validation-for="Sebab" class="text-danger"></span>
+            </div>
+        </div>
+
+        <hr />
+        <div class="form-group">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn ac-primary btn-sm">Ubah</a>
+            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+        </div>
+
+    </div>
+</div>

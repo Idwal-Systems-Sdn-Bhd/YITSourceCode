@@ -7,6 +7,8 @@ namespace YIT.Akaun.Models.ViewModels.Forms
         public int? id { get; set; }
         [Display(Name = "Kumpulan Wang")]
         public int? JKWId { get; set; }
+        [Display(Name = "PTJ")]
+        public int? JPTJId { get; set; }
         [Display(Name = "Bahagian")]
         public int? JBahagianId { get; set; }
         [Required(ErrorMessage = "Tahun Diperlukan")]
@@ -19,6 +21,10 @@ namespace YIT.Akaun.Models.ViewModels.Forms
         public DateTime? TarDari1 { get; set; }
         [Display(Name = "Tarikh Hingga")]
         public DateTime? TarHingga1 { get; set; }
+        [Display(Name = "Tarikh Dari")]
+        public string? TarDariString1 { get; set; }
+        [Display(Name = "Tarikh Hingga")]
+        public string? TarHinggaString1 { get; set; }
         [Display(Name = "Bank")]
         public int? AkBankId { get; set; }
         [Display(Name = "Paras")]

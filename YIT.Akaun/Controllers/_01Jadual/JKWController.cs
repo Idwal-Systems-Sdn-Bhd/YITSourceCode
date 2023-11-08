@@ -14,8 +14,8 @@ namespace YIT.Akaun.Controllers._01Jadual
     [Authorize(Roles = "SuperAdmin,Supervisor")]
     public class JKWController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "JD001";
-        public const string namamodul = "Jadual Kumpulan Wang";
+        public const string modul = Modules.kodJKW;
+        public const string namamodul = Modules.namaJKW;
 
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
