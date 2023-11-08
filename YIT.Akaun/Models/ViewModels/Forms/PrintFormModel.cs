@@ -1,6 +1,6 @@
 ﻿namespace YIT.Akaun.Models.ViewModels.Forms
 {
-    public class UserFormModel
+    public class PrintFormModel
     {
         public string? kodLaporan { get; set; }
         public string? tarikhDari { get; set; }

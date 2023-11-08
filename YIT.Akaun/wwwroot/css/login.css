@@ -7,11 +7,11 @@
 body {
     background-size: cover;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #9053c7;
-    background: -webkit-linear-gradient(319deg, #118ab2 0%, #06d6a0 37%, #ffd166 100%);
-    background: -o-linear-gradient(319deg, #118ab2 0%, #06d6a0 37%, #ffd166 100%);
-    background: -moz-linear-gradient(319deg, #118ab2 0%, #06d6a0 37%, #ffd166 100%);
-    background: linear-gradient(319deg, #118ab2 0%, #06d6a0 37%, #ffd166 100%);
+    background: rgb(157,91,34);
+    background: -webkit-linear-gradient(45deg, rgba(157,91,34,1) 0%, rgba(248,255,127,1) 89%);
+    background: -o-linear-gradient(45deg, rgba(157,91,34,1) 0%, rgba(248,255,127,1) 89%);
+    background: -moz-linear-gradient(45deg, rgba(157,91,34,1) 0%, rgba(248,255,127,1) 89%);
+    background: linear-gradient(45deg, rgba(157,91,34,1) 0%, rgba(248,255,127,1) 89%);
     background-size: 400% 400%;
     animation: gradient 12s ease infinite;
 }
@@ -110,7 +110,7 @@ body {
     left: calc(50% - 50px);
     width: 100px;
     background: rgb(255, 255, 255, 0.8);
-    border-radius: 50%;
+    /*border-radius: 50%;*/
 }
 
 .form h2 {

@@ -29,18 +29,18 @@ namespace YIT.__Domain.Entities._Statics
 
         // initial Company Details
         public const string CompSystemCode = "SPMB";
-        public const string CompName = "Idwal Systems Sdn Bhd";
-        public const string CompRegNo = "187842-T";
-        public const string CompAddress1 = "Lot 605G";
-        public const string CompAddress2 = "Kompleks Diamond, Bangi Business Park";
-        public const string CompAddress3 = "Jalan Medan Bangi, Off Persiaran Bandar";
-        public const string CompCity = "Bandar Baru Bangi";
-        public const string CompPoscode = "43640";
-        public const string CompDistrict = "Ulu Langat";
-        public const string CompState = "Selangor";
-        public const string CompTel = "+6011 33272978";
-        public const string CompEmail = "far@idwal.com.my";
-        public const string CompFax = "";
+        public const string CompName = "Yayasan Islam Terengganu";
+        public const string CompRegNo = "000586846208";
+        public const string CompAddress1 = "Tingkat 9,10 & 11";
+        public const string CompAddress2 = "Menara Yayasan Islam Terengganu";
+        public const string CompAddress3 = "Jalan Sultan Omar";
+        public const string CompCity = "Kuala Terengganu";
+        public const string CompPoscode = "20300";
+        public const string CompDistrict = "Kuala Terengganu";
+        public const string CompState = "Terengganu";
+        public const string CompTel = "+09-6300 300/301/302/303";
+        public const string CompEmail = "admin@yit.gov.my";
+        public const string CompFax = "+09 622 6511";
         public const string CompWebLogo = "MainLogo_Syarikat.webp";
         public const string CompPrintLogo = "MainLogo_Syarikat.png";
     }
