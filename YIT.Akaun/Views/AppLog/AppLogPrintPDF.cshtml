@@ -1,0 +1,180 @@
+﻿@model AppLogPrintModel
+
+@{
+    ViewData["Title"] = "Cetakan Log Transaksi Pengguna";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    var bil = 0;
+    var dateFrom = ViewData["DateFrom"];
+    var dateTo = ViewData["DateTo"];
+
+    var dateFromString = dateFrom?.ToString() ?? "";
+    dateFromString = dateFromString.Substring(0, 10);
+
+    var dateToString = dateTo?.ToString() ?? "";
+    dateToString = dateToString.Substring(0, 10);
+
+
+}
+<style>
+
+    .topic tr {
+        line-height: 0.5rem;
+    }
+
+    .center {
+        padding: 70px 0;
+        border: 3px solid green;
+        text-align: center;
+    }
+
+    .notbold {
+        font-weight: normal
+    }
+
+    .max-lines {
+        display: block; /* or inline-block */
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+        max-height: 5.8em;
+    }
+
+    .breakhere {
+        page-break-after: always
+    }
+
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-row-group
+    }
+
+    tr {
+        page-break-inside: avoid
+    }
+</style>
+
+<div class="row flexrow mb-3 ml-0 ">
+    <div class="col-2 image-container">
+        <img src="~/img/@Model.CompanyDetail?.CompanyLogoPrintPDF" alt="Logo syarikat" />
+    </div>
+    <div class="col-8 text-uppercase">
+        <h5 class="mb-1"><strong>@Model.CompanyDetail?.NamaSyarikat</strong></h5>
+        <h6 class="mb-0 "> @Model.CompanyDetail?.AlamatSyarikat1</h6>
+        <h6 class="mb-0 "> @Model.CompanyDetail?.AlamatSyarikat2</h6>
+        <h6 class="mb-2 "> @Model.CompanyDetail?.AlamatSyarikat3</h6>
+        <h6 class="mb-0 font-weight-bold">
+            Laporan Log Pengguna
+        </h6>
+        @if (ViewData["User"]!=null)
+        {
+            <h6 class="mb-0 font-weight-bold">Bagi Pengguna : @ViewData["User"]</h6>
+
+        }
+
+
+        @if (ViewData["ModulFrom"]!=null && ViewData["ModulTo"] != null)
+        {
+
+            <h6 class="mb-0 font-weight-bold">Modul : @ViewData["ModulFrom"] -> @ViewData["ModulTo"]</h6>
+
+        }
+        @if (dateFromString != "01/01/0001" && dateToString != "01/01/0001")
+        {
+
+            <h6 class="mb-0 font-weight-bold">Tarikh : @dateFrom -> @dateTo</h6>
+        }
+    </div>
+
+    <div class="col-2 text-right">
+        <h6 class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("hh:mm:ss tt")</h6>
+    </div>
+</div>
+
+<br />
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+
+            <th width="2%">Bil</th>
+            <th width="5%">
+                Kod
+            </th>
+            <th width="30%">
+                Nama
+            </th>
+            <th width="5%">
+                Tarikh
+            </th>
+            <th width="8%">
+                Masa
+            </th>
+            <th width="5%">
+                Modul
+            </th>
+            <th width="5%">
+                Operasi
+            </th>
+            <th width="10%">
+                Rujukan
+            </th>
+            <th width="30%">
+                Catatan
+            </th>
+            <th width="5%">
+                Amaun RM
+            </th>
+            <th width="2%">
+                Kod Sis.
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AppLog != null && Model.AppLog.Count() > 0)
+        {
+            @foreach (var item in Model.AppLog)
+            {
+
+                bil++;
+                <tr style="line-height:0.8rem; page-break-before:avoid;">
+                    <td>
+                        @bil
+                    </td>
+                    <td>
+                        @item.DPekerja?.NoGaji
+                    </td>
+                    <td>
+                        @item.DPekerja?.Nama
+                    </td>
+                    <td>
+                        @item.LgDate.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @item.LgDate.ToString("hh:mm:ss tt")
+                    </td>
+                    <td>
+                        @item.LgModule
+                    </td>
+                    <td>
+                        @item.LgOperation
+                    </td>
+                    <td>
+                        @item.NoRujukan
+                    </td>
+                    <td>
+                        @item.LgNote
+                    </td>
+                    <td align="right">
+                        @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")
+                    </td>
+                    <td>
+                        @item.SysCode
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

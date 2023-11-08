@@ -1,0 +1,40 @@
+﻿
+@if (User.IsInRole("SuperAdmin"))
+{
+    <div class="form-group">
+        <p class="text-gray fw-bold text-uppercase px-3 small pb-2 mb-0">Menu Utama</p>
+
+        <ul class="nav flex-column l-bg-light mb-0">
+            <partial name="~/Views/Partials/NavBars/_01_Akaun/_SistemPartialNavbar.cshtml" />
+            <partial name="~/Views/Partials/NavBars/_01_Akaun/_JadualPartialNavbar.cshtml" />
+            <partial name="~/Views/Partials/NavBars/_01_Akaun/_DaftarPartialNavbar.cshtml" />
+        </ul>
+    </div>
+
+}
+else if (User.IsInRole("Admin"))
+{
+    <div class="form-group">
+        <p class="text-gray fw-bold text-uppercase px-3 small pb-2 mb-0">Menu Utama</p>
+
+        <ul class="nav flex-column l-bg-light mb-0">
+            <partial name="~/Views/Partials/NavBars/_01_Akaun/_SistemPartialNavbar.cshtml" />
+        </ul>
+    </div>
+
+}
+else if (User.IsInRole("Supervisor"))
+{
+    <div class="form-group">
+        <p class="text-gray fw-bold text-uppercase px-3 small pb-2 mb-0">Menu Utama</p>
+
+        <ul class="nav flex-column l-bg-light mb-0">
+            <partial name="~/Views/Partials/NavBars/_01_Akaun/_JadualPartialNavbar.cshtml" />
+            <partial name="~/Views/Partials/NavBars/_01_Akaun/_DaftarPartialNavbar.cshtml" />
+        </ul>
+    </div>
+}
+else
+{
+
+}

@@ -1,0 +1,141 @@
+﻿@model IEnumerable<AkCarta>
+
+@{
+    ViewData["Title"] = "Cetakan Senarai Carta Akaun";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    var bil = 0;
+
+    // // letakkan code ini di AkCartaController
+    //[AllowAnonymous]
+    //public async Task<IActionResult> PrintCarta()
+    //{
+    //    IEnumerable<AkCarta> akCarta = _unitOfWork.AkCartaRepo.GetAll();
+
+    //    var company = await _userServices.GetCompanyDetails();
+    //    //string customSwitches = "--page-offset 0 --footer-center [page] / [toPage] --footer-font-size 6";
+
+    //    return new ViewAsPdf(modul + EnJenisFail.PDF, akCarta,
+    //        new ViewDataDictionary(ViewData) {
+    //        { "NamaSyarikat", company.NamaSyarikat },
+    //        { "AlamatSyarikat1", company.AlamatSyarikat1 },
+    //        { "AlamatSyarikat2", company.AlamatSyarikat2 },
+    //        { "AlamatSyarikat3", company.AlamatSyarikat3 }
+    //        })
+    //    {
+    //        PageMargins = { Left = 15, Bottom = 15, Right = 15, Top = 15 },
+    //        PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+    //        CustomSwitches = "--footer-center \"[page]/[toPage]\"" +
+    //                " --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
+    //        PageSize = Rotativa.AspNetCore.Options.Size.A4,
+    //    };
+    //}
+    // printing List of Carta end
+    // //
+}
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+
+</div>
+<br />
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th colspan="11" class="text-center bg-dark text-white" style="line-height: 1.8rem;"><strong>CETAKAN SENARAI CARTA</strong></th>
+        </tr>
+        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+
+            <th>Bil</th>
+            <th class="kod">
+                @Html.DisplayNameFor(model => model.Kod)
+            </th>
+            <th class="perihal">
+                @Html.DisplayNameFor(model => model.Perihal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EnJenis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EnParas)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DebitKredit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UmumDetail)
+            </th>
+            <th align="right">
+                @Html.DisplayNameFor(model => model.Baki)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var tabletype = item.EnParas == EnParas.Paras1 ? "table-purple" :
+item.EnParas == EnParas.Paras2 ? "table-warning" :
+item.EnParas == EnParas.Paras3 ? "table-info" : null;
+            bil++;
+            <tr class="@tabletype" style="line-height:0.8rem; page-break-before:avoid;">
+                <td>
+                    @bil
+                </td>
+                <td class="text-uppercase">
+                    @Html.DisplayFor(modelItem => item.Kod)
+                </td>
+                <td class="text-uppercase">
+                    @Html.DisplayFor(modelItem => item.Perihal)
+                </td>
+                <td class="text-uppercase">
+                    @Html.DisplayFor(modelItem => item.EnJenis)
+                </td>
+                <td class="text-uppercase">
+                    @switch (item.EnParas)
+                    {
+                        case EnParas.Paras1:
+                            <label class="mb-0">1</label>
+                            break;
+                        case EnParas.Paras2:
+                            <label class="mb-0">2</label>
+                            break;
+                        case EnParas.Paras3:
+                            <label class="mb-0">3</label>
+                            break;
+                        case EnParas.Paras4:
+                            <label class="mb-0">4</label>
+                            break;
+
+                    }
+                </td>
+
+                @if (item.DebitKredit?.ToString() == "D")
+                {
+                    <td>DEBIT</td>
+                }
+                else if (item.DebitKredit?.ToString() == "K")
+                {
+                    <td>KREDIT</td>
+                }
+
+                @if (item.UmumDetail?.ToString() == "U")
+                {
+                    <td>UMUM</td>
+                }
+                else if (item.UmumDetail?.ToString() == "D")
+                {
+                    <td>DETAIL</td>
+                }
+                <td align="right">
+                    @Html.DisplayFor(modelItem => item.Baki)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

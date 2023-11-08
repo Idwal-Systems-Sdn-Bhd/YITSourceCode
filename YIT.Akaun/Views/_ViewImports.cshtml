@@ -1,0 +1,25 @@
+﻿@using YIT.Akaun
+@using YIT.Akaun.Models
+@using Microsoft.AspNetCore.Identity
+@using YIT._DataAccess.Data
+@using YIT._DataAccess.Services
+@using YIT.Akaun.Models.ViewModels.Administrations
+@using YIT.__Domain.Entities.Administrations
+@using YIT.__Domain.Entities.Models._00Sistem
+@using YIT.__Domain.Entities.Models._01Jadual
+@using YIT.__Domain.Entities.Models._02Daftar
+@using YIT.__Domain.Entities.Models._03Akaun
+@using YIT.__Domain.Entities._Statics
+@using YIT.__Domain.Entities._Enums
+
+@using YIT._DataAccess.Services.Math
+@using YIT.Akaun.Models.ViewModels.Prints
+
+@namespace YIT.Akaun.Views
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject ApplicationDbContext _context
+@inject IHttpContextAccessor _http

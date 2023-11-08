@@ -1,0 +1,74 @@
+﻿@model IEnumerable<JBangsa>
+
+@{
+    ViewData["Title"] = "Bangsa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="_JSIndex" />
+
+<div class="card box-shadow">
+    <div class="loading">
+        <img class="loading-image" src="~/img/loading.gif" alt="Loading..." />
+    </div>
+    <div class="card card-body border main-page" hidden>
+        <partial name="~/Views/Partials/Common/_TitleIndexPartial.cshtml" />
+
+        <partial name="~/Views/Partials/Common/_SearchJadualIndexPartial.cshtml" />
+
+        @if (Model != null && Model.Count() > 0)
+        {
+            <div class="table-responsive">
+                <table class="table table-hover compact" width="100%">
+                    <caption>Rekod dipamerkan : @Model.Count()</caption>
+                    <thead class="table-secondary">
+                        <tr>
+                            <th width="5%">Bil</th>
+                            <th class="perihal">
+                                @Html.DisplayNameFor(model => model.Perihal)
+                            </th>
+                            <th width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var tabletype = item.FlHapus == 1 ? "table-danger" : null;
+                            <tr class="@tabletype text-uppercase">
+                                <td></td>
+                                <td>
+                                    @item.Perihal
+                                </td>
+                                <td width="5%" class="text-center">
+                                    <div class="btn-group" role="group" aria-label="action">
+                                        @if (item.FlHapus == 0)
+                                        {
+                                            <a asp-action="Details" asp-route-id="@item.Id"
+                                               class="btn text-primary btn-sm bg-white" type="button"
+                                               data-toggle="tooltip" data-placement="top"
+                                               title="Ubah/Papar"><i class="fas fa-edit"></i></a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id"
+                                               class="btn text-danger btn-sm bg-white" type="button"
+                                               data-toggle="tooltip" data-placement="top"
+                                               title="Hapus"><i class="fas fa-trash"></i></a>
+                                        }
+                                        else
+                                        {
+                                            if (User.IsInRole("Supervisor") || User.IsInRole("SuperAdmin"))
+                                            {
+                                                <a asp-action="Rollback" asp-route-id="@item.Id" asp-route-syscode="SPPB" class="btn text-info btn-sm bg-white" type="button" data-toggle="tooltip" data-placement="top" title="Rollback">
+                                                    <i class="fas fa-trash-restore"></i>
+                                                </a>
+
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </div>
+</div>

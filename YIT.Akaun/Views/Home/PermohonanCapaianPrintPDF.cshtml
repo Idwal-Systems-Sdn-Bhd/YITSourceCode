@@ -1,0 +1,105 @@
+﻿@model UserClaimsViewModel
+
+@{
+    ViewData["Title"] = "Cetakan Permohonan Capaian";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    CompanyDetails company = new CompanyDetails();
+
+    var bil = 0;
+    var jawatan = "SuperAdmin";
+
+    var user = UserManager.GetUserAsync(User);
+    var namaUser = new ApplicationUser();
+    var pekerja = new DPekerja();
+    var namaPekerja = "";
+    if (user.Result != null)
+    {
+        namaUser = _context.ApplicationUsers.FirstOrDefault(x => x.Email == user.Result.Email);
+        pekerja = _context.DPekerja.FirstOrDefault(x => x.Id == namaUser!.DPekerjaId);
+        namaPekerja = namaUser?.Nama;
+        if (pekerja != null)
+        {
+            jawatan = pekerja.Jawatan;
+        }
+    }
+
+
+    var bulan = DateTimeFormatter.BulanSingkatanBahasaMelayu(DateTime.Now.ToString("MM"));
+
+    var tarikh = DateTime.Now.ToString("dd") + " " + bulan +  " " + DateTime.Now.ToString("yyyy");
+
+    var hari = DateTimeFormatter.HariBahasaMelayu(DateTime.Now.ToString("dddd"));
+
+}
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@company.NamaSyarikat</strong></h5>
+        <p class="mb-0"> @company.AlamatSyarikat1 , @company.AlamatSyarikat2</p>
+        <p class="mb-0"> @company.AlamatSyarikat3</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("HH:mm:ss tt")</p>
+    </div>
+
+</div>
+
+<br />
+
+<h5>Nama Pengguna : @namaPekerja</h5>
+<h5>Jawatan : @jawatan</h5>
+<br />
+    <table class="table table-bordered table-sm topic">
+        <thead>
+            <tr class="bg-dark text-white">
+                <th colspan="11" class="text-center bg-dark text-white" style="line-height: 1.8rem;"><strong>SENARAI CAPAIAN</strong></th>
+            </tr>
+            <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+                <th rowspan="2">Bil</th>
+                <th rowspan="2">
+                    Kod
+                </th>
+                <th rowspan="2">
+                    Nama Modul
+                </th>
+                <th rowspan="2" class="text-center">
+                    Asal
+                </th>
+                <th colspan="2" class="text-center">
+                    Pilihan
+                </th>
+            </tr>
+            <tr style="line-height:0.8rem;" class="text-center">
+                <th width="5%">Ya</th>
+                <th width="2%">Tidak</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Claims.Count; i++)
+            {
+                bil++;
+                <tr>
+                    <td>@bil</td>
+                    <td class="kod">
+                        <input asp-for="@Model.Claims[i].ClaimType" hidden />
+                        @Model.Claims[i].ClaimType
+                    </td>
+                    <td class="nama">
+                        @Model.Claims[i].ClaimValue
+                    </td>
+                    @if (Model.Claims[i].IsSelected == true)
+                    {
+                        <td class="text-center">
+                            /
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td></td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>

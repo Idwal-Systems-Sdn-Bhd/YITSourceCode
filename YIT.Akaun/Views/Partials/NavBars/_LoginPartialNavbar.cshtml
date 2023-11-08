@@ -1,0 +1,28 @@
+﻿@{
+
+    var user = UserManager.GetUserAsync(User);
+    var namaUser = new ApplicationUser();
+    if (user.Result != null)
+    {
+        namaUser = _context.ApplicationUsers.FirstOrDefault(x => x.Email == user.Result.Email);
+
+    }
+
+}
+<div class="nav-item dropdown col-sm-6">
+    <button class="btn btn-block"><i class="fa fa-2x fa-bell"></i></button>
+    <div class=" dropdown-content" id="push-notification-list">
+        <a id="push-notification-none" class="btn dropdown-item nav-link" href="#" >Tiada pemberitahuan terbaru</a>
+    </div>
+
+</div>
+<div class="nav-item dropdown col-sm-6">
+    <button class="btn btn-block"><img src="~/img/svg/pengguna-pilihan.svg" class="fa fa-pull-left fa-0 svg-grey icon-bar"></button>
+    <div class=" dropdown-content">
+        <a class="btn dropdown-item nav-link" asp-area="" asp-controller="Account" asp-action="ChangePassword">Tukar Kata Laluan</a>
+        <form id="logOutForm" method="post" class="form-inline" asp-controller="Account" asp-action="LogOff">
+            <button type="submit" class="btn dropdown-item nav-link">Log Keluar</button>
+        </form>
+    </div>
+
+</div>

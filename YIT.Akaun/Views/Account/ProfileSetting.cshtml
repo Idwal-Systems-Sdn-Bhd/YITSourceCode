@@ -1,0 +1,38 @@
+﻿@model ApplicationUserViewModel
+
+@{
+    ViewData["Title"] = "Tetapan Profil";
+}
+<div class="container">
+    <div class="card">
+        <div class="card-header ">
+            <h6>@ViewData["Title"]</h6>
+        </div>
+        <div class="card-body box-shadow">
+            <form asp-action="ProfilSetting" method="post" class="needs-validation" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input asp-for="id" hidden/>
+                <input asp-for="Id" hidden />
+                <input asp-for="GambarSediaAda" hidden/>
+                <input asp-for="Nama" hidden/>
+                <div class="form-row mb-2 ">
+                    <div class="col-md-1">
+                        <label class="form-control-label" asp-for="Tandatangan"></label>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="input-group input-group-sm">
+                            <input type="file" asp-for="Gambar" placeholder="Sila pilih fail.." />
+                        </div>
+                        <span asp-validation-for="Gambar" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a asp-action="Index" asp-controller="Home" class="btn btn-warning" style="width:auto">Batal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>

@@ -1,0 +1,145 @@
+﻿@model DPekerja
+
+@{
+    ViewData["Title"] = "Anggota - Hapus";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var statusKahwin = "";
+}
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
+
+        <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
+        <div class="form-group">
+            <label asp-for="NoGaji" class="control-label"></label>
+            <input asp-for="NoGaji" class="form-control form-control-sm" required readonly />
+            <span asp-validation-for="NoGaji" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="NoKp" class="control-label"></label>
+                    <input asp-for="NoKp" class="form-control form-control-sm text-uppercase" readonly />
+                    <span asp-validation-for="NoKp" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Nama" class="control-label"></label>
+                    <input asp-for="Nama" class="form-control form-control-sm text-uppercase" readonly />
+                    <span asp-validation-for="Nama" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Alamat1" class="control-label"></label>
+            <input asp-for="Alamat1" class="form-control form-control-sm text-uppercase mb-2" readonly />
+            <input asp-for="Alamat2" class="form-control form-control-sm text-uppercase mb-2" readonly />
+            <input asp-for="Alamat3" class="form-control form-control-sm text-uppercase" readonly />
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Poskod" class="control-label"></label>
+                    <input asp-for="Poskod" class="form-control form-control-sm text-uppercase" readonly />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Bandar" class="control-label"></label>
+                    <input asp-for="Bandar" class="form-control form-control-sm text-uppercase" readonly />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="JNegeriId" class="control-label"></label>
+                    <input class="form-control form-control-sm text-uppercase" value="@Model.JNegeri?.Kod - @Model.JNegeri?.Perihal" readonly />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="JBankId" class="control-label"></label>
+                    <input class="form-control form-control-sm text-uppercase" value="@Model.JBank?.Kod - @Model.JBank?.Perihal" readonly />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="NoAkaunBank" class="control-label"></label>
+                    <input asp-for="NoAkaunBank" class="form-control form-control-sm text-uppercase" />
+                    <span asp-validation-for="NoAkaunBank" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="JCaraBayarId" class="control-label"></label>
+                    <input class="form-control form-control-sm text-uppercase" value="@Model.JCaraBayar?.Kod - @Model.JCaraBayar?.Perihal" readonly />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="TelefonBimbit" class="control-label"></label>
+                    <input asp-for="TelefonBimbit" class="form-control form-control-sm text-uppercase" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="TelefonRumah" class="control-label"></label>
+                    <input asp-for="TelefonRumah" class="form-control form-control-sm text-uppercase" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Emel" class="control-label"></label>
+                    <input asp-for="Emel" class="form-control form-control-sm" type="email" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            @switch (Model.EnStatusKahwin)
+            {
+                case EnStatusKahwin.Bujang:
+                    statusKahwin = "Bujang";
+                    break;
+                case EnStatusKahwin.Kahwin:
+                    statusKahwin = "Kahwin";
+                    break;
+                case EnStatusKahwin.Duda:
+                    statusKahwin = "Duda";
+                    break;
+                case EnStatusKahwin.Janda:
+                    statusKahwin = "Janda";
+                    break;
+            }
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="EnStatusKahwin" class="control-label"></label>
+                    <input asp-for="EnStatusKahwin" class="form-control form-control-sm text-uppercase" value="@statusKahwin" readonly />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="BilAnak" class="control-label"></label>
+                    <input asp-for="BilAnak" class="form-control form-control-sm" step="1" readonly />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="GajiPokok" class="control-label"></label>
+                    <input asp-for="GajiPokok" class="form-control form-control-sm" step="1" readonly />
+                </div>
+            </div>
+        </div>
+        <hr />
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input name="syscode" value="SPPB" hidden />
+            <input type="submit" value="Hapus" class="btn ac-danger btn-sm" />
+            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+        </form>
+    </div>
+</div>

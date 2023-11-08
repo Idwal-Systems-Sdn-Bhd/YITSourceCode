@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Capaian Dinafikan";
+
+}
+
+<div class="container">
+    <div class="card jumbotron center ac-light" style="">
+        <h1 class="text-danger ">Capaian Dinafikan</h1>
+        <h5 class="mb-3">Anda tidak dibenarkan untuk akses ke halaman ini. Sila klik untuk kembali ke halaman utama.</h5>
+        <div class="card-img-overlay text-right" style="overflow:hidden; opacity:20%;">
+            <a class="btn-block " asp-controller="Home" asp-action="Index">
+                <i class="fas fa-lock fa-10x" style="font-size:60vh;"></i>
+            </a>
+        </div>
+        <div class="card border-0">
+            <div class="card-body ac-info">
+                <h5 class="card-title">Capaian Anda Dinafikan?</h5>
+                <p class="card-text">Sila klik butang ini untuk cetakan borang permohonan capaian</p>
+                <div class="card-img-overlay text-right" style="overflow:hidden; opacity:20%;">
+                    <a class="btn-block" target="_blank" asp-action="PrintPermohonanCapaian">
+                        <i class="fas fa-print fa-10x"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+﻿@{
+    CompanyDetails company = new CompanyDetails();
+
+    Layout = "_Layout";
+    ViewData["CompanyFullName"] = company.NamaSyarikat;
+    ViewData["CompanyLogoPrintPDF"] = company.CompanyLogoPrintPDF;
+    ViewData["CompanyLogoWeb"] = company.CompanyLogoWeb;
+    ViewData["CompanyInitials"] = "SPMB";
+}

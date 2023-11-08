@@ -1,0 +1,117 @@
+﻿@model AkCarta
+
+@{
+    ViewData["Title"] = "Carta Akaun - Tambah";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleCreatePartial.cshtml" />
+
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="syscode" value="SPPB" hidden />
+            <div class="row mb-2">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Kod" class="control-label"></label>
+                        <input asp-for="Kod" class="form-control form-control-sm" required />
+                        <span asp-validation-for="Kod" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label asp-for="Perihal" class="control-label"></label>
+                        <input asp-for="Perihal" class="form-control form-control-sm text-uppercase" />
+                        <span asp-validation-for="Perihal" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+
+                <div class="form-group col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <label asp-for="DebitKredit" class="control-label"></label>
+                            <div class="custom-control custom-radio">
+                                <input asp-for="DebitKredit" type="radio" id="DebitKredit1" name="DebitKredit" class="custom-control-input" value="D" checked>
+                                <label class="custom-control-label" for="DebitKredit1">DEBIT</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input asp-for="DebitKredit" type="radio" id="DebitKredit2" name="DebitKredit" class="custom-control-input" value="K">
+                                <label class="custom-control-label" for="DebitKredit2">KREDIT</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <label asp-for="UmumDetail" class="control-label"></label>
+                            <div class="custom-control custom-radio">
+                                <input asp-for="UmumDetail" type="radio" id="UmumDetail1" name="UmumDetail" class="custom-control-input" value="U" checked>
+                                <label class="custom-control-label" for="UmumDetail1">UMUM</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input asp-for="UmumDetail" type="radio" id="UmumDetail2" name="UmumDetail" class="custom-control-input" value="D">
+                                <label class="custom-control-label" for="UmumDetail2">DETAIL</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <span asp-validation-for="UmumDetail" class="text-danger"></span>
+                </div>
+
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Catatan" class="control-label"></label>
+                <textarea asp-for="Catatan" class="form-control form-control-sm text-uppercase" rows="2"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="EnJenis" class="control-label"></label>
+                        <select asp-for="EnJenis" class="form-control form-control-sm text-uppercase" required>
+                            <option value="0">- SILA PILIH -</option>
+                            @foreach (var item in ViewBag.EnJenis)
+                            {
+                                <option value="@item.id">@item.perihal</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="EnParas" class="control-label"></label>
+                        <select asp-for="EnParas" class="form-control form-control-sm text-uppercase" required>
+                            <option value="0">- SILA PILIH -</option>
+                            @foreach (var item in ViewBag.EnParas)
+                            {
+                                <option value="@item.id">@item.perihal</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Baki" class="control-label"></label>
+                        <input asp-for="Baki" class="form-control form-control-sm text-uppercase" value="0" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Simpan" class="btn ac-primary btn-sm" />
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

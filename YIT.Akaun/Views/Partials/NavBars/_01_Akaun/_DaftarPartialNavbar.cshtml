@@ -1,0 +1,32 @@
+﻿<li class="nav-item">
+    <a class="nav-link collapsed text-truncate
+    @Html.ActiveClass("DPekerja")
+    @Html.ActiveClass("DDaftarAwam")
+    @Html.ActiveClass("DPenyemak")
+    @Html.ActiveClass("DPelulus")
+    " href="#submenuDaftar" data-toggle="collapse" data-target="#submenuDaftar"><img src="~/img/svg/daftar.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Daftar</span></a>
+    <div class="collapse" id="submenuDaftar" aria-expanded="false">
+        <ul class="flex-column ps-2 nav">
+            <li class="nav-item">
+                <a class="nav-link border-bottom py-1 ms-3
+                @Html.ActiveSideBarClass("DPekerja")
+                    " asp-controller="DPekerja" asp-action="Index"><span>Anggota</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom py-1 ms-3
+    @Html.ActiveSideBarClass("DDaftarAwam")
+        " asp-controller="DDaftarAwam" asp-action="Index"><span>Daftar Awam</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom py-1 ms-3
+    @Html.ActiveSideBarClass("DPenyemak")
+        " asp-controller="DPenyemak" asp-action="Index"><span>Penyemak</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom py-1 ms-3
+    @Html.ActiveSideBarClass("DPelulus")
+        " asp-controller="DPelulus" asp-action="Index"><span>Pelulus</span></a>
+            </li>
+        </ul>
+    </div>
+</li>

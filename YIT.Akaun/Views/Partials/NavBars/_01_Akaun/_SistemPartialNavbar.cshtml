@@ -1,0 +1,18 @@
+﻿
+<li class="nav-item">
+
+    <a class="nav-link collapsed text-truncate
+    @Html.ActiveClass("User")
+    @Html.ActiveClass("Roles")
+    @Html.ActiveClass("AppLog")
+    @Html.ActiveClass("SiAppInfo")"
+       href="#submenuSistem" data-toggle="collapse" data-target="#submenuSistem"><img src="~/img/svg/sistem.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Sistem</span></a>
+    <div class="collapse" id="submenuSistem" aria-expanded="false">
+        <ul class="flex-column ps-2 nav">
+            <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("User")" asp-controller="User" asp-action="Index"><span>Maklumat Pengguna</span></a></li>
+            <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("Roles")" asp-area="" asp-controller="Roles" asp-action="Index"><span>Maklumat Tahap Pengguna</span></a></li>
+            <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AppLog")" asp-area="" asp-controller="AppLog" asp-action="Index"><span>Log Transaksi Pengguna</span></a></li>
+            <li class="nav-item"><a class="nav-link py-1 ms-3 @Html.ActiveSideBarClass("SiAppInfo")" asp-area="" asp-controller="SiAppInfo" asp-action="Index"><span>Info Syarikat</span></a></li>
+        </ul>
+    </div>
+</li>

@@ -1,0 +1,23 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        $("body").on('change', "#NamaSyarikat", function () {
+            var namaSyarikat = $("#NamaSyarikat").val();
+            GetKodSyarikat(namaSyarikat);
+        });
+
+        function GetKodSyarikat(namaSyarikat) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetKodSyarikat", "DDaftarAwam")',
+                data: { namaSyarikat: namaSyarikat },
+                dataType: "json",
+                success: function (msg) {
+                    $("#KodSyarikat").val(msg.record);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+    });
+</script>

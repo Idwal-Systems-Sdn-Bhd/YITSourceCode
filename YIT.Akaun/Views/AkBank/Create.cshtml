@@ -1,0 +1,80 @@
+﻿@model AkBank
+
+@{
+    ViewData["Title"] = "Akaun Bank - Tambah";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleCreatePartial.cshtml" />
+
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="syscode" value="SPPB" hidden />
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Perihal" class="control-label"></label>
+                        <input asp-for="Perihal" class="form-control form-control-sm text-uppercase" required />
+                        <span asp-validation-for="Perihal" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="NoAkaun" class="control-label"></label>
+                        <input asp-for="NoAkaun" class="form-control form-control-sm text-uppercase" required />
+                        <span asp-validation-for="NoAkaun" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="JKWId" class="control-label"></label>
+                <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" required>
+                    <option value="0">- SILA PILIH -</option>
+                    @foreach (var item in ViewBag.JKW)
+                    {
+                        <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                    }
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="AkCartaId" class="control-label"></label>
+                        <select asp-for="AkCartaId" class="form-control form-control-sm text-uppercase" required>
+                            <option value="0">- SILA PILIH -</option>
+                            @foreach (var item in ViewBag.AkCarta)
+                            {
+                                <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="JBankId" class="control-label"></label>
+                        <select asp-for="JBankId" class="form-control form-control-sm text-uppercase" required>
+                            <option value="0">- SILA PILIH -</option>
+                            @foreach (var item in ViewBag.JBank)
+                            {
+                                <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Simpan" class="btn ac-primary btn-sm" />
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

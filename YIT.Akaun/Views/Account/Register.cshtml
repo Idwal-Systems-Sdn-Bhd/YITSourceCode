@@ -1,0 +1,131 @@
+﻿@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Daftar Pengguna";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    // onchange kod pembekal
+    $("body").on('change', "#ddlDPekerja", function () {
+        var kodPekerja = $("#ddlDPekerja").val();
+        JsonKodPekerja(kodPekerja);
+    });
+
+    function JsonKodPekerja(id) {
+        if (id != null) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("JsonGetEmailFromDPekerja", "Account")',
+                data: { data: id },
+                dataType: "json",
+                success: function (msg) {
+                    $("#Email").val(msg.record.emel);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+    }
+    //onchange Kod Pembekal end
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card box-shadow">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-8">
+                        <h5 class="text-uppercase text-success mb-0">Daftar Maklumat Pengguna</h5>
+                        <span class="ac-ref"><a asp-controller="User" asp-action="Index" class="text-secondary">Indeks</a> / Daftar</span>
+                    </div>
+                    <div class="col-4">
+                        <a asp-controller="User" asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+                    </div>
+    
+                </div>
+                <hr class="mt-2"/>
+                <form asp-controller="Account" asp-action="Register" method="post" role="form">
+                    
+
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="Email" class="col-md-5"></label>
+                        <div class="col-md-10">
+                            <input asp-for="Email" class="form-control form-control-sm" readonly />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DPekerjaId" class="control-label col-md-5"></label><span class="text-danger control-label"></span>
+                        <div class="col-md-10">
+                            <select class="form-control select2 form-control-sm" asp-for="DPekerjaId" required id="ddlDPekerja">
+                                <option value="0" selected disabled>-- Sila Pilih Anggota -- </option>
+                                @foreach (var s in ViewBag.DPekerja)
+                                {
+                                    <option value="@s.Id">@s.NoGaji - @s.Nama </option>
+                                }
+                            </select>
+                            <span asp-validation-for="DPekerjaId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" hidden>
+                        <label asp-for="Password" class="col-md-5"></label>
+                        <div class="col-md-10">
+                            <input asp-for="Password" class="form-control form-control-sm" value="Spmb1234#" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group" hidden>
+                        <label asp-for="ConfirmPassword" class="col-md-5"></label>
+                        <div class="col-md-10">
+                            <input asp-for="ConfirmPassword" class="form-control  form-control-sm" value="Spmb1234#" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group pb-2">
+                        <label asp-for="RoleSelected" class="col-md-5"></label>
+                        <div class="col-md-10">
+                            <select asp-for="RoleSelected" asp-items="@Model.RoleList" class="form-control form-control-sm">
+                                <option disabled selected>-- Pilih Peranan --</option>
+                            </select>
+                            <span asp-validation-for="RoleSelected" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group pb-2">
+                        <label asp-for="JBahagianList" class="col-md-5"></label>
+                        <div class="col-md-10">
+                            <select asp-for="SelectedJBahagianList" class="form-control form-control-sm select2" multiple="multiple">
+                                    @foreach (var s in ViewBag.JBahagian)
+                                    {
+                                        <option value="@s.Id">@s.Perihal </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="SelectedJBahagianList" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn ac-primary btn-sm ">Daftar</button>
+                            <a asp-controller="User" asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+                        </div>
+                            
+                    </div>
+                    <div class="form-group">
+                        <p class="col-md-12 text-info" style="font-size:14px"><span class="text-danger">Nota: </span>Katalaluan bagi pendaftaran pengguna kali pertama adalah: <strong>Spmb1234#</strong></p>
+                        
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

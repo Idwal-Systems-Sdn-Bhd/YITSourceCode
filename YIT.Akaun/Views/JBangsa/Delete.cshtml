@@ -1,0 +1,28 @@
+﻿@model JBangsa
+
+@{
+    ViewData["Title"] = "Bangsa - Hapus";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
+
+        <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Perihal)
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Perihal?.ToUpper()
+            </dd>
+        </dl>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input name="syscode" value="SPPB" hidden />
+            <input type="submit" value="Hapus" class="btn ac-danger btn-sm" />
+            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+        </form>
+    </div>
+</div>

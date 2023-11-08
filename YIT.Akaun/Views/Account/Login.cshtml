@@ -1,0 +1,55 @@
+﻿@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Log In";
+    Layout = "~/Views/Shared/Account/_LoginLayout.cshtml";
+}
+
+<div class="login-wrapper">
+    <form class="form fade-in" asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" role="form">
+        <img src="~/img/MainLogo_Syarikat.webp" alt="IMG" />
+        <h2>SPMB</h2>
+        <hr />
+        <h6>Log Masuk Pengguna</h6>
+        <div asp-validation-summary="All" class="text-danger mb-3 ml-4"></div>
+        <div class="input-group">
+            <input type="text" asp-for="Emel" required placeholder="Emel" />
+            <span class="focus-input100"></span>
+            <span class="symbol-input100">
+                <object data="~/img/svg/emel.svg" class="fa fa-pull-left fa-0 pr-2" height="18"></object>
+            </span>
+        </div>
+        <div class="input-group">
+            <input type="password" asp-for="Katalaluan" required placeholder="Katalaluan" />
+            <span class="focus-input100"></span>
+            <span class="symbol-input100">
+                <object data="~/img/svg/password.svg" class="fa fa-pull-left fa-0 pr-2" height="18"></object>
+            </span>
+        </div>
+        <input type="submit" value="Login" class="submit-btn" />
+        <div>
+            <label asp-for="IngatSaya">
+                <input asp-for="IngatSaya" class="custom-checkbox" />
+                @Html.DisplayNameFor(m => m.IngatSaya)
+            </label>
+        </div>
+
+        <a href="#forgot-pw" class="forgot-pw">Lupa Katalaluan?</a>
+    </form>
+    <div id="forgot-pw">
+        <form asp-controller="Account" asp-action="ForgotPassword" method="post" role="form" class="form fade-in">
+            <a href="#" class="close">&times;</a>
+            <h6>Lupa Katalaluan</h6>
+            <div asp-validation-summary="All" class="text-danger mb-3 ml-4"></div>
+            <div class="input-group">
+                <input type="email" asp-for="Emel" required placeholder="Sila masukkan emel anda" />
+                <span class="focus-input100"></span>
+                <span class="symbol-input100">
+                    <object data="~/img/svg/emel.svg" class="fa fa-pull-left fa-0 pr-2" height="18"></object>
+                </span>
+            </div>
+            <input type="submit" value="Hantar Emel" class="submit-btn" />
+        </form>
+
+    </div>
+</div>

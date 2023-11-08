@@ -1,0 +1,103 @@
+﻿@model AkCarta
+
+@{
+    ViewData["Title"] = "Carta Akaun - Papar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card box-shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-dark mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / Papar</span>
+            </div>
+            <div class="col-4">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Kod" class="control-label"></label>
+                    <input asp-for="Kod" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label asp-for="Perihal" class="control-label"></label>
+                    <input asp-for="Perihal" class="form-control form-control-sm text-uppercase" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="form-group col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <label asp-for="DebitKredit" class="control-label"></label>
+                        <div class="custom-control custom-radio">
+                            <input asp-for="DebitKredit" type="radio" id="DebitKredit1" name="DebitKredit" class="custom-control-input" value="D" disabled>
+                            <label class="custom-control-label" for="DebitKredit1">DEBIT</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input asp-for="DebitKredit" type="radio" id="DebitKredit2" name="DebitKredit" class="custom-control-input" value="K" disabled>
+                            <label class="custom-control-label" for="DebitKredit2">KREDIT</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <label asp-for="UmumDetail" class="control-label"></label>
+                        <div class="custom-control custom-radio">
+                            <input asp-for="UmumDetail" type="radio" id="UmumDetail1" name="UmumDetail" class="custom-control-input" value="U" disabled>
+                            <label class="custom-control-label" for="UmumDetail1">UMUM</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input asp-for="UmumDetail" type="radio" id="UmumDetail2" name="UmumDetail" class="custom-control-input" value="D" disabled>
+                            <label class="custom-control-label" for="UmumDetail2">DETAIL</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="form-group">
+            <label asp-for="Catatan" class="control-label"></label>
+            <textarea asp-for="Catatan" class="form-control form-control-sm text-uppercase" rows="2" readonly></textarea>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="EnJenis" class="control-label"></label>
+                    <input asp-for="EnJenis" class="form-control form-control-sm" readonly/>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="EnParas" class="control-label"></label>
+                    <input asp-for="EnParas" class="form-control form-control-sm" value="@Model.EnParas.GetDisplayName()" readonly/>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Baki" class="control-label"></label>
+                    <input asp-for="Baki" class="form-control form-control-sm text-uppercase" readonly />
+                </div>
+            </div>
+        </div>
+        <hr />
+
+        <div class="form-group">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn ac-primary btn-sm">Ubah</a>
+            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+        </div>
+
+    </div>
+</div>

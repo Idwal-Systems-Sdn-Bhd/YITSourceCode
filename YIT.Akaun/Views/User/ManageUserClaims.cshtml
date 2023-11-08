@@ -1,0 +1,160 @@
+﻿@model UserClaimsViewModel
+
+@{
+    ViewData["Title"] = "Maklumat Pengguna - Capaian";
+}
+<script type="text/javascript">
+    function check_uncheck_checkbox(isChecked) {
+        if (isChecked) {
+            $('input[class="form-check-label"]').each(function () {
+                this.checked = true;
+            });
+        } else {
+            $('input[class="form-check-label"]').each(function () {
+                this.checked = false;
+            });
+        }
+    }
+    $(document).ready(function () {
+        var table = $('.table').DataTable({
+            "paging": false,
+            rowReorder: true,
+            columnDefs: [
+                { orderable: true, className: 'reorder', targets: 1 },
+                { orderable: true, className: 'reorder', targets: 2 },
+                { orderable: false, targets: '_all' }
+            ],
+            "order": [[2, "asc"]],
+            "scrollY": "50vh",
+            "scrollCollapse": true,
+            //"paging": false,
+            dom: 'lrt'
+        });
+
+        table.on('order.dt search.dt', function () {
+            table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1;
+            });
+        }).draw();
+
+        $('#columnSearch').change(function () {
+            columnSearchVar = $(this).val();
+            // refresh table
+            $('#myInput').val('');
+            table.destroy();
+
+            table = $('.table').DataTable({
+                "paging": false,
+                rowReorder: true,
+                columnDefs: [
+                    { orderable: true, className: 'reorder', targets: 1 },
+                    { orderable: true, className: 'reorder', targets: 2 },
+                    { orderable: false, targets: '_all' }
+                ],
+                "order": [[2, "asc"]],
+                dom: 'lrt'
+            });
+            // refresh table end
+        });
+
+        table.on('order.dt search.dt', function () {
+            table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1;
+            });
+        }).draw();
+
+        $('#myInput').on('keyup', function () {
+            if (!columnSearchVar) {
+                table
+                    .search(this.value)
+                    .draw();
+            }
+            else {
+                table
+                    .columns(columnSearchVar)
+                    .search(this.value)
+                    .draw();
+            }
+        });
+
+        // Handle form submission event
+        $('#btn-submit').on('click', function (e) {
+            e.preventDefault();
+
+            var data = table.$('input[type="checkbox"]').serializeArray();
+
+        });
+    });
+
+
+</script>
+<div>
+    <div class="card box-shadow">
+        <div class="loading">
+            <img class="loading-image" src="~/img/loading.gif" alt="Loading..." />
+        </div>
+        <div class="card card-body border main-page" hidden>
+            <div class="row">
+                <div class="col-8">
+                    <h5 class="text-uppercase text-primary mb-0">Maklumat Pengguna - Capaian</h5>
+                    <span class="ac-ref"><a asp-controller="User" asp-action="Index" class="text-secondary">Indeks</a> / Capaian</span>
+                </div>
+                <div class="col-4">
+                    <a asp-controller="User" asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+                </div>
+
+            </div>
+            <hr class="mt-2" />
+            <form method="post">
+                <input asp-for="@Model.UserId" hidden />
+                <div id="divCheckAll" class="form-check">
+                    <input type="checkbox" name="checkall" id="checkall" onClick="check_uncheck_checkbox(this.checked);" />
+                    <label>Pilih / Batal Semua</label>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover text-nowrap table-sm nowrap compact" width="100%">
+                        <thead>
+                            <tr class="table-secondary">
+                                <th>Bil</th>
+                                <th class="kod">
+                                    Kod
+                                </th>
+                                <th class="nama">
+                                    Nama
+                                </th>
+                                <th>
+                                    Pilihan
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Claims.Count; i++)
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <input asp-for="@Model.Claims[i].ClaimType" hidden />
+                                        @Model.Claims[i].ClaimType
+                                    </td>
+                                    <td>
+                                        @Model.Claims[i].ClaimValue
+                                    </td>
+                                    <td class="action-button">
+                                        <input type="checkbox" class="form-check-label" asp-for="@Model.Claims[i].IsSelected" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <hr />
+                <div class="form-group">
+                    <button type="submit" class="btn ac-primary btn-sm">Simpan</button>
+                    <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+

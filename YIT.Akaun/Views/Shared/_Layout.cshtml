@@ -1,0 +1,238 @@
+﻿
+
+<!DOCTYPE html>
+<html lang="en" style="overflow-x:hidden;">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @ViewData["CompanyInitials"]</title>
+    <link href="~/lib/bootstrap5/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/lib/bootstrap5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+    <link href="~/lib/select2-bootstrap-theme/select2-bootstrap.css" rel="stylesheet" />
+
+
+    <link href="~/lib/animate.css/animate.min.css" rel="stylesheet" />
+
+    @* favicons *@
+    <link runat="server" rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link runat="server" rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link runat="server" rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link runat="server" rel="manifest" href="/site.webmanifest">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    @* favicons end *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/moment.js/moment.min.js"></script>
+    <script src="~/lib/moment.js/moment-with-locales.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.js"></script>
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <script src="~/lib/toastr.js/toastr.min.js"></script>
+    <script src="~/lib/Chart.js/chart.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.js" integrity="sha512-B+gr+zLWg81qxVwvtYwKrmjvQtZKD/GGFF7jD80OfzbqFw+NsbS5faEqpCO7Q7oRw1bYi0+WLJf54j8Vm7NADw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+
+
+<body class="ac-bg" style="overflow-x: hidden;">
+
+    @{
+        var navtype = "";
+        var texttype = "";
+
+
+        var jawatan = "SuperAdmin";
+
+        var user = UserManager.GetUserAsync(User);
+        var namaUser = new ApplicationUser();
+        if (user.Result != null)
+        {
+            namaUser = _context.ApplicationUsers.FirstOrDefault(x => x.Email == user.Result.Email);
+            var pekerja = _context.DPekerja.FirstOrDefault(x => x.Id == namaUser!.DPekerjaId);
+            if (pekerja != null)
+            {
+                jawatan = pekerja.Jawatan;
+            }
+        }
+
+
+        var bulan = YIT._DataAccess.Services.Math.DateTimeFormatter.BulanSingkatanBahasaMelayu(DateTime.Now.ToString("MM"));
+
+        var tarikh = DateTime.Now.ToString("dd") + " " + bulan + " " + DateTime.Now.ToString("yyyy");
+
+        var hari = DateTimeFormatter.HariBahasaMelayu(DateTime.Now.ToString("dddd"));
+
+    }
+    @if (User.IsInRole("Admin"))
+    {
+        navtype = "bg-dark navbar-dark";
+        texttype = "text-light";
+    }
+    else if (User.IsInRole("Supervisor"))
+    {
+        navtype = "bg-info navbar-dark";
+        texttype = "text-light";
+    }
+    else if (User.IsInRole("User"))
+    {
+        navtype = "bg-light navbar-light";
+    }
+    else
+    {
+        navtype = "l-bg-super navbar-dark";
+        texttype = "text-light";
+    }
+    <!-- horizontal navbar -->
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-toggleable-sm box-shadow">
+            <div class="container-fluid">
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+                    <img src="~/img/MainLogo_Syarikat.webp" alt="Logo syarikat" style="width: 40px; height: 40px; align-content: center; height: 100%;" class="border border-light rounded-circle" />
+                </a>
+                <h6 class=" mb-0 hidden-mobile">@ViewData["CompanyFullName"] (@ViewData["CompanyInitials"])</h6>
+                <h6 class=" mb-0 show-mobile">@ViewData["CompanyInitials"]</h6>
+
+                <div class=" d-inline">
+                    <div class="col-12 navbar-nav float-end">
+                        <partial name="~/Views/Partials/NavBars/_LoginPartialNavbar.cshtml" />
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- horizontal navbar end -->
+    <!-- Vertical navbar -->
+    <div class="vertical-nav l-bg-light card" id="sidebar">
+        <div class="py-4 px-3 @navtype card-header">
+            <div class="media d-flex align-items-center">
+
+                <img src="~/img/MainLogo_Syarikat.webp" alt="Logo syarikat" width="65" class="me-3 rounded-circle img-thumbnail shadow-sm">
+                <div class="media-body ms-2">
+                    <h6 class="@texttype">@namaUser?.Nama</h6>
+                    <p class="font-weight-light @texttype mb-0">@jawatan</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" style="overflow-y: scroll;">
+
+            @if (User.Identity!.IsAuthenticated)
+            {
+
+                @if (User.IsInRole("SuperAdmin"))
+                {
+                    <div class="form-group">
+                        <p class="text-gray fw-bold text-uppercase px-3 small pb-2 mb-0">Menu Utama</p>
+
+                        <ul class="nav flex-column l-bg-light mb-0">
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_SistemPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_JadualPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_DaftarPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_LejarPartialNavbar.cshtml" />
+
+                        </ul>
+                    </div>
+
+
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    <div class="form-group">
+                        <p class="text-gray fw-bold text-uppercase px-3 small pb-2 mb-0">Menu Utama</p>
+
+                        <ul class="nav flex-column l-bg-light mb-0">
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_SistemPartialNavbar.cshtml" />
+                        </ul>
+                    </div>
+
+                }
+                else if (User.IsInRole("Supervisor"))
+                {
+                    <div class="form-group">
+                        <p class="text-gray fw-bold text-uppercase px-3 small pb-2 mb-0">Menu Utama</p>
+
+                        <ul class="nav flex-column l-bg-light mb-0">
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_JadualPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_DaftarPartialNavbar.cshtml" />
+
+                        </ul>
+                    </div>
+                }
+                else
+                {
+
+                }
+
+            }
+
+        </div>
+
+    </div>
+    <!-- End vertical navbar -->
+    <!-- Page content holder -->
+    <div class="page-content p-3" id="content">
+        <!-- Toggle button -->
+
+        <div class="container-fluid">
+            <div class="d-inline">
+                <button id="sidebarCollapse" type="button" class="btn ac-tertiary shadow-sm mb-3 sticky-top">
+                    <i class="fa fa-bars pe-2"></i> Menu Utama
+                </button>
+            </div>
+            <div class="d-inline ps-2">
+                <button type="button" class="btn ac-light shadow-sm mb-3 sticky-top">
+                    <img src="~/img/svg/calendar.svg" class="fa fa-pull-left fa-0 pe-2 icon-bar" height="18">
+                    @hari, @tarikh <span id="ct6"></span>
+                </button>
+            </div>
+            <a id="timer"></a>
+
+            <main role="main" class="pb-3 main-page">
+                <partial name="_Notifications" />
+                <button class="ac-tertiary" onclick="topFunction()" id="myBtn" title="Go to top"><i class="fas fa-chevron-up"></i></button>
+                <input type="hidden" id="hfUsername" value="@namaUser" />
+                @RenderBody()
+            </main>
+        </div>
+
+    </div>
+
+    <!-- End demo content -->
+
+
+    <script>
+        //Get the button
+        var mybutton = document.getElementById("myBtn");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function () { scrollFunction() };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

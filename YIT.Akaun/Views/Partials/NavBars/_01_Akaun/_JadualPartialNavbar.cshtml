@@ -1,0 +1,90 @@
+﻿<li class="nav-item">
+    <a class="nav-link collapsed text-truncate
+    @Html.ActiveClass("JKW")
+    @Html.ActiveClass("JPTJ")
+    @Html.ActiveClass("JBahagian")
+    @Html.ActiveClass("JBank")
+    @Html.ActiveClass("JCaraBayar")
+    @Html.ActiveClass("JAgama")
+    @Html.ActiveClass("JBangsa")
+    @Html.ActiveClass("JNegeri")
+    " href="#submenuJadual" data-toggle="collapse" data-target="#submenuJadual"><img src="~/img/svg/jadual.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Jadual</span></a>
+    <div class="collapse" id="submenuJadual" aria-expanded="false">
+        <ul class="flex-column ps-2 nav">
+
+            <li class="nav-item">
+                <a class="nav-link border-bottom text-truncate collapsed py-1 ms-3
+                @Html.ActiveClass("JKW")
+                @Html.ActiveClass("JPTJ")
+                @Html.ActiveClass("JBahagian")
+                   " href="#submenuJadualsub1" data-toggle="collapse" data-target="#submenuJadualsub1"><span>Belanjawan</span></a>
+                <div class="collapse" id="submenuJadualsub1" aria-expanded="false">
+                    <ul class="flex-column nav ps-4">
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("JKW")" asp-area="" asp-controller="JKW" asp-action="Index">
+                                Kumpulan Wang
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("JPTJ")" asp-area="" asp-controller="JPTJ" asp-action="Index">
+                                PTJ
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link p-1 text-truncate ps-4 @Html.ActiveSideBarClass("JBahagian")" asp-area="" asp-controller="JBahagian" asp-action="Index">
+                                Bahagian
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link border-bottom text-truncate collapsed py-1 ms-3
+    @Html.ActiveClass("JBank")
+    @Html.ActiveClass("AkBank")
+    @Html.ActiveClass("JCaraBayar")" href="#submenuJadualsub2" data-toggle="collapse" data-target="#submenuJadualsub2"><span>Pembayaran / Penerimaan</span></a>
+                <div class="collapse" id="submenuJadualsub2" aria-expanded="false">
+                    <ul class="flex-column nav ps-4">
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("JBank")" asp-area="" asp-controller="JBank" asp-action="Index">
+                                Bank
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkBank")" asp-area="" asp-controller="AkBank" asp-action="Index">
+                                Akaun Bank
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link p-1 text-truncate ps-4 @Html.ActiveSideBarClass("JCaraBayar")" asp-area="" asp-controller="JCaraBayar" asp-action="Index">
+                                Cara Bayar
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom text-truncate collapsed py-1 ms-3
+    @Html.ActiveClass("JAgama")
+    @Html.ActiveClass("JBangsa")" href="#submenuJadualsub3" data-toggle="collapse" data-target="#submenuJadualsub3"><span>Pendaftaran</span></a>
+                <div class="collapse" id="submenuJadualsub3" aria-expanded="false">
+                    <ul class="flex-column nav ps-4">
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("JAgama")" asp-area="" asp-controller="JAgama" asp-action="Index">
+                                Agama
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link p-1 text-truncate ps-4 @Html.ActiveSideBarClass("JBangsa")" asp-area="" asp-controller="JBangsa" asp-action="Index">
+                                Bangsa
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </li>
+            <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("JNegeri")" asp-area="" asp-controller="JNegeri" asp-action="Index"><span>Negeri</span></a></li>
+        </ul>
+    </div>
+</li>

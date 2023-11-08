@@ -1,0 +1,32 @@
+﻿
+
+@if (TempData[SD.Success] != null)
+{
+    <script type="text/javascript">
+        toastr.success('@TempData[SD.Success]');
+        toastr.options.timeOut = 5000;
+    </script>
+}
+@if (TempData[SD.Error] != null)
+{
+    <script type="text/javascript">
+        toastr.error('@TempData[SD.Error]');
+        toastr.options.timeOut = 5000;
+    </script>
+}
+
+@if (TempData[SD.Warning] != null)
+{
+    <script type="text/javascript">
+        toastr.warning('@TempData[SD.Warning]');
+        toastr.options.timeOut = 5000;
+    </script>
+}
+
+@if (TempData[SD.Info] != null)
+{
+    <script type="text/javascript">
+        toastr.info('@TempData[SD.Info]');
+        toastr.options.timeOut = 5000;
+    </script>
+}

@@ -1,0 +1,38 @@
+﻿
+.topic tr {
+    line-height: 0.5rem;
+}
+
+.center {
+    padding: 70px 0;
+    border: 3px solid green;
+    text-align: center;
+}
+
+.notbold {
+    font-weight: normal
+}
+
+.max-lines {
+    display: block; /* or inline-block */
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    overflow: hidden;
+    max-height: 5.8em;
+}
+
+.breakhere {
+    page-break-after: always
+}
+
+thead {
+    display: table-header-group
+}
+
+tfoot {
+    display: table-row-group
+}
+
+tr {
+    page-break-inside: avoid
+}
