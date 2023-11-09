@@ -67,7 +67,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(JBahagian bahagian, string syscode)
         {
-            if (bahagian.Kod != null && KodBahagianExists(bahagian.Kod) == false)
+            if (bahagian.Perihal != null && PerihalBahagianExists(bahagian.Perihal) == false)
             {
                 if (ModelState.IsValid)
                 {
@@ -80,7 +80,7 @@ namespace YIT.Akaun.Controllers._01Jadual
                     bahagian.DPekerjaMasukId = pekerjaId;
 
                     _context.Add(bahagian);
-                    _appLog.Insert("Tambah", bahagian.Kod + " - " + bahagian.Perihal, bahagian.Kod, 0, 0, pekerjaId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Tambah", bahagian.Kod + " - " + bahagian.Perihal, bahagian.Kod ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya ditambah..!";
                     return RedirectToAction(nameof(Index));
@@ -245,9 +245,9 @@ namespace YIT.Akaun.Controllers._01Jadual
             return _unitOfWork.JBahagianRepo.IsExist(b => b.Id == id);
         }
 
-        private bool KodBahagianExists(string kod)
+        private bool PerihalBahagianExists(string perihal)
         {
-            return _unitOfWork.JBahagianRepo.IsExist(e => e.Kod == kod);
+            return _unitOfWork.JBahagianRepo.IsExist(e => e.Perihal == perihal);
         }
         public void PopulateDropdownList()
         {

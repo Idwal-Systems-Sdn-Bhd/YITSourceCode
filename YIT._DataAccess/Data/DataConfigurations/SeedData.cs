@@ -591,15 +591,104 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     new JPTJ
                     {
                         Kod = "01",
-                        Perihal = "CARUMAN KERAJAAN NEGERI",
+                        Perihal = "PENTADBIRAN (CARUMAN KERAJAAN NEGERI)",
                         JKWId = 1
                     },
                     new JPTJ
                     {
                         Kod = "02",
-                        Perihal = "JAKIM",
+                        Perihal = "TADIKA (CARUMAN KERAJAAN NEGERI)",
+                        JKWId = 1
+                    },
+                    new JPTJ
+                    {
+                        Kod = "03",
+                        Perihal = "PELABURAN (CARUMAN KERAJAAN NEGERI)",
+                        JKWId = 1
+                    }, new JPTJ
+                    {
+                        Kod = "04",
+                        Perihal = "KHIDMAT MASYARAKAT (CARUMAN KERAJAAN NEGERI)",
+                        JKWId = 1
+                    }, new JPTJ
+                    {
+                        Kod = "05",
+                        Perihal = "DAKWAH (CARUMAN KERAJAAN NEGERI)",
+                        JKWId = 1
+                    }, new JPTJ
+                    {
+                        Kod = "06",
+                        Perihal = "PENERBITAN (CARUMAN KERAJAAN NEGERI)",
+                        JKWId = 1
+                    }, new JPTJ
+                    {
+                        Kod = "07",
+                        Perihal = "INSPI/PDI (CARUMAN KERAJAAN NEGERI)",
+                        JKWId = 1
+                    }
+                    , new JPTJ
+                    {
+                        Kod = "08",
+                        Perihal = "SRAYIT (CARUMAN KERAJAAN NEGERI)",
+                        JKWId = 1
+                    },
+                    new JPTJ
+                    {
+                        Kod = "09",
+                        Perihal = "KAFA (CARUMAN KERAJAAN NEGERI)",
+                        JKWId = 1
+                    },
+                    new JPTJ
+                    {
+                        Kod = "01",
+                        Perihal = "PENTADBIRAN (JAKIM)",
                         JKWId = 2
-                    });
+                    },
+                    new JPTJ
+                    {
+                        Kod = "02",
+                        Perihal = "TADIKA (JAKIM)",
+                        JKWId = 2
+                    },
+                    new JPTJ
+                    {
+                        Kod = "03",
+                        Perihal = "PELABURAN (JAKIM)",
+                        JKWId = 2
+                    }, new JPTJ
+                    {
+                        Kod = "04",
+                        Perihal = "KHIDMAT MASYARAKAT (JAKIM)",
+                        JKWId = 2
+                    }, new JPTJ
+                    {
+                        Kod = "05",
+                        Perihal = "DAKWAH (JAKIM)",
+                        JKWId = 2
+                    }, new JPTJ
+                    {
+                        Kod = "06",
+                        Perihal = "PENERBITAN (JAKIM)",
+                        JKWId = 2
+                    }, new JPTJ
+                    {
+                        Kod = "07",
+                        Perihal = "INSPI/PDI (JAKIM)",
+                        JKWId = 2
+                    }
+                    , new JPTJ
+                    {
+                        Kod = "08",
+                        Perihal = "SRAYIT (JAKIM)",
+                        JKWId = 2
+                    },
+                    new JPTJ
+                    {
+                        Kod = "09",
+                        Perihal = "KAFA (JAKIM)",
+                        JKWId = 2
+                    }
+                    );
             }
 
             context.SaveChanges();
@@ -617,107 +706,107 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     new JBahagian
                     {
                         Kod = "01",
-                        Perihal = "PENTADBIRAN",
+                        Perihal = "PENTADBIRAN (CARUMAN KERAJAAN NEGERI)",
                         JPTJId = 1
                     },
                     new JBahagian
                     {
                         Kod = "02",
-                        Perihal = "TADIKA",
-                        JPTJId = 1
-                    }, 
+                        Perihal = "TADIKA (CARUMAN KERAJAAN NEGERI)",
+                        JPTJId = 2
+                    },
                     new JBahagian
                     {
                         Kod = "03",
-                        Perihal = "PELABURAN",
-                        JPTJId = 1
+                        Perihal = "PELABURAN (CARUMAN KERAJAAN NEGERI)",
+                        JPTJId = 3
                     }, new JBahagian
                     {
                         Kod = "04",
-                        Perihal = "KHIDMAT MASYARAKAT",
-                        JPTJId = 1
+                        Perihal = "KHIDMAT MASYARAKAT (CARUMAN KERAJAAN NEGERI)",
+                        JPTJId = 4
                     }, new JBahagian
                     {
                         Kod = "05",
-                        Perihal = "DAKWAH",
-                        JPTJId = 1
+                        Perihal = "DAKWAH (CARUMAN KERAJAAN NEGERI)",
+                        JPTJId = 5
                     }, new JBahagian
                     {
                         Kod = "06",
-                        Perihal = "PENERBITAN",
-                        JPTJId = 1
+                        Perihal = "PENERBITAN (CARUMAN KERAJAAN NEGERI)",
+                        JPTJId = 6
                     }, new JBahagian
                     {
                         Kod = "07",
-                        Perihal = "INSPI/PDI",
-                        JPTJId = 1
+                        Perihal = "INSPI/PDI (CARUMAN KERAJAAN NEGERI)",
+                        JPTJId = 7
                     }
                     , new JBahagian
                     {
                         Kod = "08",
-                        Perihal = "SRAYIT",
-                        JPTJId = 1
-                    }, 
+                        Perihal = "SRAYIT (CARUMAN KERAJAAN NEGERI)",
+                        JPTJId = 8
+                    },
                     new JBahagian
                     {
                         Kod = "09",
-                        Perihal = "KAFA",
-                        JPTJId = 1
+                        Perihal = "KAFA (CARUMAN KERAJAAN NEGERI)",
+                        JPTJId = 9
                     },
                     new JBahagian
                     {
                         Kod = "01",
-                        Perihal = "PENTADBIRAN",
-                        JPTJId = 2
+                        Perihal = "PENTADBIRAN (JAKIM)",
+                        JPTJId = 10
                     },
                     new JBahagian
                     {
                         Kod = "02",
-                        Perihal = "TADIKA",
-                        JPTJId = 2
+                        Perihal = "TADIKA (JAKIM)",
+                        JPTJId = 11
                     },
                     new JBahagian
                     {
                         Kod = "03",
-                        Perihal = "PELABURAN",
-                        JPTJId = 2
-                    }, 
+                        Perihal = "PELABURAN (JAKIM)",
+                        JPTJId = 12
+                    },
                     new JBahagian
                     {
                         Kod = "04",
-                        Perihal = "KHIDMAT MASYARAKAT",
-                        JPTJId = 2
-                    }, 
+                        Perihal = "KHIDMAT MASYARAKAT (JAKIM)",
+                        JPTJId = 13
+                    },
                     new JBahagian
                     {
                         Kod = "05",
-                        Perihal = "DAKWAH",
-                        JPTJId = 2
-                    }, 
+                        Perihal = "DAKWAH (JAKIM)",
+                        JPTJId = 14
+                    },
                     new JBahagian
                     {
                         Kod = "06",
-                        Perihal = "PENERBITAN",
-                        JPTJId = 2
-                    }, 
+                        Perihal = "PENERBITAN (JAKIM)",
+                        JPTJId = 15
+                    },
                     new JBahagian
                     {
                         Kod = "07",
-                        Perihal = "INSPI/PDI",
-                        JPTJId = 2
+                        Perihal = "INSPI/PDI (JAKIM)",
+                        JPTJId = 16
                     }
-                    , 
+                    ,
                     new JBahagian
                     {
                         Kod = "08",
-                        Perihal = "SRAYIT",
-                        JPTJId = 2
+                        Perihal = "SRAYIT (JAKIM)",
+                        JPTJId = 17
                     },
                     new JBahagian
                     {
                         Kod = "09",
-                        Perihal = "KAFA",
-                        JPTJId = 2
+                        Perihal = "KAFA (JAKIM)",
+                        JPTJId = 18
                     }
                     // ** Tambah di sini
                     );

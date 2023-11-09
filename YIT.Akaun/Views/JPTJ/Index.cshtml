@@ -42,7 +42,7 @@
                             <tr class="@tabletype text-uppercase">
                                 <td></td>
                                 <td>
-                                    @item.Kod
+                                    @BelanjawanFormatter.ConvertToPTJ(item.JKW?.Kod,item.Kod)
                                 </td>
                                 <td>
                                     @item.Perihal?.ToUpper()

@@ -67,7 +67,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(JPTJ ptj, string syscode)
         {
-            if (ptj.Kod != null && KodPTJExists(ptj.Kod) == false)
+            if (ptj.Kod != null && PerihalPTJExists(ptj.Kod) == false)
             {
                 if (ModelState.IsValid)
                 {
@@ -89,7 +89,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             }
             else
             {
-                TempData[SD.Error] = "Kod ini telah wujud..!";
+                TempData[SD.Error] = "Perihal ini telah wujud..!";
             }
 
             PopulateDropdownList();
@@ -245,9 +245,9 @@ namespace YIT.Akaun.Controllers._01Jadual
             return _unitOfWork.JPTJRepo.IsExist(b => b.Id == id);
         }
 
-        private bool KodPTJExists(string kod)
+        private bool PerihalPTJExists(string perihal)
         {
-            return _unitOfWork.JPTJRepo.IsExist(e => e.Kod == kod);
+            return _unitOfWork.JPTJRepo.IsExist(e => e.Perihal == perihal);
         }
         public void PopulateDropdownList()
         {

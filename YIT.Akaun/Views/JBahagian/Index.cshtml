@@ -45,7 +45,7 @@
                             <tr class="@tabletype text-uppercase">
                                 <td></td>
                                 <td>
-                                    @item.Kod
+                                    @BelanjawanFormatter.ConvertToBahagian(item.JPTJ?.JKW?.Kod, item.JPTJ?.Kod,item.Kod)
                                 </td>
                                 <td>
                                     @item.Perihal?.ToUpper()
