@@ -23,6 +23,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public JKW? JKW { get; set; }
         [DisplayName("Jenis Peruntukan")]
         public EnJenisPeruntukan EnJenisPeruntukan { get; set; }
+        [DisplayName("Jenis Pindahan")]
+        public int FlJenisPindahan { get; set; } // 0 = dalam bahagian; 1 = antara bahagian
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Jumlah { get; set; }
         public string? Sebab { get; set; }
