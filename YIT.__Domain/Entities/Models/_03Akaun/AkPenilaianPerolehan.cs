@@ -58,6 +58,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public DateTime? TarikhLulus { get; set; }
         [DisplayName("Status")]
         public EnStatusBorang EnStatusBorang { get; set; }
+        public string? Tindakan { get; set; }
         public ICollection<AkPenilaianPerolehanObjek>? AkPenilaianPerolehanObjek { get; set; }
         public ICollection<AkPenilaianPerolehanPerihal>? AkPenilaianPerolehanPerihal { get; set; }
 
