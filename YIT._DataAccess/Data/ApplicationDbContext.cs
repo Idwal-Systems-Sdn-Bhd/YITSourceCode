@@ -51,21 +51,30 @@ namespace YIT._DataAccess.Data
 
         //
 
-        // 04Penerimaan (PR)
+        // 04Penerimaan (TR)
         public DbSet<AkTerima> AkTerima { get; set; }
         public DbSet<AkTerimaCaraBayar> AkTerimaCaraBayar { get; set; }
         public DbSet<AkTerimaObjek> AkTerimaObjek { get; set; }
         //
 
-        // 05Tanggungan (TG)
+        // 05Perolehan (PR)
+        public DbSet<AkPenilaianPerolehan> AkPenilaianPerolehan { get; set; }
+        public DbSet<AkPenilaianPerolehanObjek> AkPenilaianPerolehanObjek { get; set; }
+        public DbSet<AkPenilaianPerolehanPerihal> AkPenilaianPerolehanPerihal { get; set; }
+        public DbSet<AkNotaMinta> AkNotaMinta { get; set; }
+        public DbSet<AkNotaMintaObjek> AkNotaMintaObjek { get; set; }
+        public DbSet<AkNotaMintaPerihal> AkNotaMintaPerihal { get; set; }
+        //
+
+        // 06Tanggungan (TG)
 
         //
 
-        // 06Pembayaran (PV)
+        // 07Pembayaran (PV)
 
         //
 
-        // 07Pelarasan (PT)
+        // 08Pelarasan (PT)
 
         //
 

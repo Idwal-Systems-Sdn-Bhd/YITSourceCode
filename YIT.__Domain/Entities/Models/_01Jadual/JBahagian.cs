@@ -25,5 +25,7 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public ICollection<AkAkaun>? AkAkaun { get; set; }
         public ICollection<AkTerimaObjek>? AkTerimaObjek { get; set; }
         public ICollection<AbWaranObjek>? AbWaranObjek { get; set; }
+        public ICollection<AkPenilaianPerolehanObjek>? AkPenilaianPerolehanObjek { get; set; }
+        public ICollection<AkNotaMintaObjek>? AkNotaMintaObjek { get; set; }
     }
 }
