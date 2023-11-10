@@ -13,11 +13,17 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public int Id { get; set; }
         [DisplayName("No Gaji")]
         public string? NoGaji { get; set; }
+        [DisplayName("Kod Pekerja")] 
+        public string? KodPekerja { get; set; }
         [Required(ErrorMessage = "No Kad Pengenalan diperlukan")]
         [DisplayName("No KP")]
         public string? NoKp { get; set; }
+        [DisplayName("No KP Lama")]
+        public string? NoKpLama { get; set; }
         [Required(ErrorMessage = "Nama diperlukan")]
         public string? Nama { get; set; }
+        [DisplayName("Tarikh lahir")]
+        public DateTime? TarikhLahir { get; set; }
         [DisplayName("Alamat")]
         [Required(ErrorMessage = "Alamat diperlukan")]
         public string? Alamat1 { get; set; }
@@ -37,34 +43,15 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [Required(ErrorMessage = "Emel diperlukan")]
         [EmailAddress(ErrorMessage = "Emel tidak sah"), MaxLength(100)]
         public string? Emel { get; set; }
-        [DefaultValue("0")]
-        [DisplayName("Status Perkahwinan")]
-        public EnStatusKahwin EnStatusKahwin { get; set; }
-        [DefaultValue("0")]
-        [DisplayName("Bilangan Anak")]
-        public int BilAnak { get; set; }
-        [DisplayName("Gaji Pokok RM")]
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal GajiPokok { get; set; }
         [DisplayName("Tarikh Masuk Kerja")]
         public DateTime TarikhMasukKerja { get; set; }
         [DisplayName("Tarikh Berhenti Kerja")]
         public DateTime? TarikhBerhentiKerja { get; set; }
-        [DisplayName("Tarikh Pencen")]
-        public DateTime? TarikhPencen { get; set; }
         [DisplayName("Nama Bank")]
         //[RegularExpression("[^0]+", ErrorMessage = "Sila pilih Bank")]
         [Required(ErrorMessage = "Bank diperlukan")]
         public int JBankId { get; set; }
-        [DisplayName("Agama")]
-        public int? JAgamaId { get; set; }
-        public JAgama? JAgama { get; set; }
-        [DisplayName("Bangsa")]
-        public int? JBangsaId { get; set; }
         public JBangsa? JBangsa { get; set; }
-        [DisplayName("Cara Bayar")]
-        public int? JCaraBayarId { get; set; }
-        public JCaraBayar? JCaraBayar { get; set; }
         [DisplayName("Jawatan")]
         public string? Jawatan { get; set; }
 
@@ -81,6 +68,18 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public JBank? JBank { get; set; }
         [DisplayName("Kod M2E")]
         public string? KodM2E { get; set; }
+        [DisplayName("No Cukai")]
+        public string? NoCukai { get; set; }
+        [DisplayName("No PERKESO")]
+        public string? NoPerkeso { get; set; }
+        [DisplayName("No KWAP")]
+        public string? NoKWAP { get; set; }
+        [DisplayName("No KWSP")]
+        public string? NoKWSP { get; set; }
+        [DisplayName("Bahagian")]
+        public int JBahagianId { get; set; }
+        public JBahagian? JBahagian { get; set; }
+        public EnJenisKadPengenalan MyProperty { get; set; }
 
         public ICollection<JCawangan>? JCawangan { get; set; }
     }

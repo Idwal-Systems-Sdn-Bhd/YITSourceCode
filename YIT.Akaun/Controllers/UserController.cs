@@ -307,7 +307,7 @@ namespace YIT.Akaun.Controller
         [HttpGet]
         public async Task<IActionResult> ManageUserClaims(string userId)
         {
-            IdentityUser user = await _userManager.FindByIdAsync(userId);
+            IdentityUser user = await _userManager.FindByIdAsync(userId) ?? new IdentityUser();
             if (user == null)
             {
                 return NotFound();
@@ -339,7 +339,7 @@ namespace YIT.Akaun.Controller
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ManageUserClaims(UserClaimsViewModel userClaimsViewModel)
         {
-            IdentityUser user = await _userManager.FindByIdAsync(userClaimsViewModel.UserId);
+            IdentityUser user = await _userManager.FindByIdAsync(userClaimsViewModel.UserId) ?? new IdentityUser();
             if (user == null)
             {
                 return NotFound();

@@ -484,7 +484,7 @@ namespace YIT.Akaun.Controller
 
         private string ProcessUploadedFile(ApplicationUserViewModel model)
         {
-            string uniqueFileName = null;
+            string uniqueFileName;
 
             string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "img\\signature");
             string str = Regex.Replace(model.Nama, "[^a-zA-Z0-9_]+", "");
@@ -538,7 +538,7 @@ namespace YIT.Akaun.Controller
         {
             if (_cache.Get<byte[]>(fileGuid) != null)
             {
-                byte[] data = _cache.Get<byte[]>(fileGuid);
+                byte[] data = _cache.Get<byte[]>(fileGuid)!;
                 _cache.Remove(fileGuid); //cleanup here as we don't need it in cache anymore
                 return File(data!, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
             }

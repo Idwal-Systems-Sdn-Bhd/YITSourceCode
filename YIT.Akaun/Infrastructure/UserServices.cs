@@ -54,7 +54,7 @@ namespace YIT.Akaun.Infrastructure
         public async Task Impersonate(string userId)
         {
 
-            ApplicationUser user = await _userManager.FindByIdAsync(userId) as ApplicationUser;
+            ApplicationUser user = await _userManager.FindByIdAsync(userId) as ApplicationUser ?? new ApplicationUser();
 
             if (user != null)
                 await _signInManager.SignInAsync(user, false);

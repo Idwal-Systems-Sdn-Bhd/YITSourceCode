@@ -607,7 +607,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             try
             {
-                AkTerimaObjek data = _cart.akTerimaObjek.FirstOrDefault(x =>x.JBahagianId == akTerimaObjek.JBahagianId && x.AkCartaId == akTerimaObjek.AkCartaId);
+                AkTerimaObjek data = _cart.akTerimaObjek.FirstOrDefault(x =>x.JBahagianId == akTerimaObjek.JBahagianId && x.AkCartaId == akTerimaObjek.AkCartaId) ?? new AkTerimaObjek();
 
                 return Json(new { result = "OK", record = data });
             }
@@ -750,7 +750,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             try
             {
-                AkTerimaCaraBayar data = _cart.akTerimaCaraBayar.FirstOrDefault(x => x.JCaraBayarId == akTerimaCaraBayar.JCaraBayarId);
+                AkTerimaCaraBayar data = _cart.akTerimaCaraBayar.FirstOrDefault(x => x.JCaraBayarId == akTerimaCaraBayar.JCaraBayarId) ?? new AkTerimaCaraBayar();
 
                 return Json(new { result = "OK", record = data });
             }
