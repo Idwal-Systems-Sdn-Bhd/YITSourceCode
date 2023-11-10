@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
 using YIT.__Domain.Entities.Models._00Sistem;
 using YIT.__Domain.Entities.Models._01Jadual;
-using YIT.__Domain.Entities.Models._03Akaun;
-using Microsoft.Data.SqlClient;
-using Microsoft.SqlServer.Management.Smo;
-using Microsoft.SqlServer.Management.Common;
 
 namespace YIT._DataAccess.Data.DataConfigurations
 {
