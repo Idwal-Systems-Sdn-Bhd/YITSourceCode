@@ -12,15 +12,17 @@ namespace YIT.__Domain.Entities._Enums
         DI = 2, // invois dikeluarkan
         ND = 3, // nota debit 
         NK = 4, // nota kredit 
-        NM = 5, // nota minta
-        PO = 6, // Pesanan tempatan
-        IK = 7, // Inden kerja
-        PX = 8, // Pelarasan Pesanan tempatan
-        IX = 9, // Pelarasan Inden Kerja
-        IN = 10, // Invois pembekal
-        SW = 11, // invois dikeluarkan (sewaan)
-        SP = 12, // invois dikeluarkan (pinjaman)
-        JU = 13, // pelarasan baucer jurnal
+        PM = 5, // Permohonan Perolehan // PM/2023/00001
+        PN = 6, // Penilaian Perolehan // PN/2023/00001
+        NM = 7, // nota minta // NM/2023/00001
+        PO = 8, // Pesanan tempatan
+        IK = 9, // Inden kerja
+        PX = 10, // Pelarasan Pesanan tempatan
+        IX = 11, // Pelarasan Inden Kerja
+        IN = 12, // Invois pembekal
+        SW = 13, // invois dikeluarkan (sewaan)
+        SP = 14, // invois dikeluarkan (pinjaman)
+        JU = 15, // pelarasan baucer jurnal
         
     }
 }

@@ -79,6 +79,8 @@ namespace YIT.__Domain.Entities.Models._02Daftar
 
         [DisplayName("Nama Bank")]
         public JBank? JBank { get; set; }
+        [DisplayName("Kod M2E")]
+        public string? KodM2E { get; set; }
 
         public ICollection<JCawangan>? JCawangan { get; set; }
     }

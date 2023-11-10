@@ -43,7 +43,6 @@ namespace YIT.__Domain.Entities._Statics
         //
 
         // Daftar 
-
         public const string kodDPekerja = "DF0001";
         public const string namaDPekerja = "Daftar Anggota";
 
@@ -63,23 +62,41 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodAkAkaun = "AK0003";
         public const string namaAkAkaun = "Akaun Bank Utama";
 
-        public const string kodAkTerima = "AK0004";
-        public const string namaAkTerima = "Akaun Resit Rasmi";
-
-        public const string kodAbBukuVot = "AK0005";
+        public const string kodAbBukuVot = "AK0004";
         public const string namaAbBukuVot = "Belanjawan Buku Vot";
 
-        public const string kodAbWaran = "AK0006";
+        public const string kodAbWaran = "AK0005";
         public const string namaAbWaran = "Belanjawan Waran";
-        // Tanggungan
 
+        public const string kodAkPenilaianPerolehan = "AK0006";
+        public const string namaAkPenilaianPerolehan = "Perolehan Penilaian Perolehan";
 
+        public const string kodAkNotaMinta = "AK0007";
+        public const string namaAkNotaMinta = "Perolehan Nota Minta";
+
+        public const string kodAkTerima = "AK0008";
+        public const string namaAkTerima = "Terimaan Resit Rasmi";
         //
 
-        // Pelarasan
+        // Pemprosesan
+        public const string kodSahAkPenilaianPerolehan = "PP0001";
+        public const string namaSahAkPenilaianPerolehan = "Pemprosesan Sah Penilaian Perolehan";
 
+        public const string kodSemakAkPenilaianPerolehan = "PP0002";
+        public const string namaSemakAkPenilaianPerolehan = "Pemprosesan Semak Penilaian Perolehan";
+
+        public const string kodLulusAkPenilaianPerolehan = "PP0003";
+        public const string namaLulusAkPenilaianPerolehan = "Pemprosesan Lulus Penilaian Perolehan";
+
+        public const string kodSahAkNotaMinta = "PP0004";
+        public const string namaSahAkNotaMinta = "Pemprosesan Sah Nota Minta";
+
+        public const string kodSemakAkNotaMinta = "PP0005";
+        public const string namaSemakAkNotaMinta = "Pemprosesan Semak Nota Minta";
+
+        public const string kodLulusAkNotaMinta = "PP0006";
+        public const string namaLulusAkNotaMinta = "Pemprosesan Lulus Nota Minta";
         //
-
         // Laporan
         public const string kodLTerimaan = "LP0001";
         public const string namaLTerimaan = "Laporan Daftar Resit";
