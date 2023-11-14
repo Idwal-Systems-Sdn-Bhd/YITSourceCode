@@ -46,7 +46,7 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodDPekerja = "DF0001";
         public const string namaDPekerja = "Daftar Anggota";
 
-        public const string kodDPDaftarAwam = "DF0002";
+        public const string kodDDaftarAwam = "DF0002";
         public const string namaDDaftarAwam = "Daftar Awam";
 
         public const string kodDKonfigKelulusan = "DF0003";

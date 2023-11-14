@@ -255,7 +255,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         public string GenerateRunningNumber()
         {
             var maxRefNo = _unitOfWork.DPekerjaRepo.GetMaxRefNo();
-            return RunningNumberFormatter.GenerateRunningNumber("", maxRefNo, 0);
+            return RunningNumberFormatter.GenerateRunningNumber("", maxRefNo, "00000");
         }
 
         public void PopulateDropdownList()
@@ -265,6 +265,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             ViewBag.JBangsa = _unitOfWork.JBangsaRepo.GetAll();
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
             ViewBag.JNegeri = _unitOfWork.JNegeriRepo.GetAll();
+            ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAllDetails();
             var statusKahwin = EnumHelper<EnStatusKahwin>.GetList();
 
             ViewBag.EnStatusKahwin = statusKahwin;

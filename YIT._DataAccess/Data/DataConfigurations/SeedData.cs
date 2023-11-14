@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
 using YIT.__Domain.Entities.Models._00Sistem;
 using YIT.__Domain.Entities.Models._01Jadual;
+using YIT.__Domain.Entities.Models._02Daftar;
 
 namespace YIT._DataAccess.Data.DataConfigurations
 {
@@ -368,169 +370,169 @@ namespace YIT._DataAccess.Data.DataConfigurations
                       },
                       new JBank
                       {
-                          Kod = "04",
+                          Kod = "07",
                           Perihal = "ALLIANCEK",
                           KodBNMEFT = "MFBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "07",
+                          Kod = "08",
                           Perihal = "AMBANK ISLAMIC",
                           KodBNMEFT = "MFBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "08",
+                          Kod = "09",
                           Perihal = "BANK ISLAM",
                           KodBNMEFT = "BIMBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "09",
+                          Kod = "10",
                           Perihal = "BANK MUAMALAT",
                           KodBNMEFT = "BMMBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "10",
+                          Kod = "11",
                           Perihal = "BANK RAKYAT",
                           KodBNMEFT = "BKRMMYKL"
                       },
                       new JBank
                       {
-                          Kod = "11",
+                          Kod = "12",
                           Perihal = "BANK SIMPANAN NASIONAL",
                           KodBNMEFT = "BSNAMYK1"
                       },
                       new JBank
                       {
-                          Kod = "12",
+                          Kod = "13",
                           Perihal = "BANK SIMPANAN NASIONAL - SPI",
                           KodBNMEFT = "BSNAMYK1"
                       },
                       new JBank
                       {
-                          Kod = "13",
+                          Kod = "14",
                           Perihal = "BANK PERTANIAN MALAYSIA",
                           KodBNMEFT = "AGOBMYK1"
                       },
                       new JBank
                       {
-                          Kod = "14",
+                          Kod = "15",
                           Perihal = "CIMB (BCB)",
                           KodBNMEFT = "CIBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "15",
+                          Kod = "16",
                           Perihal = "CIMB ISLAMIC",
                           KodBNMEFT = "CIBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "16",
+                          Kod = "17",
                           Perihal = "CIMB (SOUTHERN)",
                           KodBNMEFT = "CIBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "17",
+                          Kod = "18",
                           Perihal = "EON BANK BHD",
                           KodBNMEFT = "HLBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "18",
+                          Kod = "19",
                           Perihal = "EONCAP ISLAMIC BANK",
                           KodBNMEFT = "HLBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "19",
+                          Kod = "20",
                           Perihal = "HONG LEONG",
                           KodBNMEFT = "HLBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "20",
+                          Kod = "21",
                           Perihal = "HONG LEONG ISLAMIC BANK",
                           KodBNMEFT = "HLBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "21",
+                          Kod = "22",
                           Perihal = "HSBC AMANAH",
                           KodBNMEFT = "HBMBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "22",
+                          Kod = "23",
                           Perihal = "HSBC - ISLAMIC",
                           KodBNMEFT = "HBMBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "23",
+                          Kod = "24",
                           Perihal = "HSBC",
                           KodBNMEFT = "HBMBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "24",
+                          Kod = "25",
                           Perihal = "MAYBANK",
                           KodBNMEFT = "MBBEMYKL"
                       },
                       new JBank
                       {
-                          Kod = "25",
+                          Kod = "26",
                           Perihal = "MAYBANK ISLAMIC",
                           KodBNMEFT = "MBBEMYKL"
                       },
                       new JBank
                       {
-                          Kod = "26",
+                          Kod = "27",
                           Perihal = "OCBC BANK BHD",
                           KodBNMEFT = "OCBCMYKL"
                       },
                       new JBank
                       {
-                          Kod = "27",
+                          Kod = "28",
                           Perihal = "OCBC AL AMIN BANK",
                           KodBNMEFT = "OCBCMYKL"
                       },
                       new JBank
                       {
-                          Kod = "28",
+                          Kod = "29",
                           Perihal = "PUBLIC BANK BERHAD",
                           KodBNMEFT = "PBBEMYKL"
                       },
                       new JBank
                       {
-                          Kod = "29",
+                          Kod = "30",
                           Perihal = "PUBLIC ISLAMIC BANK BERHAD",
                           KodBNMEFT = "PBBEMYKL"
                       },
                       new JBank
                       {
-                          Kod = "30",
+                          Kod = "31",
                           Perihal = "RHB BANK BERHAD",
                           KodBNMEFT = "RHBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "31",
+                          Kod = "32",
                           Perihal = "RHB ISLAMIC BANK",
                           KodBNMEFT = "RHBBMYKL"
                       },
                       new JBank
                       {
-                          Kod = "32",
+                          Kod = "33",
                           Perihal = "STANDARD CHARTERED",
                           KodBNMEFT = "SCBLMYKX"
                       },
                       new JBank
                       {
-                          Kod = "33",
+                          Kod = "34",
                           Perihal = "UNITED OVERSEAS BANK",
                           KodBNMEFT = "UOVBMYKL"
                       }
@@ -868,6 +870,50 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     );
             }
 
+            if (context.DDaftarAwam.Any())
+            {
+
+            } else
+            {
+                context.DDaftarAwam.AddRange(
+                    new DDaftarAwam
+                    {
+                        Kod = "I0001",
+                        Nama = "IDWAL SYSTEMS SDN BHD",
+                        JNegeriId = 10,
+                        JBankId = 9,
+                        NoPendaftaran = "187842-T",
+                        NoKPLama = "",
+                        Alamat1 = "Lot 605G, Kompleks Diamond",
+                        Alamat2 = "Bangi Business Park",
+                        Alamat3 = "Jalan Medan Bangi, Off Persiaran Bandar",
+                        Poskod = "43650",
+                        Bandar = "Bandar Baru Bangi",
+                        Telefon1 = "03-89663520",
+                        Telefon2 = "",
+                        Telefon3 = "",
+                        Handphone = "",
+                        Emel = "far@idwal.com.my",
+                        NoAkaunBank = "1234567890",
+                        EnKategoriAhli = EnKategoriAhli.Tiada,
+                        EnKategoriDaftarAwam = EnKategoriDaftarAwam.Pembekal,
+                        Faks = "03-89663520",
+                        IsBekalan = false,
+                        IsPerkhidmatan = true,
+                        IsKerja = false,
+                        JangkaMasaDari = null,
+                        JangkaMasaHingga = null,
+                        KodM2E = "PI0001",
+                        DPekerjaMasukId = null,
+                        UserId = "superadmin@idwal.com.my",
+                        TarMasuk = DateTime.Now,
+                        DPekerjaKemaskiniId = null,
+                        TarKemaskini = null,
+                        FlHapus = 0,
+                        TarHapus = null,
+                        SebabHapus = ""
+                    });
+            }
             context.SaveChanges();
             // -- Second Layer Insert END
 

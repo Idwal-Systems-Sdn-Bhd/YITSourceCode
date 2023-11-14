@@ -12,32 +12,38 @@ using YIT.__Domain.Entities.Models._02Daftar;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
-    public class AkPenilaianPerolehan : GenericFields
+    public class AkPenilaianPerolehan : GenericTransactionFields
     {
         public int Id { get; set; }
         [DisplayName("No Rujukan")]
         public string? NoRujukan { get; set; }
+        [DisplayName("Tahun Belanjawan")]
         public string? Tahun { get; set; }
         [DisplayName("No Sebutharga")]
         public string? NoSebutHarga { get; set; }
+        [DisplayName("Tarikh Mohon")]
         public DateTime Tarikh { get; set; }
+        [DisplayName("Tarikh Diperlukan")]
+        public DateTime TarikhPerlu { get; set; }
         [DisplayName("Kaedah Perolehan")]
         public EnKaedahPerolehan EnKaedahPerolehan { get; set; }
-        [DisplayName("Harga Tawaran")]
+        [DisplayName("Harga Tawaran RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal HargaTawaran { get; set; }
+        [DisplayName("Jumlah RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Jumlah { get; set; }
+        [DisplayName("Justifikasi Pembelian")]
         public string? Sebab { get; set; }
         [DisplayName("Bil Sebutharga")]
-        public int BilSebutharga { get; set; }
+        public int? BilSebutharga { get; set; }
         [DisplayName("Mak. Sebutharga")]
         public string? MaklumatSebutHarga { get; set; }
         [DisplayName("Kump. Wang")]
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         [DisplayName("Pemohon")]
-        public int DPemohonId { get; set; }
+        public int? DPemohonId { get; set; }
         public string? Jawatan { get; set; }
         public DPekerja? DPemohon { get; set; }
         [DisplayName("Cadangan Pembekal")]
@@ -59,6 +65,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("Status")]
         public EnStatusBorang EnStatusBorang { get; set; }
         public string? Tindakan { get; set; }
+
         public ICollection<AkPenilaianPerolehanObjek>? AkPenilaianPerolehanObjek { get; set; }
         public ICollection<AkPenilaianPerolehanPerihal>? AkPenilaianPerolehanPerihal { get; set; }
 

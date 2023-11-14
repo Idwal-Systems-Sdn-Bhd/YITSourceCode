@@ -21,6 +21,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddTransient<_IUnitOfWork, _UnitOfWork>();
 
             services.AddScoped(ss => SessionCartAkTerima.GetCart(ss));
+            services.AddScoped(ss => SessionCartAkPenilaianPerolehan.GetCart(ss));
 
             return services;
         }

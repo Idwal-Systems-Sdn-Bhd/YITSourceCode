@@ -67,7 +67,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             if (max != null)
             {
 
-                var refNo = max.FirstOrDefault()?.Kod?.Substring(1,5);
+                var refNo = max.FirstOrDefault()?.Kod?.Substring(1,4);
                 return refNo ?? "";
             }
             else

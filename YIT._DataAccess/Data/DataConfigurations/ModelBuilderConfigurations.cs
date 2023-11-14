@@ -161,6 +161,12 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .HasForeignKey(m => m.JBahagianId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
+            modelBuilder.Entity<AkPenilaianPerolehanPerihal>()
+                    .HasOne(m => m.AkPenilaianPerolehan)
+                    .WithMany(t => t.AkPenilaianPerolehanPerihal)
+                    .HasForeignKey(m => m.AkPenilaianPerolehanId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
             modelBuilder.Entity<AkNotaMintaObjek>()
                     .HasOne(m => m.AkNotaMinta)
                     .WithMany(t => t.AkNotaMintaObjek)

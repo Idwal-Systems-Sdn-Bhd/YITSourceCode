@@ -12,15 +12,20 @@ using YIT.__Domain.Entities.Models._02Daftar;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
-    public class AkNotaMinta : GenericFields
+    public class AkNotaMinta : GenericTransactionFields
     {
         public int Id { get; set; }
         [DisplayName("No Rujukan")]
         public string? NoRujukan { get; set; }
+        [DisplayName("Tahun Belanjawan")]
         public string? Tahun { get; set; }
+        [DisplayName("Tarikh Mohon")]
         public DateTime Tarikh { get; set; }
+        [DisplayName("Tarikh Diperlukan")]
+        public DateTime TarikhPerlu { get; set; }
         [DisplayName("Kaedah Perolehan")]
         public EnKaedahPerolehan EnKaedahPerolehan { get; set; }
+        [DisplayName("Jumlah RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Jumlah { get; set; }
         public string? Sebab { get; set; }
@@ -28,7 +33,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         [DisplayName("Pemohon")]
-        public int DPemohonId { get; set; }
+        public int? DPemohonId { get; set; }
         public string? Jawatan { get; set; }
         public DPekerja? DPemohon { get; set; }
         [DisplayName("Cadangan Pembekal")]

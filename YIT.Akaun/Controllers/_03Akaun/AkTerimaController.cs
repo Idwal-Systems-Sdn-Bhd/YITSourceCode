@@ -21,13 +21,12 @@ namespace YIT.Akaun.Controllers._03Akaun
     [Authorize]
     public class AkTerimaController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "AK004";
-        public const string namamodul = "Resit Rasmi";
+        public const string modul = Modules.kodAkTerima;
+        public const string namamodul = Modules.namaAkTerima;
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly _AppLogIRepository<AppLog, int> _appLog;
-        private readonly IAkAkaunRepository<AkAkaun> _akAkaunRepository;
         private readonly UserServices _userServices;
         private readonly CartAkTerima _cart;
 
@@ -36,7 +35,6 @@ namespace YIT.Akaun.Controllers._03Akaun
             _IUnitOfWork unitOfWork,
             UserManager<IdentityUser> userManager,
             _AppLogIRepository<AppLog, int> appLog,
-            IAkAkaunRepository<AkAkaun> akAkaunRepository,
             UserServices userServices,
             CartAkTerima cart
             )
@@ -45,7 +43,6 @@ namespace YIT.Akaun.Controllers._03Akaun
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _appLog = appLog;
-            _akAkaunRepository = akAkaunRepository;
             _userServices = userServices;
             _cart = cart;
         }

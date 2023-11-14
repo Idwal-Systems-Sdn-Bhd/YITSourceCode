@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Resit Rasmi - Tambah";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    decimal jumlahUrusniaga = 0;
+    decimal jumlahCaraBayar = 0;
 }
 <partial name="_JSCreate" />
 <div class="card box-shadow">
@@ -241,7 +241,7 @@
                                     foreach (var item in ViewBag.akTerimaCaraBayar)
                                     {
                                         <tr>
-                                            <td>@item.JCaraBayarId</td>
+                                            <td hidden>@item.JCaraBayarId</td>
                                             <td class="text-uppercase">@item.JCaraBayar?.Kod - @item.JCaraBayar?.Perihal</td>
                                             <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
                                             <td>@item.NoCekMK</td>
@@ -251,13 +251,13 @@
                                             <td class="text-uppercase">@item.NoSlip</td>
                                             <td>@item.TarikhSlip?.ToString("dd/MM/yyyy")</td>
                                             <td>
-                                                <button class="btn ac-primary btn-sm" type="button" data-toggle="modal" data-target="#moObjek" onclick="UpdateObjek(this)"><i class="fa fa-edit"></i></button>
+                                                <button class="btn ac-primary btn-sm" type="button" data-toggle="modal" data-target="#moCaraBayar" onclick="UpdateCaraBayar(this)"><i class="fa fa-edit"></i></button>
                                             </td>
                                             <td>
-                                                <button class="btn ac-danger btn-sm" type="button" onclick="RemoveObjek(this)"><i class="fas fa-trash"></i></button>
+                                                <button class="btn ac-danger btn-sm" type="button" onclick="RemoveCaraBayar(this)"><i class="fas fa-trash"></i></button>
                                             </td>
                                         </tr>
-                                        jumlahUrusniaga += item.Amaun;
+                                        jumlahCaraBayar += item.Amaun;
                                     }
                                 }
                             </tbody>

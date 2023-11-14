@@ -10,7 +10,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
     public class AkPenilaianPerolehanPerihal
     {
         public int Id { get; set; }
-        public int AkPenilainPerolehanId { get; set; }
+        public int AkPenilaianPerolehanId { get; set; }
         public AkPenilaianPerolehan? AkPenilaianPerolehan { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Bil { get; set; }
