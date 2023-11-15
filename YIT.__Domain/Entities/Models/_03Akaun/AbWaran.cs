@@ -19,6 +19,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("No Rujukan")]
         public string? NoRujukan { get; set; }
         public DateTime Tarikh { get; set; }
+        [DisplayName("Kumpulan Wang")]
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         [DisplayName("Jenis Peruntukan")]

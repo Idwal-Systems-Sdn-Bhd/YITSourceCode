@@ -9,6 +9,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
 {
     public interface IJKWRepository : _IGenericRepository<JKW>
     {
-        
+        public List<JKW> GetAllDetails();
     }
 }

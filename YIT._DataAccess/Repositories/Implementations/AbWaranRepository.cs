@@ -27,7 +27,11 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(a => a.DPengesah)
                 .Include(a => a.DPenyemak)
                 .Include(a => a.DPelulus)
-                .Include(a => a.AbWaranObjek)
+                .Include(a => a.AbWaranObjek)!
+                .ThenInclude(to => to.AkCarta)
+                .Include(a => a.AbWaranObjek)!
+                .ThenInclude(a => a.JBahagian)
+                .Include(a => a.JKW)
                 .ToList();
         }
 
@@ -38,7 +42,11 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(a => a.DPengesah)
                 .Include(a => a.DPenyemak)
                 .Include(a => a.DPelulus)
-                .Include(a => a.AbWaranObjek)
+                .Include(a => a.AbWaranObjek)!
+                .ThenInclude(to => to.AkCarta)
+                .Include(a => a.AbWaranObjek)!
+                .ThenInclude(a => a.JBahagian)
+                .Include(a => a.JKW)
                 .Where(a => a.Id == id).FirstOrDefault() ?? new AbWaran();
         }
 

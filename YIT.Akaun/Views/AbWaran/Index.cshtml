@@ -23,15 +23,27 @@
                     <thead class="table-secondary">
                         <tr>
                             <th width="5%">Bil</th>
-                            <th class="kod" width="5%">
-                                @Html.DisplayNameFor(model => model.Tahun)
-                            </th>
                             <th class="NoRujukan">
                                 @Html.DisplayNameFor(model => model.NoRujukan)
                             </th>
-                            <th class="EnJEnisPeruntukan">
+                            <th class="Tarikh" width="5%">
+                                @Html.DisplayNameFor(model => model.Tarikh)
+                            </th>
+                            <th class="Tahun" width="5%">
+                                @Html.DisplayNameFor(model => model.Tahun)
+                            </th>
+                            <th class="EnJenisPeruntukan">
                                 @Html.DisplayNameFor(model => model.EnJenisPeruntukan)
                             </th>
+                            <th class="JKWId">
+                                @Html.DisplayNameFor(model => model.JKWId)
+                            </th>
+                            <th class="Jumlah">
+                                @Html.DisplayNameFor(model => model.Jumlah)
+                            </th>
+                            <th class="Status">
+                                @Html.DisplayNameFor(model => model.EnStatusBorang)
+                            </th> 
                             <th width="5%"></th>
                         </tr>
                     </thead>
@@ -42,13 +54,25 @@
                             <tr class="@tabletype text-uppercase">
                                 <td></td>
                                 <td>
-                                    @item.Tahun
-                                </td>
-                                <td>
                                     @item.NoRujukan
                                 </td>
                                 <td>
+                                    @item.Tarikh.ToString("dd/MM/yyyy")
+                                </td>
+                                <td>
+                                    @item.Tahun
+                                </td>
+                                <td>
                                     @item.EnJenisPeruntukan.GetDisplayName()
+                                </td>
+                                <td>
+                                    @BelanjawanFormatter.ConvertToKW(item.JKW?.Kod) - @item.JKW?.Perihal
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @item.EnStatusBorang
                                 </td>
                                 <td width="5%" class="text-center">
                                     <div class="btn-group" role="group" aria-label="action">
