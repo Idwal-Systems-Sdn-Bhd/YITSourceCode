@@ -1,0 +1,211 @@
+﻿@model AkPenilaianPerolehan
+
+@{
+    ViewData["Title"] = "Penilaian Perolehan - Hapus";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    decimal jumlahPerihal = 0;
+}
+
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
+
+        <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
+        @*maklumat umum*@
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label asp-for="NoRujukan" class="control-label"></label>
+                    <input asp-for="NoRujukan" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label asp-for="Tahun" class="control-label"></label>
+                    <input asp-for="Tahun" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Tarikh" class="control-label"></label>
+                    <input asp-for="Tarikh" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="TarikhPerlu" class="control-label"></label>
+                    <input asp-for="TarikhPerlu" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label asp-for="EnKaedahPerolehan" class="control-label"></label>
+                    <input asp-for="EnKaedahPerolehan" class="form-control form-control-sm text-uppercase" value="@Model.EnKaedahPerolehan.GetDisplayName()" readonly/>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="JKWId" class="control-label"></label>
+                    <input class="form-control form-control-sm text-uppercase" value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" readonly/>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Nama Pemohon</label>
+                    <input class="form-control form-control-sm text-uppercase" value="@Model.DPemohon?.Nama" readonly />
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label asp-for="Jawatan" class="control-label"></label>
+                    <input asp-for="Jawatan" class="form-control form-control-sm text-uppercase" readonly />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Sebab" class="control-label"></label>
+            <textarea asp-for="Sebab" class="form-control text-uppercase form-control-sm" rows="2" readonly></textarea>
+        </div>
+        @*end*@
+
+        @*bahagian sebutharga*@
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label asp-for="BilSebutharga" class="control-label"></label>
+                    <input asp-for="BilSebutharga" class="form-control form-control-sm text-uppercase" readonly />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label asp-for="HargaTawaran" class="control-label"></label>
+                    <input asp-for="HargaTawaran" class="form-control form-control-sm" type="number" readonly step="0.01" />
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label asp-for="MaklumatSebutHarga" class="control-label"></label>
+                    <input asp-for="MaklumatSebutHarga" class="form-control form-control-sm text-uppercase" readonly />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="DDaftarAwamId" class="control-label"></label>
+            <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.Kod - @Model.DDaftarAwam?.Nama" readonly/>
+        </div>
+        @*end*@
+        <br />
+        @*table Objek*@
+        <div class="card box-shadow mb-3">
+            <div class="card-header">
+                <h6>Objek</h6>
+            </div>
+            <div class="card-body">
+                <table id="tblObjek" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:40%">Bahagian</th>
+                            <th style="width:40%">Kod</th>
+                            <th style="width:20%">Amaun RM</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyObjek">
+                        @if (ViewBag.akPenilaianPerolehanObjek != null)
+                        {
+                            foreach (var item in ViewBag.akPenilaianPerolehanObjek)
+                            {
+                                <tr>
+                                    <td hidden>@item.JBahagianId</td>
+                                    <td class="text-uppercase">@item.JBahagian?.Kod - @item.JBahagian?.Perihal</td>
+                                    <td hidden>@item.AkCartaId</td>
+                                    <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
+                                    <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <div class="form-group">
+                    <label asp-for="Jumlah" class="control-label">Jumlah Objek RM</label>
+                    <input asp-for="Jumlah" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+        </div>
+        @*table Objek end*@
+
+        @*table Perihal*@
+        <div class="card box-shadow mb-3">
+            <div class="card-header">
+                <h6>Perihal</h6>
+            </div>
+            <div class="card-body">
+                <table id="tblPerihal" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:10%">Bil</th>
+                            <th style="width:40%">Perihal</th>
+                            <th style="width:10%">Ktt.</th>
+                            <th style="width:10%">Unit</th>
+                            <th style="width:10%">Hrg/Unit RM</th>
+                            <th style="width:20%">Amaun RM</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyPerihal">
+                        @if (ViewBag.akPenilaianPerolehanPerihal != null)
+                        {
+                            foreach (var item in ViewBag.akPenilaianPerolehanPerihal)
+                            {
+                                <tr>
+                                    <td class="text-end">@item.Bil</td>
+                                    <td class="text-uppercase">@item.Perihal</td>
+                                    <td class="text-end">@item.Kuantiti</td>
+                                    <td class="text-uppercase">@item.Unit</td>
+                                    <td class="text-end">@Convert.ToDecimal(item.Harga).ToString("#,##0.00")</td>
+                                    <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                                </tr>
+                                jumlahPerihal += item.Amaun;
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <div class="form-group">
+                    <label name="perihalJumlah" class="control-label">Jumlah Perihal RM</label>
+                    <input name="perihalJumlah" id="perihalJumlah" class="form-control form-control-sm" value="@Convert.ToDecimal(jumlahPerihal).ToString("#,##0.00")" readonly />
+                </div>
+            </div>
+        </div>
+        @*table Perihal end*@
+        <hr />
+
+        <form asp-action="Delete">
+            <div asp-validation-summary="ModelOnly"></div>
+            <input type="hidden" asp-for="Id" />
+            <input name="syscode" value="SPPB" hidden />
+            <div class="row mb-2">
+                <div class="form-group">
+                    <label class="control-label">Sebab Hapus</label>
+                    <input name="sebabHapus" class="form-control text-uppercase form-control-sm" required>
+                    <span class="text-danger">sila isi ruang ini untuk meneruskan operasi</span>
+                </div>
+            </div>
+            <input type="submit" value="Hapus" class="btn ac-danger btn-sm" />
+            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

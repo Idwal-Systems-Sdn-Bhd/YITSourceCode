@@ -250,6 +250,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return RedirectToAction(nameof(Index));
             }
 
+            PopulateDropDownList();
             PopulateListViewFromCart();
             return View(akTerima);
         }

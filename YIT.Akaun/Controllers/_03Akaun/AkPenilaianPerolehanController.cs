@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
@@ -111,14 +112,6 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View();
         }
 
-        private string GenerateRunningNumber(string initNoRujukan, string tahun)
-        {
-            var maxRefNo = _unitOfWork.AkPenilaianPerolehanRepo.GetMaxRefNo(initNoRujukan,tahun);
-
-            var prefix = initNoRujukan + "/" + tahun + "/";
-            return RunningNumberFormatter.GenerateRunningNumber(prefix,maxRefNo,"00000");
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AkPenilaianPerolehan akPP, string syscode)
@@ -148,6 +141,178 @@ namespace YIT.Akaun.Controllers._03Akaun
             PopulateDropDownList(fullName ?? "");
             PopulateListViewFromCart();
             return View(akPP);
+        }
+
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetDetailsById((int)id);
+            if (akPP == null)
+            {
+                return NotFound();
+            }
+
+
+            EmptyCart();
+            PopulateDropDownList(akPP.DPemohon?.Nama ?? "");
+            PopulateCartAkPenilaianPerolehanFromDb(akPP);
+            return View(akPP);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, AkPenilaianPerolehan akPP,string? fullName, string syscode)
+        {
+            if (id != akPP.Id)
+            {
+                return NotFound();
+            }
+
+            if (akPP.NoRujukan != null && ModelState.IsValid)
+            {
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+
+                    var objAsal = _unitOfWork.AkPenilaianPerolehanRepo.GetDetailsById(id);
+                    var jumlahAsal = objAsal!.Jumlah;
+                    akPP.NoRujukan = objAsal.NoRujukan;
+                    akPP.UserId = objAsal.UserId;
+                    akPP.TarMasuk = objAsal.TarMasuk;
+                    akPP.DPekerjaMasukId = objAsal.DPekerjaMasukId;
+
+                    if (objAsal.AkPenilaianPerolehanObjek != null && objAsal.AkPenilaianPerolehanObjek.Count > 0)
+                    {
+                        foreach (var item in objAsal.AkPenilaianPerolehanObjek)
+                        {
+                            var model = _context.AkPenilaianPerolehanObjek.FirstOrDefault(b => b.Id == item.Id);
+                            if (model != null) _context.Remove(model);
+                        }
+                    }
+
+                    if (objAsal.AkPenilaianPerolehanPerihal != null && objAsal.AkPenilaianPerolehanPerihal.Count > 0)
+                    {
+                        foreach(var item in objAsal.AkPenilaianPerolehanPerihal)
+                        {
+                            var model = _context.AkPenilaianPerolehanPerihal.FirstOrDefault(b => b.Id == item.Id);
+                            if (model != null) _context.Remove(model);
+                        }
+                    }
+
+                    _context.Entry(objAsal).State = EntityState.Detached;
+
+                    akPP.UserIdKemaskini = user?.UserName ?? "";
+                    akPP.TarKemaskini = DateTime.Now;
+                    akPP.AkPenilaianPerolehanObjek = _cart.AkPenilaianPerolehanObjek.ToList();
+                    akPP.AkPenilaianPerolehanPerihal = _cart.AkPenilaianPerolehanPerihal.ToList();
+
+                    _unitOfWork.AkPenilaianPerolehanRepo.Update(akPP);
+
+                    if (jumlahAsal != akPP.Jumlah)
+                    {
+                        _appLog.Insert("Ubah", Convert.ToDecimal(jumlahAsal).ToString("#,##0.00") + " -> " + Convert.ToDecimal(akPP.Jumlah).ToString("#,##0.00") + " : " + akPP.NoRujukan ?? "", akPP.NoRujukan ?? "", id, akPP.Jumlah, pekerjaId, modul, syscode, namamodul, user);
+                    }
+                    else
+                    {
+                        _appLog.Insert("Ubah", akPP.NoRujukan ?? "", akPP.NoRujukan ?? "", id, akPP.Jumlah, pekerjaId, modul, syscode, namamodul, user);
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    TempData[SD.Success] = "Data berjaya diubah..!";
+                } catch (DbUpdateConcurrencyException)
+                {
+                    if (!AkPenilaianPerolehanExist(akPP.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            PopulateDropDownList(fullName ?? "");
+            PopulateListViewFromCart();
+            return View(akPP);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id,string sebabHapus, string syscode)
+        {
+            var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetById((int)id);
+
+            var user = await _userManager.GetUserAsync(User);
+            int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+
+            if (akPP != null && await _unitOfWork.AkPenilaianPerolehanRepo.IsSahAsync(id) == false)
+            {
+                akPP.UserIdKemaskini = user?.UserName ?? "";
+                akPP.TarKemaskini = DateTime.Now;
+                akPP.DPekerjaKemaskiniId = pekerjaId;
+                akPP.SebabHapus = sebabHapus;
+
+                _context.AkPenilaianPerolehan.Remove(akPP);
+                _appLog.Insert("Hapus", akPP.NoRujukan ?? "", akPP.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+                await _context.SaveChangesAsync();
+                TempData[SD.Success] = "Data berjaya dihapuskan..!";
+            }
+            else
+            {
+                TempData[SD.Error] = "Data telah disahkan / disemak / diluluskan";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> RollBack(int id, string syscode)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+
+            var obj = await _context.AkPenilaianPerolehan.IgnoreQueryFilters()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            // Batal operation
+
+            if (obj != null)
+            {
+                obj.FlHapus = 0;
+                obj.UserIdKemaskini = user?.UserName ?? "";
+                obj.TarKemaskini = DateTime.Now;
+                obj.DPekerjaKemaskiniId = pekerjaId;
+
+                _context.AkPenilaianPerolehan.Update(obj);
+
+                // Batal operation end
+                _appLog.Insert("Rollback", obj.NoRujukan ?? "", obj.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+
+                await _context.SaveChangesAsync();
+                TempData[SD.Success] = "Data berjaya dikembalikan..!";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+        private bool AkPenilaianPerolehanExist(int id)
+        {
+            return _unitOfWork.AkPenilaianPerolehanRepo.IsExist(b => b.Id == id);
+        }
+
+        private string GenerateRunningNumber(string initNoRujukan, string tahun)
+        {
+            var maxRefNo = _unitOfWork.AkPenilaianPerolehanRepo.GetMaxRefNo(initNoRujukan, tahun);
+
+            var prefix = initNoRujukan + "/" + tahun + "/";
+            return RunningNumberFormatter.GenerateRunningNumber(prefix, maxRefNo, "00000");
         }
 
         private void PopulateDropDownList(string fullName)
@@ -205,6 +370,8 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 item.JBahagian = jBahagian;
 
+                item.JBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jBahagian.JPTJ?.JKW?.Kod, jBahagian.JPTJ?.Kod, jBahagian.Kod);
+
                 var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 
                 item.AkCarta = akCarta;
@@ -249,6 +416,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
                 }
+
+                jBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jBahagian.JPTJ?.JKW?.Kod, jBahagian.JPTJ?.Kod, jBahagian.Kod);
 
                 var akCarta = _unitOfWork.AkCartaRepo.GetById(AkCartaId);
                 if (akCarta == null)
@@ -449,6 +618,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                     var jBahagian = _unitOfWork.JBahagianRepo.GetById(item.JBahagianId);
 
                     item.JBahagian = jBahagian;
+
+                    item.JBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jBahagian.JPTJ?.JKW?.Kod, jBahagian.JPTJ?.Kod, jBahagian.Kod);
 
                     var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 

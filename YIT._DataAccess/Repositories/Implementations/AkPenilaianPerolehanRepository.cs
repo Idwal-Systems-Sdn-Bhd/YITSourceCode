@@ -22,7 +22,23 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
         public AkPenilaianPerolehan GetDetailsById(int id)
         {
-            throw new NotImplementedException();
+            return _context.AkPenilaianPerolehan
+                .IgnoreQueryFilters()
+                .Include(t => t.JKW)
+                .Include(t => t.DPemohon)
+                .Include(t => t.DDaftarAwam)
+                .Include(t => t.DPekerjaPosting)
+                .Include(t => t.DPengesah)
+                .Include(t => t.DPenyemak)
+                .Include(t => t.DPelulus)
+                .Include(t => t.AkPenilaianPerolehanObjek)!
+                    .ThenInclude(to => to.AkCarta)
+                .Include(t => t.AkPenilaianPerolehanObjek)!
+                    .ThenInclude(to => to.JBahagian)
+                        .ThenInclude(b => b!.JPTJ)
+                            .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkPenilaianPerolehanPerihal)
+                .FirstOrDefault(pp => pp.Id == id) ?? new AkPenilaianPerolehan();
         }
 
         public List<AkPenilaianPerolehan> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy)
@@ -89,7 +105,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public async Task<bool> IsSahAsync(int id)
         {
-            bool isSah = await _context.AkPenilaianPerolehan.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Sah);
+            bool isSah = await _context.AkPenilaianPerolehan.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Sah || t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus);
             if (isSah)
             {
                 return true;
@@ -100,7 +116,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public async Task<bool> IsSemakAsync(int id)
         {
-            bool isSemak = await _context.AkPenilaianPerolehan.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Semak);
+            bool isSemak = await _context.AkPenilaianPerolehan.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus);
             if (isSemak)
             {
                 return true;
