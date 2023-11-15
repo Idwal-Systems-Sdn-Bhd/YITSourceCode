@@ -12,7 +12,9 @@ using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Implementations;
 using YIT._DataAccess.Repositories.Interfaces;
 using YIT._DataAccess.Services.Cart;
+using YIT._DataAccess.Services.Math;
 using YIT.Akaun.Infrastructure;
+using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
@@ -27,18 +29,24 @@ namespace YIT.Akaun.Controllers._03Akaun
         private readonly _IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly _AppLogIRepository<AppLog, int> _appLog;
- 
+        private readonly UserServices _userServices;
+        private readonly CartAbWaran _cart;
+
 
         public AbWaranController(ApplicationDbContext context,
              _IUnitOfWork unitOfWork,
              UserManager<IdentityUser> userManager,
-             _AppLogIRepository<AppLog, int> appLog
+             _AppLogIRepository<AppLog, int> appLog,
+             UserServices userServices,
+             CartAbWaran cart
 )
         {
             _context = context;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _appLog = appLog;
+            _userServices = userServices;
+            _cart = cart;
 
         }
         public IActionResult Index()
@@ -54,19 +62,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            var a = _unitOfWork.AbWaranRepo.GetAllDetailsById((int)id);
-            if (a == null)
+            var abWaran = _unitOfWork.AbWaranRepo.GetAllDetailsById((int)id);
+            if (abWaran == null)
             {
                 return NotFound();
             }
-            
-            return View(a);
+            PopulateCartAbWaranFromDb(abWaran);
+            return View(abWaran);
         }
 
         // GET: KW/Create
         public IActionResult Create()
         {
-            
+
+            EmptyCart();
             PopulateDropdownList();
             return View();
         }
@@ -78,32 +87,30 @@ namespace YIT.Akaun.Controllers._03Akaun
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AbWaran abWaran, string syscode)
         {
-            if (abWaran.NoRujukan != null && KodAbWaranExists(abWaran.NoRujukan) == false)
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    var user = await _userManager.GetUserAsync(User);
-                    int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+                var user = await _userManager.GetUserAsync(User);
+                int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-                    abWaran.UserId = user?.UserName ?? "";
+                abWaran.UserId = user?.UserName ?? "";
 
-                    abWaran.TarMasuk = DateTime.Now;
-                    abWaran.DPekerjaMasukId = pekerjaId;
+                abWaran.TarMasuk = DateTime.Now;
+                abWaran.DPekerjaMasukId = pekerjaId;
 
-                    _context.Add(abWaran);
-                    _appLog.Insert("Tambah", abWaran.Id + " - " + abWaran.NoRujukan, abWaran.Id.ToString(), 0, 0, pekerjaId, modul, syscode, namamodul, user);
-                    await _context.SaveChangesAsync();
-                    TempData[SD.Success] = "Data berjaya ditambah..!";
-                    return RedirectToAction(nameof(Index));
+                abWaran.AbWaranObjek = _cart.abWaranObjek.ToList();
+                abWaran.NoRujukan = GetNoRujukan(abWaran.Tahun);
 
-                }
+
+                _context.Add(abWaran);
+                _appLog.Insert("Tambah", abWaran.NoRujukan ?? "", abWaran.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
+                await _context.SaveChangesAsync();
+                TempData[SD.Success] = "Data berjaya ditambah..!";
+                return RedirectToAction(nameof(Index));
+
             }
-            else
-            {
-                TempData[SD.Error] = "Kod ini telah wujud..!";
-            }
+            ViewBag.NoRujukan = GetNoRujukan(abWaran.Tahun);
             PopulateDropdownList();
-            
+            PopulateListViewFromCart();
             return View(abWaran);
         }
 
@@ -121,6 +128,9 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 return NotFound();
             }
+            EmptyCart();
+            PopulateDropdownList();
+            PopulateCartAbWaranFromDb(abWaran);
             return View(abWaran);
         }
 
@@ -178,6 +188,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 }
                 return RedirectToAction(nameof(Index));
             }
+            PopulateListViewFromCart();
             return View(abWaran);
         }
 
@@ -194,7 +205,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 return NotFound();
             }
-            
+            PopulateCartAbWaranFromDb(abWaran);
             return View(abWaran);
         }
 
@@ -243,7 +254,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 _context.AbWaran.Update(obj);
 
                 // Batal operation end
-                _appLog.Insert("Rollback", obj.Id + " - " + obj.NoRujukan, obj.Id.ToString() ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+                _appLog.Insert("Rollback", obj.NoRujukan ?? "", obj.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
 
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya dikembalikan..!";
@@ -264,174 +275,229 @@ namespace YIT.Akaun.Controllers._03Akaun
         {
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAllDetails();
+            ViewBag.JKW = _unitOfWork.JKWRepo.GetAllDetails();
         }
 
-        // jsonResults
-        //public JsonResult EmptyCart()
-        //{
-        //    try
-        //    {
+        private void PopulateCartAbWaranFromDb(AbWaran abWaran)
+        {
+            if (abWaran.AbWaranObjek != null)
+            {
+                foreach (var item in abWaran.AbWaranObjek)
+                {
+                    _cart.AddItemObjek(
+                            abWaran.Id,
+                            item.JBahagianId,
+                            item.AkCartaId,
+                            item.Amaun,
+                            item.TK);
+                }
+            }
 
-        //        _cart.ClearAbWaranObjek();
-               
+            PopulateListViewFromCart();
+        }
 
-        //        return Json(new { result = "OK" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { result = "ERROR", message = ex.Message });
-        //    }
-        //}
+        private void PopulateListViewFromCart()
+        {
+            List<AbWaranObjek> objek = _cart.abWaranObjek.ToList();
 
-        //public JsonResult GetJBahagianAkCarta(int JBahagianId, int AkCartaId)
-        //{
-        //    try
-        //    {
-        //        var jBahagian = _unitOfWork.JBahagianRepo.GetById(JBahagianId);
-        //        if (jBahagian == null)
-        //        {
-        //            return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
-        //        }
+            foreach (AbWaranObjek item in objek)
+            {
+                var jBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById(item.JBahagianId);
 
-        //        var akCarta = _unitOfWork.AkCartaRepo.GetById(AkCartaId);
-        //        if (akCarta == null)
-        //        {
-        //            return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
-        //        }
+                item.JBahagian = jBahagian;
 
-        //        return Json(new { result = "OK", jBahagian, akCarta });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { result = "Error", message = ex.Message });
-        //    }
-        //}
+                var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 
-        //public JsonResult SaveCartAbWaranObjek(AbWaranObjek abWaranObjek)
-        //{
-        //    try
-        //    {
-        //        if (abWaranObjek != null)
-        //        {
-        //            _cart.AddItemAbWaranObjek(abWaranObjek.AbWaranId, abWaranObjek.JBahagianId, abWaranObjek.AkCartaId, abWaranObjek.Amaun, abWaranObjek.TK);
-        //        }
+                item.AkCarta = akCarta;
+            }
+
+            ViewBag.abWaranObjek = objek;
+        }
+            public JsonResult EmptyCart()
+            {
+                try
+                {
+
+                    _cart.ClearObjek();
+                   
+
+                    return Json(new { result = "OK" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { result = "ERROR", message = ex.Message });
+                }
+            }
+
+            public JsonResult GetJBahagianAkCarta(int JBahagianId, int AkCartaId)
+            {
+                try
+                {
+                    var jBahagian = _unitOfWork.JBahagianRepo.GetById(JBahagianId);
+                    if (jBahagian == null)
+                    {
+                        
+                    return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
+                    }
+
+                    var akCarta = _unitOfWork.AkCartaRepo.GetById(AkCartaId);
+                    if (akCarta == null)
+                    {
+                        return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
+                    }
+                    if (jBahagian.Kod != null) jBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jBahagian.JPTJ?.JKW?.Kod, jBahagian.JPTJ?.Kod, jBahagian.Kod);
+
+
+                return Json(new { result = "OK", jBahagian, akCarta });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { result = "Error", message = ex.Message });
+                }
+            }
+
+            public JsonResult SaveCartAbWaranObjek(AbWaranObjek abWaranObjek)
+            {
+                try
+                {
+                    if (abWaranObjek != null)
+                    {
+                        _cart.AddItemObjek(abWaranObjek.AbWaranId, abWaranObjek.JBahagianId, abWaranObjek.AkCartaId, abWaranObjek.Amaun, abWaranObjek.TK);
+                    }
 
 
 
-        //        return Json(new { result = "OK" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { result = "ERROR", message = ex.Message });
-        //    }
-        //}
+                    return Json(new { result = "OK" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { result = "ERROR", message = ex.Message });
+                }
+            }
 
-        //public JsonResult RemoveCartAbWaranObjek(AbWaranObjek abWaranObjek)
-        //{
-        //    try
-        //    {
-        //        if (abWaranObjek != null)
-        //        {
-        //            _cart.RemoveItemAbWaranObjek(abWaranObjek.JBahagianId, abWaranObjek.AkCartaId);
-        //        }
+            public JsonResult RemoveCartAbWaranObjek(AbWaranObjek abWaranObjek)
+            {
+                try
+                {
+                    if (abWaranObjek != null)
+                    {
+                        _cart.RemoveItemObjek(abWaranObjek.JBahagianId, abWaranObjek.AkCartaId);
+                    }
 
-        //        return Json(new { result = "OK" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { result = "ERROR", message = ex.Message });
-        //    }
-        //}
+                    return Json(new { result = "OK" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { result = "ERROR", message = ex.Message });
+                }
+            }
 
-        //public JsonResult GetAnItemFromCartAbWaranObjek(AbWaranObjek abWaranObjek)
-        //{
+            public JsonResult GetAnItemFromCartAbWaranObjek(AbWaranObjek abWaranObjek)
+            {
 
-        //    try
-        //    {
-        //        AbWaranObjek data = _cart.abWaranObjek.FirstOrDefault(x => x.JBahagianId == abWaranObjek.JBahagianId && x.AkCartaId == abWaranObjek.AkCartaId && x.TK == abWaranObjek.TK);
+                try
+                {
+                    AbWaranObjek data = _cart.abWaranObjek.FirstOrDefault(x => x.JBahagianId == abWaranObjek.JBahagianId && x.AkCartaId == abWaranObjek.AkCartaId);
 
-        //        return Json(new { result = "OK", record = data });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { result = "ERROR", message = ex.Message });
-        //    }
-        //}
+                    return Json(new { result = "OK", record = data });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { result = "ERROR", message = ex.Message });
+                }
+            }
 
-        //public JsonResult SaveAnItemFromCartAbWaranObjek(AbWaranObjek abWaranObjek)
-        //{
+            public JsonResult SaveAnItemFromCartAbWaranObjek(AbWaranObjek abWaranObjek)
+            {
 
-        //    try
-        //    {
+                try
+                {
 
-        //        var akTO = _cart.abWaranObjek.FirstOrDefault(x => x.JBahagianId == abWaranObjek.JBahagianId && x.AkCartaId == abWaranObjek.AkCartaId && x.TK == abWaranObjek.TK);
+                    var abTO = _cart.abWaranObjek.FirstOrDefault(x => x.JBahagianId == abWaranObjek.JBahagianId && x.AkCartaId == abWaranObjek.AkCartaId);
 
-        //        var user = _userManager.GetUserName(User);
+                    var user = _userManager.GetUserName(User);
 
-        //        if (akTO != null)
-        //        {
-        //            _cart.RemoveItemAbWaranObjek(abWaranObjek.JBahagianId, abWaranObjek.AkCartaId);
+                    if (abTO != null)
+                    {
+                        _cart.RemoveItemObjek(abWaranObjek.JBahagianId, abWaranObjek.AkCartaId);
 
-        //            _cart.AddItemAbWaranObjek(abWaranObjek.AbWaranId,
-        //                            abWaranObjek.JBahagianId,
-        //                            abWaranObjek.AkCartaId,
-        //                            abWaranObjek.Amaun,
-        //                            abWaranObjek.TK);
-        //        }
+                        _cart.AddItemObjek(abWaranObjek.AbWaranId,
+                                        abWaranObjek.JBahagianId,
+                                        abWaranObjek.AkCartaId,
+                                        abWaranObjek.Amaun,
+                                        abWaranObjek.TK);
+                    }
 
-        //        return Json(new { result = "OK" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { result = "ERROR", message = ex.Message });
-        //    }
-        //}
+                    return Json(new { result = "OK" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { result = "ERROR", message = ex.Message });
+                }
+            }
+        public JsonResult GetAllItemCartAbWaran()
+        {
 
-        //public JsonResult GetAllItemCartAbWaran()
-        //{
+            try
+            {
+                List<AbWaranObjek> objek = _cart.abWaranObjek.ToList();
 
-        //    try
-        //    {
-        //        List<AbWaranObjek> objek = _cart.abWaranObjek.ToList();
+                foreach (AbWaranObjek item in objek)
+                {
+                    var jBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById(item.JBahagianId);
 
-        //        foreach (AbWaranObjek item in objek)
-        //        {
-        //            var jBahagian = _unitOfWork.JBahagianRepo.GetById(item.JBahagianId);
+                    item.JBahagian = jBahagian;
+                    item.JBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jBahagian.JPTJ?.JKW?.Kod,jBahagian.JPTJ?.Kod,jBahagian.Kod);
 
-        //            item.JBahagian = jBahagian;
+                    var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 
-        //            var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
+                    item.AkCarta = akCarta;
+                }
+                return Json(new { result = "OK", objek = objek.OrderBy(d => d.AkCarta?.Kod) });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
 
-        //            item.AkCarta = akCarta;
-        //        }
+        public JsonResult JsonGetKod(string year)
+        {
+            try
+            {
+                var result = GetNoRujukan(year);
 
-               
+                return Json(new { result = "OK", record = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+        }
 
-        //        return Json(new { result = "OK", objek = objek.OrderBy(d => d.AkCarta?.Kod) });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { result = "ERROR", message = ex.Message });
-        //    }
-        //}
-        //private void PopulateListViewFromCart()
-        //{
-        //    List<AbWaranObjek> objek = _cart.abWaranObjek.ToList();
+        private string GetNoRujukan(string year)
+        {
+            string prefix = "WR/" + year + "/";
+            int x = 1;
+            string noRujukan = prefix + "0000";
 
-        //    foreach (AbWaranObjek item in objek)
-        //    {
-        //        var jBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById(item.JBahagianId);
+            var LatestNoRujukan = _context.AbWaran
+                       .IgnoreQueryFilters()
+                       .Where(x => x.Tahun == year)
+                       .Max(x => x.NoRujukan);
 
-        //        item.JBahagian = jBahagian;
+            if (LatestNoRujukan == null)
+            {
+                noRujukan = string.Format("{0:" + prefix + "0000}", x);
+            }
+            else
+            {
+                x = int.Parse(LatestNoRujukan.Substring(9));
+                x++;
+                noRujukan = string.Format("{0:" + prefix + "0000}", x);
+            }
+            return noRujukan;
+        }
 
-        //        var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
-
-        //        item.AkCarta = akCarta;
-        //    }
-
-        //    ViewBag.AbWaranObjek = objek;
-
-            
-        //}
     }
 }
