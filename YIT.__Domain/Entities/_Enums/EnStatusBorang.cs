@@ -11,6 +11,8 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "Semak")]
         Semak = 2,
         [Display(Name = "Lulus")]
-        Lulus = 3
+        Lulus = 3,
+        [Display(Name = "Semua")]
+        Semua = 99
     }
 }

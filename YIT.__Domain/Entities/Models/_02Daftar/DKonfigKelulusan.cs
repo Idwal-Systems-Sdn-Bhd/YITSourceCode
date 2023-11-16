@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YIT.__Domain.Entities.Models._01Jadual;
 
 namespace YIT.__Domain.Entities.Models._02Daftar
 {
@@ -18,6 +19,9 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("Anggota")]
         public int DPekerjaId { get; set; }
         public DPekerja? DPekerja { get; set; }
+        [DisplayName("Bahagian")]
+        public int? JBahagianId { get; set; }
+        public JBahagian? JBahagian { get; set; }
         [DisplayName("Kategori Kelulusan")]
         public EnKategoriKelulusan EnKategoriKelulusan { get; set; }
         [DisplayName("Jenis Modul")]
