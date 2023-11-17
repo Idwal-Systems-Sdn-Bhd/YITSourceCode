@@ -17,5 +17,6 @@ namespace YIT.__Domain.Entities.Bases
         public int FlBatal { get; set; }
         public DateTime? TarBatal { get; set; }
         public string? SebabBatal { get; set; }
+
     }
 }

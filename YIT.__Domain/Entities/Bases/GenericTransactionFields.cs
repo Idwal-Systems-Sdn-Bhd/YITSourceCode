@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YIT.__Domain.Entities._Enums;
+using YIT.__Domain.Entities.Models._02Daftar;
 
 namespace YIT.__Domain.Entities.Bases
 {
@@ -32,5 +34,18 @@ namespace YIT.__Domain.Entities.Bases
         public int FlBatal { get; set; }
         public DateTime? TarBatal { get; set; }
         public string? SebabBatal { get; set; }
+
+        public int? DPengesahId { get; set; }
+        public DKonfigKelulusan? DPengesah { get; set; }
+        public DateTime? TarikhSah { get; set; }
+        public int? DPenyemakId { get; set; }
+        public DKonfigKelulusan? DPenyemak { get; set; }
+        public DateTime? TarikhSemak { get; set; }
+        public int? DPelulusId { get; set; }
+        public DKonfigKelulusan? DPelulus { get; set; }
+        public DateTime? TarikhLulus { get; set; }
+        [DisplayName("Status")]
+        public EnStatusBorang EnStatusBorang { get; set; }
+        public string? Tindakan { get; set; }
     }
 }

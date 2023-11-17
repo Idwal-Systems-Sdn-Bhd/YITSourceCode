@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT.__Domain.Entities.Models._02Daftar
 {
@@ -64,6 +65,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public DateTime? JangkaMasaHingga { get; set; }
         [DisplayName("Kod M2E")]
         public string? KodM2E { get; set; }
-        //public string? KodLama { get; set; } // dummy field; for migration purpos;e
+        public string? KodLama { get; set; } // dummy field; for migration purpos;e
+        public ICollection<AkInden>? AkInden { get; set; }
     }
 }

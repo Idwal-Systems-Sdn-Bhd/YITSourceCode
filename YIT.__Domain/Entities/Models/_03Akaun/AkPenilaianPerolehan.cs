@@ -54,19 +54,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public DPekerja? DPekerjaPosting { get; set; }
         public int FlPosting { get; set; }
         public DateTime? TarikhPosting { get; set; }
-        public int? DPengesahId { get; set; }
-        public DKonfigKelulusan? DPengesah { get; set; }
-        public DateTime? TarikhSah { get; set; }
-        public int? DPenyemakId { get; set; }
-        public DKonfigKelulusan? DPenyemak { get; set; }
-        public DateTime? TarikhSemak { get; set; }
-        public int? DPelulusId { get; set; }
-        public DKonfigKelulusan? DPelulus { get; set; }
-        public DateTime? TarikhLulus { get; set; }
-        [DisplayName("Status")]
-        public EnStatusBorang EnStatusBorang { get; set; }
-        public string? Tindakan { get; set; }
-
+        
         public ICollection<AkPenilaianPerolehanObjek>? AkPenilaianPerolehanObjek { get; set; }
         public ICollection<AkPenilaianPerolehanPerihal>? AkPenilaianPerolehanPerihal { get; set; }
 

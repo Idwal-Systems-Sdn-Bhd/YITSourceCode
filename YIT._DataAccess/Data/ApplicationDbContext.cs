@@ -67,7 +67,12 @@ namespace YIT._DataAccess.Data
         //
 
         // 06Tanggungan (TG)
-
+        public DbSet<AkPO> AkPO { get; set; }
+        public DbSet<AkPOObjek> AkPOObjek { get; set; }
+        public DbSet<AkPOPerihal> AkPOPerihal { get; set; }
+        public DbSet<AkInden> AkInden { get; set; }
+        public DbSet<AkIndenObjek> AkIndenObjek { get; set; }
+        public DbSet<AkIndenPerihal> AkIndenPerihal { get; set; }
         //
 
         // 07Pembayaran (PV)
