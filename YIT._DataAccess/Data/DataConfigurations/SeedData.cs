@@ -336,205 +336,249 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     {
                         Kod = "01",
                         Perihal = "AFFIN BANK BERHAD",
-                        KodBNMEFT = "PHBMMYKL"
+                        KodBNMEFT = "PHBMMYKL",
+                        Length1 = 12
                     },
                     new JBank
                     {
                         Kod = "02",
                         Perihal = "AFFIN ISLAMIC BANK",
-                        KodBNMEFT = "PHBMMYKL"
+                        KodBNMEFT = "PHBMMYKL",
+                        Length2 = 12
                     },
                      new JBank
                      {
                          Kod = "03",
                          Perihal = "ALLIANCE BANK",
-                         KodBNMEFT = "MFBBMYKL"
+                         KodBNMEFT = "MFBBMYKL",
+                         Length1 = 15
                      },
                       new JBank
                       {
                           Kod = "04",
                           Perihal = "ALLIANCE ISLAMIC BANK",
-                          KodBNMEFT = "MFBBMYKL"
+                          KodBNMEFT = "MFBBMYKL",
+                          Length1 = 15
                       },
                       new JBank
                       {
                           Kod = "05",
                           Perihal = "AL-RAJHI BANKING INVESTMENT",
-                          KodBNMEFT = "RJHIMYKL"
+                          KodBNMEFT = "RJHIMYKL",
+                          Length1 = 15
+
                       },
                       new JBank
                       {
                           Kod = "06",
                           Perihal = "AMBANK",
-                          KodBNMEFT = "ARBKMYKL"
+                          KodBNMEFT = "ARBKMYKL",
+                          Length1 = 13,
+                          Length2 = 12
                       },
                       new JBank
                       {
                           Kod = "07",
-                          Perihal = "ALLIANCEK",
-                          KodBNMEFT = "MFBBMYKL"
+                          Perihal = "AMBANK ISLAMIC",
+                          KodBNMEFT = "MFBBMYKL",
+                          Length1 = 13
                       },
                       new JBank
                       {
                           Kod = "08",
-                          Perihal = "AMBANK ISLAMIC",
-                          KodBNMEFT = "MFBBMYKL"
+                          Perihal = "BANK ISLAM",
+                          KodBNMEFT = "BIMBMYKL",
+                          Length1 = 14
                       },
                       new JBank
                       {
                           Kod = "09",
-                          Perihal = "BANK ISLAM",
-                          KodBNMEFT = "BIMBMYKL"
+                          Perihal = "BANK MUAMALAT",
+                          KodBNMEFT = "BMMBMYKL",
+                          Length1 = 14
                       },
                       new JBank
                       {
                           Kod = "10",
-                          Perihal = "BANK MUAMALAT",
-                          KodBNMEFT = "BMMBMYKL"
+                          Perihal = "BANK RAKYAT",
+                          KodBNMEFT = "BKRMMYKL",
+                          Length1 = 12,
+                          Length2 = 10
                       },
                       new JBank
                       {
                           Kod = "11",
-                          Perihal = "BANK RAKYAT",
-                          KodBNMEFT = "BKRMMYKL"
+                          Perihal = "BANK SIMPANAN NASIONAL",
+                          KodBNMEFT = "BSNAMYK1",
+                          Length1 = 16,
+                          Length2 = 21
                       },
                       new JBank
                       {
                           Kod = "12",
-                          Perihal = "BANK SIMPANAN NASIONAL",
-                          KodBNMEFT = "BSNAMYK1"
+                          Perihal = "BANK SIMPANAN NASIONAL - SPI",
+                          KodBNMEFT = "BSNAMYK1",
+                          Length1 = 16,
+                          Length2 = 21
                       },
                       new JBank
                       {
                           Kod = "13",
-                          Perihal = "BANK SIMPANAN NASIONAL - SPI",
-                          KodBNMEFT = "BSNAMYK1"
+                          Perihal = "BANK PERTANIAN MALAYSIA",
+                          KodBNMEFT = "AGOBMYK1",
+                          Length1 = 16
                       },
                       new JBank
                       {
                           Kod = "14",
-                          Perihal = "BANK PERTANIAN MALAYSIA",
-                          KodBNMEFT = "AGOBMYK1"
+                          Perihal = "CIMB (BCB)",
+                          KodBNMEFT = "CIBBMYKL",
+                          Length1 = 14,
+                          Length2 = 10
                       },
                       new JBank
                       {
                           Kod = "15",
-                          Perihal = "CIMB (BCB)",
-                          KodBNMEFT = "CIBBMYKL"
+                          Perihal = "CIMB ISLAMIC",
+                          KodBNMEFT = "CIBBMYKL",
+                          Length1 = 14,
+                          Length2 = 10
                       },
                       new JBank
                       {
                           Kod = "16",
-                          Perihal = "CIMB ISLAMIC",
-                          KodBNMEFT = "CIBBMYKL"
+                          Perihal = "CIMB (SOUTHERN)",
+                          KodBNMEFT = "CIBBMYKL",
+                          Length1 = 14,
+                          Length2 = 10
                       },
                       new JBank
                       {
                           Kod = "17",
-                          Perihal = "CIMB (SOUTHERN)",
-                          KodBNMEFT = "CIBBMYKL"
+                          Perihal = "EON BANK BHD",
+                          KodBNMEFT = "HLBBMYKL",
+                          Length1 = 17 //kiv
                       },
                       new JBank
                       {
                           Kod = "18",
-                          Perihal = "EON BANK BHD",
-                          KodBNMEFT = "HLBBMYKL"
+                          Perihal = "EONCAP ISLAMIC BANK",
+                          KodBNMEFT = "HLBBMYKL",
+                          Length1 = 18 //kiv
                       },
                       new JBank
                       {
                           Kod = "19",
-                          Perihal = "EONCAP ISLAMIC BANK",
-                          KodBNMEFT = "HLBBMYKL"
+                          Perihal = "HONG LEONG",
+                          KodBNMEFT = "HLBBMYKL",
+                          Length1 = 13,
+                          Length2 = 11
                       },
                       new JBank
                       {
                           Kod = "20",
-                          Perihal = "HONG LEONG",
-                          KodBNMEFT = "HLBBMYKL"
+                          Perihal = "HONG LEONG ISLAMIC BANK",
+                          KodBNMEFT = "HLBBMYKL",
+                          Length1 = 13
                       },
                       new JBank
                       {
                           Kod = "21",
-                          Perihal = "HONG LEONG ISLAMIC BANK",
-                          KodBNMEFT = "HLBBMYKL"
+                          Perihal = "HSBC AMANAH",
+                          KodBNMEFT = "HBMBMYKL",
+                          Length1 = 17,
+                          Length2 = 12
                       },
                       new JBank
                       {
                           Kod = "22",
-                          Perihal = "HSBC AMANAH",
-                          KodBNMEFT = "HBMBMYKL"
+                          Perihal = "HSBC - ISLAMIC",
+                          KodBNMEFT = "HBMBMYKL",
+                          Length1 = 17
                       },
                       new JBank
                       {
                           Kod = "23",
-                          Perihal = "HSBC - ISLAMIC",
-                          KodBNMEFT = "HBMBMYKL"
+                          Perihal = "HSBC",
+                          KodBNMEFT = "HBMBMYKL",
+                          Length1 = 17
                       },
                       new JBank
                       {
                           Kod = "24",
-                          Perihal = "HSBC",
-                          KodBNMEFT = "HBMBMYKL"
+                          Perihal = "MAYBANK",
+                          KodBNMEFT = "MBBEMYKL",
+                          Length1 = 12
                       },
                       new JBank
                       {
                           Kod = "25",
-                          Perihal = "MAYBANK",
-                          KodBNMEFT = "MBBEMYKL"
+                          Perihal = "MAYBANK ISLAMIC",
+                          KodBNMEFT = "MBBEMYKL",
+                          Length1 = 12
                       },
                       new JBank
                       {
                           Kod = "26",
-                          Perihal = "MAYBANK ISLAMIC",
-                          KodBNMEFT = "MBBEMYKL"
+                          Perihal = "OCBC BANK BHD",
+                          KodBNMEFT = "OCBCMYKL",
+                          Length1 = 10
                       },
                       new JBank
                       {
                           Kod = "27",
-                          Perihal = "OCBC BANK BHD",
-                          KodBNMEFT = "OCBCMYKL"
+                          Perihal = "OCBC AL AMIN BANK",
+                          KodBNMEFT = "OCBCMYKL",
+                          Length1 = 10
                       },
                       new JBank
                       {
                           Kod = "28",
-                          Perihal = "OCBC AL AMIN BANK",
-                          KodBNMEFT = "OCBCMYKL"
+                          Perihal = "PUBLIC BANK BERHAD",
+                          KodBNMEFT = "PBBEMYKL",
+                          Length1 = 10
                       },
                       new JBank
                       {
                           Kod = "29",
-                          Perihal = "PUBLIC BANK BERHAD",
-                          KodBNMEFT = "PBBEMYKL"
+                          Perihal = "PUBLIC ISLAMIC BANK BERHAD",
+                          KodBNMEFT = "PBBEMYKL",
+                          Length1 = 10
                       },
                       new JBank
                       {
                           Kod = "30",
-                          Perihal = "PUBLIC ISLAMIC BANK BERHAD",
-                          KodBNMEFT = "PBBEMYKL"
+                          Perihal = "RHB BANK BERHAD",
+                          KodBNMEFT = "RHBBMYKL",
+                          Length1 = 14
                       },
                       new JBank
                       {
                           Kod = "31",
-                          Perihal = "RHB BANK BERHAD",
-                          KodBNMEFT = "RHBBMYKL"
+                          Perihal = "RHB ISLAMIC BANK",
+                          KodBNMEFT = "RHBBMYKL",
+                          Length1 = 14
                       },
                       new JBank
                       {
                           Kod = "32",
-                          Perihal = "RHB ISLAMIC BANK",
-                          KodBNMEFT = "RHBBMYKL"
+                          Perihal = "STANDARD CHARTERED",
+                          KodBNMEFT = "SCBLMYKX",
+                          Length1 = 17
                       },
                       new JBank
                       {
                           Kod = "33",
-                          Perihal = "STANDARD CHARTERED",
-                          KodBNMEFT = "SCBLMYKX"
+                          Perihal = "UNITED OVERSEAS BANK",
+                          KodBNMEFT = "UOVBMYKL",
+                          Length1 = 17
                       },
                       new JBank
                       {
                           Kod = "34",
-                          Perihal = "UNITED OVERSEAS BANK",
-                          KodBNMEFT = "UOVBMYKL"
+                          Perihal = "CITI BANK BHD",
+                          KodBNMEFT = "CITIMYKL",
+                          Length1 = 16
                       }
                     );
 

@@ -10,5 +10,9 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public string? Perihal { get; set; }
         [DisplayName("Kod BNM EFT")]
         public string? KodBNMEFT { get; set; }
+        [DisplayName("Aksara 1")]
+        public int Length1 { get; set; }
+        [DisplayName("Aksara 2")]
+        public int? Length2 { get; set; }
     }
 }
