@@ -45,6 +45,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("Pemohon")]
         public int? DPemohonId { get; set; }
         public string? Jawatan { get; set; }
+        public int FlPOInden { get; set; }
         public DPekerja? DPemohon { get; set; }
         [DisplayName("Cadangan Pembekal")]
         public int DDaftarAwamId { get; set; }

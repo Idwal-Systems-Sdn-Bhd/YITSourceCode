@@ -28,32 +28,63 @@
             <input asp-for="JKWId" hidden />
             @*maklumat umum*@
             <div class="row">
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label asp-for="NoRujukan" class="control-label"></label>
-                        <input asp-for="NoRujukan" class="form-control form-control-sm" readonly />
-                        <span asp-validation-for="NoRujukan" class="text-danger"></span>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="NoRujukan" class="control-label"></label>
+                                <input asp-for="NoRujukan" class="form-control form-control-sm" readonly />
+                                <span asp-validation-for="NoRujukan" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Tahun" class="control-label"></label>
+                                <input asp-for="Tahun" class="form-control form-control-sm" readonly />
+                                <span asp-validation-for="Tahun" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Tarikh" class="control-label"></label>
+                                <input asp-for="Tarikh" class="form-control form-control-sm" readonly />
+                                <span asp-validation-for="Tarikh" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="TarikhPerlu" class="control-label"></label>
+                                <input asp-for="TarikhPerlu" class="form-control form-control-sm" required />
+                                <span asp-validation-for="TarikhPerlu" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-6 pt-4">
                     <div class="form-group">
-                        <label asp-for="Tahun" class="control-label"></label>
-                        <input asp-for="Tahun" class="form-control form-control-sm" readonly />
-                        <span asp-validation-for="Tahun" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label asp-for="Tarikh" class="control-label"></label>
-                        <input asp-for="Tarikh" class="form-control form-control-sm" readonly />
-                        <span asp-validation-for="Tarikh" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label asp-for="TarikhPerlu" class="control-label"></label>
-                        <input asp-for="TarikhPerlu" class="form-control form-control-sm" required />
-                        <span asp-validation-for="TarikhPerlu" class="text-danger"></span>
+                        <div class="card mb-2">
+                            <div class="card-body pb-1 pt-1">
+                                <div class="form-group mb-0 mt-1">
+                                    <label class="control-label">Jenis</label>
+                                </div>
+                                <div class="form-row col-sm ml-2">
+                                    <div class="custom-control custom-radio col-md-6 ">
+                                        <input class="custom-control-input" type="radio" asp-for="FlPOInden" value="0" checked>
+                                        <label class="custom-control-label" for="FlPOInden">
+                                            Pesanan Tempatan
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-radio col-md-6">
+                                        <input class="custom-control-input" type="radio" asp-for="FlPOInden" value="1">
+                                        <label class="custom-control-label" for="FlPOInden">
+                                            Inden Kerja
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

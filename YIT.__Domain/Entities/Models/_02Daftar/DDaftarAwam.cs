@@ -64,6 +64,6 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public DateTime? JangkaMasaHingga { get; set; }
         [DisplayName("Kod M2E")]
         public string? KodM2E { get; set; }
-
+        //public string? KodLama { get; set; } // dummy field; for migration purpos;e
     }
 }
