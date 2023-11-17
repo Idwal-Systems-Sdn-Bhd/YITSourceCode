@@ -30,7 +30,7 @@
                                 Tarikh
                             </th>
                             <th class="jumlah">
-                                Anggaran Jumlah
+                                Anggaran Jumlah RM
                             </th>
                             <th class="tindakan">
                                 Tindakan
@@ -117,15 +117,17 @@
                                     <div class="btn-group" role="group" aria-label="action">
                                         @if (item.FlHapus == 0)
                                         {
-                                                <a asp-action="Details" asp-route-id="@item.Id"
-                                                   class="btn text-primary btn-sm bg-white" type="button"
-                                                   data-toggle="tooltip" data-placement="top"
-                                                   title="Ubah/Papar"><i class="fas fa-edit"></i></a>
+                                            <a asp-action="Details" asp-route-id="@item.Id"
+                                               class="btn text-primary btn-sm bg-white" type="button"
+                                               data-toggle="tooltip" data-placement="top"
+                                               title="Ubah/Papar"><i class="fas fa-edit"></i></a>
+                                            @if (item.EnStatusBorang == EnStatusBorang.None)
+                                            {
                                                 <a asp-action="Delete" asp-route-id="@item.Id"
                                                    class="btn text-danger btn-sm bg-white" type="button"
                                                    data-toggle="tooltip" data-placement="top"
                                                    title="Hapus"><i class="fas fa-trash"></i></a>
-                                            
+                                            }
                                         }
                                         else
                                         {

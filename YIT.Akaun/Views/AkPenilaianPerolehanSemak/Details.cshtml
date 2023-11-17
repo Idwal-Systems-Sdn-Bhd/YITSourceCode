@@ -1,12 +1,12 @@
 ﻿@model AkPenilaianPerolehan
 
 @{
-    ViewData["Title"] = "Penilaian Perolehan - Papar";
+    ViewData["Title"] = "Semakan Penilaian Perolehan - Papar";
     Layout = "~/Views/Shared/_Layout.cshtml";
     decimal jumlahPerihal = 0;
 }
 
-<div class="card box-shadow">
+<div class="card box-shadow mb-2">
     <div class="card-body">
         <div class="row">
             <div class="col-8">
@@ -199,13 +199,27 @@
         <hr />
 
         <div class="form-group">
-            @if (Model.EnStatusBorang == EnStatusBorang.None)
-            {
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn ac-primary btn-sm">Ubah</a>
-            }
-
+            <a asp-action="Semak" asp-route-id="@Model.Id" asp-route-syscode="SPPB" asp-route-dKonfigKelulusanId="@ViewBag.DKonfigKelulusanId" class="btn ac-primary btn-sm">Semak</a>
             <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            
         </div>
 
+    </div>
+</div>
+<div class="card box-shadow">
+    <div class="card-body">
+        <form asp-action="HantarSemula">
+            <div asp-validation-summary="ModelOnly"></div>
+            <input type="hidden" asp-for="Id" />
+            <input name="syscode" value="SPPB" hidden />
+            <div class="row mb-2">
+                <div class="form-group">
+                    <label class="control-label">Tindakan</label>
+                    <textarea name="tindakan" class="form-control text-uppercase form-control-sm" rows="2" required></textarea>
+                    <span class="text-danger">sila isi ruang ini untuk operasi hantar semula</span>
+                </div>
+            </div>
+            <input type="submit" value="Hantar Semula" class="btn ac-danger btn-sm" />
+        </form>
     </div>
 </div>

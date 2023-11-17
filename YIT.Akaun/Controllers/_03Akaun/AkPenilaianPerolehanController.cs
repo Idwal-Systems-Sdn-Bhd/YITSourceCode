@@ -62,7 +62,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             PopulateFormFields(searchString, searchDate1, searchDate2);
             
-            var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetResults(searchString,date1,date2,searchColumn);
+            var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetResults(searchString,date1,date2,searchColumn, EnStatusBorang.Semua);
 
             return View(akPP);
         }
@@ -97,6 +97,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
+            if (akPP.EnStatusBorang != EnStatusBorang.None)
+            {
+                TempData[SD.Error] = "Hapus data tidak dibenarkan..!";
+                return (RedirectToAction(nameof(Index)));
+            }
+
             PopulateCartAkPenilaianPerolehanFromDb(akPP);
             return View(akPP);
         }
@@ -121,6 +127,23 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             string? fullName = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.Nama;
 
+            // check if there is pengesah available or not based on modul, kelulusan, and bahagian
+            if (_cart.AkPenilaianPerolehanObjek != null && _cart.AkPenilaianPerolehanObjek.Count() > 0)
+            {
+                foreach (var item in _cart.AkPenilaianPerolehanObjek)
+                {
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JBahagianId, akPP.Jumlah) == false)
+                    {
+                        TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
+                        ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PN.GetDisplayName(), akPP.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
+                        PopulateDropDownList(fullName ?? "");
+                        PopulateListViewFromCart();
+                        return View(akPP);
+                    }
+                }
+            }
+            //
+
             if (ModelState.IsValid)
             {
                 
@@ -128,7 +151,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 akPP.TarMasuk = DateTime.Now;
                 akPP.DPekerjaMasukId = pekerjaId;
 
-                akPP.AkPenilaianPerolehanObjek = _cart.AkPenilaianPerolehanObjek.ToList();
+                akPP.AkPenilaianPerolehanObjek = _cart.AkPenilaianPerolehanObjek?.ToList();
                 akPP.AkPenilaianPerolehanPerihal = _cart.AkPenilaianPerolehanPerihal.ToList();
 
                 _context.Add(akPP);
@@ -137,7 +160,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Success] = "Data berjaya ditambah..!";
                 return RedirectToAction(nameof(Index));
             }
-
+            ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PN.GetDisplayName(), akPP.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
             PopulateDropDownList(fullName ?? "");
             PopulateListViewFromCart();
             return View(akPP);
@@ -156,6 +179,11 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
+            if (akPP.EnStatusBorang != EnStatusBorang.None)
+            {
+                TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
+                return (RedirectToAction(nameof(Index)));
+            }
 
             EmptyCart();
             PopulateDropDownList(akPP.DPemohon?.Nama ?? "");
@@ -171,6 +199,22 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 return NotFound();
             }
+
+            // check if there is pengesah available or not based on modul, kelulusan, and bahagian
+            if (_cart.AkPenilaianPerolehanObjek != null && _cart.AkPenilaianPerolehanObjek.Count() > 0)
+            {
+                foreach (var item in _cart.AkPenilaianPerolehanObjek)
+                {
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JBahagianId, akPP.Jumlah) == false)
+                    {
+                        TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
+                        PopulateDropDownList(fullName ?? "");
+                        PopulateListViewFromCart();
+                        return View(akPP);
+                    }
+                }
+            }
+            //
 
             if (akPP.NoRujukan != null && ModelState.IsValid)
             {
@@ -208,7 +252,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                     akPP.UserIdKemaskini = user?.UserName ?? "";
                     akPP.TarKemaskini = DateTime.Now;
-                    akPP.AkPenilaianPerolehanObjek = _cart.AkPenilaianPerolehanObjek.ToList();
+                    akPP.AkPenilaianPerolehanObjek = _cart.AkPenilaianPerolehanObjek?.ToList();
                     akPP.AkPenilaianPerolehanPerihal = _cart.AkPenilaianPerolehanPerihal.ToList();
 
                     _unitOfWork.AkPenilaianPerolehanRepo.Update(akPP);
