@@ -67,5 +67,6 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public string? KodM2E { get; set; }
         public string? KodLama { get; set; } // dummy field; for migration purpos;e
         public ICollection<AkInden>? AkInden { get; set; }
+        public ICollection<AkPO>? AkPO { get; set; }
     }
 }

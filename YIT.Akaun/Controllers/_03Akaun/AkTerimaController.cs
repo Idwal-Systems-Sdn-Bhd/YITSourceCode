@@ -351,7 +351,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             }
 
                             // posting start here
-                            _unitOfWork.AkTerimaRepo.RemovePostingFromAkAkaun(akTerima, user?.UserName ?? "", pekerjaId);
+                            _unitOfWork.AkTerimaRepo.RemovePostingFromAkAkaun(akTerima, user?.UserName ?? "");
 
                             //insert applog
                             _appLog.Insert("UnPosting", "UnPosting Data", akTerima.NoRujukan, (int)id, akTerima.Jumlah, pekerjaId, modul, syscode, namamodul, user);

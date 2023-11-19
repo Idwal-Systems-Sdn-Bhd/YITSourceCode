@@ -19,7 +19,7 @@ namespace YIT._DataAccess.Services.Cart.Session
         }
         private ISession? Session { get; set; }
 
-        // PenilaianPerolehan
+        // PenilaianPerolehanObjek
         public override void AddItemObjek(int akPenilaianPerolehanId, int jBahagianId, int akCartaId, decimal amaun)
         {
             base.AddItemObjek(akPenilaianPerolehanId, jBahagianId, akCartaId, amaun);

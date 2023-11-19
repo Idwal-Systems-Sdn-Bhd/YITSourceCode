@@ -1,10 +1,48 @@
 ﻿<script type="text/javascript">
+
+    //pick penilaian perolehan
+    $("body").on('change', "#AkPenilaianPerolehanId", function () {
+        $("#objekAkCartaId option").prop('disabled', false);
+        $("#objekAkCartaId option[value='']").prop('disabled', true);
+        var akPenilaianPerolehanId = $("#AkPenilaianPerolehanId").val();
+        var akPOId = $("#Id").val();
+        EmptyCart();
+        if (akPenilaianPerolehanId != 0) {
+            GetAkPenilaianPerolehanDetails(akPenilaianPerolehanId, akPOId);
+        } else {
+
+        }
+
+    });
+
+    function GetAkPenilaianPerolehanDetails(akPenilaianPerolehanId, akPOId) {
+        if (akPenilaianPerolehanId != null) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAkPenilaianPerolehanDetails", "AkPO")',
+                data: { id: akPenilaianPerolehanId, akPOId: akPOId },
+                dataType: "json",
+                success: function (msg) {
+                    $("#JKWId").val(msg?.record?.jkw?.id).change();
+                    $("#DDaftarAwamId").val(msg?.record?.dDaftarAwam?.id).change();
+                    $("#DDaftarAwamId option").prop('disabled', false);
+
+                    PopulateTablesFromCart();
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+    }
+    // pick penilaian perolehan end
+
     //empty cart
     function EmptyCart() {
         $.ajax({
             type: "POST",
             //url: "/AkPV/JsonEmptyCart",
-            url: '@Url.Action("EmptyCart", "AkPenilaianPerolehan")',
+            url: '@Url.Action("EmptyCart", "AkPO")',
             dataType: "json",
             success: function (msg) {
                 $("table tbody#tbodyObjek").empty();
@@ -67,7 +105,7 @@
         var jumlahPerihal = $("#perihalJumlah");
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetAllItemCartAkPenilaianPerolehan", "AkPenilaianPerolehan")',
+            url: '@Url.Action("GetAllItemCartAkPO", "AkPO")',
             dataType: "json",
             success: function (r) {
 
@@ -144,7 +182,7 @@
                 toastr.options.timeOut = 2000; // 2s
             }
         }
-        
+
 
     });
 
@@ -156,7 +194,7 @@
         //Send the JSON array to Controller using AJAX.
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetJBahagianAkCarta", "AkPenilaianPerolehan")',
+            url: '@Url.Action("GetJBahagianAkCarta", "AkPO")',
             data: Objek,
             dataType: "json",
             success: function (r) {
@@ -166,8 +204,8 @@
 
                 var objekAmaun = $("#objekAmaun");
 
-                var AkPenilaianPerolehanObjek = {
-                    AkPenilaianPerolehanId: Id,
+                var AkPOObjek = {
+                    AkPOId: Id,
                     JBahagianId: objekJBahagianId.val(),
                     AkCartaId: objekAkCartaId.val(),
                     Amaun: objekAmaun.val()
@@ -175,8 +213,8 @@
                 //Send the JSON array to Controller to Save into session (cart)
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("SaveCartAkPenilaianPerolehanObjek", "AkPenilaianPerolehan")',
-                    data: AkPenilaianPerolehanObjek,
+                    url: '@Url.Action("SaveCartAkPOObjek", "AkPO")',
+                    data: AkPOObjek,
                     dataType: "json",
                     success: function (result) {
 
@@ -260,15 +298,15 @@
         sum = parseFloat(objekJumlah.val()) - parseFloat(objekAmaun);
         objekJumlah.val(sum.toFixed(2));
 
-        var AkPenilaianPerolehanObjek = {
+        var AkPOObjek = {
             JBahagianId: jBahagianId,
             AkCartaId: akCartaId
         }
-        if (AkPenilaianPerolehanObjek != null) {
+        if (AkPOObjek != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("RemoveCartAkPenilaianPerolehanObjek", "AkPenilaianPerolehan")',
-                data: AkPenilaianPerolehanObjek,
+                url: '@Url.Action("RemoveCartAkPOObjek", "AkPO")',
+                data: AkPOObjek,
                 dataType: "json",
                 success: function (r) {
                     //Delete the Table row using it's Index.
@@ -289,15 +327,15 @@
         var jBahagianId = $("TD", row).eq(0).html();
         var akCartaId = $("TD", row).eq(2).html();
 
-        var AkPenilaianPerolehanObjek = {
+        var AkPOObjek = {
             JBahagianId: jBahagianId,
             AkCartaId: akCartaId
         }
         if (jBahagianId != null && akCartaId != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetAnItemFromCartAkPenilaianPerolehanObjek", "AkPenilaianPerolehan")',
-                data: AkPenilaianPerolehanObjek,
+                url: '@Url.Action("GetAnItemFromCartAkPOObjek", "AkPO")',
+                data: AkPOObjek,
                 dataType: "json",
                 success: function (r) {
                     //insert data in modal objek
@@ -315,15 +353,15 @@
     };
 
     function UpdateModalObjek() {
-        var akPPId = $("#Id").val();
+        var akPOId = $("#Id").val();
         var id = $("#moObjekId").val();
         var amaun = $("#moObjekAmaun").val();
         var jBahagianId = $("#moObjekJBahagianId").val();
         var akCartaId = $("#moObjekAkCartaId").val();
         var jumlah = $("#Jumlah");
 
-        var AkPenilaianPerolehanObjek = {
-            AkPenilaianPerolehanId: akPPId,
+        var AkPOObjek = {
+            AkPOId: akPOId,
             Id: id,
             JBahagianId: jBahagianId,
             akCartaId: akCartaId,
@@ -331,8 +369,8 @@
         }
         $.ajax({
             type: "POST",
-            url: '@Url.Action("SaveAnItemFromCartAkPenilaianPerolehanObjek", "AkPenilaianPerolehan")',
-            data: AkPenilaianPerolehanObjek,
+            url: '@Url.Action("SaveAnItemFromCartAkPOObjek", "AkPO")',
+            data: AkPOObjek,
             dataType: "json",
             success: function (r) {
                 //insert notification here
@@ -360,7 +398,7 @@
                 GetBil(Id.val(), bil.val());
             }
         }
-        
+
 
     });
 
@@ -371,7 +409,7 @@
         //Send the JSON array to Controller using AJAX.
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetBil", "AkPenilaianPerolehan")',
+            url: '@Url.Action("GetBil", "AkPO")',
             data: Perihal,
             dataType: "json",
             success: function (r) {
@@ -388,8 +426,8 @@
                     var harga = $("#perihalHarga");
                     var amaun = $("#perihalAmaun");
 
-                    var AkPenilaianPerolehanPerihal = {
-                        AkPenilaianPerolehanId: Id,
+                    var AkPOPerihal = {
+                        AkPOId: Id,
                         Bil: bil,
                         Perihal: perihal.val(),
                         Kuantiti: kuantiti.val(),
@@ -400,8 +438,8 @@
                     //Send the JSON array to Controller to Save into session (cart)
                     $.ajax({
                         type: "POST",
-                        url: '@Url.Action("SaveCartAkPenilaianPerolehanPerihal", "AkPenilaianPerolehan")',
-                        data: AkPenilaianPerolehanPerihal,
+                        url: '@Url.Action("SaveCartAkPOPerihal", "AkPO")',
+                        data: AkPOPerihal,
                         dataType: "json",
                         success: function (result) {
 
@@ -496,14 +534,14 @@
         sum = parseFloat(jumlah.val()) - parseFloat(amaun);
         jumlah.val(sum.toFixed(2));
 
-        var AkPenilaianPerolehanPerihal = {
+        var AkPOPerihal = {
             Bil: bil
         }
-        if (AkPenilaianPerolehanPerihal != null) {
+        if (AkPOPerihal != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("RemoveCartAkPenilaianPerolehanPerihal", "AkPenilaianPerolehan")',
-                data: AkPenilaianPerolehanPerihal,
+                url: '@Url.Action("RemoveCartAkPOPerihal", "AkPO")',
+                data: AkPOPerihal,
                 dataType: "json",
                 success: function (r) {
                     //Delete the Table row using it's Index.
@@ -523,14 +561,14 @@
         var row = $(button).closest("TR");
         var bil = $("TD", row).eq(0).html();
 
-        var AkPenilaianPerolehanPerihal = {
+        var AkPOPerihal = {
             Bil: bil
         }
         if (bil != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetAnItemFromCartAkPenilaianPerolehanPerihal", "AkPenilaianPerolehan")',
-                data: AkPenilaianPerolehanPerihal,
+                url: '@Url.Action("GetAnItemFromCartAkPOPerihal", "AkPO")',
+                data: AkPOPerihal,
                 dataType: "json",
                 success: function (r) {
                     //insert data in modal perihal
@@ -551,7 +589,7 @@
     };
 
     function UpdateModalPerihal() {
-        var akPPId = $("#Id").val();
+        var akPOId = $("#Id").val();
         var id = $("#moPerihalId").val();
         var bil = $("#moPerihalBil").val();
         var perihal = $("#moPerihalPerihal").val();
@@ -561,8 +599,8 @@
         var amaun = $("#moPerihalAmaun").val();
         var jumlah = $("#perihalJumlah");
 
-        var AkPenilaianPerolehanPerihal = {
-            AkPenilaianPerolehanId: akPPId,
+        var AkPOPerihal = {
+            AkPOId: akPOId,
             Id: id,
             Bil: bil,
             Perihal: perihal,
@@ -573,8 +611,8 @@
         }
         $.ajax({
             type: "POST",
-            url: '@Url.Action("SaveAnItemFromCartAkPenilaianPerolehanPerihal", "AkPenilaianPerolehan")',
-            data: AkPenilaianPerolehanPerihal,
+            url: '@Url.Action("SaveAnItemFromCartAkPOPerihal", "AkPO")',
+            data: AkPOPerihal,
             dataType: "json",
             success: function (r) {
                 //insert notification here

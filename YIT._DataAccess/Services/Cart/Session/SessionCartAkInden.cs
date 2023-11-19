@@ -1,0 +1,63 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace YIT._DataAccess.Services.Cart.Session
+{
+    public class SessionCartAkInden : CartAkInden
+    {
+        public static CartAkInden GetCart(IServiceProvider services)
+        {
+            ISession session = services.GetRequiredService<IHttpContextAccessor>()?.HttpContext!.Session!;
+            SessionCartAkInden cart = session?.GetJson<SessionCartAkInden>("CartAkInden") ?? new SessionCartAkInden();
+            cart.Session = session;
+            return cart;
+        }
+        private ISession? Session { get; set; }
+
+        // IndenObjek
+        public override void AddItemObjek(int akIndenId, int jBahagianId, int akCartaId, decimal amaun)
+        {
+            base.AddItemObjek(akIndenId, jBahagianId, akCartaId, amaun);
+
+            Session?.SetJson("CartAkInden", this);
+        }
+
+        public override void RemoveItemObjek(int jBahagianId, int akCartaId)
+        {
+            base.RemoveItemObjek(jBahagianId, akCartaId);
+            Session?.SetJson("CartAkInden", this);
+        }
+
+        public override void ClearObjek()
+        {
+            base.ClearObjek();
+            Session?.Remove("CartAkInden");
+        }
+        //
+
+        //IndenPerihal
+        public override void AddItemPerihal(int akIndenId, decimal bil, string? perihal, decimal kuantiti, string? unit, decimal harga, decimal amaun)
+        {
+            base.AddItemPerihal(akIndenId, bil, perihal, kuantiti, unit, harga, amaun);
+            Session?.SetJson("CartAkInden", this);
+        }
+
+        public override void RemoveItemPerihal(decimal bil)
+        {
+            base.RemoveItemPerihal(bil);
+            Session?.SetJson("CartAkInden", this);
+        }
+
+        public override void ClearPerihal()
+        {
+            base.ClearPerihal();
+            Session?.Remove("CartAkInden");
+        }
+        //
+    }
+}

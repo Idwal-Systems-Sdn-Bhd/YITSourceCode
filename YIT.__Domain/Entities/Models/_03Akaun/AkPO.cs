@@ -21,12 +21,14 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? NoRujukan { get; set; }
         public DateTime Tarikh { get; set; }
         [DisplayName("Penilaian Perolehan")]
-        public int? AkPenilaianPerolehanId { get; set; }
+        public int AkPenilaianPerolehanId { get; set; }
         public AkPenilaianPerolehan? AkPenilaianPerolehan { get; set; }
-        public EnKaedahPerolehan EnKaedahPerolehan { get; set; }
+        [DisplayName("Jenis Perolehan")]
+        public EnJenisPerolehan EnJenisPerolehan { get; set; }
         [DisplayName("Jumlah RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Jumlah { get; set; }
+        [DisplayName("Kump. Wang")]
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         [DisplayName("Pembekal")]

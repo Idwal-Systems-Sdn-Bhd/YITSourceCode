@@ -10,6 +10,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
 {
     public interface IAkPenilaianPerolehanRepository : _IGenericRepository<AkPenilaianPerolehan>
     {
+        public List<AkPenilaianPerolehan> GetAllByJenis(int flPOInden);
         public List<AkPenilaianPerolehan> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang);
         public List<AkPenilaianPerolehan> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul);
         public List<AkPenilaianPerolehan> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPenilaianPerolehan> akPPList);
@@ -27,8 +28,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public Task<bool> IsBatalAsync(int id);
         public void Batal(int id, string? sebabBatal, string? userId);
 
-        public Task<bool> IsBudgetAvailableAsync(string? tahun, int jBahagianId, int akCartaId);
-        public Task<bool> IsInBudgetAsync(string? tahun, int jBahagianId,int akCartaId, decimal amaun);
 
     }
 }

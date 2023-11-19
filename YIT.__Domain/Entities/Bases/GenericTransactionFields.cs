@@ -44,6 +44,12 @@ namespace YIT.__Domain.Entities.Bases
         public int? DPelulusId { get; set; }
         public DKonfigKelulusan? DPelulus { get; set; }
         public DateTime? TarikhLulus { get; set; }
+
+        public int? DPekerjaPostingId { get; set; }
+        public DPekerja? DPekerjaPosting { get; set; }
+        public int FlPosting { get; set; }
+        public DateTime? TarikhPosting { get; set; }
+
         [DisplayName("Status")]
         public EnStatusBorang EnStatusBorang { get; set; }
         public string? Tindakan { get; set; }

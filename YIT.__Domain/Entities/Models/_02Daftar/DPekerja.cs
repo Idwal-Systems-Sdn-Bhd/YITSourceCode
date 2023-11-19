@@ -79,7 +79,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("Bahagian")]
         public int JBahagianId { get; set; }
         public JBahagian? JBahagian { get; set; }
-        public EnJenisKadPengenalan MyProperty { get; set; }
+        public EnJenisKadPengenalan EnJenisKadPengenalan { get; set; }
 
         public ICollection<JCawangan>? JCawangan { get; set; }
     }

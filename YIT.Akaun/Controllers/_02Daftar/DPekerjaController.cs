@@ -58,7 +58,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             {
                 if (ModelState.IsValid)
                 {
-                    pekerja.NoGaji = GenerateRunningNumber();
+                    //pekerja.NoGaji = GenerateRunningNumber();
 
                     var user = await _userManager.GetUserAsync(User);
                     int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
@@ -68,7 +68,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                     pekerja.DPekerjaMasukId = pekerjaId;
 
                     _context.Add(pekerja);
-                    _appLog.Insert("Tambah", pekerja.NoGaji + " - " + pekerja.Nama, pekerja.NoGaji, 0, 0, pekerjaId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Tambah", pekerja.NoGaji + " - " + pekerja.Nama, pekerja.NoGaji ?? "Tiada No Gaji", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya ditambah..!";
                     return RedirectToAction(nameof(Index));
@@ -80,7 +80,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                 TempData[SD.Error] = "Kad Pengenalan ini telah wujud..!";
             }
 
-            ViewBag.NoGaji = GenerateRunningNumber();
+            //ViewBag.NoGaji = GenerateRunningNumber();
             PopulateDropdownList();
             return View(pekerja);
         }

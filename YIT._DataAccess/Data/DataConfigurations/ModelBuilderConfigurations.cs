@@ -193,6 +193,12 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
             modelBuilder.Entity<AkInden>()
+                    .HasOne(m => m.JKW)
+                    .WithMany(t => t.AkInden)
+                    .HasForeignKey(m => m.JKWId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkInden>()
                     .HasOne(m => m.DDaftarAwam)
                     .WithMany(t => t.AkInden)
                     .HasForeignKey(m => m.DDaftarAwamId)
@@ -220,6 +226,18 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .HasOne(m => m.AkInden)
                     .WithMany(t => t.AkIndenPerihal)
                     .HasForeignKey(m => m.AkIndenId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPO>()
+                    .HasOne(m => m.JKW)
+                    .WithMany(t => t.AkPO)
+                    .HasForeignKey(m => m.JKWId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPO>()
+                    .HasOne(m => m.DDaftarAwam)
+                    .WithMany(t => t.AkPO)
+                    .HasForeignKey(m => m.DDaftarAwamId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
             modelBuilder.Entity<AkPOObjek>()

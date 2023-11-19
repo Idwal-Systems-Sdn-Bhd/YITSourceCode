@@ -177,7 +177,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             _context.AkTerima.Update(akTerima);
         }
 
-        public void RemovePostingFromAkAkaun(AkTerima akTerima, string userId, int? dPekerjaMasukId)
+        public void RemovePostingFromAkAkaun(AkTerima akTerima, string userId)
         {
             List<AkAkaun> akaunList = _context.AkAkaun.Where(ak => ak.NoRujukan == akTerima.NoRujukan).ToList();
 
@@ -190,6 +190,9 @@ namespace YIT._DataAccess.Repositories.Implementations
             akTerima.DPekerjaPostingId = null;
             akTerima.TarikhPosting = null;
             akTerima.FlPosting = 0;
+
+            akTerima.UserIdKemaskini = userId;
+            akTerima.TarKemaskini = DateTime.Now;
 
             _context.AkTerima.Update(akTerima);
         }
