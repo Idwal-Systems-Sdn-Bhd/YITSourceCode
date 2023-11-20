@@ -102,6 +102,24 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodLulusAkNotaMinta = "PP0006";
         public const string namaLulusAkNotaMinta = "Pemprosesan Lulus Nota Minta";
+
+        public const string kodSahAkPO = "PP0007";
+        public const string namaSahAkPO = "Pemprosesan Sah Pesanan Tempatan";
+
+        public const string kodSemaksAkPO = "PP0008";
+        public const string namaSemakAkPO = "Pemprosesan Semak Pesanan Tempatan";
+
+        public const string kodLulusAkPO = "PP0009";
+        public const string namaLulusAkPO = "Pemprosesan Lulus Pesanan Tempatan";
+
+        public const string kodSahAkInden = "PP0010";
+        public const string namaSahAkInden = "Pemprosesan Sah Inden Kerja";
+
+        public const string kodSemaksAkInden = "PP0011";
+        public const string namaSemakAkInden = "Pemprosesan Semak Inden Kerja";
+
+        public const string kodLulusAkInden = "PP0012";
+        public const string namaLulusAkInden = "Pemprosesan Lulus Inden Kerja";
         //
         // Laporan
         public const string kodLTerimaan = "LP0001";

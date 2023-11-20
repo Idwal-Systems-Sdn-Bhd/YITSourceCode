@@ -445,7 +445,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
-            ViewBag.AkPenilaianPerolehan = _unitOfWork.AkPenilaianPerolehanRepo.GetAllByJenis(0);
+            ViewBag.AkPenilaianPerolehan = _unitOfWork.AkPenilaianPerolehanRepo.GetAllByJenis(1);
         }
 
         private void PopulateCartAkIndenFromDb(AkInden akInden)

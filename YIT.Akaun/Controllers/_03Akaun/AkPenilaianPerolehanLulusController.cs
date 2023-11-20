@@ -95,11 +95,27 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 return NotFound();
             }
+            EmptyCart();
             ViewBag.DKonfigKelulusanId = HttpContext.Session.GetInt32("DPelulusId");
             PopulateCartAkPenilaianPerolehanFromDb(akPP);
             return View(akPP);
         }
 
+        // jsonResults
+        public JsonResult EmptyCart()
+        {
+            try
+            {
+                _cart.ClearObjek();
+                _cart.ClearPerihal();
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
         public async Task<IActionResult> Lulus(int id, int dKonfigKelulusanId, string syscode)
         {
             var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetById((int)id);
