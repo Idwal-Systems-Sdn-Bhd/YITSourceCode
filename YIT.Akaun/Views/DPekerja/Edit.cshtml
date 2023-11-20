@@ -24,7 +24,7 @@
             <input name="syscode" value="SPPB" hidden />
             <div class="form-group">
                 <label asp-for="NoGaji" class="control-label"></label>
-                <input asp-for="NoGaji" class="form-control form-control-sm" required readonly />
+                <input asp-for="NoGaji" class="form-control form-control-sm" />
                 <span asp-validation-for="NoGaji" class="text-danger"></span>
             </div>
             <div class="row">
@@ -95,18 +95,6 @@
                         <span asp-validation-for="NoAkaunBank" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label asp-for="JCaraBayarId" class="control-label"></label>
-                        <select asp-for="JCaraBayarId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
-                            @foreach (var item in ViewBag.JCaraBayar)
-                            {
-                                <option value="@item.Id">@item.Kod - @item.Perihal</option>
-                            }
-                        </select>
-                    </div>
-                </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -125,32 +113,6 @@
                     <div class="form-group">
                         <label asp-for="Emel" class="control-label"></label>
                         <input asp-for="Emel" class="form-control form-control-sm" type="email" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label asp-for="EnStatusKahwin" class="control-label"></label>
-                        <select asp-for="EnStatusKahwin" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
-                            @foreach (var item in ViewBag.EnStatusKahwin)
-                            {
-                                <option value="@item.id">@item.indek - @item.perihal</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label asp-for="BilAnak" class="control-label"></label>
-                        <input asp-for="BilAnak" class="form-control form-control-sm" step="1" />
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label asp-for="GajiPokok" class="control-label"></label>
-                        <input asp-for="GajiPokok" class="form-control form-control-sm" step="0.01" />
                     </div>
                 </div>
             </div>

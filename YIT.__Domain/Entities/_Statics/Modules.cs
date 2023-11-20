@@ -43,11 +43,10 @@ namespace YIT.__Domain.Entities._Statics
         //
 
         // Daftar 
-
         public const string kodDPekerja = "DF0001";
         public const string namaDPekerja = "Daftar Anggota";
 
-        public const string kodDPDaftarAwam = "DF0002";
+        public const string kodDDaftarAwam = "DF0002";
         public const string namaDDaftarAwam = "Daftar Awam";
 
         public const string kodDKonfigKelulusan = "DF0003";
@@ -63,23 +62,65 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodAkAkaun = "AK0003";
         public const string namaAkAkaun = "Akaun Bank Utama";
 
-        public const string kodAkTerima = "AK0004";
-        public const string namaAkTerima = "Akaun Resit Rasmi";
-
-        public const string kodAbBukuVot = "AK0005";
+        public const string kodAbBukuVot = "AK0004";
         public const string namaAbBukuVot = "Belanjawan Buku Vot";
 
-        public const string kodAbWaran = "AK0006";
+        public const string kodAbWaran = "AK0005";
         public const string namaAbWaran = "Belanjawan Waran";
-        // Tanggungan
 
+        public const string kodAkPenilaianPerolehan = "AK0006";
+        public const string namaAkPenilaianPerolehan = "Perolehan Penilaian Perolehan";
 
+        public const string kodAkNotaMinta = "AK0007";
+        public const string namaAkNotaMinta = "Perolehan Nota Minta";
+
+        public const string kodAkPO = "AK0008";
+        public const string namaAkPO = "Tanggungan Pesanan Tempatan";
+
+        public const string kodAkInden = "AK0009";
+        public const string namaAkInden = "Tanggungan Inden Kerja";
+
+        public const string kodAkTerima = "AK0010";
+        public const string namaAkTerima = "Terimaan Resit Rasmi";
         //
 
-        // Pelarasan
+        // Pemprosesan
+        public const string kodSahAkPenilaianPerolehan = "PP0001";
+        public const string namaSahAkPenilaianPerolehan = "Pemprosesan Sah Penilaian Perolehan";
 
+        public const string kodSemakAkPenilaianPerolehan = "PP0002";
+        public const string namaSemakAkPenilaianPerolehan = "Pemprosesan Semak Penilaian Perolehan";
+
+        public const string kodLulusAkPenilaianPerolehan = "PP0003";
+        public const string namaLulusAkPenilaianPerolehan = "Pemprosesan Lulus Penilaian Perolehan";
+
+        public const string kodSahAkNotaMinta = "PP0004";
+        public const string namaSahAkNotaMinta = "Pemprosesan Sah Nota Minta";
+
+        public const string kodSemakAkNotaMinta = "PP0005";
+        public const string namaSemakAkNotaMinta = "Pemprosesan Semak Nota Minta";
+
+        public const string kodLulusAkNotaMinta = "PP0006";
+        public const string namaLulusAkNotaMinta = "Pemprosesan Lulus Nota Minta";
+
+        public const string kodSahAkPO = "PP0007";
+        public const string namaSahAkPO = "Pemprosesan Sah Pesanan Tempatan";
+
+        public const string kodSemaksAkPO = "PP0008";
+        public const string namaSemakAkPO = "Pemprosesan Semak Pesanan Tempatan";
+
+        public const string kodLulusAkPO = "PP0009";
+        public const string namaLulusAkPO = "Pemprosesan Lulus Pesanan Tempatan";
+
+        public const string kodSahAkInden = "PP0010";
+        public const string namaSahAkInden = "Pemprosesan Sah Inden Kerja";
+
+        public const string kodSemaksAkInden = "PP0011";
+        public const string namaSemakAkInden = "Pemprosesan Semak Inden Kerja";
+
+        public const string kodLulusAkInden = "PP0012";
+        public const string namaLulusAkInden = "Pemprosesan Lulus Inden Kerja";
         //
-
         // Laporan
         public const string kodLTerimaan = "LP0001";
         public const string namaLTerimaan = "Laporan Daftar Resit";

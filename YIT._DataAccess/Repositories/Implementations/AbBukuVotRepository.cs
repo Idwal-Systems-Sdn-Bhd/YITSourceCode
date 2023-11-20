@@ -106,5 +106,35 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             return abBukuVot.OrderBy(bv => bv.Tarikh).ToList();
         }
+
+        public async Task<bool> IsBudgetExistAsync(string? tahun, int jBahagianId, int akCartaId)
+        {
+            return await _context.AbBukuVot.AnyAsync(pp => pp.Tahun == tahun && pp.JBahagianId == jBahagianId && pp.VotId == akCartaId);
+        }
+
+        public async Task<bool> IsInBudgetAsync(string? tahun, int jBahagianId, int akCartaId, decimal amaun)
+        {
+            // check if enough budget in abBukuVot
+            var sql = (from tbl in await _context.AbBukuVot
+                       .Include(x => x.Vot)
+            .Include(x => x.JBahagian)
+                       .Where(x => x.Tahun == tahun && x.VotId == akCartaId && x.JBahagianId == jBahagianId)
+                       .ToListAsync()
+                       select new
+                       {
+                           Id = tbl.VotId,
+                           Tahun = tbl.Tahun,
+                           Bahagian = tbl.JBahagian?.Kod,
+                           KodAkaun = tbl.Vot?.Kod,
+                           Debit = tbl.Debit,
+                           Kredit = tbl.Kredit,
+                           Tanggungan = tbl.Tanggungan,
+                           Liabiliti = tbl.Liabiliti,
+                           Baki = tbl.Baki
+                       }).GroupBy(x => new { x.Tahun, x.KodAkaun, x.Bahagian }).FirstOrDefault();
+
+            return amaun < sql?.Select(t => t.Baki + t.Kredit - t.Debit - t.Tanggungan).Sum();
+        }
+
     }
 }

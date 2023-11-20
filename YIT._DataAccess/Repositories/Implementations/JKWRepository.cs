@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace YIT._DataAccess.Repositories.Implementations
 {
@@ -16,6 +17,10 @@ namespace YIT._DataAccess.Repositories.Implementations
         public JKWRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
+        }
+        public List<JKW> GetAllDetails()
+        {
+            return _context.JKW.Include(ptj => ptj.AbWaran).ToList();
         }
     }
 }

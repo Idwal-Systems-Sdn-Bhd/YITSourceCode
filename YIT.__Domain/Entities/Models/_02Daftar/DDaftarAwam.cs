@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT.__Domain.Entities.Models._02Daftar
 {
@@ -43,14 +44,14 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public string? Telefon2 { get; set; }
         [DisplayName("No Telefon 3")]
         public string? Telefon3 { get; set; }
-        [DisplayName("Handphone")]
+        [DisplayName("Tel. Bimbit")]
         public string? Handphone { get; set; }
         public string? Emel { get; set; }
         [DisplayName("No Akaun Bank")]
         public string? NoAkaunBank { get; set; }
-        [DisplayName("Kategori")]
+        [DisplayName("Kategori Daftar Awam")]
         public EnKategoriDaftarAwam EnKategoriDaftarAwam { get; set; }
-        [DisplayName("Kategori")]
+        [DisplayName("Kategori Ahli")]
         public EnKategoriAhli EnKategoriAhli { get; set; }
         public string? Faks { get; set; }
         [DisplayName("Bekalan")]
@@ -62,6 +63,10 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("Jangka Masa")]
         public DateTime? JangkaMasaDari { get; set; }
         public DateTime? JangkaMasaHingga { get; set; }
-
+        [DisplayName("Kod M2E")]
+        public string? KodM2E { get; set; }
+        public string? KodLama { get; set; } // dummy field; for migration purpos;e
+        public ICollection<AkInden>? AkInden { get; set; }
+        public ICollection<AkPO>? AkPO { get; set; }
     }
 }

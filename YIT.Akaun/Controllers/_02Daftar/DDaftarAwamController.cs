@@ -17,8 +17,8 @@ namespace YIT.Akaun.Controllers._02Daftar
     [Authorize]
     public class DDaftarAwamController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "DF002";
-        public const string namamodul = "Daftar Daftar Awam";
+        public const string modul = Modules.kodDDaftarAwam;
+        public const string namamodul = Modules.namaDDaftarAwam;
 
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
@@ -280,7 +280,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
             var maxRefNo = _unitOfWork.DDaftarAwamRepo.GetMaxRefNo(nama);
             
-            return nama.Substring(0,1).ToUpper() + RunningNumberFormatter.GenerateRunningNumber("", maxRefNo, 0);
+            return nama.Substring(0,1).ToUpper() + RunningNumberFormatter.GenerateRunningNumber("", maxRefNo, "0000");
         }
 
         [HttpPost]

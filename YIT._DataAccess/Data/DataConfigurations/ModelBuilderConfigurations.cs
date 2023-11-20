@@ -38,6 +38,10 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<AkCarta>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkBank>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AbWaran>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<AkPenilaianPerolehan>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<AkNotaMinta>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<AkPO>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<AkInden>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             //
         }
 
@@ -138,6 +142,126 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .HasOne(m => m.JBahagian)
                     .WithMany(t => t.AbWaranObjek)
                     .HasForeignKey(m => m.JBahagianId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenilaianPerolehanObjek>()
+                    .HasOne(m => m.AkCarta)
+                    .WithMany(t => t.AkPenilaianPerolehanObjek)
+                    .HasForeignKey(m => m.AkCartaId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenilaianPerolehanObjek>()
+                    .HasOne(m => m.AkPenilaianPerolehan)
+                    .WithMany(t => t.AkPenilaianPerolehanObjek)
+                    .HasForeignKey(m => m.AkPenilaianPerolehanId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenilaianPerolehanObjek>()
+                    .HasOne(m => m.JBahagian)
+                    .WithMany(t => t.AkPenilaianPerolehanObjek)
+                    .HasForeignKey(m => m.JBahagianId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenilaianPerolehanPerihal>()
+                    .HasOne(m => m.AkPenilaianPerolehan)
+                    .WithMany(t => t.AkPenilaianPerolehanPerihal)
+                    .HasForeignKey(m => m.AkPenilaianPerolehanId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkNotaMintaObjek>()
+                    .HasOne(m => m.AkNotaMinta)
+                    .WithMany(t => t.AkNotaMintaObjek)
+                    .HasForeignKey(m => m.AkNotaMintaId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkNotaMintaObjek>()
+                    .HasOne(m => m.AkCarta)
+                    .WithMany(t => t.AkNotaMintaObjek)
+                    .HasForeignKey(m => m.AkCartaId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkNotaMintaObjek>()
+                    .HasOne(m => m.JBahagian)
+                    .WithMany(t => t.AkNotaMintaObjek)
+                    .HasForeignKey(m => m.JBahagianId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkNotaMintaPerihal>()
+                    .HasOne(m => m.AkNotaMinta)
+                    .WithMany(t => t.AkNotaMintaPerihal)
+                    .HasForeignKey(m => m.AkNotaMintaId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkInden>()
+                    .HasOne(m => m.JKW)
+                    .WithMany(t => t.AkInden)
+                    .HasForeignKey(m => m.JKWId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkInden>()
+                    .HasOne(m => m.DDaftarAwam)
+                    .WithMany(t => t.AkInden)
+                    .HasForeignKey(m => m.DDaftarAwamId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkIndenObjek>()
+                    .HasOne(m => m.AkCarta)
+                    .WithMany(t => t.AkIndenObjek)
+                    .HasForeignKey(m => m.AkCartaId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkIndenObjek>()
+                    .HasOne(m => m.JBahagian)
+                    .WithMany(t => t.AkIndenObjek)
+                    .HasForeignKey(m => m.JBahagianId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkIndenObjek>()
+                    .HasOne(m => m.AkInden)
+                    .WithMany(t => t.AkIndenObjek)
+                    .HasForeignKey(m => m.AkIndenId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkIndenPerihal>()
+                    .HasOne(m => m.AkInden)
+                    .WithMany(t => t.AkIndenPerihal)
+                    .HasForeignKey(m => m.AkIndenId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPO>()
+                    .HasOne(m => m.JKW)
+                    .WithMany(t => t.AkPO)
+                    .HasForeignKey(m => m.JKWId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPO>()
+                    .HasOne(m => m.DDaftarAwam)
+                    .WithMany(t => t.AkPO)
+                    .HasForeignKey(m => m.DDaftarAwamId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPOObjek>()
+                    .HasOne(m => m.AkCarta)
+                    .WithMany(t => t.AkPOObjek)
+                    .HasForeignKey(m => m.AkCartaId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPOObjek>()
+                    .HasOne(m => m.JBahagian)
+                    .WithMany(t => t.AkPOObjek)
+                    .HasForeignKey(m => m.JBahagianId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPOObjek>()
+                    .HasOne(m => m.AkPO)
+                    .WithMany(t => t.AkPOObjek)
+                    .HasForeignKey(m => m.AkPOId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPOPerihal>()
+                    .HasOne(m => m.AkPO)
+                    .WithMany(t => t.AkPOPerihal)
+                    .HasForeignKey(m => m.AkPOId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
         }
     }

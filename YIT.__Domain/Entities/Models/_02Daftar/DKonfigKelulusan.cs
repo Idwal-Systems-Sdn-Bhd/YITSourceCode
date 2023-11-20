@@ -9,7 +9,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YIT.__Domain.Entities.Models._01Jadual;
-using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT.__Domain.Entities.Models._02Daftar
 {
@@ -37,7 +36,5 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public string? KataLaluan { get; set; }
         [DisplayName("Tandatangan")]
         public string? Tandatangan { get; set; }
-
-        public ICollection<DKonfigKelulusanBahagian>? DKonfigKelulusanBahagian { get; set; }
     }
 }

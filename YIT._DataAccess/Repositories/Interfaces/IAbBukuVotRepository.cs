@@ -11,5 +11,8 @@ namespace YIT._DataAccess.Repositories.Interfaces
     {
         public List<T1> GetResults(string? Tahun, string? Carta1Id, string? Carta2Id);
         public Task<IEnumerable<T1>> GetResultsByDateRangeAsync(int? AkCartaId, string? Tahun, int? JKWId, int? JPTJId, int? JBahagianId, string? TarikhDari, string? TarikhHingga);
+        public Task<bool> IsBudgetExistAsync(string? tahun, int jBahagianId, int akCartaId);
+
+        public Task<bool> IsInBudgetAsync(string? tahun, int jBahagianId, int akCartaId, decimal amaun);
     }
 }

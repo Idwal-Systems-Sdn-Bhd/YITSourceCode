@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace YIT.__Domain.Entities._Enums
 {
-    public enum EnInitModul
+    public enum EnInitSistem
     {
+        // Global
         SI = 0, // sistem
-        J = 1,  // jadual
-        D = 2,  // daftar
+        JD = 1,  // jadual
+        DF = 2,  // daftar
+        //
+
         AK = 3, // akaun
         SU = 4, // sumber
         SW = 5, // sewaan

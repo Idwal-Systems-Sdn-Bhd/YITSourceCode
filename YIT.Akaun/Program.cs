@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Data.DataConfigurations;
-using YIT._DataAccess.Repositories.Implementations;
-using YIT._DataAccess.Repositories.Interfaces;
 using YIT._DataAccess.Services;
 using YIT.Akaun.Infrastructure;
 

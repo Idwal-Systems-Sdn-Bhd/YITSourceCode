@@ -39,13 +39,7 @@
                                 Negeri
                             </th>
                             <th>
-                                Status
-                            </th>
-                            <th>
                                 Bank
-                            </th>
-                            <th>
-                                Gaji Pokok RM
                             </th>
                             <th width="5%"></th>
                         </tr>
@@ -72,13 +66,7 @@
                                     @item.JNegeri?.Perihal
                                 </td>
                                 <td class="text-uppercase">
-                                    @item.EnStatusKahwin
-                                </td>
-                                <td class="text-uppercase">
                                     @item.JBank?.Perihal
-                                </td>
-                                <td class="text-uppercase text-end">
-                                    @Convert.ToDecimal(item.GajiPokok).ToString("#,##0.00")
                                 </td>
                                 <td width="5%" class="text-center">
                                     <div class="btn-group" role="group" aria-label="action">

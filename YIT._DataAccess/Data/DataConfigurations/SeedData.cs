@@ -4,12 +4,7 @@ using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
 using YIT.__Domain.Entities.Models._00Sistem;
 using YIT.__Domain.Entities.Models._01Jadual;
-using YIT.__Domain.Entities.Models._03Akaun;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using YIT.__Domain.Entities.Models._02Daftar;
 
 namespace YIT._DataAccess.Data.DataConfigurations
 {
@@ -340,243 +335,471 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     new JBank
                     {
                         Kod = "01",
-                        Perihal = "MAYBANK"
+                        Perihal = "AFFIN BANK BERHAD",
+                        KodBNMEFT = "PHBMMYKL",
+                        Length1 = 12
                     },
                     new JBank
                     {
                         Kod = "02",
-                        Perihal = "BANK ISLAM"
+                        Perihal = "AFFIN ISLAMIC BANK",
+                        KodBNMEFT = "PHBMMYKL",
+                        Length2 = 12
                     },
                      new JBank
                      {
                          Kod = "03",
-                         Perihal = "AFFIN"
+                         Perihal = "ALLIANCE BANK",
+                         KodBNMEFT = "MFBBMYKL",
+                         Length1 = 15
                      },
                       new JBank
                       {
                           Kod = "04",
-                          Perihal = "HONG LEONG"
+                          Perihal = "ALLIANCE ISLAMIC BANK",
+                          KodBNMEFT = "MFBBMYKL",
+                          Length1 = 15
+                      },
+                      new JBank
+                      {
+                          Kod = "05",
+                          Perihal = "AL-RAJHI BANKING INVESTMENT",
+                          KodBNMEFT = "RJHIMYKL",
+                          Length1 = 15
+
+                      },
+                      new JBank
+                      {
+                          Kod = "06",
+                          Perihal = "AMBANK",
+                          KodBNMEFT = "ARBKMYKL",
+                          Length1 = 13,
+                          Length2 = 12
+                      },
+                      new JBank
+                      {
+                          Kod = "07",
+                          Perihal = "AMBANK ISLAMIC",
+                          KodBNMEFT = "MFBBMYKL",
+                          Length1 = 13
+                      },
+                      new JBank
+                      {
+                          Kod = "08",
+                          Perihal = "BANK ISLAM",
+                          KodBNMEFT = "BIMBMYKL",
+                          Length1 = 14
+                      },
+                      new JBank
+                      {
+                          Kod = "09",
+                          Perihal = "BANK MUAMALAT",
+                          KodBNMEFT = "BMMBMYKL",
+                          Length1 = 14
+                      },
+                      new JBank
+                      {
+                          Kod = "10",
+                          Perihal = "BANK RAKYAT",
+                          KodBNMEFT = "BKRMMYKL",
+                          Length1 = 12,
+                          Length2 = 10
+                      },
+                      new JBank
+                      {
+                          Kod = "11",
+                          Perihal = "BANK SIMPANAN NASIONAL",
+                          KodBNMEFT = "BSNAMYK1",
+                          Length1 = 16,
+                          Length2 = 21
+                      },
+                      new JBank
+                      {
+                          Kod = "12",
+                          Perihal = "BANK SIMPANAN NASIONAL - SPI",
+                          KodBNMEFT = "BSNAMYK1",
+                          Length1 = 16,
+                          Length2 = 21
+                      },
+                      new JBank
+                      {
+                          Kod = "13",
+                          Perihal = "BANK PERTANIAN MALAYSIA",
+                          KodBNMEFT = "AGOBMYK1",
+                          Length1 = 16
+                      },
+                      new JBank
+                      {
+                          Kod = "14",
+                          Perihal = "CIMB (BCB)",
+                          KodBNMEFT = "CIBBMYKL",
+                          Length1 = 14,
+                          Length2 = 10
+                      },
+                      new JBank
+                      {
+                          Kod = "15",
+                          Perihal = "CIMB ISLAMIC",
+                          KodBNMEFT = "CIBBMYKL",
+                          Length1 = 14,
+                          Length2 = 10
+                      },
+                      new JBank
+                      {
+                          Kod = "16",
+                          Perihal = "CIMB (SOUTHERN)",
+                          KodBNMEFT = "CIBBMYKL",
+                          Length1 = 14,
+                          Length2 = 10
+                      },
+                      new JBank
+                      {
+                          Kod = "17",
+                          Perihal = "EON BANK BHD",
+                          KodBNMEFT = "HLBBMYKL",
+                          Length1 = 17 //kiv
+                      },
+                      new JBank
+                      {
+                          Kod = "18",
+                          Perihal = "EONCAP ISLAMIC BANK",
+                          KodBNMEFT = "HLBBMYKL",
+                          Length1 = 18 //kiv
+                      },
+                      new JBank
+                      {
+                          Kod = "19",
+                          Perihal = "HONG LEONG",
+                          KodBNMEFT = "HLBBMYKL",
+                          Length1 = 13,
+                          Length2 = 11
+                      },
+                      new JBank
+                      {
+                          Kod = "20",
+                          Perihal = "HONG LEONG ISLAMIC BANK",
+                          KodBNMEFT = "HLBBMYKL",
+                          Length1 = 13
+                      },
+                      new JBank
+                      {
+                          Kod = "21",
+                          Perihal = "HSBC AMANAH",
+                          KodBNMEFT = "HBMBMYKL",
+                          Length1 = 17,
+                          Length2 = 12
+                      },
+                      new JBank
+                      {
+                          Kod = "22",
+                          Perihal = "HSBC - ISLAMIC",
+                          KodBNMEFT = "HBMBMYKL",
+                          Length1 = 17
+                      },
+                      new JBank
+                      {
+                          Kod = "23",
+                          Perihal = "HSBC",
+                          KodBNMEFT = "HBMBMYKL",
+                          Length1 = 17
+                      },
+                      new JBank
+                      {
+                          Kod = "24",
+                          Perihal = "MAYBANK",
+                          KodBNMEFT = "MBBEMYKL",
+                          Length1 = 12
+                      },
+                      new JBank
+                      {
+                          Kod = "25",
+                          Perihal = "MAYBANK ISLAMIC",
+                          KodBNMEFT = "MBBEMYKL",
+                          Length1 = 12
+                      },
+                      new JBank
+                      {
+                          Kod = "26",
+                          Perihal = "OCBC BANK BHD",
+                          KodBNMEFT = "OCBCMYKL",
+                          Length1 = 10
+                      },
+                      new JBank
+                      {
+                          Kod = "27",
+                          Perihal = "OCBC AL AMIN BANK",
+                          KodBNMEFT = "OCBCMYKL",
+                          Length1 = 10
+                      },
+                      new JBank
+                      {
+                          Kod = "28",
+                          Perihal = "PUBLIC BANK BERHAD",
+                          KodBNMEFT = "PBBEMYKL",
+                          Length1 = 10
+                      },
+                      new JBank
+                      {
+                          Kod = "29",
+                          Perihal = "PUBLIC ISLAMIC BANK BERHAD",
+                          KodBNMEFT = "PBBEMYKL",
+                          Length1 = 10
+                      },
+                      new JBank
+                      {
+                          Kod = "30",
+                          Perihal = "RHB BANK BERHAD",
+                          KodBNMEFT = "RHBBMYKL",
+                          Length1 = 14
+                      },
+                      new JBank
+                      {
+                          Kod = "31",
+                          Perihal = "RHB ISLAMIC BANK",
+                          KodBNMEFT = "RHBBMYKL",
+                          Length1 = 14
+                      },
+                      new JBank
+                      {
+                          Kod = "32",
+                          Perihal = "STANDARD CHARTERED",
+                          KodBNMEFT = "SCBLMYKX",
+                          Length1 = 17
+                      },
+                      new JBank
+                      {
+                          Kod = "33",
+                          Perihal = "UNITED OVERSEAS BANK",
+                          KodBNMEFT = "UOVBMYKL",
+                          Length1 = 17
+                      },
+                      new JBank
+                      {
+                          Kod = "34",
+                          Perihal = "CITI BANK BHD",
+                          KodBNMEFT = "CITIMYKL",
+                          Length1 = 16
                       }
                     );
 
             }
 
-            if (context.AkCarta.Any())
-            {
+            //if (context.AkCarta.Any())
+            //{
 
-            }
-            else
-            {
-                {
-                    context.AkCarta.AddRange(
-                        new AkCarta
-                        {
-                            Kod = "A10000",
-                            Perihal = "ASET SEMASA",
-                            DebitKredit = "D",
-                            UmumDetail = "U",
-                            Baki = 0,
-                            EnJenis = EnJenisCarta.Aset,
-                            EnParas = EnParas.Paras1
-                        },
-                        new AkCarta
-                        {
-                            Kod = "A11000",
-                            Perihal = "WANG TUNAI DAN BAKI BANK",
-                            DebitKredit = "D",
-                            UmumDetail = "U",
-                            Baki = 0,
-                            EnJenis = EnJenisCarta.Aset,
-                            EnParas = EnParas.Paras2
-                        },
-                    new AkCarta
-                    {
-                        Kod = "A11100",
-                        Perihal = "WANG TUNAI DAN BAKI BANK",
-                        DebitKredit = "D",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Aset,
-                        EnParas = EnParas.Paras3
-                    },
-                    new AkCarta
-                    {
-                        Kod = "A11101",
-                        Perihal = "AKAUN BANK UTAMA",
-                        DebitKredit = "D",
-                        UmumDetail = "D",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Aset,
-                        EnParas = EnParas.Paras4
-                    },
-                    //
-                    // Belanja
-                    new AkCarta
-                    {
-                        Kod = "B10000",
-                        Perihal = "GAJI DAN UPAH",
-                        DebitKredit = "D",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Belanja,
-                        EnParas = EnParas.Paras1
-                    },
-                    new AkCarta
-                    {
-                        Kod = "B11000",
-                        Perihal = "GAJI DAN UPAH",
-                        DebitKredit = "D",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Belanja,
-                        EnParas = EnParas.Paras2
-                    },
-                    new AkCarta
-                    {
-                        Kod = "B11100",
-                        Perihal = "GAJI DAN UPAH KAKITANGAN",
-                        DebitKredit = "D",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Belanja,
-                        EnParas = EnParas.Paras3
-                    },
-                    new AkCarta
-                    {
-                        Kod = "B11101",
-                        Perihal = "GAJI DAN UPAH - KAKITANGAN",
-                        DebitKredit = "D",
-                        UmumDetail = "D",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Belanja,
-                        EnParas = EnParas.Paras4
-                    },
-                    // LIABILITI
-                    new AkCarta
-                    {
-                        Kod = "L10000",
-                        Perihal = "LIABILITI SEMASA",
-                        DebitKredit = "K",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Liabiliti,
-                        EnParas = EnParas.Paras1
-                    },
-                    new AkCarta
-                    {
-                        Kod = "L11000",
-                        Perihal = "AKAUN BELUM BAYAR",
-                        DebitKredit = "K",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Liabiliti,
-                        EnParas = EnParas.Paras2
-                    },
-                    new AkCarta
-                    {
-                        Kod = "L11100",
-                        Perihal = "AKAUN BELUM BAYAR",
-                        DebitKredit = "K",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Liabiliti,
-                        EnParas = EnParas.Paras3
-                    },
-                    new AkCarta
-                    {
-                        Kod = "L11101",
-                        Perihal = "AKAUN BELUM BAYAR",
-                        DebitKredit = "K",
-                        UmumDetail = "D",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Liabiliti,
-                        EnParas = EnParas.Paras4
-                    },
-                    // EKUITI
-                    new AkCarta
-                    {
-                        Kod = "E10000",
-                        Perihal = "EKUITI",
-                        DebitKredit = "K",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Ekuiti,
-                        EnParas = EnParas.Paras1
-                    },
-                    new AkCarta
-                    {
-                        Kod = "E11000",
-                        Perihal = "RIZAB",
-                        DebitKredit = "K",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Ekuiti,
-                        EnParas = EnParas.Paras2
-                    },
-                    new AkCarta
-                    {
-                        Kod = "E11100",
-                        Perihal = "RIZAB",
-                        DebitKredit = "K",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Ekuiti,
-                        EnParas = EnParas.Paras3
-                    },
-                    new AkCarta
-                    {
-                        Kod = "E11101",
-                        Perihal = "RIZAB PENILAIAN SEMULA TANAH",
-                        DebitKredit = "K",
-                        UmumDetail = "D",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Ekuiti,
-                        EnParas = EnParas.Paras4
-                    },
-                    // HASIL
-                    new AkCarta
-                    {
-                        Kod = "H70000",
-                        Perihal = "HASIL",
-                        DebitKredit = "K",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Hasil,
-                        EnParas = EnParas.Paras1
-                    },
-                    new AkCarta
-                    {
-                        Kod = "H71000",
-                        Perihal = "PELBAGAI TERIMAAN UNTUK PERKHIDMATAN",
-                        DebitKredit = "K",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Hasil,
-                        EnParas = EnParas.Paras2
-                    },
-                    new AkCarta
-                    {
-                        Kod = "H71100",
-                        Perihal = "KOMISEN ATAS SUMBANGAN",
-                        DebitKredit = "K",
-                        UmumDetail = "U",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Hasil,
-                        EnParas = EnParas.Paras3
-                    },
-                    new AkCarta
-                    {
-                        Kod = "H71101",
-                        Perihal = "KOMISEN ATAS SUMBANGAN",
-                        DebitKredit = "K",
-                        UmumDetail = "D",
-                        Baki = 0,
-                        EnJenis = EnJenisCarta.Hasil,
-                        EnParas = EnParas.Paras4
-                    }
-                        );
-                }
-            }
+            //}
+            //else
+            //{
+            //    {
+            //        context.AkCarta.AddRange(
+            //            new AkCarta
+            //            {
+            //                Kod = "A10000",
+            //                Perihal = "ASET SEMASA",
+            //                DebitKredit = "D",
+            //                UmumDetail = "U",
+            //                Baki = 0,
+            //                EnJenis = EnJenisCarta.Aset,
+            //                EnParas = EnParas.Paras1
+            //            },
+            //            new AkCarta
+            //            {
+            //                Kod = "A11000",
+            //                Perihal = "WANG TUNAI DAN BAKI BANK",
+            //                DebitKredit = "D",
+            //                UmumDetail = "U",
+            //                Baki = 0,
+            //                EnJenis = EnJenisCarta.Aset,
+            //                EnParas = EnParas.Paras2
+            //            },
+            //        new AkCarta
+            //        {
+            //            Kod = "A11100",
+            //            Perihal = "WANG TUNAI DAN BAKI BANK",
+            //            DebitKredit = "D",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Aset,
+            //            EnParas = EnParas.Paras3
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "A11101",
+            //            Perihal = "AKAUN BANK UTAMA",
+            //            DebitKredit = "D",
+            //            UmumDetail = "D",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Aset,
+            //            EnParas = EnParas.Paras4
+            //        },
+            //        //
+            //        // Belanja
+            //        new AkCarta
+            //        {
+            //            Kod = "B10000",
+            //            Perihal = "GAJI DAN UPAH",
+            //            DebitKredit = "D",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Belanja,
+            //            EnParas = EnParas.Paras1
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "B11000",
+            //            Perihal = "GAJI DAN UPAH",
+            //            DebitKredit = "D",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Belanja,
+            //            EnParas = EnParas.Paras2
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "B11100",
+            //            Perihal = "GAJI DAN UPAH KAKITANGAN",
+            //            DebitKredit = "D",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Belanja,
+            //            EnParas = EnParas.Paras3
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "B11101",
+            //            Perihal = "GAJI DAN UPAH - KAKITANGAN",
+            //            DebitKredit = "D",
+            //            UmumDetail = "D",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Belanja,
+            //            EnParas = EnParas.Paras4
+            //        },
+            //        // LIABILITI
+            //        new AkCarta
+            //        {
+            //            Kod = "L10000",
+            //            Perihal = "LIABILITI SEMASA",
+            //            DebitKredit = "K",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Liabiliti,
+            //            EnParas = EnParas.Paras1
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "L11000",
+            //            Perihal = "AKAUN BELUM BAYAR",
+            //            DebitKredit = "K",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Liabiliti,
+            //            EnParas = EnParas.Paras2
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "L11100",
+            //            Perihal = "AKAUN BELUM BAYAR",
+            //            DebitKredit = "K",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Liabiliti,
+            //            EnParas = EnParas.Paras3
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "L11101",
+            //            Perihal = "AKAUN BELUM BAYAR",
+            //            DebitKredit = "K",
+            //            UmumDetail = "D",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Liabiliti,
+            //            EnParas = EnParas.Paras4
+            //        },
+            //        // EKUITI
+            //        new AkCarta
+            //        {
+            //            Kod = "E10000",
+            //            Perihal = "EKUITI",
+            //            DebitKredit = "K",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Ekuiti,
+            //            EnParas = EnParas.Paras1
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "E11000",
+            //            Perihal = "RIZAB",
+            //            DebitKredit = "K",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Ekuiti,
+            //            EnParas = EnParas.Paras2
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "E11100",
+            //            Perihal = "RIZAB",
+            //            DebitKredit = "K",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Ekuiti,
+            //            EnParas = EnParas.Paras3
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "E11101",
+            //            Perihal = "RIZAB PENILAIAN SEMULA TANAH",
+            //            DebitKredit = "K",
+            //            UmumDetail = "D",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Ekuiti,
+            //            EnParas = EnParas.Paras4
+            //        },
+            //        // HASIL
+            //        new AkCarta
+            //        {
+            //            Kod = "H70000",
+            //            Perihal = "HASIL",
+            //            DebitKredit = "K",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Hasil,
+            //            EnParas = EnParas.Paras1
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "H71000",
+            //            Perihal = "PELBAGAI TERIMAAN UNTUK PERKHIDMATAN",
+            //            DebitKredit = "K",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Hasil,
+            //            EnParas = EnParas.Paras2
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "H71100",
+            //            Perihal = "KOMISEN ATAS SUMBANGAN",
+            //            DebitKredit = "K",
+            //            UmumDetail = "U",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Hasil,
+            //            EnParas = EnParas.Paras3
+            //        },
+            //        new AkCarta
+            //        {
+            //            Kod = "H71101",
+            //            Perihal = "KOMISEN ATAS SUMBANGAN",
+            //            DebitKredit = "K",
+            //            UmumDetail = "D",
+            //            Baki = 0,
+            //            EnJenis = EnJenisCarta.Hasil,
+            //            EnParas = EnParas.Paras4
+            //        }
+            //            );
+            //    }
+            //}
 
             context.SaveChanges();
             // -- First Layer Insert END
@@ -691,6 +914,50 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     );
             }
 
+            if (context.DDaftarAwam.Any())
+            {
+
+            } else
+            {
+                context.DDaftarAwam.AddRange(
+                    new DDaftarAwam
+                    {
+                        Kod = "I0001",
+                        Nama = "IDWAL SYSTEMS SDN BHD",
+                        JNegeriId = 10,
+                        JBankId = 9,
+                        NoPendaftaran = "187842-T",
+                        NoKPLama = "",
+                        Alamat1 = "Lot 605G, Kompleks Diamond",
+                        Alamat2 = "Bangi Business Park",
+                        Alamat3 = "Jalan Medan Bangi, Off Persiaran Bandar",
+                        Poskod = "43650",
+                        Bandar = "Bandar Baru Bangi",
+                        Telefon1 = "03-89663520",
+                        Telefon2 = "",
+                        Telefon3 = "",
+                        Handphone = "",
+                        Emel = "far@idwal.com.my",
+                        NoAkaunBank = "1234567890",
+                        EnKategoriAhli = EnKategoriAhli.Tiada,
+                        EnKategoriDaftarAwam = EnKategoriDaftarAwam.Pembekal,
+                        Faks = "03-89663520",
+                        IsBekalan = false,
+                        IsPerkhidmatan = true,
+                        IsKerja = false,
+                        JangkaMasaDari = null,
+                        JangkaMasaHingga = null,
+                        KodM2E = "PI0001",
+                        DPekerjaMasukId = null,
+                        UserId = "superadmin@idwal.com.my",
+                        TarMasuk = DateTime.Now,
+                        DPekerjaKemaskiniId = null,
+                        TarKemaskini = null,
+                        FlHapus = 0,
+                        TarHapus = null,
+                        SebabHapus = ""
+                    });
+            }
             context.SaveChanges();
             // -- Second Layer Insert END
 
@@ -816,5 +1083,6 @@ namespace YIT._DataAccess.Data.DataConfigurations
 
             // -- Third Layer Insert END
         }
+    
     }
 }

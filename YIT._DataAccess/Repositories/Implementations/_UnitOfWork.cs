@@ -36,6 +36,12 @@ namespace YIT._DataAccess.Repositories.Implementations
             AkTerimaRepo = new AkTerimaRepository(_context);
 
             AbWaranRepo = new AbWaranRepository(_context);
+
+            AkPenilaianPerolehanRepo = new AkPenilaianPerolehanRepository(_context);
+            AkNotaMintaRepo = new AkNotaMintaRepository(_context);
+
+            AkPORepo = new AkPORepository(_context);
+            AkIndenRepo = new AkIndenRepository(_context);
         }
 
         public IJKWRepository JKWRepo { get; private set; }
@@ -67,6 +73,14 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public IAkTerimaRepository AkTerimaRepo {get; private set;}
         public IAbWaranRepository AbWaranRepo { get; private set; }
+
+        public IAkPenilaianPerolehanRepository AkPenilaianPerolehanRepo { get; private set; }
+
+        public IAkPORepository AkPORepo { get; private set; }
+
+        public IAkNotaMintaRepository AkNotaMintaRepo { get; private set; }
+
+        public IAkIndenRepository AkIndenRepo { get; private set; }
 
         public void Dispose()
         {
