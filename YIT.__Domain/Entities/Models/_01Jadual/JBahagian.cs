@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YIT.__Domain.Entities.Models._03Akaun;
+using YIT.__Domain.Entities.Models._02Daftar;
 
 namespace YIT.__Domain.Entities.Models._01Jadual
 {

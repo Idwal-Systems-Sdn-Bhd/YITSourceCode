@@ -18,12 +18,12 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public List<DKonfigKelulusan> GetAllDetails()
         {
-            return _context.DKonfigKelulusan.Include(kk => kk.DPekerja).ToList();
+            return _context.DKonfigKelulusan.Include(p => p.DPekerja).Include(p => p.JBahagian).ToList();
         }
 
         public DKonfigKelulusan GetAllDetailsById(int id)
         {
-            return _context.DKonfigKelulusan.Include(kk => kk.DPekerja).FirstOrDefault(kk => kk.Id == id) ?? new DKonfigKelulusan();
+            return _context.DKonfigKelulusan.Include(p => p.DPekerja).Include(p => p.JBahagian).FirstOrDefault(p => p.Id == id) ?? new DKonfigKelulusan();
         }
 
         public List<DKonfigKelulusan> GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan enKategoriKelulusan)
