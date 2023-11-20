@@ -23,15 +23,20 @@
             <input type="hidden" asp-for="Id" />
             <input name="syscode" value="SPPB" hidden />
             <input asp-for="DPekerjaId" hidden />
+            <input asp-for="JBahagianId" hidden />
+@*             <input asp-for="EnKategoriKelulusan" hidden />
+            <input asp-for="EnJenisModul" hidden />
+            <input asp-for="KataLaluan" hidden /> *@
+
             <div class="form-group">
                 <label asp-for="DPekerjaId" class="control-label"></label>
-                <input class="form-control form-control-sm text-uppercase" value="@Model.DPekerja?.NoGaji - @Model.DPekerja?.Nama" readonly/>
+                <input class="form-control form-control-sm text-uppercase" value="@Model.DPekerja?.NoGaji - @Model.DPekerja?.Nama" readonly />
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="EnKategoriKelulusan" class="control-label"></label>
-                        <select asp-for="EnKategoriKelulusan" class="form-control form-control-sm text-uppercase">
+                        <select asp-for="EnKategoriKelulusan" class="form-control form-control-sm text-uppercase" readonly>
                             <option value="0">- SILA PILIH -</option>
                             @foreach (var item in ViewBag.EnKategoriKelulusan)
                             {
@@ -43,7 +48,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="EnJenisModul" class="control-label"></label>
-                        <select asp-for="EnJenisModul" class="form-control form-control-sm text-uppercase">
+                        <select asp-for="EnJenisModul" class="form-control form-control-sm text-uppercase" readonly>
                             <option value="0">- SILA PILIH -</option>
                             @foreach (var item in ViewBag.EnJenisModul)
                             {
@@ -53,18 +58,22 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group">
+                <label asp-for="JBahagianId" class="control-label"></label>
+                <input class="form-control form-control-sm text-uppercase" value="@Model.JBahagian?.Kod - @Model.JBahagian?.Perihal" readonly />
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="KataLaluan" class="control-label"></label>
-                        <input asp-for="KataLaluan" class="form-control form-control-sm text-uppercase" type="text" />
+                        <input asp-for="KataLaluan" class="form-control form-control-sm text-uppercase" type="text" readonly />
                         <span asp-validation-for="KataLaluan" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                         <div class="form-group">
                             <label asp-for="Tandatangan" class="control-label"></label>
-                            <input asp-for="Tandatangan" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="Tandatangan" class="form-control form-control-sm text-uppercase" readonly />
                             <span asp-validation-for="Tandatangan" class="text-danger"></span>
                         </div>
                 </div>
@@ -73,14 +82,14 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="MinAmaun" class="control-label"></label>
-                        <input asp-for="MinAmaun" class="form-control form-control-sm" required />
+                        <input asp-for="MinAmaun" class="form-control form-control-sm"/>
                         <span asp-validation-for="MinAmaun" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="MaksAmaun" class="control-label text-white"></label>
-                        <input asp-for="MaksAmaun" class="form-control form-control-sm text-uppercase" required />
+                        <input asp-for="MaksAmaun" class="form-control form-control-sm text-uppercase" />
                         <span asp-validation-for="MaksAmaun" class="text-danger"></span>
                     </div>
                 </div>

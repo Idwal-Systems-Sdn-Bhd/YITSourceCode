@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YIT.__Domain.Entities.Models._03Akaun;
+using YIT.__Domain.Entities.Models._02Daftar;
 
 namespace YIT.__Domain.Entities.Models._01Jadual
 {
@@ -25,5 +26,6 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public ICollection<AkAkaun>? AkAkaun { get; set; }
         public ICollection<AkTerimaObjek>? AkTerimaObjek { get; set; }
         public ICollection<AbWaranObjek>? AbWaranObjek { get; set; }
+        public ICollection<DKonfigKelulusanBahagian>? DKonfigKelulusanBahagian { get; set; }
     }
 }

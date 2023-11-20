@@ -32,6 +32,9 @@
                             <th>
                                 Modul
                             </th>
+                            <th>
+                                Bahagian
+                            </th>
                             <th class="perihal">
                                 Min. Amaun RM
                             </th>
@@ -55,6 +58,9 @@
                                 </td>
                                 <td class="text-uppercase">
                                     @item.EnJenisModul
+                                </td>
+                                <td class="text-uppercase">
+                                    @item.JBahagian?.Perihal
                                 </td>
                                 <td class="text-uppercase text-end">
                                     @Convert.ToDecimal(item.MinAmaun).ToString("#,##0.00")

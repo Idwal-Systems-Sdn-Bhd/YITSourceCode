@@ -15,8 +15,8 @@ namespace YIT.Akaun.Controllers._02Daftar
     [Authorize]
     public class DKonfigKelulusanController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "DF003";
-        public const string namamodul = "Daftar Konfigurasi Kelulusan";
+        public const string modul = Modules.kodDKonfigKelulusan;
+        public const string namamodul = Modules.namaDKonfigKelulusan;
 
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
@@ -50,10 +50,15 @@ namespace YIT.Akaun.Controllers._02Daftar
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DKonfigKelulusan konfigKelulusan, string syscode)
         {
-            if (KonfigKelulusanExists(konfigKelulusan.DPekerjaId) == false)
+            if (KonfigKelulusanExists(konfigKelulusan.DPekerjaId,konfigKelulusan.EnKategoriKelulusan,konfigKelulusan.EnJenisModul,konfigKelulusan.JBahagianId) == true)
             {
-                if (ModelState.IsValid)
-                {
+                TempData[SD.Error] = "Data ini telah wujud..!";
+                PopulateDropdownList();
+                return View(konfigKelulusan);
+            }
+
+            else if (ModelState.IsValid)
+            {
                     var user = await _userManager.GetUserAsync(User);
                     int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
                     konfigKelulusan.UserId = user?.UserName ?? "";
@@ -62,18 +67,12 @@ namespace YIT.Akaun.Controllers._02Daftar
                     konfigKelulusan.DPekerjaMasukId = pekerjaId;
 
                     _context.Add(konfigKelulusan);
-                    _appLog.Insert("Tambah", konfigKelulusan.DPekerjaId.ToString() + " - " + _unitOfWork.DPekerjaRepo.GetById(konfigKelulusan.DPekerjaId).Nama, konfigKelulusan.DPekerjaId.ToString(), 0, 0, pekerjaId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Tambah", konfigKelulusan.DPekerjaId.ToString() + " - " + konfigKelulusan.Tandatangan, konfigKelulusan.DPekerjaId.ToString(), 0, 0, pekerjaId, modul, syscode, namamodul, user);
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya ditambah..!";
                     return RedirectToAction(nameof(Index));
-                }
-
-            }
-            else
-            {
-                TempData[SD.Error] = "Data ini telah wujud..!";
-            }
-
+             }
+            //TempData[SD.Error] = "Data ini telah wujud..!";
             PopulateDropdownList();
             return View(konfigKelulusan);
         }
@@ -151,7 +150,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!KonfigKelulusanExists(konfigKelulusan.Id))
+                    if (!KonfigKelulusanExists(konfigKelulusan.Id, konfigKelulusan.EnKategoriKelulusan, konfigKelulusan.EnJenisModul, konfigKelulusan.JBahagianId))
                     {
                         return NotFound();
                     }
@@ -234,14 +233,19 @@ namespace YIT.Akaun.Controllers._02Daftar
 
             return RedirectToAction(nameof(Index));
         }
-        private bool KonfigKelulusanExists(int dPekerjaId)
+
+        private bool KonfigKelulusanExists(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, int? jBahagianId)
         {
-            return _unitOfWork.DKonfigKelulusanRepo.IsExist(p => p.DPekerjaId == dPekerjaId);
+            return _unitOfWork.DKonfigKelulusanRepo
+            .IsExist(p => p.DPekerjaId == dPekerjaId && p.EnKategoriKelulusan == enKategoriKelulusan && p.EnJenisModul == enJenisModul && p.JBahagianId == jBahagianId);
         }
 
         private void PopulateDropdownList()
         {
             ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAll();
+
+            ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
+
             var kategoriKelulusan = EnumHelper<EnKategoriKelulusan>.GetList();
 
             ViewBag.EnKategoriKelulusan = kategoriKelulusan;
