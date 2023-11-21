@@ -1,5 +1,43 @@
 ﻿<script type="text/javascript">
+    // autoload JKWPTJBahagian list when KW is picked
+    $("body").on('change', "#JKWId", function () {
+        var jKWId = $("#JKWId").val();
+        EmptyCart();
+        GetJKWPTJBahagianList(jKWId);
+    });
 
+    function GetJKWPTJBahagianList(jKWId) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetJKWPTJBahagianList", "JKW")',
+            data: { JKWId : jKWId },
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result == "OK") {
+                    // empty selection
+                    $("#objekJKWPTJBahagianId").empty();
+
+                    //append new options
+                    $("#objekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
+                    for (var i = 0; i < msg.list.length; i++) {
+                        var item = msg.list[i];
+
+                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
+                        $("#objekJKWPTJBahagianId").append(str);
+                    }
+                }
+                else {
+                    toastr.error(message);
+                    toastr.options.timeOut = 2000; // 2s
+                }
+
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    }
+    //
     //pick penilaian perolehan
     $("body").on('change', "#AkPenilaianPerolehanId", function () {
         $("#objekAkCartaId option").prop('disabled', false);

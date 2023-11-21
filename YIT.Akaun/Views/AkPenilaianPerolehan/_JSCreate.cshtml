@@ -1,4 +1,53 @@
 ﻿<script type="text/javascript">
+    // autoload JKWPTJBahagian list when KW is picked
+        $("body").on('change', "#JKWId", function () {
+            var jKWId = $("#JKWId").val();
+            EmptyCart();
+            GetJKWPTJBahagianList(jKWId);
+        });
+
+        function GetJKWPTJBahagianList(jKWId) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetJKWPTJBahagianList", "JKW")',
+                data: { JKWId : jKWId },
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.result == "OK") {
+                        // empty selection
+                        $("#objekJKWPTJBahagianId").empty();
+                        $("#moObjekJKWPTJBahagianId").empty();
+
+
+                        //append new options
+                        $("#objekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
+                        for (var i = 0; i < msg.list.length; i++) {
+                            var item = msg.list[i];
+
+                            var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
+                            $("#objekJKWPTJBahagianId").append(str);
+                        }
+
+                        $("#moObjekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
+                        for (var i = 0; i < msg.list.length; i++) {
+                            var item = msg.list[i];
+
+                            var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
+                            $("#moObjekJKWPTJBahagianId").append(str);
+                        }
+                    }
+                    else {
+                        toastr.error(message);
+                        toastr.options.timeOut = 2000; // 2s
+                    }
+
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+    //
     //empty cart
     function EmptyCart() {
         $.ajax({
@@ -77,8 +126,8 @@
                 if (r.objek.length > 0) {
                     for (var i = 0; i < r.objek.length; i++) {
                         var item1 = r.objek[i];
-                        var str = "<tr><td hidden>" + item1.jBahagianId +
-                            "</td><td class='text-uppercase'>" + item1.jBahagian.kod + " - " + item1.jBahagian.perihal +
+                        var str = "<tr><td hidden>" + item1.jkwptjBahagianId +
+                            "</td><td class='text-uppercase'>" + item1.jkwptjBahagian.kod + " - " + item1.jkwptjBahagian.jBahagian.perihal +
                             "</td><td hidden>" + item1.akCartaId +
                             "</td><td class='text-uppercase'>" + item1.akCarta.kod + " - " + item1.akCarta.perihal +
                             "</td><td class='text-end'>" + (item1.amaun).toFixed(2) +
@@ -131,32 +180,32 @@
         //Reference the Name and Country TextBoxes.
         var Id = $("#Id");
         var akCartaId = $("#objekAkCartaId");
-        var jBahagianId = $("#objekJKWPTJBahagianId");
+        var jKWPTJBahagianId = $("#objekJKWPTJBahagianId");
         if ($("#objekAmaun").val() == 0.00) {
             toastr.error("Amaun 0.00 tidak dibenarkan");
             toastr.options.timeOut = 2000; // 2s
         }
         else {
-            if (jBahagianId.val() != null && akCartaId.val() != null) {
-                GetJBahagianAkCarta(Id.val(), jBahagianId.val(), akCartaId.val());
+            if (jKWPTJBahagianId.val() != null && akCartaId.val() != null) {
+                GetJKWPTJBahagianAkCarta(Id.val(), jKWPTJBahagianId.val(), akCartaId.val());
             } else {
                 toastr.error("Sila pilih bahagian / kod akaun");
                 toastr.options.timeOut = 2000; // 2s
             }
         }
-        
+
 
     });
 
-    function GetJBahagianAkCarta(Id, jBahagianId, akCartaId) {
+    function GetJKWPTJBahagianAkCarta(Id, jKWPTJBahagianId, akCartaId) {
         var Objek = {
-            JBahagianId: jBahagianId,
+            JKWPTJBahagianId: jKWPTJBahagianId,
             AkCartaId: akCartaId
         }
         //Send the JSON array to Controller using AJAX.
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetJBahagianAkCarta", "AkPenilaianPerolehan")',
+            url: '@Url.Action("GetJKWPTJBahagianAkCarta", "JKW")',
             data: Objek,
             dataType: "json",
             success: function (r) {
@@ -168,7 +217,7 @@
 
                 var AkPenilaianPerolehanObjek = {
                     AkPenilaianPerolehanId: Id,
-                    JBahagianId: objekJKWPTJBahagianId.val(),
+                    JKWPTJBahagianId: objekJKWPTJBahagianId.val(),
                     AkCartaId: objekAkCartaId.val(),
                     Amaun: objekAmaun.val()
                 }
@@ -192,14 +241,14 @@
                         //Add Row.
                         var row = tBody.insertRow(-1);
 
-                        //Add jBahagianId cell.
+                        //Add jkwptjBahagianId cell.
                         var cell = $(row.insertCell(-1));
-                        cell.html(r.jBahagian.id);
+                        cell.html(r.jkwPtjBahagian.id);
                         cell.prop("hidden", !this.checked);
 
-                        //Add jBahagian cell.
+                        //Add jkwptjBahagian cell.
                         var cell = $(row.insertCell(-1));
-                        cell.html(r.jBahagian.kod + ' - ' + r.jBahagian.perihal);
+                        cell.html(r.jkwPtjBahagian.kod + " - " + r.jkwPtjBahagian.jBahagian.perihal);
                         cell.addClass('text-uppercase');
 
                         //Add akCartaId cell.
@@ -245,7 +294,7 @@
     function RemoveObjek(button) {
     //Determine the reference of the Row using the Button.
     var row = $(button).closest("TR");
-    var jBahagianId = $("TD", row).eq(0).html();
+    var jKWPTJBahagianId = $("TD", row).eq(0).html();
     var namaBahagian = $("TD", row).eq(1).html();
     var akCartaId = $("TD", row).eq(2).html();
     var namaCarta = $("TD", row).eq(3).html();
@@ -261,7 +310,7 @@
         objekJumlah.val(sum.toFixed(2));
 
         var AkPenilaianPerolehanObjek = {
-            JBahagianId: jBahagianId,
+            JKWPTJBahagianId: jKWPTJBahagianId,
             AkCartaId: akCartaId
         }
         if (AkPenilaianPerolehanObjek != null) {
@@ -286,14 +335,14 @@
     function UpdateObjek(button) {
         //Determine the reference of the Row using the Button.
         var row = $(button).closest("TR");
-        var jBahagianId = $("TD", row).eq(0).html();
+        var jKWPTJBahagianId = $("TD", row).eq(0).html();
         var akCartaId = $("TD", row).eq(2).html();
 
         var AkPenilaianPerolehanObjek = {
-            JBahagianId: jBahagianId,
+            JKWPTJBahagianId: jKWPTJBahagianId,
             AkCartaId: akCartaId
         }
-        if (jBahagianId != null && akCartaId != null) {
+        if (jKWPTJBahagianId != null && akCartaId != null) {
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetAnItemFromCartAkPenilaianPerolehanObjek", "AkPenilaianPerolehan")',
@@ -302,7 +351,7 @@
                 success: function (r) {
                     //insert data in modal objek
                     $("#moObjekId").val(r.record.id);
-                    $("#moObjekJBahagianId").val(r.record.jBahagianId);
+                    $("#moObjekJKWPTJBahagianId").val(r.record.jkwptjBahagianId);
                     $("#moObjekAkCartaId").val(r.record.akCartaId);
                     $("#moObjekAmaun").val(r.record.amaun.toFixed(2));
 
@@ -318,14 +367,14 @@
         var akPPId = $("#Id").val();
         var id = $("#moObjekId").val();
         var amaun = $("#moObjekAmaun").val();
-        var jBahagianId = $("#moObjekJBahagianId").val();
+        var jKWPTJBahagianId = $("#moObjekJKWPTJBahagianId").val();
         var akCartaId = $("#moObjekAkCartaId").val();
         var jumlah = $("#Jumlah");
 
         var AkPenilaianPerolehanObjek = {
             AkPenilaianPerolehanId: akPPId,
             Id: id,
-            JBahagianId: jBahagianId,
+            JKWPTJBahagianId: jKWPTJBahagianId,
             akCartaId: akCartaId,
             Amaun: amaun
         }
@@ -360,7 +409,7 @@
                 GetBil(Id.val(), bil.val());
             }
         }
-        
+
 
     });
 

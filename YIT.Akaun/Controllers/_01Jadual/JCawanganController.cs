@@ -74,6 +74,11 @@ namespace YIT.Akaun.Controllers._01Jadual
                     var user = await _userManager.GetUserAsync(User);
                     int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
+                    if (jCawangan.AkBankId == 0)
+                    {
+                        jCawangan.AkBankId = null;
+                    }
+
                     jCawangan.UserId = user?.UserName ?? "";
 
                     jCawangan.TarMasuk = DateTime.Now;
@@ -141,6 +146,11 @@ namespace YIT.Akaun.Controllers._01Jadual
                     jCawangan.DPekerjaMasukId = objAsal.DPekerjaMasukId;
 
                     _context.Entry(objAsal).State = EntityState.Detached;
+
+                    if (jCawangan.AkBankId == 0)
+                    {
+                        jCawangan.AkBankId = null;
+                    }
 
                     jCawangan.UserIdKemaskini = user?.UserName ?? "";
 

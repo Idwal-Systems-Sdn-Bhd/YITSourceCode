@@ -348,7 +348,7 @@
                             <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
                             @foreach (var s in ViewBag.JKWPTJBahagian)
                             {
-                                <option value="@s.Id">@s.Kod </option>
+                                <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal </option>
                             }
                         </select>
                     </div>

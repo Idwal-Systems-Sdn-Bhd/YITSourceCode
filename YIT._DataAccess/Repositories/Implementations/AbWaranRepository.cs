@@ -201,21 +201,20 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var konfigKelulusanBahagianGrouped = _context.DKonfigKelulusan
                  .Include(kk => kk.DPekerja)
-                 .Include(kk => kk.JKWPTJBahagian)
-                    .ThenInclude(kk => kk!.JBahagian)
+                 .Include(kk => kk.JBahagian)
                 .Where(b => b.EnKategoriKelulusan == enKategoriKelulusan
                 && b.DPekerjaId == dPekerjaId
                 && b.EnJenisModul == enJenisModul)
-                .GroupBy(b => new { b.DPekerjaId, b.JKWPTJBahagianId }).Select(l => new DKonfigKelulusan
+                .GroupBy(b => new { b.DPekerjaId, b.JBahagianId }).Select(l => new DKonfigKelulusan
                 {
                     Id = l.First().DPekerjaId,
                     DPekerjaId = l.First().DPekerjaId,
                     DPekerja = l.First().DPekerja,
-                    JKWPTJBahagianId = l.First().JKWPTJBahagianId,
-                    JKWPTJBahagian = l.First().JKWPTJBahagian
+                    JBahagianId = l.First().JBahagianId,
+                    JBahagian = l.First().JBahagian
                 }).ToList();
 
-            var konfigKelulusanBahagianList = new List<JKWPTJBahagian>();
+            var konfigKelulusanBahagianList = new List<JBahagian>();
 
 
             if (konfigKelulusanBahagianGrouped != null && konfigKelulusanBahagianGrouped.Count > 0)
@@ -223,7 +222,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                 foreach (var item in konfigKelulusanBahagianGrouped)
                 {
-                    if (item.JKWPTJBahagian != null) konfigKelulusanBahagianList.Add(item.JKWPTJBahagian);
+                    if (item.JBahagian != null) konfigKelulusanBahagianList.Add(item.JBahagian);
                 }
 
                 var abWaranGroup = new List<AbWaranObjek>().GroupBy(objek => objek.JKWPTJBahagianId);
@@ -231,14 +230,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 {
                     foreach (var abWaran in abWaranList)
                     {
-                        var waranObjekBahagianList = new List<JKWPTJBahagian>();
+                        var waranObjekBahagianList = new List<JBahagian>();
 
                         // group akPPObjek by bahagian
                         if (abWaran.AbWaranObjek != null && abWaran.AbWaranObjek.Count > 0)
                         {
                             foreach (var item in abWaran.AbWaranObjek)
                             {
-                                waranObjekBahagianList.Add(item.JKWPTJBahagian ?? new JKWPTJBahagian());
+                                waranObjekBahagianList.Add(item.JKWPTJBahagian?.JBahagian ?? new JBahagian());
                             }
 
                         }

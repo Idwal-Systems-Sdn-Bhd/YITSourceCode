@@ -48,12 +48,12 @@
                 </div>
             </div>
                     <div class="form-group">
-                        <label asp-for="JKWPTJBahagianId" class="control-label"></label>
-                        <select asp-for="JKWPTJBahagianId" class="form-control form-control-sm text-uppercase">
+                        <label asp-for="JBahagianId" class="control-label"></label>
+                        <select asp-for="JBahagianId" class="form-control form-control-sm text-uppercase">
                             <option value="">- SILA PILIH -</option>
-                            @foreach (var item in ViewBag.JKWPTJBahagian)
+                            @foreach (var item in ViewBag.JBahagian)
                             {
-                                <option value="@item.Id">@item.Kod</option>
+                                <option value="@item.Id">@item.Kod - @item.Perihal</option>
                             }
                         </select>
                     </div>

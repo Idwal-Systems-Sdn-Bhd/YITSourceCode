@@ -314,12 +314,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     new JKW
                     {
                         Kod = "1",
-                        Perihal = "CARUMAN KERAJAAN NEGERI"
-                    },
-                    new JKW
-                    {
-                        Kod = "2",
-                        Perihal = "JAKIM"
+                        Perihal = "YAYASAN ISLAM TERENGGANU"
                     });
                 
             }
@@ -586,7 +581,6 @@ namespace YIT._DataAccess.Data.DataConfigurations
 
             //if (context.AkCarta.Any())
             //{
-
             //}
             //else
             //{
@@ -882,63 +876,12 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     new JBahagian
                     {
                         Kod = "01",
-                        Perihal = "PENTADBIRAN"
+                        Perihal = "CARUMAN KERAJAAN NEGERI"
                     },
                     new JBahagian
                     {
                         Kod = "02",
-                        Perihal = "TADIKA"
-                    },
-                    new JBahagian
-                    {
-                        Kod = "03",
-                        Perihal = "PELABURAN"
-                    }, new JBahagian
-                    {
-                        Kod = "04",
-                        Perihal = "KHIDMAT MASYARAKAT"
-                    }, new JBahagian
-                    {
-                        Kod = "05",
-                        Perihal = "DAKWAH"
-                    }, new JBahagian
-                    {
-                        Kod = "06",
-                        Perihal = "PENERBITAN"
-                    }, new JBahagian
-                    {
-                        Kod = "07",
-                        Perihal = "INSPI/PDI"
-                    }
-                    , new JBahagian
-                    {
-                        Kod = "08",
-                        Perihal = "SRAYIT"
-                    },
-                    new JBahagian
-                    {
-                        Kod = "09",
-                        Perihal = "KAFA"
-                    },
-                    new JBahagian
-                    {
-                        Kod = "10",
-                        Perihal = "PONDOK DARUL IMAN"
-                    },
-                    new JBahagian
-                    {
-                        Kod = "11",
-                        Perihal = "PUSAT DAKWAH UMMAH"
-                    },
-                    new JBahagian
-                    {
-                        Kod = "12",
-                        Perihal = "PENDIDIKAN KHAS"
-                    },
-                    new JBahagian
-                    {
-                        Kod = "13",
-                        Perihal = "AUDIT DALAM"
+                        Perihal = "JAKIM"
                     }
                     // ** Tambah di sini
                     );
@@ -967,6 +910,20 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
+                        JPTJId = 1,
+                        JBahagianId = 2,
+                        Kod = "10102"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 2,
+                        JBahagianId = 1,
+                        Kod = "10201"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
                         JPTJId = 2,
                         JBahagianId = 2,
                         Kod = "10202"
@@ -975,71 +932,134 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     {
                         JKWId = 1,
                         JPTJId = 3,
-                        JBahagianId = 3,
-                        Kod = "10303"
+                        JBahagianId = 1,
+                        Kod = "10301"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 3,
+                        JBahagianId = 2,
+                        Kod = "10302"
                     },
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
                         JPTJId = 4,
-                        JBahagianId = 4,
-                        Kod = "10404"
+                        JBahagianId = 1,
+                        Kod = "10401"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 4,
+                        JBahagianId = 2,
+                        Kod = "10402"
                     },
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
                         JPTJId = 5,
-                        JBahagianId = 5,
-                        Kod = "10505"
+                        JBahagianId = 1,
+                        Kod = "10501"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 5,
+                        JBahagianId = 2,
+                        Kod = "10502"
                     },
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
                         JPTJId = 6,
-                        JBahagianId = 6,
-                        Kod = "10606"
+                        JBahagianId = 1,
+                        Kod = "10601"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 6,
+                        JBahagianId = 2,
+                        Kod = "10602"
                     },
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
                         JPTJId = 7,
-                        JBahagianId = 7,
-                        Kod = "10707"
+                        JBahagianId = 1,
+                        Kod = "10701"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 7,
+                        JBahagianId = 2,
+                        Kod = "10702"
                     },
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
                         JPTJId = 8,
-                        JBahagianId = 8,
-                        Kod = "10808"
+                        JBahagianId = 1,
+                        Kod = "10801"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 8,
+                        JBahagianId = 2,
+                        Kod = "10802"
                     },
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
                         JPTJId = 9,
-                        JBahagianId = 9,
-                        Kod = "10909"
+                        JBahagianId = 1,
+                        Kod = "10901"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 9,
+                        JBahagianId = 2,
+                        Kod = "10902"
                     },
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
                         JPTJId = 10,
-                        JBahagianId = 10,
-                        Kod = "11010"
+                        JBahagianId = 1,
+                        Kod = "11001"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 10,
+                        JBahagianId = 2,
+                        Kod = "11002"
                     },
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
                         JPTJId = 11,
-                        JBahagianId = 11,
-                        Kod = "11111"
+                        JBahagianId = 1,
+                        Kod = "11101"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 11,
+                        JBahagianId = 2,
+                        Kod = "11102"
                     },
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
                         JPTJId = 12,
-                        JBahagianId = 12,
-                        Kod = "11212"
+                        JBahagianId = 01,
+                        Kod = "11201"
                     },
                     new JKWPTJBahagian
                     {
@@ -1047,97 +1067,6 @@ namespace YIT._DataAccess.Data.DataConfigurations
                         JPTJId = 13,
                         JBahagianId = 13,
                         Kod = "11313"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 1,
-                        JBahagianId = 1,
-                        Kod = "20101"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 2,
-                        JBahagianId = 2,
-                        Kod = "20202"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 3,
-                        JBahagianId = 3,
-                        Kod = "20303"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 4,
-                        JBahagianId = 4,
-                        Kod = "20404"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 5,
-                        JBahagianId = 5,
-                        Kod = "20505"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 6,
-                        JBahagianId = 6,
-                        Kod = "20606"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 7,
-                        JBahagianId = 7,
-                        Kod = "20707"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 8,
-                        JBahagianId = 8,
-                        Kod = "20808"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 9,
-                        JBahagianId = 9,
-                        Kod = "20909"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 10,
-                        JBahagianId = 10,
-                        Kod = "21010"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 11,
-                        JBahagianId = 11,
-                        Kod = "21111"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 12,
-                        JBahagianId = 12,
-                        Kod = "21212"
-                    },
-                    new JKWPTJBahagian
-                    {
-                        JKWId = 2,
-                        JPTJId = 13,
-                        JBahagianId = 13,
-                        Kod = "21313"
                     }
                     );
             }

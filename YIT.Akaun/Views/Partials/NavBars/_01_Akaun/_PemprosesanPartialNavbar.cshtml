@@ -1,21 +1,53 @@
 ﻿<li class="nav-item">
 
     <a class="nav-link collapsed text-truncate
-    @Html.ActiveClass("AkPenilaianPerolehanSah")
-        @Html.ActiveClass("AkPenilaianPerolehanSemak")
-        @Html.ActiveClass("AkPenilaianPerolehanLulus")
-       @Html.ActiveClass("AkNotaMintaSah")
-        @Html.ActiveClass("AkNotaMintaSemak")
-        @Html.ActiveClass("AkNotaMintaLulus")
-       @Html.ActiveClass("AkPOSah")
-        @Html.ActiveClass("AkPOSemak")
-        @Html.ActiveClass("AkPOLulus")
-       @Html.ActiveClass("AkIndenSah")
-        @Html.ActiveClass("AkIndenSemak")
-        @Html.ActiveClass("AkIndenLulus")"
+        @Html.ActiveClass("AbWaranSah")
+            @Html.ActiveClass("AbWaranSemak")
+            @Html.ActiveClass("AbWaranLulus")
+        @Html.ActiveClass("AkPenilaianPerolehanSah")
+            @Html.ActiveClass("AkPenilaianPerolehanSemak")
+            @Html.ActiveClass("AkPenilaianPerolehanLulus")
+        @Html.ActiveClass("AkNotaMintaSah")
+            @Html.ActiveClass("AkNotaMintaSemak")
+            @Html.ActiveClass("AkNotaMintaLulus")
+        @Html.ActiveClass("AkPOSah")
+            @Html.ActiveClass("AkPOSemak")
+            @Html.ActiveClass("AkPOLulus")
+        @Html.ActiveClass("AkIndenSah")
+            @Html.ActiveClass("AkIndenSemak")
+            @Html.ActiveClass("AkIndenLulus")"
        href="#submenuPemprosesan" data-toggle="collapse" data-target="#submenuPemprosesan"><img src="~/img/svg/pemprosesan.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Pemprosesan</span></a>
     <div class="collapse" id="submenuPemprosesan" aria-expanded="false">
         <ul class="flex-column ps-2 nav">
+            @*AbWaran*@
+            <li class="nav-item">
+                <a class="nav-link border-bottom text-truncate collapsed py-1 ms-3
+@Html.ActiveClass("AbWaranSah")
+@Html.ActiveClass("AbWaranSemak")
+@Html.ActiveClass("AbWaranLulus")
+   " href="#submenuPemprosesanAbWaran" data-toggle="collapse" data-target="#submenuPemprosesanAbWaran"><span>Waran</span></a>
+                <div class="collapse" id="submenuPemprosesanAbWaran" aria-expanded="false">
+                    <ul class="flex-column nav ps-4">
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AbWaranSah")" asp-area="" asp-controller="AbWaranSah" asp-action="Index">
+                                Pengesahan
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AbWaranSemak")" asp-area="" asp-controller="AbWaranSemak" asp-action="Index">
+                                Semakan
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AbWaranLulus")" asp-area="" asp-controller="AbWaranLulus" asp-action="Index">
+                                Kelulusan
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            @*end*@
+
             @*AkPenilaianPerolehan*@
             <li class="nav-item">
                 <a class="nav-link border-bottom text-truncate collapsed py-1 ms-3
@@ -84,15 +116,15 @@
                 <div class="collapse" id="submenuPemprosesanAkPO" aria-expanded="false">
                     <ul class="flex-column nav ps-4">
                         <li class="nav-item">
-                                @*<a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkPOSah")" asp-area="" asp-controller="AkPOSah" asp-action="Index">
-                                    Pengesahan
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkPOSemak")" asp-area="" asp-controller="AkPOSemak" asp-action="Index">
-                                    Semakan
-                                </a>*@
-                            </li>
+                            @*<a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkPOSah")" asp-area="" asp-controller="AkPOSah" asp-action="Index">
+                                Pengesahan
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkPOSemak")" asp-area="" asp-controller="AkPOSemak" asp-action="Index">
+                                Semakan
+                            </a>*@
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkPOLulus")" asp-area="" asp-controller="AkPOLulus" asp-action="Index">
                                 Kelulusan
@@ -113,15 +145,15 @@
                 <div class="collapse" id="submenuPemprosesanAkInden" aria-expanded="false">
                     <ul class="flex-column nav ps-4">
                         @*<li class="nav-item">
-                                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkIndenSah")" asp-area="" asp-controller="AkIndenSah" asp-action="Index">
-                                    Pengesahan
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkIndenSemak")" asp-area="" asp-controller="AkIndenSemak" asp-action="Index">
-                                    Semakan
-                                </a>
-                            </li>*@
+                        <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkIndenSah")" asp-area="" asp-controller="AkIndenSah" asp-action="Index">
+                            Pengesahan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkIndenSemak")" asp-area="" asp-controller="AkIndenSemak" asp-action="Index">
+                            Semakan
+                        </a>
+                    </li>*@
                         <li class="nav-item">
                             <a class="nav-link p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkIndenLulus")" asp-area="" asp-controller="AkIndenLulus" asp-action="Index">
                                 Kelulusan

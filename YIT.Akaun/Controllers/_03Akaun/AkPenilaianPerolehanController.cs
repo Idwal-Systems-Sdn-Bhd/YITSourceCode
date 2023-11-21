@@ -113,7 +113,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             string? fullName = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.Nama;
 
             EmptyCart();
-            PopulateDropDownList(fullName ?? "");
+            PopulateDropDownList(fullName ?? "", 1);
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PN.GetDisplayName(),DateTime.Now.ToString("yyyy"));
             return View();
         }
@@ -136,7 +136,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     {
                         TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
                         ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PN.GetDisplayName(), akPP.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
-                        PopulateDropDownList(fullName ?? "");
+                        PopulateDropDownList(fullName ?? "", akPP.JKWId);
                         PopulateListViewFromCart();
                         return View(akPP);
                     }
@@ -161,7 +161,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PN.GetDisplayName(), akPP.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
-            PopulateDropDownList(fullName ?? "");
+            PopulateDropDownList(fullName ?? "", akPP.JKWId);
             PopulateListViewFromCart();
             return View(akPP);
         }
@@ -186,7 +186,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
 
             EmptyCart();
-            PopulateDropDownList(akPP.DPemohon?.Nama ?? "");
+            PopulateDropDownList(akPP.DPemohon?.Nama ?? "", akPP.JKWId);
             PopulateCartAkPenilaianPerolehanFromDb(akPP);
             return View(akPP);
         }
@@ -208,7 +208,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JKWPTJBahagianId, akPP.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
-                        PopulateDropDownList(fullName ?? "");
+                        PopulateDropDownList(fullName ?? "", akPP.JKWId);
                         PopulateListViewFromCart();
                         return View(akPP);
                     }
@@ -284,7 +284,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDropDownList(fullName ?? "");
+            PopulateDropDownList(fullName ?? "", akPP.JKWId);
             PopulateListViewFromCart();
             return View(akPP);
         }
@@ -359,7 +359,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RunningNumberFormatter.GenerateRunningNumber(prefix, maxRefNo, "00000");
         }
 
-        private void PopulateDropDownList(string fullName)
+        private void PopulateDropDownList(string fullName, int JKWId)
         {
             
             ViewBag.FullName = fullName;
@@ -367,6 +367,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
+            ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
             ViewBag.EnKaedahPerolehan = EnumHelper<EnKaedahPerolehan>.GetList();
 
         }
@@ -448,32 +449,6 @@ namespace YIT.Akaun.Controllers._03Akaun
             catch (Exception ex)
             {
                 return Json(new { result = "ERROR", message = ex.Message });
-            }
-        }
-
-        public JsonResult GetJBahagianAkCarta(int JKWPTJBahagianId, int AkCartaId)
-        {
-            try
-            {
-                var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetById(JKWPTJBahagianId);
-                if (jkwPtjBahagian == null)
-                {
-                    return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
-                }
-
-                jkwPtjBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jkwPtjBahagian.JKW?.Kod, jkwPtjBahagian.JPTJ?.Kod, jkwPtjBahagian.JBahagian?.Kod);
-
-                var akCarta = _unitOfWork.AkCartaRepo.GetById(AkCartaId);
-                if (akCarta == null)
-                {
-                    return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
-                }
-
-                return Json(new { result = "OK", jkwPtjBahagian, akCarta });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { result = "Error", message = ex.Message });
             }
         }
 
@@ -659,7 +634,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 foreach (AkPenilaianPerolehanObjek item in objek)
                 {
-                    var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetById(item.JKWPTJBahagianId);
+                    var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
                     item.JKWPTJBahagian = jkwPtjBahagian;
 

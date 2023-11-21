@@ -23,7 +23,7 @@
             <input type="hidden" asp-for="Id" />
             <input name="syscode" value="SPPB" hidden />
             <input asp-for="DPekerjaId" hidden />
-            <input asp-for="JKWPTJBahagianId" hidden />
+            <input asp-for="JBahagianId" hidden />
             <input asp-for="EnKategoriKelulusan" hidden />
             <input asp-for="EnJenisModul" hidden />
 
@@ -47,8 +47,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="JKWPTJBahagianId" class="control-label"></label>
-                <input class="form-control form-control-sm text-uppercase" value="@Model.JKWPTJBahagian?.Kod" readonly />
+                <label asp-for="JBahagianId" class="control-label"></label>
+                <input class="form-control form-control-sm text-uppercase" value="@Model.JBahagian?.Kod - @Model.JBahagian?.Perihal" readonly />
             </div>
             <div class="row">
                 <div class="col-md-6">

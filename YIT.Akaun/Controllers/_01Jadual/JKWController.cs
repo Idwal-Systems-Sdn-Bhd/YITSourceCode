@@ -349,6 +349,30 @@ namespace YIT.Akaun.Controllers._01Jadual
             }
         }
 
+        public JsonResult GetJKWPTJBahagianAkCarta(int JKWPTJBahagianId, int AkCartaId)
+        {
+            try
+            {
+                var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(JKWPTJBahagianId);
+                if (jkwPtjBahagian == null)
+                {
+                    return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
+                }
+
+                var akCarta = _unitOfWork.AkCartaRepo.GetById(AkCartaId);
+                if (akCarta == null)
+                {
+                    return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
+                }
+
+                return Json(new { result = "OK", jkwPtjBahagian, akCarta });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+        }
+
         public JsonResult SaveCartJKW(JKWPTJBahagian jKWPTJBahagian)
         {
             try
@@ -452,6 +476,26 @@ namespace YIT.Akaun.Controllers._01Jadual
             catch (Exception ex)
             {
                 return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        public JsonResult GetJKWPTJBahagianList(int JKWId)
+        {
+            try
+            {
+                var jKWPTJBahagianList = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
+                if (jKWPTJBahagianList != null && jKWPTJBahagianList.Count > 0)
+                {
+                    return Json(new { result = "OK", list = jKWPTJBahagianList });
+                }
+                else
+                {
+                    return Json(new { result = "Error", message = "Kump. Wang / PTJ / Bahagian belum dihubungkan" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
             }
         }
     }

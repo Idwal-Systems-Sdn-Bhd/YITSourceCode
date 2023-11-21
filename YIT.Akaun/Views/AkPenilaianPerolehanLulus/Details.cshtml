@@ -162,8 +162,8 @@
                             foreach (var item in ViewBag.akPenilaianPerolehanObjek)
                             {
                                 <tr>
-                                    <td hidden>@item.JBahagianId</td>
-                                    <td class="text-uppercase">@item.JBahagian?.Kod - @item.JBahagian?.Perihal</td>
+                                    <td hidden>@item.JKWPTJBahagianId</td>
+                                    <td class="text-uppercase">@item.JKWPTJBahagian?.Kod</td>
                                     <td hidden>@item.AkCartaId</td>
                                     <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
                                     <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>

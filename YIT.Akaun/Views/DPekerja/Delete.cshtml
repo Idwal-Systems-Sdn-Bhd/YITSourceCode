@@ -31,6 +31,14 @@
             </div>
         </div>
         <div class="form-group">
+            <label asp-for="JBahagianId" class="control-label"></label>
+            <input class="form-control form-control-sm text-uppercase" value="@Model.JBahagian?.Kod - @Model.JBahagian?.Perihal" readonly />
+        </div>
+        <div class="form-group">
+            <label asp-for="JCawanganId" class="control-label"></label>
+            <input class="form-control form-control-sm text-uppercase" value="@Model.JCawangan?.Kod - @Model.JCawangan?.Perihal" readonly />
+        </div>
+        <div class="form-group">
             <label asp-for="Alamat1" class="control-label"></label>
             <input asp-for="Alamat1" class="form-control form-control-sm text-uppercase mb-2" readonly />
             <input asp-for="Alamat2" class="form-control form-control-sm text-uppercase mb-2" readonly />

@@ -19,6 +19,13 @@
         </div>
 
         <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="Kod" class="control-label"></label>
+                    <input asp-for="Kod" class="form-control form-control-sm text-uppercase" readonly />
+                    <span asp-validation-for="Kod" class="text-danger"></span>
+                </div>
+            </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label asp-for="Perihal" class="control-label"></label>
@@ -26,7 +33,7 @@
                     <span asp-validation-for="Perihal" class="text-danger"></span>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label asp-for="NoAkaun" class="control-label"></label>
                     <input asp-for="NoAkaun" class="form-control form-control-sm text-uppercase" readonly />
