@@ -38,5 +38,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? Ringkasan { get; set; }
         public ICollection<AkIndenObjek>? AkIndenObjek { get; set; }
         public ICollection<AkIndenPerihal>? AkIndenPerihal { get; set; }
+        public ICollection<AkPelarasanInden>? AkPelarasanInden { get; set; }
     }
 }

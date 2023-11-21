@@ -23,7 +23,8 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             return _context.DPekerja
                 .Include(p => p.JBank)
-                .Include(p => p.JBahagian)
+                .Include(p => p.JKWPTJBahagian)
+                    .ThenInclude(p => p!.JBahagian)
                 .Include(p => p.JNegeri)
                 .Include(p => p.JBangsa)
                 .ToList();
@@ -33,7 +34,8 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             return _context.DPekerja
                 .Include(p => p.JBank)
-                .Include(p => p.JBahagian)
+                .Include(p => p.JKWPTJBahagian)
+                    .ThenInclude(p => p!.JBahagian)
                 .Include(p => p.JNegeri)
                 .Include(p => p.JBangsa)
                 .FirstOrDefault(p => p.Id == id) ?? new DPekerja();

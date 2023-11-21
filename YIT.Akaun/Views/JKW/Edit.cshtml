@@ -4,6 +4,7 @@
     ViewData["Title"] = "Kump. Wang - Ubah";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<partial name="_JSEdit" />
 <div class="card box-shadow">
     <div class="card-body">
         <div class="row">
@@ -32,6 +33,75 @@
                 <input asp-for="Perihal" class="form-control form-control-sm text-uppercase" />
                 <span asp-validation-for="Perihal" class="text-danger"></span>
             </div>
+            <br />
+            @*table JKWPTJBahagian*@
+            <div class="card box-shadow mb-3">
+                <div class="card-header">
+                    <h6>Kump. Wang / PTJ / Bahagian</h6>
+                </div>
+                <div class="card-body">
+                    <table id="tblJKWPTJBahagian" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th style="width:10%">Kod</th>
+                                <th style="width:40%">PTJ</th>
+                                <th style="width:40%">Bahagian</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyJKWPTJBahagian">
+                            @if (ViewBag.JKWPTJBahagian != null)
+                            {
+                                foreach (var item in ViewBag.JKWPTJBahagian)
+                                {
+                                    <tr>
+                                        <td class="text-uppercase">@item.Kod</td>
+                                        <td hidden>@item.JPTJId</td>
+                                        <td class="text-uppercase">@item.JPTJ?.Kod - @item.JPTJ?.Perihal</td>
+                                        <td hidden>@item.JBahagianId</td>
+                                        <td class="text-uppercase">@item.JBahagian?.Kod - @item.JBahagian?.Perihal</td>
+                                        <td>
+                                            <button class="btn ac-primary btn-sm" type="button" data-toggle="modal" data-target="#moJKWPTJBahagian" onclick="UpdateJKWPTJBahagian(this)"><i class="fa fa-edit"></i></button>
+                                        </td>
+                                        <td>
+                                            <button class="btn ac-danger btn-sm" type="button" onclick="RemoveJKWPTJBahagian(this)"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    <input class="form-control form-control-sm" type="text" id="JKWPTJBahagianKod" value="">
+                                </td>
+                                <td>
+                                    <select class="form-control form-control-sm text-uppercase" id="JKWPTJBahagianJPTJId">
+                                        <option value="" class="text-lowercase" disabled selected>-- Pilih PTJ --</option>
+                                        @foreach (var s in ViewBag.JPTJ)
+                                        {
+                                            <option value="@s.Id">@s.Kod - @s.Perihal </option>
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="form-control form-control-sm text-uppercase" id="JKWPTJBahagianJBahagianId">
+                                        <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
+                                        @foreach (var s in ViewBag.JBahagian)
+                                        {
+                                            <option value="@s.Id">@s.Kod - @s.Perihal </option>
+                                        }
+                                    </select>
+                                </td>
+                                <td><button class="btn btn-success btn-sm" type="button" id="btnAddJKWPTJBahagian"><i class="fas fa-plus"></i></button></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            @*table JKWPTJBahagian end*@
             <hr />
             <div class="form-group">
                 <input type="submit" value="Simpan" class="btn ac-primary btn-sm" />
@@ -44,3 +114,58 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<!-- Modal JKWPTJBahagian -->
+<div class="modal fade bd-example-modal-lg" id="moJKWPTJBahagian" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Kump. Wang / PTJ / Bahagian</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input id="moJKWPTJBahagianId" hidden />
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="col-form-label">Kod</label>
+                                <input type="text" class="form-control form-control-sm text-uppercase" id="moJKWPTJBahagianKod">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label class="col-form-label">PTJ</label>
+                                <select class="form-control form-control-sm text-uppercase" id="moJKWPTJBahagianJPTJId" >
+                                    <option value="" class="text-lowercase" disabled selected>-- Pilih PTJ --</option>
+                                    @foreach (var s in ViewBag.JPTJ)
+                                    {
+                                        <option value="@s.Id">@s.Kod - @s.Perihal </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label class="col-form-label">Bahagian</label>
+                                <select class="form-control form-control-sm text-uppercase" id="moJKWPTJBahagianJBahagianId" >
+                                    <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
+                                    @foreach (var s in ViewBag.JBahagian)
+                                    {
+                                        <option value="@s.Id">@s.Kod - @s.Perihal </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="UpdateModalJKWPTJBahagian()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal JKWPTJBahagian End -->

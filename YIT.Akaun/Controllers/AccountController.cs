@@ -170,7 +170,7 @@ namespace YIT.Akaun.Controller
                             Email = model.Email,
                             Nama = pekerja?.Nama ?? "",
                             DPekerjaId = model.DPekerjaId,
-                            JBahagianList = model.JBahagianList
+                            JKWPTJBahagianList = model.JBahagianList
                         };
                         var result = await _userManager.CreateAsync(user, model.Password);
                         if (result.Succeeded)

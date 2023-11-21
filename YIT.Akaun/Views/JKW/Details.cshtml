@@ -33,7 +33,40 @@
                 @Model.Perihal?.ToUpper()
             </dd>
         </dl>
-
+        <br />
+        @*table JKWPTJBahagian*@
+        <div class="card box-shadow mb-3">
+            <div class="card-header">
+                <h6>Kump. Wang / PTJ / Bahagian</h6>
+            </div>
+            <div class="card-body">
+                <table id="tblJKWPTJBahagian" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:10%">Kod</th>
+                            <th style="width:40%">PTJ</th>
+                            <th style="width:40%">Bahagian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyJKWPTJBahagian">
+                        @if (ViewBag.JKWPTJBahagian != null)
+                        {
+                            foreach (var item in ViewBag.JKWPTJBahagian)
+                            {
+                                <tr>
+                                    <td class="text-uppercase">@item.Kod</td>
+                                    <td hidden>@item.JPTJId</td>
+                                    <td class="text-uppercase">@item.JPTJ?.Kod - @item.JPTJ?.Perihal</td>
+                                    <td hidden>@item.JBahagianId</td>
+                                    <td class="text-uppercase">@item.JBahagian?.Kod - @item.JBahagian?.Perihal</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @*table JKWPTJBahagian end*@
         <hr />
         <div class="form-group">
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn ac-primary btn-sm">Ubah</a>

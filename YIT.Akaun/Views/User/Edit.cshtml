@@ -45,8 +45,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="JBahagianList"></label>
-                        <select asp-for="SelectedJBahagianList" class="form-control form-control-sm select2" multiple="multiple">
+                        <label asp-for="JKWPTJBahagianList"></label>
+                        <select asp-for="SelectedJKWPTJBahagianList" class="form-control form-control-sm select2" multiple="multiple">
                             @foreach (var s in ViewBag.JBahagian)
                             {
                                 <option value="@s.Id">@s.Perihal </option>

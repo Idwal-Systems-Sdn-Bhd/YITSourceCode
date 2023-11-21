@@ -22,5 +22,15 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             return _context.JKW.Include(ptj => ptj.AbWaran).ToList();
         }
+
+        public JKW GetDetailsById(int id)
+        {
+            return _context.JKW
+                .Include(kw => kw.JKWPTJBahagian)
+                    .ThenInclude(kw => kw.JPTJ)
+                .Include(kw => kw.JKWPTJBahagian)
+                    .ThenInclude(kw => kw.JPTJ)
+                .FirstOrDefault(kw => kw.Id == id) ?? new JKW();
+        }
     }
 }

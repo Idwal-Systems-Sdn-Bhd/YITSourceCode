@@ -5,9 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
 using YIT.__Domain.Entities.Models._01Jadual;
+using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Implementations;
 using YIT._DataAccess.Repositories.Interfaces;
+using YIT._DataAccess.Services.Cart;
+using YIT._DataAccess.Services.Math;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
@@ -21,16 +24,19 @@ namespace YIT.Akaun.Controllers._01Jadual
         private readonly _IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly _AppLogIRepository<AppLog, int> _appLog;
+        private readonly CartJKW _cart;
 
         public JKWController(ApplicationDbContext context,
             _IUnitOfWork unitOfWork,
             UserManager<IdentityUser> userManager,
-            _AppLogIRepository<AppLog, int> appLog)
+            _AppLogIRepository<AppLog, int> appLog,
+            CartJKW cart)
         {
             _context = context;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _appLog = appLog;
+            _cart = cart;
         }
         public IActionResult Index()
         {
@@ -45,13 +51,51 @@ namespace YIT.Akaun.Controllers._01Jadual
                 return NotFound();
             }
 
-            var kW = _unitOfWork.JKWRepo.GetById((int)id);
+            var kW = _unitOfWork.JKWRepo.GetDetailsById((int)id);
             if (kW == null)
             {
                 return NotFound();
             }
-
+            EmptyCart();
+            PopulateCartJKWFromDb(kW);
             return View(kW);
+        }
+
+        private void PopulateCartJKWFromDb(JKW kW)
+        {
+            if (kW.JKWPTJBahagian != null)
+            {
+                foreach (var item in kW.JKWPTJBahagian)
+                {
+                    _cart.AddItemList(item.JKWId, item.JPTJId, item.JBahagianId, item.Kod);
+                }
+            }
+
+            PopulateListViewFromCart();
+
+        }
+
+        private void PopulateListViewFromCart()
+        {
+            List<JKWPTJBahagian> jKWPTJBahagian = _cart.JKWPTJBahagian.ToList();
+
+            foreach (JKWPTJBahagian item in jKWPTJBahagian)
+            {
+                var jBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById(item.JBahagianId);
+
+                item.JBahagian = jBahagian;
+
+                var jPTJ = _unitOfWork.JPTJRepo.GetAllDetailsById(item.JPTJId);
+
+                item.JPTJ = jPTJ;
+
+                var jKW = _unitOfWork.JKWRepo.GetById(item.JKWId);
+
+                item.JKW = jKW;
+
+            }
+
+            ViewBag.JKWPTJBahagian = jKWPTJBahagian;
         }
 
         // GET: KW/Create
@@ -104,12 +148,38 @@ namespace YIT.Akaun.Controllers._01Jadual
                 return NotFound();
             }
 
-            var kW = _unitOfWork.JKWRepo.GetById((int)id);
+            var kW = _unitOfWork.JKWRepo.GetDetailsById((int)id);
             if (kW == null)
             {
                 return NotFound();
             }
+            EmptyCart();
+            PopulateDropDownList(kW);
+            PopulateCartJKWFromDb(kW);
             return View(kW);
+        }
+
+        public JsonResult EmptyCart()
+        {
+            try
+            {
+                _cart.ClearList();
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        private void PopulateDropDownList(JKW jKW)
+        {
+            var kwList = new List<JKW>{jKW};
+
+            ViewBag.JKW = kwList;
+            ViewBag.JPTJ = _unitOfWork.JPTJRepo.GetAll();
+            ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
         }
 
         // POST: KW/Edit/5
@@ -247,6 +317,142 @@ namespace YIT.Akaun.Controllers._01Jadual
         private bool KodKWExists(string kod)
         {
             return _unitOfWork.JKWRepo.IsExist(e => e.Kod == kod);
+        }
+
+        public JsonResult GetJKWPTJBahagian(int JBahagianId, int JPTJId, int JKWId)
+        {
+            try
+            {
+                var jBahagian = _unitOfWork.JBahagianRepo.GetById(JBahagianId);
+                if (jBahagian == null)
+                {
+                    return Json(new { result = "Error", message = "Kod Bahagian tidak wujud" });
+                }
+
+                var jPTJ = _unitOfWork.JPTJRepo.GetById(JPTJId);
+                if (jPTJ == null)
+                {
+                    return Json(new { result = "Error", message = "Kod PTJ tidak wujud" });
+                }
+
+                var jKW = _unitOfWork.JKWRepo.GetById(JKWId);
+                if (jKW == null)
+                {
+                    return Json(new { result = "Error", message = "Kod Kump. Wang tidak wujud" });
+                }
+
+                return Json(new { result = "OK", jBahagian, jPTJ, jKW });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+        }
+
+        public JsonResult SaveCartJKW(JKWPTJBahagian jKWPTJBahagian)
+        {
+            try
+            {
+                if (jKWPTJBahagian != null)
+                {
+                    _cart.AddItemList(jKWPTJBahagian.JKWId, jKWPTJBahagian.JPTJId, jKWPTJBahagian.JBahagianId, jKWPTJBahagian.Kod);
+                }
+
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        public JsonResult RemoveCartJKW(JKWPTJBahagian jKWPTJBahagian)
+        {
+            try
+            {
+                if (jKWPTJBahagian != null)
+                {
+                    _cart.RemoveItemList(jKWPTJBahagian.JKWId,jKWPTJBahagian.JPTJId, jKWPTJBahagian.JBahagianId);
+                }
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        public JsonResult GetAnItemFromCartJKW(JKWPTJBahagian jKWPTJBahagian)
+        {
+
+            try
+            {
+                JKWPTJBahagian data = _cart.JKWPTJBahagian.FirstOrDefault(x => x.JBahagianId == jKWPTJBahagian.JBahagianId && x.JPTJId == jKWPTJBahagian.JPTJId && jKWPTJBahagian.JKWId == jKWPTJBahagian.JKWId) ?? new JKWPTJBahagian();
+
+                return Json(new { result = "OK", record = data });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        public JsonResult SaveAnItemFromCartJKW(JKWPTJBahagian jKWPTJBahagian)
+        {
+
+            try
+            {
+
+                var data = _cart.JKWPTJBahagian.FirstOrDefault(x => x.JBahagianId == jKWPTJBahagian.JBahagianId && x.JPTJId == jKWPTJBahagian.JPTJId && x.JKWId == jKWPTJBahagian.JKWId);
+
+                var user = _userManager.GetUserName(User);
+
+                if (data != null)
+                {
+                    _cart.RemoveItemList(data.JKWId,data.JBahagianId,data.JBahagianId);
+
+                    _cart.AddItemList(jKWPTJBahagian.JKWId, jKWPTJBahagian.JPTJId, jKWPTJBahagian.JBahagianId, jKWPTJBahagian.Kod);
+                }
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        public JsonResult GetAllItemCartJKW()
+        {
+
+            try
+            {
+                List<JKWPTJBahagian> jKWPTJBahagian = _cart.JKWPTJBahagian.ToList();
+
+                foreach (JKWPTJBahagian item in jKWPTJBahagian)
+                {
+                    var jKW = _unitOfWork.JKWRepo.GetById(item.JKWId);
+
+                    item.JKW = jKW;
+
+                    var jPTJ = _unitOfWork.JPTJRepo.GetById(item.JPTJId);
+
+                    item.JPTJ = jPTJ;
+
+                    var jBahagian = _unitOfWork.JBahagianRepo.GetById(item.JBahagianId);
+
+                    item.JBahagian = jBahagian;
+
+                }
+
+                return Json(new { result = "OK", jKWPTJBahagian = jKWPTJBahagian.OrderBy(d => d.Kod) });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
         }
     }
 }

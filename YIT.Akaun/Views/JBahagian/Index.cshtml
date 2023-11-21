@@ -29,12 +29,6 @@
                             <th class="perihal">
                                 @Html.DisplayNameFor(model => model.Perihal)
                             </th>
-                            <th>
-                                PTJ
-                            </th>
-                            <th>
-                                Kump. Wang
-                            </th>
                             <th width="5%"></th>
                         </tr>
                     </thead>
@@ -45,16 +39,10 @@
                             <tr class="@tabletype text-uppercase">
                                 <td></td>
                                 <td>
-                                    @BelanjawanFormatter.ConvertToBahagian(item.JPTJ?.JKW?.Kod, item.JPTJ?.Kod,item.Kod)
+                                    @item.Kod
                                 </td>
                                 <td>
                                     @item.Perihal?.ToUpper()
-                                </td>
-                                <td class="text-uppercase">
-                                    @item.JPTJ?.Perihal
-                                </td>
-                                <td class="text-uppercase">
-                                    @item.JPTJ?.JKW?.Perihal
                                 </td>
                                 <td width="5%" class="text-center">
                                     <div class="btn-group" role="group" aria-label="action">

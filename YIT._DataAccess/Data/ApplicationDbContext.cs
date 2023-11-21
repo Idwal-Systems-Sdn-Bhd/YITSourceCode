@@ -32,6 +32,7 @@ namespace YIT._DataAccess.Data
         public DbSet<JKW> JKW { get; set;}
         public DbSet<JPTJ> JPTJ { get; set; }
         public DbSet<JBahagian> JBahagian { get; set; }
+        public DbSet<JKWPTJBahagian> JKWPTJBahagian { get; set; }
         public DbSet<JCawangan> JCawangan { get; set; }
         //
 
@@ -80,7 +81,12 @@ namespace YIT._DataAccess.Data
         //
 
         // 08Pelarasan (PT)
-
+        public DbSet<AkPelarasanPO> AkPelarasanPO { get; set; }
+        public DbSet<AkPelarasanPOObjek> AkPelarasanPOObjek { get; set; }
+        public DbSet<AkPelarasanPOPerihal> AkPelarasanPOPerihal { get; set; }
+        public DbSet<AkPelarasanInden> AkPelarasanInden { get; set; }
+        public DbSet<AkPelarasanIndenObjek> AkPelarasanIndenObjek { get; set; }
+        public DbSet<AkPelarasanIndenPerihal> AkPelarasanIndenPerihal { get; set; }
         //
 
         protected override void OnModelCreating(ModelBuilder builder)

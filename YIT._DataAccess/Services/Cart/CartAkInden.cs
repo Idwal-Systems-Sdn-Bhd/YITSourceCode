@@ -14,26 +14,26 @@ namespace YIT._DataAccess.Services.Cart
 
         public virtual void AddItemObjek(
             int akIndenId,
-            int jBahagianId,
+            int jKWPTJBahagianId,
             int akCartaId,
             decimal amaun
             )
         {
-            AkIndenObjek line = collectionObjek.FirstOrDefault(pp => pp.JBahagianId == jBahagianId && pp.AkCartaId == akCartaId)!;
+            AkIndenObjek line = collectionObjek.FirstOrDefault(pp => pp.JKWPTJBahagianId == jKWPTJBahagianId && pp.AkCartaId == akCartaId)!;
 
             if (line == null)
             {
                 collectionObjek.Add(new AkIndenObjek()
                 {
                     AkIndenId = akIndenId,
-                    JBahagianId = jBahagianId,
+                    JKWPTJBahagianId = jKWPTJBahagianId,
                     AkCartaId = akCartaId,
                     Amaun = amaun
                 });
             }
         }
 
-        public virtual void RemoveItemObjek(int jBahagianId, int akCartaId) => collectionObjek.RemoveAll(l => l.JBahagianId == jBahagianId && l.AkCartaId == akCartaId);
+        public virtual void RemoveItemObjek(int jKWPTJBahagianId, int akCartaId) => collectionObjek.RemoveAll(l => l.JKWPTJBahagianId == jKWPTJBahagianId && l.AkCartaId == akCartaId);
 
         public virtual void ClearObjek() => collectionObjek.Clear();
 

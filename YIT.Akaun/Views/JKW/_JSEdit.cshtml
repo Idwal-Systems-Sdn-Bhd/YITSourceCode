@@ -1,0 +1,245 @@
+﻿<script type="text/javascript">
+    //empty cart
+    function EmptyCart() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("EmptyCart", "JKW")',
+            dataType: "json",
+            success: function (msg) {
+                $("table tbody#tbodyJKWPTJBahagian").empty();
+                $("#JKWPTJBahagianJPTJId option").prop('disabled', false);
+                $("#JKWPTJBahagianJPTJId option:selected").prop('disabled', true);
+                $("#JKWPTJBahagianJBahagianId option").prop('disabled', false);
+                $("#JKWPTJBahagianJBahagianId option:selected").prop('disabled', true);
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    };
+    //empty cart end
+
+    // populate tables in pages
+    function PopulateTablesFromCart() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAllItemCartJKW", "JKW")',
+            dataType: "json",
+            success: function (r) {
+
+                //refresh updated table JKWPTJBahagian
+                $("table tbody#tbodyJKWPTJBahagian").empty();
+                var sum = 0;
+                if (r.jKWPTJBahagian.length > 0) {
+                    for (var i = 0; i < r.jKWPTJBahagian.length; i++) {
+                        var item1 = r.jKWPTJBahagian[i];
+                        var str = "<tr><td class='text-uppercase'>" + item1.kod +
+                            "</td><td hidden>" + item1.jptjId +
+                            "</td><td class='text-uppercase'>" + item1.jptj.kod + " - " + item1.jptj.perihal +
+                            "</td><td hidden>" + item1.jBahagianId +
+                            "</td><td class='text-uppercase'>" + item1.jBahagian.kod + " - " + item1.jBahagian.perihal +
+                            "</td><td>" +
+                            "<button class='btn ac-primary btn-sm' type='button' data-toggle='modal' data-target='#moJKWPTJBahagian' onclick='UpdateJKWPTJBahagian(this)'><i class='fa fa-edit' ></i></button>" +
+                            "</td><td>" +
+                            "<button class='btn ac-danger btn-sm' type='button' onclick='RemoveJKWPTJBahagian(this)'><i class='fas fa-trash' ></i></button>" +
+                            "</td><tr>";
+                        $("table tbody#tbodyJKWPTJBahagian").append(str);
+                    }
+                }
+                // refresh updated table JKWPTJBahagian end
+
+            }
+        });
+
+    }
+    // populate tables in pages end
+
+    //add tbl JKWPTJBahagian
+    $("body").on("click", "#btnAddJKWPTJBahagian", function () {
+        var jKWId = $("#Id");
+        var jPTJId = $("#JKWPTJBahagianJPTJId");
+        var jBahagianId = $("#JKWPTJBahagianJBahagianId");
+        var kod = $("#JKWPTJBahagianKod");
+
+        if (jKWId.val() != null && jPTJId.val() != null && jBahagianId.val() != null && kod.val() != null) {
+                GetJKWPTJBahagian(jKWId.val(), jPTJId.val(), jBahagianId.val(), kod.val());
+            } else {
+                toastr.error("Sila pilih Kod / PTJ / bahagian");
+                toastr.options.timeOut = 2000; // 2s
+            }
+    });
+
+    function GetJKWPTJBahagian(jKWId, jPTJId, jBahagianId, kod) {
+        var JKWPTJBahagian = {
+            JKWId: jKWId,
+            JPTJId: jPTJId,
+            JBahagianId: jBahagianId,
+            Kod : kod
+        }
+        //Send the JSON array to Controller using AJAX.
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetJKWPTJBahagian", "JKW")',
+            data: JKWPTJBahagian,
+            dataType: "json",
+            success: function (r) {
+                //Send the JSON array to Controller to Save into session (cart)
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SaveCartJKW", "JKW")',
+                    data: JKWPTJBahagian,
+                    dataType: "json",
+                    success: function (result) {
+
+                        //Get the reference of the Table's TBODY element.
+                        var tBody = $("#tblJKWPTJBahagian > TBODY")[0];
+                        //Add Row.
+                        var row = tBody.insertRow(-1);
+
+                        //Add kod cell.
+                        var cell = $(row.insertCell(-1));
+                        cell.html(kod);
+                        cell.addClass('text-uppercase');
+
+                        //Add jPTJ cell.
+                        var cell = $(row.insertCell(-1));
+                        cell.html(r.jPTJ.id);
+                        cell.prop("hidden", !this.checked);
+
+                        //Add jPTJ cell.
+                        var cell = $(row.insertCell(-1));
+                        cell.html(r.jPTJ.kod + ' - ' + r.jPTJ.perihal);
+                        cell.addClass('text-uppercase');
+
+                        //Add jBahagianId cell.
+                        var cell = $(row.insertCell(-1));
+                        cell.html(r.jBahagian.id);
+                        cell.prop("hidden", !this.checked);
+
+                        //Add jBahagian cell.
+                        var cell = $(row.insertCell(-1));
+                        cell.html(r.jBahagian.kod + ' - ' + r.jBahagian.perihal);
+                        cell.addClass('text-uppercase');
+
+                        //Add Edit Button cell.
+                        cell = $(row.insertCell(-1));
+                        var btnUpdate1 = $("<button class='btn ac-primary btn-sm' type='button' id='btnUpdateJKWPTJBahagian' data-bs-toggle='modal' data-bs-target='#moJKWPTJBahagian' onclick='UpdateJKWPTJBahagian(this)'><i class='fas fa-edit'></i></button>");
+                        cell.append(btnUpdate1);
+
+                        //Add Remove Button cell.
+                        cell = $(row.insertCell(-1));
+                        var btnRemove1 = $("<button class='btn ac-danger btn-sm' type='button' id='btnRemoveJKWPTJBahagian' onclick='RemoveJKWPTJBahagian(this)'><i class='fas fa-trash'></i></button>");
+                        cell.append(btnRemove1);
+
+                        //Clear the TextBoxes.
+                        $("#JKWPTJBahagianKod").val("");
+                        $("#JKWPTJBahagianJPTJId").val("").trigger('change');
+                        $("#JKWPTJBahagianJBahagianId").val("").trigger('change');
+                    }
+                });
+
+            }
+        });
+
+    }
+    //add tbl JKWPTJBahagian end
+
+    //remove tbl JKWPTJBahagian
+    function RemoveJKWPTJBahagian(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var jKWId = $("#Id").val();
+        var kod = $("TD", row).eq(0).html();
+        var jPTJId = $("TD", row).eq(1).html();
+        var jBahagianId = $("TD", row).eq(3).html();
+        if (confirm("Hapus kod : " + kod + " ?")) {
+            //Get the reference of the Table.
+            var table = $("#tblJKWPTJBahagian")[0];
+
+            var JKWPTJBahagian = {
+                JKWId: jKWId,
+                JPTJId: jPTJId,
+                JBahagianId: jBahagianId
+            }
+            if (JKWPTJBahagian != null) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RemoveCartJKW", "JKW")',
+                    data: JKWPTJBahagian,
+                    dataType: "json",
+                    success: function (r) {
+                        //Delete the Table row using it's Index.
+                        table.deleteRow(row[0].rowIndex);
+                    }
+                });
+            }
+
+        }
+    };
+    //remove tbl JKWPTJBahagian end
+
+    //update tbl JKWPTJBahagian
+    function UpdateJKWPTJBahagian(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var jKWId = $("#Id").val();
+        var kod = $("TD", row).eq(0).html();
+        var jPTJId = $("TD", row).eq(1).html();
+        var jBahagianId = $("TD", row).eq(3).html();
+
+        var JKWPTJBahagian = {
+            JKWId: jKWId,
+            JPTJId: jPTJId,
+            JBahagianId: jBahagianId,
+            Kod: kod
+        }
+        if (jKWId != null && jPTJId != null && jBahagianId != null) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAnItemFromCartJKW", "JKW")',
+                data: JKWPTJBahagian,
+                dataType: "json",
+                success: function (r) {
+                    //insert data in modal JKWPTJBahagian
+                    $("#moJKWPTJBahagianId").val(r.record.id);
+                    $("#moJKWPTJBahagianKod").val(r.record.kod);
+                    $("#moJKWPTJBahagianJPTJId").val(r.record.jptjId);
+                    $("#moJKWPTJBahagianJBahagianId").val(r.record.jBahagianId);
+
+                    //show modal JKWPTJBahagian
+                    $("#moJKWPTJBahagian").modal({ backdrop: 'static', keyboard: false });
+
+                }
+            });
+        }
+    };
+
+    function UpdateModalJKWPTJBahagian() {
+        var jKWId = $("#Id").val();
+        var kod = $("#moJKWPTJBahagianKod").val();
+        var jPTJId = $("#moJKWPTJBahagianJPTJId").val();
+        var jBahagianId = $("#moJKWPTJBahagianJBahagianId").val();
+        var myModal = new bootstrap.Modal(document.getElementById('moJKWPTJBahagian'), {
+            keyboard: false
+        })
+        var JKWPTJBahagian = {
+            JKWId: jKWId,
+            JPTJId: jPTJId,
+            JBahagianId: jBahagianId,
+            Kod : kod
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveAnItemFromCartJKW", "JKW")',
+            data: JKWPTJBahagian,
+            dataType: "json",
+            success: function (r) {
+                //insert notification here
+
+                PopulateTablesFromCart();
+                myModal.hide();
+            }
+        });
+    };
+    //update tbl JKWPTJBahagian end
+</script>

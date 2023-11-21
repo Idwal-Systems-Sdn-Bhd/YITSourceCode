@@ -22,18 +22,6 @@
             <dd class="col-sm-10">
                 @Model.Perihal?.ToUpper()
             </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.JPTJId)
-            </dt>
-            <dd class="col-sm-10">
-                @Model.JPTJ?.Kod - @Model.JPTJ?.Perihal?.ToUpper()
-            </dd>
-            <dt class="col-sm-2">
-                Kump. Wang
-            </dt>
-            <dd class="col-sm-10">
-                @Model.JPTJ?.JKW?.Kod - @Model.JPTJ?.JKW?.Perihal?.ToUpper()
-            </dd>
         </dl>
 
         <form asp-action="Delete">

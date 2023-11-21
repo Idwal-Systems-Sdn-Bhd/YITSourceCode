@@ -39,9 +39,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkTerimaObjek)!
                     .ThenInclude(to => to.AkCarta)
                 .Include(t => t.AkTerimaObjek)!
-                    .ThenInclude(to => to.JBahagian)
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkTerimaObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JPTJ)
-                            .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkTerimaObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
                 .ToList();
 
             // searchstring filters
@@ -99,9 +104,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkTerimaObjek)!
                     .ThenInclude(to => to.AkCarta)
                 .Include(t => t.AkTerimaObjek)!
-                    .ThenInclude(to => to.JBahagian)
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkTerimaObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JPTJ)
-                            .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkTerimaObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
                     .FirstOrDefault(t => t.Id == id) ?? new AkTerima();
         }
 
@@ -132,9 +142,9 @@ namespace YIT._DataAccess.Repositories.Implementations
                 {
                     var akAkaun1 = new AkAkaun();
 
-                    akAkaun1.JKWId = (int)t.JBahagian!.JPTJ!.JKWId!;
-                    akAkaun1.JPTJId = (int)t.JBahagian!.JPTJId!;
-                    akAkaun1.JBahagianId = (int)t.JBahagianId!;
+                    akAkaun1.JKWId = t.JKWPTJBahagian?.JKWId ?? akTerima.JKWId;
+                    akAkaun1.JPTJId = t.JKWPTJBahagian!.JPTJId;
+                    akAkaun1.JBahagianId = t.JKWPTJBahagian.JBahagianId;
                     akAkaun1.AkCarta1Id = akTerima.AkBank!.AkCartaId;
                     akAkaun1.AkCarta2Id = t.AkCartaId;
                     akAkaun1.NoRujukan = akTerima.NoRujukan;
@@ -149,9 +159,9 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                     var akAkaun2 = new AkAkaun();
 
-                    akAkaun2.JKWId = (int)t.JBahagian!.JPTJ!.JKWId!;
-                    akAkaun2.JPTJId = (int)t.JBahagian!.JPTJId!;
-                    akAkaun2.JBahagianId = (int)t.JBahagianId!;
+                    akAkaun2.JKWId = t.JKWPTJBahagian?.JKWId ?? akTerima.JKWId;
+                    akAkaun2.JPTJId = t.JKWPTJBahagian!.JPTJId;
+                    akAkaun2.JBahagianId = t.JKWPTJBahagian.JBahagianId;
                     akAkaun2.AkCarta1Id = t.AkCartaId; 
                     akAkaun2.AkCarta2Id = akTerima.AkBank!.AkCartaId;
                     akAkaun2.NoRujukan = akTerima.NoRujukan;

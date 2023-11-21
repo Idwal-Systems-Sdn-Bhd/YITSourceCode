@@ -31,7 +31,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(a => a.AbWaranObjek)!
                 .ThenInclude(to => to.AkCarta)
                 .Include(a => a.AbWaranObjek)!
-                .ThenInclude(a => a.JBahagian)
+                    .ThenInclude(a => a.JKWPTJBahagian)
+                        .ThenInclude(a => a!.JKW)
+                .Include(a => a.AbWaranObjek)!
+                    .ThenInclude(a => a.JKWPTJBahagian)
+                        .ThenInclude(a => a!.JPTJ)
+                .Include(a => a.AbWaranObjek)!
+                    .ThenInclude(a => a.JKWPTJBahagian)
+                        .ThenInclude(a => a!.JBahagian)
                 .Include(a => a.JKW)
                 .ToList();
         }
@@ -46,7 +53,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(a => a.AbWaranObjek)!
                 .ThenInclude(to => to.AkCarta)
                 .Include(a => a.AbWaranObjek)!
-                .ThenInclude(a => a.JBahagian)
+                    .ThenInclude(a => a.JKWPTJBahagian)
+                        .ThenInclude(a => a!.JKW)
+                .Include(a => a.AbWaranObjek)!
+                    .ThenInclude(a => a.JKWPTJBahagian)
+                        .ThenInclude(a => a!.JPTJ)
+                .Include(a => a.AbWaranObjek)!
+                    .ThenInclude(a => a.JKWPTJBahagian)
+                        .ThenInclude(a => a!.JBahagian)
                 .Include(a => a.JKW)
                 .Where(a => a.Id == id).FirstOrDefault() ?? new AbWaran();
         }
@@ -66,9 +80,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AbWaranObjek)!
                     .ThenInclude(to => to.AkCarta)
                 .Include(t => t.AbWaranObjek)!
-                    .ThenInclude(to => to.JBahagian)
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AbWaranObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JPTJ)
-                            .ThenInclude(b => b!.JKW)
+                .Include(t => t.AbWaranObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
                 .FirstOrDefault(pp => pp.Id == id) ?? new AbWaran();
         }
 
@@ -92,9 +111,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AbWaranObjek)!
                     .ThenInclude(to => to.AkCarta)
                 .Include(t => t.AbWaranObjek)!
-                    .ThenInclude(to => to.JBahagian)
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AbWaranObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JPTJ)
-                            .ThenInclude(b => b!.JKW)
+                .Include(t => t.AbWaranObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
                 .ToList();
 
             // searchstring filters
@@ -177,20 +201,21 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var konfigKelulusanBahagianGrouped = _context.DKonfigKelulusan
                  .Include(kk => kk.DPekerja)
-                 .Include(kk => kk.JBahagian)
+                 .Include(kk => kk.JKWPTJBahagian)
+                    .ThenInclude(kk => kk!.JBahagian)
                 .Where(b => b.EnKategoriKelulusan == enKategoriKelulusan
                 && b.DPekerjaId == dPekerjaId
                 && b.EnJenisModul == enJenisModul)
-                .GroupBy(b => new { b.DPekerjaId, b.JBahagianId }).Select(l => new DKonfigKelulusan
+                .GroupBy(b => new { b.DPekerjaId, b.JKWPTJBahagianId }).Select(l => new DKonfigKelulusan
                 {
                     Id = l.First().DPekerjaId,
                     DPekerjaId = l.First().DPekerjaId,
                     DPekerja = l.First().DPekerja,
-                    JBahagianId = l.First().JBahagianId,
-                    JBahagian = l.First().JBahagian
+                    JKWPTJBahagianId = l.First().JKWPTJBahagianId,
+                    JKWPTJBahagian = l.First().JKWPTJBahagian
                 }).ToList();
 
-            var konfigKelulusanBahagianList = new List<JBahagian>();
+            var konfigKelulusanBahagianList = new List<JKWPTJBahagian>();
 
 
             if (konfigKelulusanBahagianGrouped != null && konfigKelulusanBahagianGrouped.Count > 0)
@@ -198,22 +223,22 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                 foreach (var item in konfigKelulusanBahagianGrouped)
                 {
-                    if (item.JBahagian != null) konfigKelulusanBahagianList.Add(item.JBahagian);
+                    if (item.JKWPTJBahagian != null) konfigKelulusanBahagianList.Add(item.JKWPTJBahagian);
                 }
 
-                var abWaranGroup = new List<AbWaranObjek>().GroupBy(objek => objek.JBahagianId);
+                var abWaranGroup = new List<AbWaranObjek>().GroupBy(objek => objek.JKWPTJBahagianId);
                 if (abWaranList != null && abWaranList.Count > 0)
                 {
                     foreach (var abWaran in abWaranList)
                     {
-                        var waranObjekBahagianList = new List<JBahagian>();
+                        var waranObjekBahagianList = new List<JKWPTJBahagian>();
 
                         // group akPPObjek by bahagian
                         if (abWaran.AbWaranObjek != null && abWaran.AbWaranObjek.Count > 0)
                         {
                             foreach (var item in abWaran.AbWaranObjek)
                             {
-                                waranObjekBahagianList.Add(item.JBahagian ?? new JBahagian());
+                                waranObjekBahagianList.Add(item.JKWPTJBahagian ?? new JKWPTJBahagian());
                             }
 
                         }

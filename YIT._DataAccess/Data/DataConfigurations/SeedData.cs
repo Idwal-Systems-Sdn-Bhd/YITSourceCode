@@ -801,119 +801,346 @@ namespace YIT._DataAccess.Data.DataConfigurations
             //    }
             //}
 
-            context.SaveChanges();
-            // -- First Layer Insert END
-
-            // -- Second Layer Insert
             if (context.JPTJ.Any())
             {
 
-            } else
+            }
+            else
             {
                 context.JPTJ.AddRange(
                     new JPTJ
                     {
                         Kod = "01",
-                        Perihal = "PENTADBIRAN (CARUMAN KERAJAAN NEGERI)",
-                        JKWId = 1
+                        Perihal = "PENTADBIRAN"
                     },
                     new JPTJ
                     {
                         Kod = "02",
-                        Perihal = "TADIKA (CARUMAN KERAJAAN NEGERI)",
-                        JKWId = 1
+                        Perihal = "TADIKA"
                     },
                     new JPTJ
                     {
                         Kod = "03",
-                        Perihal = "PELABURAN (CARUMAN KERAJAAN NEGERI)",
-                        JKWId = 1
+                        Perihal = "PELABURAN"
                     }, new JPTJ
                     {
                         Kod = "04",
-                        Perihal = "KHIDMAT MASYARAKAT (CARUMAN KERAJAAN NEGERI)",
-                        JKWId = 1
+                        Perihal = "KHIDMAT MASYARAKAT"
                     }, new JPTJ
                     {
                         Kod = "05",
-                        Perihal = "DAKWAH (CARUMAN KERAJAAN NEGERI)",
-                        JKWId = 1
+                        Perihal = "DAKWAH"
                     }, new JPTJ
                     {
                         Kod = "06",
-                        Perihal = "PENERBITAN (CARUMAN KERAJAAN NEGERI)",
-                        JKWId = 1
+                        Perihal = "PENERBITAN"
                     }, new JPTJ
                     {
                         Kod = "07",
-                        Perihal = "INSPI/PDI (CARUMAN KERAJAAN NEGERI)",
-                        JKWId = 1
-                    }
-                    , new JPTJ
+                        Perihal = "INSPI/PDI"
+                    }, new JPTJ
                     {
                         Kod = "08",
-                        Perihal = "SRAYIT (CARUMAN KERAJAAN NEGERI)",
-                        JKWId = 1
+                        Perihal = "SRAYIT"
                     },
                     new JPTJ
                     {
                         Kod = "09",
-                        Perihal = "KAFA (CARUMAN KERAJAAN NEGERI)",
-                        JKWId = 1
+                        Perihal = "KAFA"
                     },
                     new JPTJ
                     {
-                        Kod = "01",
-                        Perihal = "PENTADBIRAN (JAKIM)",
-                        JKWId = 2
+                        Kod = "10",
+                        Perihal = "PONDOK DARUL IMAN"
                     },
                     new JPTJ
                     {
-                        Kod = "02",
-                        Perihal = "TADIKA (JAKIM)",
-                        JKWId = 2
+                        Kod = "11",
+                        Perihal = "PUSAT DAKWAH UMMAH"
                     },
                     new JPTJ
                     {
-                        Kod = "03",
-                        Perihal = "PELABURAN (JAKIM)",
-                        JKWId = 2
-                    }, new JPTJ
-                    {
-                        Kod = "04",
-                        Perihal = "KHIDMAT MASYARAKAT (JAKIM)",
-                        JKWId = 2
-                    }, new JPTJ
-                    {
-                        Kod = "05",
-                        Perihal = "DAKWAH (JAKIM)",
-                        JKWId = 2
-                    }, new JPTJ
-                    {
-                        Kod = "06",
-                        Perihal = "PENERBITAN (JAKIM)",
-                        JKWId = 2
-                    }, new JPTJ
-                    {
-                        Kod = "07",
-                        Perihal = "INSPI/PDI (JAKIM)",
-                        JKWId = 2
-                    }
-                    , new JPTJ
-                    {
-                        Kod = "08",
-                        Perihal = "SRAYIT (JAKIM)",
-                        JKWId = 2
+                        Kod = "12",
+                        Perihal = "PENDIDIKAN KHAS"
                     },
                     new JPTJ
                     {
-                        Kod = "09",
-                        Perihal = "KAFA (JAKIM)",
-                        JKWId = 2
+                        Kod = "13",
+                        Perihal = "AUDIT DALAM"
                     }
                     );
             }
 
+            if (context.JBahagian.Any())
+            {
+
+            }
+            else
+            {
+                // ** Ubah di sini
+                context.JBahagian.AddRange(
+                    new JBahagian
+                    {
+                        Kod = "01",
+                        Perihal = "PENTADBIRAN"
+                    },
+                    new JBahagian
+                    {
+                        Kod = "02",
+                        Perihal = "TADIKA"
+                    },
+                    new JBahagian
+                    {
+                        Kod = "03",
+                        Perihal = "PELABURAN"
+                    }, new JBahagian
+                    {
+                        Kod = "04",
+                        Perihal = "KHIDMAT MASYARAKAT"
+                    }, new JBahagian
+                    {
+                        Kod = "05",
+                        Perihal = "DAKWAH"
+                    }, new JBahagian
+                    {
+                        Kod = "06",
+                        Perihal = "PENERBITAN"
+                    }, new JBahagian
+                    {
+                        Kod = "07",
+                        Perihal = "INSPI/PDI"
+                    }
+                    , new JBahagian
+                    {
+                        Kod = "08",
+                        Perihal = "SRAYIT"
+                    },
+                    new JBahagian
+                    {
+                        Kod = "09",
+                        Perihal = "KAFA"
+                    },
+                    new JBahagian
+                    {
+                        Kod = "10",
+                        Perihal = "PONDOK DARUL IMAN"
+                    },
+                    new JBahagian
+                    {
+                        Kod = "11",
+                        Perihal = "PUSAT DAKWAH UMMAH"
+                    },
+                    new JBahagian
+                    {
+                        Kod = "12",
+                        Perihal = "PENDIDIKAN KHAS"
+                    },
+                    new JBahagian
+                    {
+                        Kod = "13",
+                        Perihal = "AUDIT DALAM"
+                    }
+                    // ** Tambah di sini
+                    );
+            }
+
+            context.SaveChanges();
+
+            // -- First Layer Insert END
+
+            // -- Second Layer Insert
+
+            if (context.JKWPTJBahagian.Any())
+            {
+
+            }
+            else
+            {
+                context.JKWPTJBahagian.AddRange(
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 1,
+                        JBahagianId = 1,
+                        Kod = "10101"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 2,
+                        JBahagianId = 2,
+                        Kod = "10202"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 3,
+                        JBahagianId = 3,
+                        Kod = "10303"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 4,
+                        JBahagianId = 4,
+                        Kod = "10404"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 5,
+                        JBahagianId = 5,
+                        Kod = "10505"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 6,
+                        JBahagianId = 6,
+                        Kod = "10606"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 7,
+                        JBahagianId = 7,
+                        Kod = "10707"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 8,
+                        JBahagianId = 8,
+                        Kod = "10808"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 9,
+                        JBahagianId = 9,
+                        Kod = "10909"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 10,
+                        JBahagianId = 10,
+                        Kod = "11010"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 11,
+                        JBahagianId = 11,
+                        Kod = "11111"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 12,
+                        JBahagianId = 12,
+                        Kod = "11212"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 13,
+                        JBahagianId = 13,
+                        Kod = "11313"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 1,
+                        JBahagianId = 1,
+                        Kod = "20101"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 2,
+                        JBahagianId = 2,
+                        Kod = "20202"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 3,
+                        JBahagianId = 3,
+                        Kod = "20303"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 4,
+                        JBahagianId = 4,
+                        Kod = "20404"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 5,
+                        JBahagianId = 5,
+                        Kod = "20505"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 6,
+                        JBahagianId = 6,
+                        Kod = "20606"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 7,
+                        JBahagianId = 7,
+                        Kod = "20707"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 8,
+                        JBahagianId = 8,
+                        Kod = "20808"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 9,
+                        JBahagianId = 9,
+                        Kod = "20909"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 10,
+                        JBahagianId = 10,
+                        Kod = "21010"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 11,
+                        JBahagianId = 11,
+                        Kod = "21111"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 12,
+                        JBahagianId = 12,
+                        Kod = "21212"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 2,
+                        JPTJId = 13,
+                        JBahagianId = 13,
+                        Kod = "21313"
+                    }
+                    );
+            }
             if (context.DDaftarAwam.Any())
             {
 
@@ -925,7 +1152,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
                         Kod = "I0001",
                         Nama = "IDWAL SYSTEMS SDN BHD",
                         JNegeriId = 10,
-                        JBankId = 9,
+                        JBankId = 8,
                         NoPendaftaran = "187842-T",
                         NoKPLama = "",
                         Alamat1 = "Lot 605G, Kompleks Diamond",
@@ -938,7 +1165,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
                         Telefon3 = "",
                         Handphone = "",
                         Emel = "far@idwal.com.my",
-                        NoAkaunBank = "1234567890",
+                        NoAkaunBank = "12029010003756",
                         EnKategoriAhli = EnKategoriAhli.Tiada,
                         EnKategoriDaftarAwam = EnKategoriDaftarAwam.Pembekal,
                         Faks = "03-89663520",
@@ -962,122 +1189,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
             // -- Second Layer Insert END
 
             // -- Third Layer Insert
-            if (context.JBahagian.Any())
-            {
 
-            }
-            else
-            {
-                // ** Ubah di sini
-                context.JBahagian.AddRange(
-                    new JBahagian
-                    {
-                        Kod = "01",
-                        Perihal = "PENTADBIRAN (CARUMAN KERAJAAN NEGERI)",
-                        JPTJId = 1
-                    },
-                    new JBahagian
-                    {
-                        Kod = "02",
-                        Perihal = "TADIKA (CARUMAN KERAJAAN NEGERI)",
-                        JPTJId = 2
-                    },
-                    new JBahagian
-                    {
-                        Kod = "03",
-                        Perihal = "PELABURAN (CARUMAN KERAJAAN NEGERI)",
-                        JPTJId = 3
-                    }, new JBahagian
-                    {
-                        Kod = "04",
-                        Perihal = "KHIDMAT MASYARAKAT (CARUMAN KERAJAAN NEGERI)",
-                        JPTJId = 4
-                    }, new JBahagian
-                    {
-                        Kod = "05",
-                        Perihal = "DAKWAH (CARUMAN KERAJAAN NEGERI)",
-                        JPTJId = 5
-                    }, new JBahagian
-                    {
-                        Kod = "06",
-                        Perihal = "PENERBITAN (CARUMAN KERAJAAN NEGERI)",
-                        JPTJId = 6
-                    }, new JBahagian
-                    {
-                        Kod = "07",
-                        Perihal = "INSPI/PDI (CARUMAN KERAJAAN NEGERI)",
-                        JPTJId = 7
-                    }
-                    , new JBahagian
-                    {
-                        Kod = "08",
-                        Perihal = "SRAYIT (CARUMAN KERAJAAN NEGERI)",
-                        JPTJId = 8
-                    },
-                    new JBahagian
-                    {
-                        Kod = "09",
-                        Perihal = "KAFA (CARUMAN KERAJAAN NEGERI)",
-                        JPTJId = 9
-                    },
-                    new JBahagian
-                    {
-                        Kod = "01",
-                        Perihal = "PENTADBIRAN (JAKIM)",
-                        JPTJId = 10
-                    },
-                    new JBahagian
-                    {
-                        Kod = "02",
-                        Perihal = "TADIKA (JAKIM)",
-                        JPTJId = 11
-                    },
-                    new JBahagian
-                    {
-                        Kod = "03",
-                        Perihal = "PELABURAN (JAKIM)",
-                        JPTJId = 12
-                    },
-                    new JBahagian
-                    {
-                        Kod = "04",
-                        Perihal = "KHIDMAT MASYARAKAT (JAKIM)",
-                        JPTJId = 13
-                    },
-                    new JBahagian
-                    {
-                        Kod = "05",
-                        Perihal = "DAKWAH (JAKIM)",
-                        JPTJId = 14
-                    },
-                    new JBahagian
-                    {
-                        Kod = "06",
-                        Perihal = "PENERBITAN (JAKIM)",
-                        JPTJId = 15
-                    },
-                    new JBahagian
-                    {
-                        Kod = "07",
-                        Perihal = "INSPI/PDI (JAKIM)",
-                        JPTJId = 16
-                    }
-                    ,
-                    new JBahagian
-                    {
-                        Kod = "08",
-                        Perihal = "SRAYIT (JAKIM)",
-                        JPTJId = 17
-                    },
-                    new JBahagian
-                    {
-                        Kod = "09",
-                        Perihal = "KAFA (JAKIM)",
-                        JPTJId = 18
-                    }
-                    // ** Tambah di sini
-                    );
-            }
 
             context.SaveChanges();
 

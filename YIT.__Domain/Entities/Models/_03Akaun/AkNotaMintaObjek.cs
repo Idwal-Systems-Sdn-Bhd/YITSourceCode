@@ -18,8 +18,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int AkCartaId { get; set; }
         public AkCarta? AkCarta { get; set; }
         [DisplayName("Bahagian")]
-        public int JBahagianId { get; set; }
-        public JBahagian? JBahagian { get; set; }
+        public int JKWPTJBahagianId { get; set; }
+        public JKWPTJBahagian? JKWPTJBahagian { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Amaun { get; set; }
     }

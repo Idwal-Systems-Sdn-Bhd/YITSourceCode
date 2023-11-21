@@ -132,7 +132,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 foreach (var item in _cart.AkPenilaianPerolehanObjek)
                 {
-                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JBahagianId, akPP.Jumlah) == false)
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JKWPTJBahagianId, akPP.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
                         ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PN.GetDisplayName(), akPP.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
@@ -205,7 +205,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 foreach (var item in _cart.AkPenilaianPerolehanObjek)
                 {
-                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JBahagianId, akPP.Jumlah) == false)
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JKWPTJBahagianId, akPP.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
                         PopulateDropDownList(fullName ?? "");
@@ -379,7 +379,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.AddItemObjek(
                             akPP.Id,
-                            item.JBahagianId,
+                            item.JKWPTJBahagianId,
                             item.AkCartaId,
                             item.Amaun);
                 }
@@ -410,11 +410,11 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             foreach (AkPenilaianPerolehanObjek item in objek)
             {
-                var jBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById(item.JBahagianId);
+                var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
-                item.JBahagian = jBahagian;
+                item.JKWPTJBahagian = jkwPtjBahagian;
 
-                item.JBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jBahagian.JPTJ?.JKW?.Kod, jBahagian.JPTJ?.Kod, jBahagian.Kod);
+                item.JKWPTJBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jkwPtjBahagian.JKW?.Kod, jkwPtjBahagian.JPTJ?.Kod, jkwPtjBahagian.JBahagian?.Kod);
 
                 var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 
@@ -451,17 +451,17 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
-        public JsonResult GetJBahagianAkCarta(int JBahagianId, int AkCartaId)
+        public JsonResult GetJBahagianAkCarta(int JKWPTJBahagianId, int AkCartaId)
         {
             try
             {
-                var jBahagian = _unitOfWork.JBahagianRepo.GetById(JBahagianId);
-                if (jBahagian == null)
+                var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetById(JKWPTJBahagianId);
+                if (jkwPtjBahagian == null)
                 {
                     return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
                 }
 
-                jBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jBahagian.JPTJ?.JKW?.Kod, jBahagian.JPTJ?.Kod, jBahagian.Kod);
+                jkwPtjBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jkwPtjBahagian.JKW?.Kod, jkwPtjBahagian.JPTJ?.Kod, jkwPtjBahagian.JBahagian?.Kod);
 
                 var akCarta = _unitOfWork.AkCartaRepo.GetById(AkCartaId);
                 if (akCarta == null)
@@ -469,7 +469,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
                 }
 
-                return Json(new { result = "OK", jBahagian, akCarta });
+                return Json(new { result = "OK", jkwPtjBahagian, akCarta });
             }
             catch (Exception ex)
             {
@@ -483,7 +483,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 if (akPenilaianPerolehanObjek != null)
                 {
-                    _cart.AddItemObjek(akPenilaianPerolehanObjek.AkPenilaianPerolehanId, akPenilaianPerolehanObjek.JBahagianId, akPenilaianPerolehanObjek.AkCartaId, akPenilaianPerolehanObjek.Amaun);
+                    _cart.AddItemObjek(akPenilaianPerolehanObjek.AkPenilaianPerolehanId, akPenilaianPerolehanObjek.JKWPTJBahagianId, akPenilaianPerolehanObjek.AkCartaId, akPenilaianPerolehanObjek.Amaun);
                 }
 
 
@@ -502,7 +502,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 if (akPenilaianPerolehanObjek != null)
                 {
-                    _cart.RemoveItemObjek(akPenilaianPerolehanObjek.JBahagianId, akPenilaianPerolehanObjek.AkCartaId);
+                    _cart.RemoveItemObjek(akPenilaianPerolehanObjek.JKWPTJBahagianId, akPenilaianPerolehanObjek.AkCartaId);
                 }
 
                 return Json(new { result = "OK" });
@@ -518,7 +518,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             try
             {
-                AkPenilaianPerolehanObjek data = _cart.AkPenilaianPerolehanObjek.FirstOrDefault(x => x.JBahagianId == akPenilaianPerolehanObjek.JBahagianId && x.AkCartaId == akPenilaianPerolehanObjek.AkCartaId) ?? new AkPenilaianPerolehanObjek();
+                AkPenilaianPerolehanObjek data = _cart.AkPenilaianPerolehanObjek.FirstOrDefault(x => x.JKWPTJBahagianId == akPenilaianPerolehanObjek.JKWPTJBahagianId && x.AkCartaId == akPenilaianPerolehanObjek.AkCartaId) ?? new AkPenilaianPerolehanObjek();
 
                 return Json(new { result = "OK", record = data });
             }
@@ -534,16 +534,16 @@ namespace YIT.Akaun.Controllers._03Akaun
             try
             {
 
-                var akTO = _cart.AkPenilaianPerolehanObjek.FirstOrDefault(x => x.JBahagianId == akPenilaianPerolehanObjek.JBahagianId && x.AkCartaId == akPenilaianPerolehanObjek.AkCartaId);
+                var akTO = _cart.AkPenilaianPerolehanObjek.FirstOrDefault(x => x.JKWPTJBahagianId == akPenilaianPerolehanObjek.JKWPTJBahagianId && x.AkCartaId == akPenilaianPerolehanObjek.AkCartaId);
 
                 var user = _userManager.GetUserName(User);
 
                 if (akTO != null)
                 {
-                    _cart.RemoveItemObjek(akPenilaianPerolehanObjek.JBahagianId, akPenilaianPerolehanObjek.AkCartaId);
+                    _cart.RemoveItemObjek(akPenilaianPerolehanObjek.JKWPTJBahagianId, akPenilaianPerolehanObjek.AkCartaId);
 
                     _cart.AddItemObjek(akPenilaianPerolehanObjek.AkPenilaianPerolehanId,
-                                    akPenilaianPerolehanObjek.JBahagianId,
+                                    akPenilaianPerolehanObjek.JKWPTJBahagianId,
                                     akPenilaianPerolehanObjek.AkCartaId,
                                     akPenilaianPerolehanObjek.Amaun);
                 }
@@ -659,11 +659,11 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 foreach (AkPenilaianPerolehanObjek item in objek)
                 {
-                    var jBahagian = _unitOfWork.JBahagianRepo.GetById(item.JBahagianId);
+                    var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetById(item.JKWPTJBahagianId);
 
-                    item.JBahagian = jBahagian;
+                    item.JKWPTJBahagian = jkwPtjBahagian;
 
-                    item.JBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jBahagian.JPTJ?.JKW?.Kod, jBahagian.JPTJ?.Kod, jBahagian.Kod);
+                    item.JKWPTJBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jkwPtjBahagian.JKW?.Kod, jkwPtjBahagian.JPTJ?.Kod, jkwPtjBahagian.JBahagian?.Kod);
 
                     var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 

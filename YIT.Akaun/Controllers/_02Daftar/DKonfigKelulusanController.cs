@@ -50,7 +50,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DKonfigKelulusan konfigKelulusan, string syscode)
         {
-            if (KonfigKelulusanExists(konfigKelulusan.DPekerjaId,konfigKelulusan.EnKategoriKelulusan,konfigKelulusan.EnJenisModul,konfigKelulusan.JBahagianId) == true)
+            if (KonfigKelulusanExists(konfigKelulusan.DPekerjaId,konfigKelulusan.EnKategoriKelulusan,konfigKelulusan.EnJenisModul,konfigKelulusan.JKWPTJBahagianId) == true)
             {
                 TempData[SD.Error] = "Data ini telah wujud..!";
                 PopulateDropdownList();
@@ -150,7 +150,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!KonfigKelulusanExists(konfigKelulusan.Id, konfigKelulusan.EnKategoriKelulusan, konfigKelulusan.EnJenisModul, konfigKelulusan.JBahagianId))
+                    if (!KonfigKelulusanExists(konfigKelulusan.Id, konfigKelulusan.EnKategoriKelulusan, konfigKelulusan.EnJenisModul, konfigKelulusan.JKWPTJBahagianId))
                     {
                         return NotFound();
                     }
@@ -234,10 +234,10 @@ namespace YIT.Akaun.Controllers._02Daftar
             return RedirectToAction(nameof(Index));
         }
 
-        private bool KonfigKelulusanExists(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, int? jBahagianId)
+        private bool KonfigKelulusanExists(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, int? jKWPTJBahagianId)
         {
             return _unitOfWork.DKonfigKelulusanRepo
-            .IsExist(p => p.DPekerjaId == dPekerjaId && p.EnKategoriKelulusan == enKategoriKelulusan && p.EnJenisModul == enJenisModul && p.JBahagianId == jBahagianId);
+            .IsExist(p => p.DPekerjaId == dPekerjaId && p.EnKategoriKelulusan == enKategoriKelulusan && p.EnJenisModul == enJenisModul && p.JKWPTJBahagianId == jKWPTJBahagianId);
         }
 
         private void PopulateDropdownList()

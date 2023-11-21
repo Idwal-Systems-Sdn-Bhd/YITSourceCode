@@ -29,10 +29,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Jumlah { get; set; }
         public string? Sebab { get; set; }
-        public int FlPosting { get; set; }
-        public int? DPekerjaPostingId { get; set; }
-        public DPekerja? DPekerjaPosting { get; set; }
-        public DateTime? TarikhPosting { get; set; }
         public ICollection<AbWaranObjek>? AbWaranObjek { get; set; }
 
     }

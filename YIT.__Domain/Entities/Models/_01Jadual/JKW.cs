@@ -15,7 +15,7 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         [Required(ErrorMessage = "Kod Diperlukan")]
         public string? Kod { get; set; }
         public string? Perihal { get; set; }
-        public ICollection<JPTJ> JPTJ { get; set; } = new List<JPTJ>();
+        public ICollection<JKWPTJBahagian> JKWPTJBahagian { get; set; } = new List<JKWPTJBahagian>();
         public ICollection<AkAkaun> AkAkaun { get; set; } = new List<AkAkaun>();
         public ICollection<AkTerima> AkTerima { get; set; } = new List<AkTerima>();
         public ICollection<AbBukuVot> AbBukuVot { get; set; } = new List<AbBukuVot>();

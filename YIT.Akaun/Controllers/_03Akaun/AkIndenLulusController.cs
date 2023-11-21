@@ -90,7 +90,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.password = password;
             ViewBag.searchDate1 = searchDate1 ?? DateTime.Now.ToString("dd/MM/yyyy");
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
-            ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pelulus);
+            ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pelulus,EnJenisModul.Tanggungan);
         }
 
         public IActionResult Details(int? id)
@@ -135,7 +135,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.AddItemObjek(
                             akInden.Id,
-                            item.JBahagianId,
+                            item.JKWPTJBahagianId,
                             item.AkCartaId,
                             item.Amaun);
                 }
@@ -166,11 +166,11 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             foreach (AkIndenObjek item in objek)
             {
-                var jBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById(item.JBahagianId);
+                var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
-                item.JBahagian = jBahagian;
+                item.JKWPTJBahagian = jkwPtjBahagian;
 
-                item.JBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jBahagian.JPTJ?.JKW?.Kod, jBahagian.JPTJ?.Kod, jBahagian.Kod);
+                item.JKWPTJBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jkwPtjBahagian.JKW?.Kod, jkwPtjBahagian.JPTJ?.Kod, jkwPtjBahagian.JBahagian?.Kod);
 
                 var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 

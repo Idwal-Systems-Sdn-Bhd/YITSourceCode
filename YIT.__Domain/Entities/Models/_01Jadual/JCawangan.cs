@@ -16,11 +16,10 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public string? Kod { get; set; }
         [DisplayName("Cawangan")]
         public string? Perihal { get; set; }
-        [DisplayName("Penyelia")]
-        public int DPekerjaId { get; set; }
         [DisplayName("Kod Bank")]
-        public int AkBankId { get; set; }
-        public DPekerja? DPekerja { get; set; }
+        public int? AkBankId { get; set; }
         public AkBank? AkBank { get; set; }
+        public ICollection<DPenyelia>? DPenyelia { get; set; }
+
     }
 }

@@ -28,6 +28,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IAkPORepository AkPORepo { get; }
         IAkNotaMintaRepository AkNotaMintaRepo { get; }
         IAkIndenRepository AkIndenRepo { get; }
+        IJKWPTJBahagianRepository JKWPTJBahagianRepo { get; }
         int Save();
     }
 }

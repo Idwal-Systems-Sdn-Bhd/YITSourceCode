@@ -108,7 +108,7 @@ namespace YIT.Akaun.Controller
             // get selected multiple dropdown for bahagian
             ViewBag.JBahagian = _db.JBahagian.ToList();
 
-            string[] arr = objFromDb.JBahagianList!.Split(',');
+            string[] arr = objFromDb.JKWPTJBahagianList!.Split(',');
             List<string> nama = new List<string>();
 
             foreach (var item in arr)
@@ -200,21 +200,21 @@ namespace YIT.Akaun.Controller
                     }
 
                     // select multiple dropdownlist
-                    if (user.SelectedJBahagianList != null)
+                    if (user.SelectedJKWPTJBahagianList != null)
                     {
-                        user.JBahagianList = String.Join(",", user.SelectedJBahagianList);
+                        user.JKWPTJBahagianList = String.Join(",", user.SelectedJKWPTJBahagianList);
                     }
                     else
                     {
-                        if (objFromDb.JBahagianList != null)
+                        if (objFromDb.JKWPTJBahagianList != null)
                         {
-                            user.JBahagianList = objFromDb.JBahagianList;
+                            user.JKWPTJBahagianList = objFromDb.JKWPTJBahagianList;
                         }
                     }
                     // select multiple dropdownlist end
 
                     objFromDb.Nama = user.Nama;
-                    objFromDb.JBahagianList = user.JBahagianList;
+                    objFromDb.JKWPTJBahagianList = user.JKWPTJBahagianList;
                     int? pekerjaId = _db.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
                     if (roleAsal != roleBaru && !string.IsNullOrEmpty(user.Email))

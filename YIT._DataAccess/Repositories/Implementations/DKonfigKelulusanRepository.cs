@@ -18,19 +18,23 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public List<DKonfigKelulusan> GetAllDetails()
         {
-            return _context.DKonfigKelulusan.Include(p => p.DPekerja).Include(p => p.JBahagian).ToList();
+            return _context.DKonfigKelulusan.Include(p => p.DPekerja)
+                .Include(p => p.JKWPTJBahagian)
+                    .ThenInclude(p => p!.JBahagian)
+                    .ToList();
         }
 
         public DKonfigKelulusan GetAllDetailsById(int id)
         {
-            return _context.DKonfigKelulusan.Include(p => p.DPekerja).Include(p => p.JBahagian).FirstOrDefault(p => p.Id == id) ?? new DKonfigKelulusan();
+            return _context.DKonfigKelulusan.Include(p => p.DPekerja).Include(p => p.JKWPTJBahagian).FirstOrDefault(p => p.Id == id) ?? new DKonfigKelulusan();
         }
 
         public List<DKonfigKelulusan> GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
         {
             var results = _context.DKonfigKelulusan
                  .Include(kk => kk.DPekerja)
-                 .Include(kk => kk.JBahagian)
+                 .Include(kk => kk.JKWPTJBahagian)
+                    .ThenInclude(kk => kk!.JBahagian)
                 .Where(b => b.EnKategoriKelulusan == enKategoriKelulusan)
                 .Where(b => b.EnJenisModul == enJenisModul)
                 .GroupBy(b => b.DPekerjaId).Select(l => new DKonfigKelulusan
@@ -43,9 +47,9 @@ namespace YIT._DataAccess.Repositories.Implementations
             return results ?? new List<DKonfigKelulusan>();
         }
 
-        public bool IsPersonAvailable(EnJenisModul enJenisModul, EnKategoriKelulusan enKategoriKelulusan, int jBahagianId, decimal jumlah)
+        public bool IsPersonAvailable(EnJenisModul enJenisModul, EnKategoriKelulusan enKategoriKelulusan, int jKWPTJBahagianId, decimal jumlah)
         {
-            return _context.DKonfigKelulusan.Any(kk => kk.EnJenisModul == enJenisModul && kk.EnKategoriKelulusan == enKategoriKelulusan && kk.JBahagianId == jBahagianId);
+            return _context.DKonfigKelulusan.Any(kk => kk.EnJenisModul == enJenisModul && kk.EnKategoriKelulusan == enKategoriKelulusan && kk.JKWPTJBahagianId == jKWPTJBahagianId);
         }
 
         public bool IsValidUser(int dPekerjaId, string password, EnJenisModul enJenisModul, EnKategoriKelulusan enKategoriKelulusan)

@@ -16,12 +16,12 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public List<JBahagian> GetAllDetails()
         {
-            return _context.JBahagian.Include(b => b.JPTJ).ThenInclude(ptj => ptj!.JKW).ToList();
+            return _context.JBahagian.Include(b => b.JKWPTJBahagian).ToList();
         }
 
         public JBahagian GetAllDetailsById(int id)
         {
-            return _context.JBahagian.Include(b => b.JPTJ).ThenInclude(ptj => ptj!.JKW).Where(ptj => ptj.Id == id).FirstOrDefault() ?? new JBahagian();
+            return _context.JBahagian.Include(b => b.JKWPTJBahagian).Where(b => b.Id == id).FirstOrDefault() ?? new JBahagian();
         }
     }
 }

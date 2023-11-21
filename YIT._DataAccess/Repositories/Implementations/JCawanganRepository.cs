@@ -21,7 +21,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         public JCawangan GetAllDetailsById(int id)
         {
             return _context.JCawangan
-                .Include(jc => jc.DPekerja)
+                .Include(jc => jc.DPenyelia)
                 .Include(jc => jc.AkBank)
                 .Where(jc => jc.Id == id).FirstOrDefault() ?? new JCawangan();
         }

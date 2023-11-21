@@ -19,10 +19,7 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         [Required]
         [MaxLength(100)]
         public string? Perihal { get; set; }
-        [DisplayName("Kump. Wang")]
-        public int? JKWId { get; set; }
-        public JKW? JKW { get; set; }
-        public ICollection<JBahagian> JBahagian { get; set; } = new List<JBahagian>();
+        public ICollection<JKWPTJBahagian> JKWPTJBahagian { get; set; } = new List<JKWPTJBahagian>();
         public ICollection<AkAkaun> AkAkaun { get; set; } = new List<AkAkaun>();
         public ICollection<AbBukuVot> AbBukuVot { get; set; } = new List<AbBukuVot>();
 

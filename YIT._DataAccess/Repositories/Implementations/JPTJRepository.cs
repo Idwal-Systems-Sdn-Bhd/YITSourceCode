@@ -21,12 +21,12 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public List<JPTJ> GetAllDetails()
         {
-            return _context.JPTJ.Include(ptj => ptj.JKW).ToList();
+            return _context.JPTJ.Include(ptj => ptj.JKWPTJBahagian).ToList();
         }
 
         public JPTJ GetAllDetailsById(int id)
         {
-            return _context.JPTJ.Include(ptj => ptj.JKW).Where(ptj => ptj.Id == id).FirstOrDefault() ?? new JPTJ();
+            return _context.JPTJ.Include(ptj => ptj.JKWPTJBahagian).Where(ptj => ptj.Id == id).FirstOrDefault() ?? new JPTJ();
         }
     }
 }

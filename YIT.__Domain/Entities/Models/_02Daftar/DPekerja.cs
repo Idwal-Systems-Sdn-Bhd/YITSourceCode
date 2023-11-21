@@ -48,9 +48,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("Tarikh Berhenti Kerja")]
         public DateTime? TarikhBerhentiKerja { get; set; }
         [DisplayName("Nama Bank")]
-        //[RegularExpression("[^0]+", ErrorMessage = "Sila pilih Bank")]
-        [Required(ErrorMessage = "Bank diperlukan")]
-        public int JBankId { get; set; }
+        public int? JBankId { get; set; }
         public JBangsa? JBangsa { get; set; }
         [DisplayName("Jawatan")]
         public string? Jawatan { get; set; }
@@ -77,10 +75,9 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("No KWSP")]
         public string? NoKWSP { get; set; }
         [DisplayName("Bahagian")]
-        public int JBahagianId { get; set; }
-        public JBahagian? JBahagian { get; set; }
+        public int JKWPTJBahagianId { get; set; }
+        public JKWPTJBahagian? JKWPTJBahagian { get; set; }
+        public ICollection<DPenyelia>? DPenyelia { get; set; }
         public EnJenisKadPengenalan EnJenisKadPengenalan { get; set; }
-
-        public ICollection<JCawangan>? JCawangan { get; set; }
     }
 }

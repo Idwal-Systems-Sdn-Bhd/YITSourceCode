@@ -40,5 +40,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public ICollection<AkNotaMintaObjek>? AkNotaMintaObjek { get; set; }
         public ICollection<AkIndenObjek>? AkIndenObjek { get; set; }
         public ICollection<AkPOObjek>? AkPOObjek { get; set; }
+        public ICollection<AkPelarasanPOObjek>? AkPelarasanPOObjek { get; set; }
+        public ICollection<AkPelarasanIndenObjek>? AkPelarasanIndenObjek { get; set; }
     }
 }

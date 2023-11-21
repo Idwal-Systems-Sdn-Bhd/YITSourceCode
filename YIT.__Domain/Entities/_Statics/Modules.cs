@@ -85,40 +85,49 @@ namespace YIT.__Domain.Entities._Statics
         //
 
         // Pemprosesan
-        public const string kodSahAkPenilaianPerolehan = "PP0001";
+        public const string kodSahAbWaran = "PP0001";
+        public const string namaSahAbWaran = "Pemprosesan Sah Penilaian Perolehan";
+
+        public const string kodSemakAbWaran = "PP0002";
+        public const string namaSemakAbWaran = "Pemprosesan Semak Penilaian Perolehan";
+
+        public const string kodLulusAbWaran = "PP0003";
+        public const string namaLulusAbWaran = "Pemprosesan Lulus Penilaian Perolehan";
+
+        public const string kodSahAkPenilaianPerolehan = "PP0004";
         public const string namaSahAkPenilaianPerolehan = "Pemprosesan Sah Penilaian Perolehan";
 
-        public const string kodSemakAkPenilaianPerolehan = "PP0002";
+        public const string kodSemakAkPenilaianPerolehan = "PP0005";
         public const string namaSemakAkPenilaianPerolehan = "Pemprosesan Semak Penilaian Perolehan";
 
-        public const string kodLulusAkPenilaianPerolehan = "PP0003";
+        public const string kodLulusAkPenilaianPerolehan = "PP0006";
         public const string namaLulusAkPenilaianPerolehan = "Pemprosesan Lulus Penilaian Perolehan";
 
-        public const string kodSahAkNotaMinta = "PP0004";
+        public const string kodSahAkNotaMinta = "PP0007";
         public const string namaSahAkNotaMinta = "Pemprosesan Sah Nota Minta";
 
-        public const string kodSemakAkNotaMinta = "PP0005";
+        public const string kodSemakAkNotaMinta = "PP0008";
         public const string namaSemakAkNotaMinta = "Pemprosesan Semak Nota Minta";
 
-        public const string kodLulusAkNotaMinta = "PP0006";
+        public const string kodLulusAkNotaMinta = "PP0009";
         public const string namaLulusAkNotaMinta = "Pemprosesan Lulus Nota Minta";
 
-        public const string kodSahAkPO = "PP0007";
+        public const string kodSahAkPO = "PP0010";
         public const string namaSahAkPO = "Pemprosesan Sah Pesanan Tempatan";
 
-        public const string kodSemaksAkPO = "PP0008";
+        public const string kodSemaksAkPO = "PP0011";
         public const string namaSemakAkPO = "Pemprosesan Semak Pesanan Tempatan";
 
-        public const string kodLulusAkPO = "PP0009";
+        public const string kodLulusAkPO = "PP0012";
         public const string namaLulusAkPO = "Pemprosesan Lulus Pesanan Tempatan";
 
-        public const string kodSahAkInden = "PP0010";
+        public const string kodSahAkInden = "PP0013";
         public const string namaSahAkInden = "Pemprosesan Sah Inden Kerja";
 
-        public const string kodSemaksAkInden = "PP0011";
+        public const string kodSemaksAkInden = "PP0014";
         public const string namaSemakAkInden = "Pemprosesan Semak Inden Kerja";
 
-        public const string kodLulusAkInden = "PP0012";
+        public const string kodLulusAkInden = "PP0015";
         public const string namaLulusAkInden = "Pemprosesan Lulus Inden Kerja";
         //
         // Laporan

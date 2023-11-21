@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
+using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
@@ -170,7 +171,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.AddItemObjek(
                            abWaran.Id,
-                           item.JBahagianId,
+                           item.JKWPTJBahagianId,
                            item.AkCartaId,
                            item.Amaun,
                            item.TK);
@@ -185,11 +186,9 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             foreach (AbWaranObjek item in objek)
             {
-                var jBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById(item.JBahagianId);
+                var jBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById(item.JKWPTJBahagian!.JBahagianId);
 
-                item.JBahagian = jBahagian;
-
-                item.JBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jBahagian.JPTJ?.JKW?.Kod, jBahagian.JPTJ?.Kod, jBahagian.Kod);
+                item.JKWPTJBahagian!.JBahagian = jBahagian;
 
                 var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 

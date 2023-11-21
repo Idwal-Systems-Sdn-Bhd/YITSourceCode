@@ -33,9 +33,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkPOObjek)!
                     .ThenInclude(to => to.AkCarta)
                 .Include(t => t.AkPOObjek)!
-                    .ThenInclude(to => to.JBahagian)
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkPOObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JPTJ)
-                            .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkPOObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
                 .Include(t => t.AkPOPerihal)
                 .FirstOrDefault(pp => pp.Id == id) ?? new AkPO();
         }
@@ -62,9 +67,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkPOObjek)!
                     .ThenInclude(to => to.AkCarta)
                 .Include(t => t.AkPOObjek)!
-                    .ThenInclude(to => to.JBahagian)
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkPOObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JPTJ)
-                            .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkPOObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
                 .ToList();
 
             // searchstring filters
@@ -147,20 +157,21 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var konfigKelulusanBahagianGrouped = _context.DKonfigKelulusan
                  .Include(kk => kk.DPekerja)
-                 .Include(kk => kk.JBahagian)
+                 .Include(kk => kk.JKWPTJBahagian)
+                    .ThenInclude(kk => kk!.JBahagian)
                 .Where(b => b.EnKategoriKelulusan == enKategoriKelulusan
                 && b.DPekerjaId == dPekerjaId
                 && b.EnJenisModul == enJenisModul)
-                .GroupBy(b => new { b.DPekerjaId, b.JBahagianId }).Select(l => new DKonfigKelulusan
+                .GroupBy(b => new { b.DPekerjaId, b.JKWPTJBahagian }).Select(l => new DKonfigKelulusan
                 {
                     Id = l.First().DPekerjaId,
                     DPekerjaId = l.First().DPekerjaId,
                     DPekerja = l.First().DPekerja,
-                    JBahagianId = l.First().JBahagianId,
-                    JBahagian = l.First().JBahagian
+                    JKWPTJBahagianId = l.First().JKWPTJBahagianId,
+                    JKWPTJBahagian = l.First().JKWPTJBahagian
                 }).ToList();
 
-            var konfigKelulusanBahagianList = new List<JBahagian>();
+            var konfigKelulusanBahagianList = new List<JKWPTJBahagian>();
 
 
             if (konfigKelulusanBahagianGrouped != null && konfigKelulusanBahagianGrouped.Count > 0)
@@ -168,22 +179,22 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                 foreach (var item in konfigKelulusanBahagianGrouped)
                 {
-                    if (item.JBahagian != null) konfigKelulusanBahagianList.Add(item.JBahagian);
+                    if (item.JKWPTJBahagian != null) konfigKelulusanBahagianList.Add(item.JKWPTJBahagian);
                 }
 
-                var akPOGroup = new List<AkPOObjek>().GroupBy(objek => objek.JBahagianId);
+                var akPOGroup = new List<AkPOObjek>().GroupBy(objek => objek.JKWPTJBahagianId);
                 if (akPOList != null && akPOList.Count > 0)
                 {
                     foreach (var akPO in akPOList)
                     {
-                        var penilaianPerolehanObjekBahagianList = new List<JBahagian>();
+                        var penilaianPerolehanObjekBahagianList = new List<JKWPTJBahagian>();
 
                         // group akPOObjek by bahagian
                         if (akPO.AkPOObjek != null && akPO.AkPOObjek.Count > 0)
                         {
                             foreach (var item in akPO.AkPOObjek)
                             {
-                                penilaianPerolehanObjekBahagianList.Add(item.JBahagian ?? new JBahagian());
+                                penilaianPerolehanObjekBahagianList.Add(item.JKWPTJBahagian ?? new JKWPTJBahagian());
                             }
 
                         }
@@ -219,7 +230,8 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             // get list of dKonfigKelulusan with same DPekerjaId, enKategoriKelulusan, enJenisModul
             var konfigKelulusanList = _context.DKonfigKelulusan.Include(kk => kk.DPekerja)
-                 .Include(kk => kk.JBahagian)
+                 .Include(kk => kk.JKWPTJBahagian)
+                    .ThenInclude(kk => kk!.JBahagian)
                 .Where(b => b.EnKategoriKelulusan == enKategoriKelulusan
                 && b.DPekerjaId == dPekerjaId
                 && b.EnJenisModul == enJenisModul).ToList();
@@ -482,9 +494,9 @@ namespace YIT._DataAccess.Repositories.Implementations
                     AbBukuVot abBukuVot = new AbBukuVot()
                     {
                         Tahun = akPO.Tahun,
-                        JKWId = item.JBahagian?.JPTJ?.JKWId ?? akPO.JKWId,
-                        JPTJId = (int)item.JBahagian!.JPTJId!,
-                        JBahagianId = item.JBahagianId,
+                        JKWId = item.JKWPTJBahagian?.JKWId ?? akPO.JKWId,
+                        JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
+                        JBahagianId = item.JKWPTJBahagian.JBahagianId,
                         Tarikh = akPO.Tarikh,
                         DDaftarAwamId = akPO.DDaftarAwamId,
                         VotId = item.AkCartaId,

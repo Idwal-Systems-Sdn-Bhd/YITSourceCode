@@ -26,8 +26,8 @@ namespace YIT.__Domain.Entities.Administrations
         public int? DPekerjaId { get; set; }
         public DPekerja? DPekerja { get; set; }
         [DisplayName("Bahagian")]
-        public string? JBahagianList { get; set; }
+        public string? JKWPTJBahagianList { get; set; }
         [NotMapped]
-        public List<int>? SelectedJBahagianList { get; set; }
+        public List<int>? SelectedJKWPTJBahagianList { get; set; }
     }
 }
