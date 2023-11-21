@@ -75,8 +75,8 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("No KWSP")]
         public string? NoKWSP { get; set; }
         [DisplayName("Bahagian")]
-        public int JKWPTJBahagianId { get; set; }
-        public JKWPTJBahagian? JKWPTJBahagian { get; set; }
+        public int JBahagianId { get; set; }
+        public JBahagian? JBahagian { get; set; }
         public ICollection<DPenyelia>? DPenyelia { get; set; }
         public EnJenisKadPengenalan EnJenisKadPengenalan { get; set; }
     }
