@@ -200,8 +200,8 @@
                                 foreach (var item in ViewBag.akPenilaianPerolehanObjek)
                                 {
                                     <tr>
-                                        <td hidden>@item.JBahagianId</td>
-                                        <td class="text-uppercase">@item.JBahagian?.Kod - @item.JBahagian?.Perihal</td>
+                                        <td hidden>@item.JKWPTJBahagianId</td>
+                                        <td class="text-uppercase">@item.JKWPTJBahagian?.Kod</td>
                                         <td hidden>@item.AkCartaId</td>
                                         <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
                                         <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
@@ -218,11 +218,11 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <select class="form-control form-control-sm text-uppercase" id="objekJBahagianId">
+                                    <select class="form-control form-control-sm text-uppercase" id="objekJKWPTJBahagianId">
                                         <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
-                                        @foreach (var s in ViewBag.JBahagian)
+                                        @foreach (var s in ViewBag.JKWPTJBahagian)
                                         {
-                                            <option value="@s.Id">@BelanjawanFormatter.ConvertToBahagian(s.JPTJ?.JKW.Kod, s.JPTJ?.Kod, s.Kod) - @s.Perihal </option>
+                                            <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal </option>
                                         }
                                     </select>
                                 </td>
@@ -344,11 +344,11 @@
                     <input id="moObjekId" hidden />
                     <div class="form-group">
                         <label class="col-form-label">Bahagian</label>
-                        <select class="form-control form-control-sm text-uppercase" id="moObjekJBahagianId" disabled>
+                        <select class="form-control form-control-sm text-uppercase" id="moObjekJKWPTJBahagianId" disabled>
                             <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
-                            @foreach (var s in ViewBag.JBahagian)
+                            @foreach (var s in ViewBag.JKWPTJBahagian)
                             {
-                                <option value="@s.Id">@BelanjawanFormatter.ConvertToBahagian(s.JPTJ?.JKW.Kod,s.JPTJ?.Kod,s.Kod) - @s.Perihal </option>
+                                <option value="@s.Id">@s.Kod </option>
                             }
                         </select>
                     </div>

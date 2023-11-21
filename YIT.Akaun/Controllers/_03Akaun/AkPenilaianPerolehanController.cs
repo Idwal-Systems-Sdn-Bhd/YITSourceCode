@@ -363,10 +363,10 @@ namespace YIT.Akaun.Controllers._03Akaun
         {
             
             ViewBag.FullName = fullName;
-            ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
+            ViewBag.JKW = _unitOfWork.JKWRepo.GetAllDetails();
             ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
-            ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
+            ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
             ViewBag.EnKaedahPerolehan = EnumHelper<EnKaedahPerolehan>.GetList();
 
         }

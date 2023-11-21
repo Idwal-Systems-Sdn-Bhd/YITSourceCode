@@ -13,8 +13,8 @@
                 $("#objekJumlahPerihal").val("0.00");
                 $("#objekAkCartaId option").prop('disabled', false);
                 $("#objekAkCartaId option:selected").prop('disabled', true);
-                $("#objekJBahagianId option").prop('disabled', false);
-                $("#objekJBahagianId option:selected").prop('disabled', true);
+                $("#objekJKWPTJBahagianId option").prop('disabled', false);
+                $("#objekJKWPTJBahagianId option:selected").prop('disabled', true);
             },
             error: function (req, status, error) {
                 alert(error);
@@ -131,7 +131,7 @@
         //Reference the Name and Country TextBoxes.
         var Id = $("#Id");
         var akCartaId = $("#objekAkCartaId");
-        var jBahagianId = $("#objekJBahagianId");
+        var jBahagianId = $("#objekJKWPTJBahagianId");
         if ($("#objekAmaun").val() == 0.00) {
             toastr.error("Amaun 0.00 tidak dibenarkan");
             toastr.options.timeOut = 2000; // 2s
@@ -161,14 +161,14 @@
             dataType: "json",
             success: function (r) {
                 //Reference the TextBoxes.
-                var objekJBahagianId = $("#objekJBahagianId");
+                var objekJKWPTJBahagianId = $("#objekJKWPTJBahagianId");
                 var objekAkCartaId = $("#objekAkCartaId");
 
                 var objekAmaun = $("#objekAmaun");
 
                 var AkPenilaianPerolehanObjek = {
                     AkPenilaianPerolehanId: Id,
-                    JBahagianId: objekJBahagianId.val(),
+                    JBahagianId: objekJKWPTJBahagianId.val(),
                     AkCartaId: objekAkCartaId.val(),
                     Amaun: objekAmaun.val()
                 }
@@ -228,7 +228,7 @@
                         cell.append(btnRemove1);
 
                         //Clear the TextBoxes.
-                        objekJBahagianId.val("").trigger('change');
+                        objekJKWPTJBahagianId.val("").trigger('change');
                         objekAkCartaId.val("").trigger('change');
                         objekAmaun.val("0.00");
                         checkJumlah();

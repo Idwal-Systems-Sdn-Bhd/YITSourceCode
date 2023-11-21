@@ -20,7 +20,11 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
         public List<JKW> GetAllDetails()
         {
-            return _context.JKW.Include(ptj => ptj.AbWaran).ToList();
+            return _context.JKW.Include(kw => kw.JKWPTJBahagian)
+                    .ThenInclude(kw => kw.JPTJ)
+                .Include(kw => kw.JKWPTJBahagian)
+                    .ThenInclude(kw => kw.JBahagian).
+                    ToList();
         }
 
         public JKW GetDetailsById(int id)
@@ -29,7 +33,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(kw => kw.JKWPTJBahagian)
                     .ThenInclude(kw => kw.JPTJ)
                 .Include(kw => kw.JKWPTJBahagian)
-                    .ThenInclude(kw => kw.JPTJ)
+                    .ThenInclude(kw => kw.JBahagian)
                 .FirstOrDefault(kw => kw.Id == id) ?? new JKW();
         }
     }
