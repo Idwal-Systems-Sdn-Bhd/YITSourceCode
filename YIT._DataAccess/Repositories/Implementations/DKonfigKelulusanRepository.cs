@@ -26,12 +26,13 @@ namespace YIT._DataAccess.Repositories.Implementations
             return _context.DKonfigKelulusan.Include(p => p.DPekerja).Include(p => p.JBahagian).FirstOrDefault(p => p.Id == id) ?? new DKonfigKelulusan();
         }
 
-        public List<DKonfigKelulusan> GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan enKategoriKelulusan)
+        public List<DKonfigKelulusan> GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
         {
             var results = _context.DKonfigKelulusan
                  .Include(kk => kk.DPekerja)
                  .Include(kk => kk.JBahagian)
                 .Where(b => b.EnKategoriKelulusan == enKategoriKelulusan)
+                .Where(b => b.EnJenisModul == enJenisModul)
                 .GroupBy(b => b.DPekerjaId).Select(l => new DKonfigKelulusan
             {
                     Id = l.First().DPekerjaId,
