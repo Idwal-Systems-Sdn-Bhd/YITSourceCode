@@ -15,6 +15,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int Id { get; set; }
         [DisplayName("Kod Bank")]
         [Required(ErrorMessage = "Kod Bank Diperlukan")]
+        public string? Kod { get; set; }
         public string? Perihal { get; set; }
         [DisplayName("No Akaun Bank")]
         [Required(ErrorMessage = "No Akaun Bank Diperlukan")]
