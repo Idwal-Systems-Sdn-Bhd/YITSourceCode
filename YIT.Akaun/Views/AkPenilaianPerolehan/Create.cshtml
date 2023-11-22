@@ -201,7 +201,7 @@
                                 {
                                     <tr>
                                         <td hidden>@item.JKWPTJBahagianId</td>
-                                        <td class="text-uppercase">@item.JKWPTJBahagian?.Kod</td>
+                                        <td class="text-uppercase">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal)</td>
                                         <td hidden>@item.AkCartaId</td>
                                         <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
                                         <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
@@ -222,7 +222,7 @@
                                         <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
                                         @foreach (var s in ViewBag.JKWPTJBahagian)
                                         {
-                                            <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal </option>
+                                            <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
                                         }
                                     </select>
                                 </td>
@@ -348,7 +348,7 @@
                             <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
                             @foreach (var s in ViewBag.JKWPTJBahagian)
                             {
-                                <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal </option>
+                                <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
                             }
                         </select>
                     </div>

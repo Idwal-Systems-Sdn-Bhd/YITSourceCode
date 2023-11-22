@@ -211,7 +211,7 @@
                                         <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
                                         @foreach (var s in ViewBag.JKWPTJBahagian)
                                         {
-                                            <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal </option>
+                                            <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
                                         }
                                     </select>
                                 </td>
@@ -337,7 +337,7 @@
                             <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
                             @foreach (var s in ViewBag.JKWPTJBahagian)
                             {
-                                <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal </option>
+                                <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
                             }
                         </select>
                     </div>

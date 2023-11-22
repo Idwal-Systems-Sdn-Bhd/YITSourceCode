@@ -110,7 +110,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             var user = await _userManager.GetUserAsync(User);
 
             EmptyCart();
-            PopulateDropDownList();
+            PopulateDropDownList(1);
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PO.GetDisplayName(), DateTime.Now.ToString("yyyy"));
             return View();
         }
@@ -131,7 +131,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     {
                         TempData[SD.Error] = "Tiada Pelulus yang wujud untuk senarai kod bahagian berikut.";
                         ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PO.GetDisplayName(), akPO.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
-                        PopulateDropDownList();
+                        PopulateDropDownList(akPO.JKWId);
                         PopulateListViewFromCart();
                         return View(akPO);
                     }
@@ -156,7 +156,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PO.GetDisplayName(), akPO.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
-            PopulateDropDownList();
+            PopulateDropDownList(akPO.JKWId);
             PopulateListViewFromCart();
             return View(akPO);
         }
@@ -181,7 +181,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
 
             EmptyCart();
-            PopulateDropDownList();
+            PopulateDropDownList(akPO.JKWId);
             PopulateCartAkPOFromDb(akPO);
             return View(akPO);
         }
@@ -203,7 +203,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JKWPTJBahagianId, akPO.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
-                        PopulateDropDownList();
+                        PopulateDropDownList(akPO.JKWId);
                         PopulateListViewFromCart();
                         return View(akPO);
                     }
@@ -280,7 +280,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDropDownList();
+            PopulateDropDownList(akPO.JKWId);
             PopulateListViewFromCart();
             return View(akPO);
         }
@@ -440,12 +440,13 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RunningNumberFormatter.GenerateRunningNumber(prefix, maxRefNo, "00000");
         }
 
-        private void PopulateDropDownList()
+        private void PopulateDropDownList(int JKWId)
         {
             ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
             ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
-            ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
+            ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
+            ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
             ViewBag.AkPenilaianPerolehan = _unitOfWork.AkPenilaianPerolehanRepo.GetAllByJenis(0);
             ViewBag.EnJenisPerolehan = EnumHelper<EnJenisPerolehan>.GetList();
         }
@@ -510,6 +511,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         {
             try
             {
+                EmptyCart();
                 var data = _unitOfWork.AkPenilaianPerolehanRepo.GetDetailsById(id);
 
                 if (data != null)
@@ -760,7 +762,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 foreach (AkPOObjek item in objek)
                 {
-                    var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetById(item.JKWPTJBahagianId);
+                    var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
                     item.JKWPTJBahagian = jkwPtjBahagian;
 

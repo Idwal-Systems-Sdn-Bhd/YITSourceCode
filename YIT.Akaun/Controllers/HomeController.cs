@@ -18,6 +18,7 @@ using static YIT.Akaun.Models.ViewModels.Administrations.UserClaimsViewModel;
 
 namespace YIT.Akaun.Controller
 {
+    [Authorize]
     public class HomeController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly ApplicationDbContext _context;

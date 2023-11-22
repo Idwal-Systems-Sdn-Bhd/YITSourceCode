@@ -163,7 +163,7 @@
                             {
                                 <tr>
                                     <td hidden>@item.JKWPTJBahagianId</td>
-                                    <td class="text-uppercase">@item.JKWPTJBahagian?.Kod</td>
+                                    <td class="text-uppercase">@item.JKWPTJBahagian?.Kod - @item.JKWPTJBahagian?.JBahagian?.Perihal (@item.JKWPTJBahagian?.JPTJ?.Perihal)</td>
                                     <td hidden>@item.AkCartaId</td>
                                     <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
                                     <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>

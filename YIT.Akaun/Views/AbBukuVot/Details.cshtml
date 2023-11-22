@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Buku Vot - Papar";
-    var bahagian = BelanjawanFormatter.ConvertToBahagian(ViewBag.JBahagian.JPTJ.JKW.Kod, ViewBag.JBahagian.JPTJ.Kod, ViewBag.JBahagian.Kod);
+    var bahagian = BelanjawanFormatter.ConvertToBahagian(ViewBag.JKW.Kod, ViewBag.JPTJ.Kod, ViewBag.JBahagian.Kod);
     var carta = ViewBag.AkCarta.Kod + " - " + ViewBag.AkCarta.Perihal;
     ViewData["Vot"] = bahagian + " : " + carta;
 }

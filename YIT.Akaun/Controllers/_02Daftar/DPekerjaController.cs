@@ -266,6 +266,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
             ViewBag.JNegeri = _unitOfWork.JNegeriRepo.GetAll();
             ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAllDetails();
+            ViewBag.JPTJ = _unitOfWork.JPTJRepo.GetAllDetails();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
             var statusKahwin = EnumHelper<EnStatusKahwin>.GetList();
 

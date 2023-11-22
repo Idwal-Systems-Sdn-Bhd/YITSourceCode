@@ -12,7 +12,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
     {
         public static void SeedUsers(UserManager<IdentityUser> userManager, ApplicationDbContext db)
         {
-            var results = userManager.FindByEmailAsync(Init.superAdminPassword).Result;
+            var results = userManager.FindByEmailAsync(Init.superAdminEmail).Result;
 
             if (results == null)
             {

@@ -74,6 +74,10 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             if (akCartaId != null) ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetById((int)akCartaId);
 
+            if (jKWId != null) ViewBag.JKW = _unitOfWork.JKWRepo.GetAllDetailsById((int)jKWId);
+
+            if (jPTJId != null) ViewBag.JPTJ = _unitOfWork.JPTJRepo.GetAllDetailsById((int)jPTJId);
+
             if (jBahagianId != null) ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById((int)jBahagianId);
         }
 

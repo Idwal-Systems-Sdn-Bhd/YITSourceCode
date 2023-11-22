@@ -51,7 +51,7 @@ namespace YIT.Akaun.Controllers._01Jadual
                 return NotFound();
             }
 
-            var kW = _unitOfWork.JKWRepo.GetDetailsById((int)id);
+            var kW = _unitOfWork.JKWRepo.GetAllDetailsById((int)id);
             if (kW == null)
             {
                 return NotFound();
@@ -148,7 +148,7 @@ namespace YIT.Akaun.Controllers._01Jadual
                 return NotFound();
             }
 
-            var kW = _unitOfWork.JKWRepo.GetDetailsById((int)id);
+            var kW = _unitOfWork.JKWRepo.GetAllDetailsById((int)id);
             if (kW == null)
             {
                 return NotFound();
