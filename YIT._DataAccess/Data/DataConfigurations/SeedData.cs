@@ -1058,15 +1058,29 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     {
                         JKWId = 1,
                         JPTJId = 12,
-                        JBahagianId = 01,
+                        JBahagianId = 1,
                         Kod = "11201"
                     },
                     new JKWPTJBahagian
                     {
                         JKWId = 1,
+                        JPTJId = 12,
+                        JBahagianId = 2,
+                        Kod = "11202"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
                         JPTJId = 13,
-                        JBahagianId = 13,
-                        Kod = "11313"
+                        JBahagianId = 1,
+                        Kod = "11301"
+                    },
+                    new JKWPTJBahagian
+                    {
+                        JKWId = 1,
+                        JPTJId = 13,
+                        JBahagianId = 2,
+                        Kod = "11302"
                     }
                     );
             }
