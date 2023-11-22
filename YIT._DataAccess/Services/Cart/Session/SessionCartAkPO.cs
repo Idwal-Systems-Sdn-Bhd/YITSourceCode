@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YIT.__Domain.Entities.Models._01Jadual;
 
 namespace YIT._DataAccess.Services.Cart.Session
 {
@@ -20,16 +21,16 @@ namespace YIT._DataAccess.Services.Cart.Session
         private ISession? Session { get; set; }
 
         // POObjek
-        public override void AddItemObjek(int akPOId, int jBahagianId, int akCartaId, decimal amaun)
+        public override void AddItemObjek(int akPOId, int jKWPTJBahagianId, int akCartaId, decimal amaun)
         {
-            base.AddItemObjek(akPOId, jBahagianId, akCartaId, amaun);
+            base.AddItemObjek(akPOId, jKWPTJBahagianId, akCartaId, amaun);
 
             Session?.SetJson("CartAkPO", this);
         }
 
-        public override void RemoveItemObjek(int jBahagianId, int akCartaId)
+        public override void RemoveItemObjek(int jKWPTJBahagianId, int akCartaId)
         {
-            base.RemoveItemObjek(jBahagianId, akCartaId);
+            base.RemoveItemObjek(jKWPTJBahagianId, akCartaId);
             Session?.SetJson("CartAkPO", this);
         }
 

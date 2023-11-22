@@ -385,7 +385,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public void Lulus(int id, int pelulusId, string? userId)
         {
-            var data = _context.AkPO.FirstOrDefault(pp => pp.Id == id);
+            var data = GetDetailsById(id);
             var pelulus = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == pelulusId);
             if (data != null)
             {

@@ -27,7 +27,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                     ToList();
         }
 
-        public JKW GetDetailsById(int id)
+        public JKW GetAllDetailsById(int id)
         {
             return _context.JKW
                 .Include(kw => kw.JKWPTJBahagian)

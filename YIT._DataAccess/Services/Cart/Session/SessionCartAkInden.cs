@@ -20,16 +20,16 @@ namespace YIT._DataAccess.Services.Cart.Session
         private ISession? Session { get; set; }
 
         // IndenObjek
-        public override void AddItemObjek(int akIndenId, int jBahagianId, int akCartaId, decimal amaun)
+        public override void AddItemObjek(int akIndenId, int jKWPTJBahagianId, int akCartaId, decimal amaun)
         {
-            base.AddItemObjek(akIndenId, jBahagianId, akCartaId, amaun);
+            base.AddItemObjek(akIndenId, jKWPTJBahagianId, akCartaId, amaun);
 
             Session?.SetJson("CartAkInden", this);
         }
 
-        public override void RemoveItemObjek(int jBahagianId, int akCartaId)
+        public override void RemoveItemObjek(int jKWPTJBahagianId, int akCartaId)
         {
-            base.RemoveItemObjek(jBahagianId, akCartaId);
+            base.RemoveItemObjek(jKWPTJBahagianId, akCartaId);
             Session?.SetJson("CartAkInden", this);
         }
 

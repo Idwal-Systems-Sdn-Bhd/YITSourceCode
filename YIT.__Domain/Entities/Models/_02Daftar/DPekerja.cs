@@ -83,6 +83,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public JCawangan? JCawangan { get; set; }
         public ICollection<DPenyelia>? DPenyelia { get; set; }
         public EnJenisKadPengenalan EnJenisKadPengenalan { get; set; }
+        [DisplayName("PTJ")]
         public int JPTJId { get; set; }
         public JPTJ? JPTJ { get; set; }
 
