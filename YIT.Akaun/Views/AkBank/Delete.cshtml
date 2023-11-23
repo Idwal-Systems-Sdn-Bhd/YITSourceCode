@@ -35,37 +35,19 @@
         </div>
         <div class="form-group">
             <label asp-for="JKWId" class="control-label"></label>
-            <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" disabled>
-                <option value="0">- SILA PILIH -</option>
-                @foreach (var item in ViewBag.JKW)
-                {
-                    <option value="@item.Id">@item.Kod - @item.Perihal</option>
-                }
-            </select>
+            <input class="form-control form-control-sm text-uppercase" value="@Model.JKW?.Kod - @Model.JKW?.Perihal" readonly />
         </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label asp-for="AkCartaId" class="control-label"></label>
-                    <select asp-for="AkCartaId" class="form-control form-control-sm text-uppercase" disabled>
-                        <option value="0">- SILA PILIH -</option>
-                        @foreach (var item in ViewBag.AkCarta)
-                        {
-                            <option value="@item.Id">@item.Kod - @item.Perihal</option>
-                        }
-                    </select>
+                    <input class="form-control form-control-sm text-uppercase" value="@Model.AkCarta?.Kod - @Model.AkCarta?.Perihal" readonly />
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label asp-for="JBankId" class="control-label"></label>
-                    <select asp-for="JBankId" class="form-control form-control-sm text-uppercase" disabled>
-                        <option value="0">- SILA PILIH -</option>
-                        @foreach (var item in ViewBag.JBank)
-                        {
-                            <option value="@item.Id">@item.Kod - @item.Perihal</option>
-                        }
-                    </select>
+                    <input class="form-control form-control-sm text-uppercase" value="@Model.JBank?.Kod - @Model.JBank?.Perihal" readonly />
                 </div>
             </div>
         </div>

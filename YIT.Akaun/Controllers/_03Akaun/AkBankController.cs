@@ -108,6 +108,8 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akBank);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, AkBank akBank, string syscode)
         {
             if (id != akBank.Id)
@@ -122,7 +124,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     var user = await _userManager.GetUserAsync(User);
                     int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-                    var objAsal = await _context.JBahagian.FirstOrDefaultAsync(x => x.Id == akBank.Id);
+                    var objAsal = await _context.AkBank.FirstOrDefaultAsync(x => x.Id == akBank.Id);
                     var kodAsal = objAsal!.Kod;
                     var perihalAsal = objAsal.Perihal;
                     akBank.UserId = objAsal.UserId;
