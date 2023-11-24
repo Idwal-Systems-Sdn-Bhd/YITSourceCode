@@ -52,6 +52,10 @@
             <input class="form-control form-control-sm text-uppercase" value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" readonly />
 
         </div>
+        <div class="form-group">
+            <label asp-for="Ringkasan" class="control-label"></label>
+            <textarea asp-for="Ringkasan" class="form-control text-uppercase form-control-sm" rows="2" readonly></textarea>
+        </div>
         <br />
         @*table Objek*@
         <div class="card box-shadow mb-3">

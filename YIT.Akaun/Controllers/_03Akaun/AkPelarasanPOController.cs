@@ -210,7 +210,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 foreach (var item in _cart.AkPelarasanPOObjek)
                 {
-                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pelulus, item.JKWPTJBahagianId, akPelarasanPO.Jumlah) == false)
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pelulus, item.JKWPTJBahagianId, akPelarasanPO.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pelulus yang wujud untuk senarai kod bahagian berikut.";
                         ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PX.GetDisplayName(), akPelarasanPO.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
@@ -283,7 +283,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 foreach (var item in _cart.AkPelarasanPOObjek)
                 {
-                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JKWPTJBahagianId, akPelarasanPO.Jumlah) == false)
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pengesah, item.JKWPTJBahagianId, akPelarasanPO.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
                         PopulateDropDownList(akPelarasanPO.JKWId);
@@ -506,18 +506,18 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
-        public JsonResult GetAkPenilaianPerolehanDetails(int id, int? akPelarasanPOId)
+        public JsonResult GetAkPODetails(int id, int? akPelarasanPOId)
         {
             try
             {
                 EmptyCart();
-                var data = _unitOfWork.AkPenilaianPerolehanRepo.GetDetailsById(id);
+                var data = _unitOfWork.AkPORepo.GetDetailsById(id);
 
                 if (data != null)
                 {
-                    if (data.AkPenilaianPerolehanObjek != null)
+                    if (data.AkPOObjek != null)
                     {
-                        foreach (var item in data.AkPenilaianPerolehanObjek)
+                        foreach (var item in data.AkPOObjek)
                         {
                             _cart.AddItemObjek(
                                     akPelarasanPOId ?? 0,
@@ -527,9 +527,9 @@ namespace YIT.Akaun.Controllers._03Akaun
                         }
                     }
 
-                    if (data.AkPenilaianPerolehanPerihal != null)
+                    if (data.AkPOPerihal != null)
                     {
-                        foreach (var item in data.AkPenilaianPerolehanPerihal)
+                        foreach (var item in data.AkPOPerihal)
                         {
                             _cart.AddItemPerihal(
                                 akPelarasanPOId ?? 0,
@@ -548,31 +548,6 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     return Json(new { result = "Error", message = "data tidak wujud!" });
                 }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { result = "Error", message = ex.Message });
-            }
-        }
-        public JsonResult GetJBahagianAkCarta(int JKWPTJBahagianId, int AkCartaId)
-        {
-            try
-            {
-                var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetById(JKWPTJBahagianId);
-                if (jkwPtjBahagian == null)
-                {
-                    return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
-                }
-
-                jkwPtjBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jkwPtjBahagian.JKW?.Kod, jkwPtjBahagian.JPTJ?.Kod, jkwPtjBahagian.JBahagian?.Kod);
-
-                var akCarta = _unitOfWork.AkCartaRepo.GetById(AkCartaId);
-                if (akCarta == null)
-                {
-                    return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
-                }
-
-                return Json(new { result = "OK", jkwPtjBahagian, akCarta });
             }
             catch (Exception ex)
             {

@@ -135,7 +135,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akNotaMintaList;
         }
 
-        public List<AkNotaMinta> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
+        public List<AkNotaMinta> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul)
         {
 
             // get all data with details
@@ -148,7 +148,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return results;
         }
 
-        public List<AkNotaMinta> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkNotaMinta> akNotaMintaList)
+        public List<AkNotaMinta> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkNotaMinta> akNotaMintaList)
         {
             // initialize result sets
             List<AkNotaMinta> results = new List<AkNotaMinta>();
@@ -222,7 +222,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
 
 
-        public List<AkNotaMinta> FilterByComparingJumlahAkNotaMintaWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkNotaMinta> filterings)
+        public List<AkNotaMinta> FilterByComparingJumlahAkNotaMintaWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkNotaMinta> filterings)
         {
             //initialize new list akNotaMinta
             List<AkNotaMinta> results = new List<AkNotaMinta>();

@@ -1,0 +1,14 @@
+﻿<li class="nav-item">
+    <a class="nav-link collapsed text-truncate
+    @Html.ActiveClass("AkPelarasanPO")
+    @Html.ActiveClass("AkPelarasanInden")
+
+       " href="#submenuPelarasan" data-toggle="collapse" data-target="#submenuPelarasan"><img src="~/img/svg/pelarasan.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Pelarasan</span></a>
+    <div class="collapse" id="submenuPelarasan" aria-expanded="false">
+        <ul class="flex-column ps-2 nav">
+
+            <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkPelarasanPO")" asp-area="" asp-controller="AkPelarasanPO" asp-action="Index"><span>Pelarasan Pesanan Tempatan</span></a></li>
+            <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkPelarasanInden")" asp-area="" asp-controller="AkPelarasanInden" asp-action="Index"><span>Pelarasan Inden Kerja</span></a></li>
+        </ul>
+    </div>
+</li>

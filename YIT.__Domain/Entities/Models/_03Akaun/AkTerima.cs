@@ -57,6 +57,9 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int? DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam { get; set; }
         public string? NoRujukanLama { get; set; } // dummy
+        [DisplayName("Cawangan")]
+        public int JCawanganId { get; set; }
+        public JCawangan? JCawangan { get; set; }
 
         public ICollection<AkTerimaObjek>? AkTerimaObjek { get; set; }
         public ICollection<AkTerimaCaraBayar>? AkTerimaCaraBayar { get; set; }

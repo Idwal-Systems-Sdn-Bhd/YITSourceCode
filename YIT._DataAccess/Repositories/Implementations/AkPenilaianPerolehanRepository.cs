@@ -140,7 +140,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akPPList;
         }
 
-        public List<AkPenilaianPerolehan> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
+        public List<AkPenilaianPerolehan> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul)
         {
             
             // get all data with details
@@ -153,7 +153,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return results;
         }
 
-        public List<AkPenilaianPerolehan> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPenilaianPerolehan> akPPList)
+        public List<AkPenilaianPerolehan> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPenilaianPerolehan> akPPList)
         {
             // initialize result sets
             List<AkPenilaianPerolehan> results = new List<AkPenilaianPerolehan>();
@@ -227,7 +227,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
 
 
-        public List<AkPenilaianPerolehan> FilterByComparingJumlahAkPenilaianPerolehanWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPenilaianPerolehan> filterings)
+        public List<AkPenilaianPerolehan> FilterByComparingJumlahAkPenilaianPerolehanWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPenilaianPerolehan> filterings)
         {
             //initialize new list akPP
             List<AkPenilaianPerolehan> results = new List<AkPenilaianPerolehan>();

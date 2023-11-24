@@ -14,13 +14,13 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int Id { get; set; }
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
-        public int JPTJId { get; set; }
+        public int? JPTJId { get; set; }
         public JPTJ? JPTJ { get; set; }
-        public int JBahagianId { get; set; }
+        public int? JBahagianId { get; set; }
         public JBahagian? JBahagian { get; set; }
         public int AkCarta1Id { get; set; }
         public AkCarta? AkCarta1 { get; set; }
-        public int AkCarta2Id { get; set; }
+        public int? AkCarta2Id { get; set; }
         public AkCarta? AkCarta2 { get; set; }
         public string? NoRujukan { get; set; }
         public DateTime Tarikh { get; set; }

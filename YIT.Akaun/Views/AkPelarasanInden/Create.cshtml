@@ -38,21 +38,20 @@
                     </div>
                 </div>
                 <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="AkIndenId" class="control-label"></label>
+                        <select asp-for="AkIndenId" class="form-control form-control-sm text-uppercase" required>
+                            @foreach (var item in ViewBag.AkInden)
+                            {
+                                <option value="@item.Id">@item.NoRujukan</option>
+                            }
+                        </select>
+                        <span asp-validation-for="JKWId" class="text-danger"></span>
 
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label asp-for="AkIndenId" class="control-label"></label>
-                <select asp-for="AkIndenId" class="form-control form-control-sm text-uppercase" required>
-                    <option value="0">- SILA PILIH -</option>
-                    @foreach (var item in ViewBag.AkInden)
-                    {
-                        <option value="@item.Id">@item.NoRujukan</option>
-                    }
-                </select>
-                <span asp-validation-for="JKWId" class="text-danger"></span>
 
-            </div>
             <div class="form-group">
                 <label asp-for="JKWId" class="control-label"></label>
                 <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" required>
@@ -66,6 +65,10 @@
 
             </div>
 
+            <div class="form-group">
+                <label asp-for="Ringkasan" class="control-label"></label>
+                <textarea asp-for="Ringkasan" class="form-control text-uppercase form-control-sm" rows="2"></textarea>
+            </div>
             @*end*@
             <br />
             @*table Objek*@

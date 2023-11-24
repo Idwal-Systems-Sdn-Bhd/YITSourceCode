@@ -135,7 +135,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akPOList;
         }
 
-        public List<AkPO> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
+        public List<AkPO> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul)
         {
 
             // get all data with details
@@ -148,7 +148,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return results;
         }
 
-        public List<AkPO> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPO> akPOList)
+        public List<AkPO> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPO> akPOList)
         {
             // initialize result sets
             List<AkPO> results = new List<AkPO>();
@@ -222,7 +222,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
 
 
-        public List<AkPO> FilterByComparingJumlahAkPOWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPO> filterings)
+        public List<AkPO> FilterByComparingJumlahAkPOWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPO> filterings)
         {
             //initialize new list akPO
             List<AkPO> results = new List<AkPO>();

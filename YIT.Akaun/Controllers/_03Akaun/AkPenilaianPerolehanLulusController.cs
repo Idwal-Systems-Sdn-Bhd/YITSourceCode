@@ -66,7 +66,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 // cek is user and password valid or not
                 HttpContext.Session.SetInt32("DPelulusId", (int)dKonfigKelulusanId);
 
-                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password, EnJenisModul.Perolehan, EnKategoriKelulusan.Pelulus) == false)
+                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password, EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pelulus) == false)
                 {
                     TempData[SD.Error] = "Katalaluan Tidak Sah";
                     return View();
@@ -74,7 +74,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 else
                 {
 
-                    akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.Semak, (int)dKonfigKelulusanId,EnKategoriKelulusan.Pelulus, EnJenisModul.Perolehan);
+                    akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.Semak, (int)dKonfigKelulusanId,EnKategoriKelulusan.Pelulus, EnJenisModulKelulusan.Penilaian);
 
 
                 }
@@ -226,7 +226,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.password = password;
             ViewBag.searchDate1 = searchDate1 ?? DateTime.Now.ToString("dd/MM/yyyy");
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
-            ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pelulus, EnJenisModul.Perolehan);
+            ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pelulus, EnJenisModulKelulusan.Penilaian);
         }
     }
 }

@@ -1,16 +1,24 @@
-﻿@model AkPelarasanInden
+﻿@model AkPelarasanPO
 
 @{
-    ViewData["Title"] = "Pelarasan Inden Kerja - Hapus";
+    ViewData["Title"] = "Kelulusan Pelarasan Pesanan Tempatan - Papar";
     Layout = "~/Views/Shared/_Layout.cshtml";
     decimal jumlahPerihal = 0;
 }
 
-<div class="card box-shadow">
+<div class="card box-shadow mb-2">
     <div class="card-body">
-        <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-dark mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / Papar</span>
+            </div>
+            <div class="col-4">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
 
-        <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
+        </div>
+        <hr />
         @*maklumat umum*@
         <div class="row">
             <div class="col-md-3">
@@ -33,23 +41,17 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <label asp-for="AkIndenId" class="control-label"></label>
-                    <input class="form-control form-control-sm text-uppercase" value="@Model.AkInden?.NoRujukan" readonly />
+                    <label asp-for="AkPOId" class="control-label"></label>
+                    <input class="form-control form-control-sm text-uppercase" value="@Model.AkPO?.NoRujukan" readonly />
 
                 </div>
             </div>
         </div>
-
         <div class="form-group">
             <label asp-for="JKWId" class="control-label"></label>
             <input class="form-control form-control-sm text-uppercase" value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" readonly />
 
         </div>
-        <div class="form-group">
-            <label asp-for="Ringkasan" class="control-label"></label>
-            <textarea asp-for="Ringkasan" class="form-control text-uppercase form-control-sm" rows="2" readonly></textarea>
-        </div>
-        @*end*@
         <br />
         @*table Objek*@
         <div class="card box-shadow mb-3">
@@ -66,9 +68,9 @@
                         </tr>
                     </thead>
                     <tbody id="tbodyObjek">
-                        @if (ViewBag.akPelarasanIndenObjek != null)
+                        @if (ViewBag.akPelarasanPOObjek != null)
                         {
-                            foreach (var item in ViewBag.akPelarasanIndenObjek)
+                            foreach (var item in ViewBag.akPelarasanPOObjek)
                             {
                                 <tr>
                                     <td hidden>@item.JKWPTJBahagianId</td>
@@ -109,9 +111,9 @@
                         </tr>
                     </thead>
                     <tbody id="tbodyPerihal">
-                        @if (ViewBag.akPelarasanIndenPerihal != null)
+                        @if (ViewBag.akPelarasanPOPerihal != null)
                         {
-                            foreach (var item in ViewBag.akPelarasanIndenPerihal)
+                            foreach (var item in ViewBag.akPelarasanPOPerihal)
                             {
                                 <tr>
                                     <td class="text-end">@item.Bil</td>
@@ -138,22 +140,28 @@
         @*table Perihal end*@
         <hr />
 
-        <form asp-action="Delete">
+        <div class="form-group">
+            <a asp-action="Lulus" asp-route-id="@Model.Id" asp-route-syscode="SPPB" asp-route-dKonfigKelulusanId="@ViewBag.DKonfigKelulusanId" class="btn ac-primary btn-sm">Lulus</a>
+            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+
+        </div>
+
+    </div>
+</div>
+<div class="card box-shadow">
+    <div class="card-body">
+        <form asp-action="HantarSemula">
             <div asp-validation-summary="ModelOnly"></div>
             <input type="hidden" asp-for="Id" />
             <input name="syscode" value="SPPB" hidden />
             <div class="row mb-2">
                 <div class="form-group">
-                    <label class="control-label">Sebab Hapus</label>
-                    <input name="sebabHapus" class="form-control text-uppercase form-control-sm" required>
-                    <span class="text-danger">sila isi ruang ini untuk meneruskan operasi</span>
+                    <label class="control-label">Tindakan</label>
+                    <textarea name="tindakan" class="form-control text-uppercase form-control-sm" rows="2" required></textarea>
+                    <span class="text-danger">sila isi ruang ini untuk operasi hantar semula</span>
                 </div>
             </div>
-            <input type="submit" value="Hapus" class="btn ac-danger btn-sm" />
-            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            <input type="submit" value="Hantar Semula" class="btn ac-danger btn-sm" />
         </form>
     </div>
 </div>
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

@@ -49,26 +49,26 @@
     }
     //
 
-    //pick pesanan tempatan
-    $("body").on('change', "#AkPOId", function () {
+    //pick inden kerja
+    $("body").on('change', "#AkIndenId", function () {
         $("#objekAkCartaId option").prop('disabled', false);
         $("#objekAkCartaId option[value='']").prop('disabled', true);
-        var akPOId = $("#AkPOId").val();
-        var akPelarasanPOId = $("#Id").val();
-        if (akPOId != 0) {
-            GetAkPODetails(akPOId, akPelarasanPOId);
+        var akIndenId = $("#AkIndenId").val();
+        var akPelarasanIndenId = $("#Id").val();
+        if (akIndenId != 0) {
+            GetAkIndenDetails(akIndenId, akPelarasanIndenId);
         } else {
 
         }
 
     });
 
-    function GetAkPODetails(akPOId, akPelarasanPOId) {
-        if (akPOId != null) {
+    function GetAkIndenDetails(akIndenId, akPelarasanIndenId) {
+        if (akIndenId != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetAkPODetails", "AkPelarasanPO")',
-                data: { id: akPOId, akPelarasanPOId: akPelarasanPOId },
+                url: '@Url.Action("GetAkIndenDetails", "AkPelarasanInden")',
+                data: { id: akIndenId, akPelarasanIndenId: akPelarasanIndenId },
                 dataType: "json",
                 success: function (msg) {
                     $("#JKWId").val(msg?.record?.jkw?.id).change();
@@ -83,14 +83,14 @@
             });
         }
     }
-    // pick pesanan tempatan end
+    // pick inden kerja end
 
     //empty cart
     function EmptyCart() {
         $.ajax({
             type: "POST",
             //url: "/AkPV/JsonEmptyCart",
-            url: '@Url.Action("EmptyCart", "AkPO")',
+            url: '@Url.Action("EmptyCart", "AkInden")',
             dataType: "json",
             success: function (msg) {
                 $("table tbody#tbodyObjek").empty();
@@ -153,7 +153,7 @@
         var jumlahPerihal = $("#perihalJumlah");
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetAllItemCartAkPelarasanPO", "AkPelarasanPO")',
+            url: '@Url.Action("GetAllItemCartAkPelarasanInden", "AkPelarasanInden")',
             dataType: "json",
             success: function (r) {
 
@@ -252,8 +252,8 @@
 
                 var objekAmaun = $("#objekAmaun");
 
-                var AkPOObjek = {
-                    AkPOId: Id,
+                var AkIndenObjek = {
+                    AkIndenId: Id,
                     JKWPTJBahagianId: objekJKWPTJBahagianId.val(),
                     AkCartaId: objekAkCartaId.val(),
                     Amaun: objekAmaun.val()
@@ -261,8 +261,8 @@
                 //Send the JSON array to Controller to Save into session (cart)
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("SaveCartAkPOObjek", "AkPO")',
-                    data: AkPOObjek,
+                    url: '@Url.Action("SaveCartAkIndenObjek", "AkInden")',
+                    data: AkIndenObjek,
                     dataType: "json",
                     success: function (result) {
 
@@ -346,15 +346,15 @@
             sum = parseFloat(objekJumlah.val()) - parseFloat(objekAmaun);
             objekJumlah.val(sum.toFixed(2));
 
-            var AkPOObjek = {
+            var AkIndenObjek = {
                 JKWPTJBahagianId: jKWPTJBahagianId,
                 AkCartaId: akCartaId
             }
-            if (AkPOObjek != null) {
+            if (AkIndenObjek != null) {
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("RemoveCartAkPOObjek", "AkPO")',
-                    data: AkPOObjek,
+                    url: '@Url.Action("RemoveCartAkIndenObjek", "AkInden")',
+                    data: AkIndenObjek,
                     dataType: "json",
                     success: function (r) {
                         //Delete the Table row using it's Index.
@@ -375,15 +375,15 @@
         var jKWPTJBahagianId = $("TD", row).eq(0).html();
         var akCartaId = $("TD", row).eq(2).html();
 
-        var AkPOObjek = {
+        var AkIndenObjek = {
             JKWPTJBahagianId: jKWPTJBahagianId,
             AkCartaId: akCartaId
         }
         if (jKWPTJBahagianId != null && akCartaId != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetAnItemFromCartAkPOObjek", "AkPO")',
-                data: AkPOObjek,
+                url: '@Url.Action("GetAnItemFromCartAkIndenObjek", "AkInden")',
+                data: AkIndenObjek,
                 dataType: "json",
                 success: function (r) {
                     //insert data in modal objek
@@ -401,15 +401,15 @@
     };
 
     function UpdateModalObjek() {
-        var akPOId = $("#Id").val();
+        var akIndenId = $("#Id").val();
         var id = $("#moObjekId").val();
         var amaun = $("#moObjekAmaun").val();
         var jKWPTJBahagianId = $("#moObjekJKWPTJBahagianId").val();
         var akCartaId = $("#moObjekAkCartaId").val();
         var jumlah = $("#Jumlah");
 
-        var AkPOObjek = {
-            AkPOId: akPOId,
+        var AkIndenObjek = {
+            AkIndenId: akIndenId,
             Id: id,
             JKWPTJBahagianId: jKWPTJBahagianId,
             akCartaId: akCartaId,
@@ -417,8 +417,8 @@
         }
         $.ajax({
             type: "POST",
-            url: '@Url.Action("SaveAnItemFromCartAkPOObjek", "AkPO")',
-            data: AkPOObjek,
+            url: '@Url.Action("SaveAnItemFromCartAkIndenObjek", "AkInden")',
+            data: AkIndenObjek,
             dataType: "json",
             success: function (r) {
                 //insert notification here
@@ -457,7 +457,7 @@
         //Send the JSON array to Controller using AJAX.
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetBil", "AkPO")',
+            url: '@Url.Action("GetBil", "AkInden")',
             data: Perihal,
             dataType: "json",
             success: function (r) {
@@ -474,8 +474,8 @@
                     var harga = $("#perihalHarga");
                     var amaun = $("#perihalAmaun");
 
-                    var AkPOPerihal = {
-                        AkPOId: Id,
+                    var AkIndenPerihal = {
+                        AkIndenId: Id,
                         Bil: bil,
                         Perihal: perihal.val(),
                         Kuantiti: kuantiti.val(),
@@ -486,8 +486,8 @@
                     //Send the JSON array to Controller to Save into session (cart)
                     $.ajax({
                         type: "POST",
-                        url: '@Url.Action("SaveCartAkPOPerihal", "AkPO")',
-                        data: AkPOPerihal,
+                        url: '@Url.Action("SaveCartAkIndenPerihal", "AkInden")',
+                        data: AkIndenPerihal,
                         dataType: "json",
                         success: function (result) {
 
@@ -582,14 +582,14 @@
         sum = parseFloat(jumlah.val()) - parseFloat(amaun);
         jumlah.val(sum.toFixed(2));
 
-        var AkPOPerihal = {
+        var AkIndenPerihal = {
             Bil: bil
         }
-        if (AkPOPerihal != null) {
+        if (AkIndenPerihal != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("RemoveCartAkPOPerihal", "AkPO")',
-                data: AkPOPerihal,
+                url: '@Url.Action("RemoveCartAkIndenPerihal", "AkInden")',
+                data: AkIndenPerihal,
                 dataType: "json",
                 success: function (r) {
                     //Delete the Table row using it's Index.
@@ -609,14 +609,14 @@
         var row = $(button).closest("TR");
         var bil = $("TD", row).eq(0).html();
 
-        var AkPOPerihal = {
+        var AkIndenPerihal = {
             Bil: bil
         }
         if (bil != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetAnItemFromCartAkPOPerihal", "AkPO")',
-                data: AkPOPerihal,
+                url: '@Url.Action("GetAnItemFromCartAkIndenPerihal", "AkInden")',
+                data: AkIndenPerihal,
                 dataType: "json",
                 success: function (r) {
                     //insert data in modal perihal
@@ -637,7 +637,7 @@
     };
 
     function UpdateModalPerihal() {
-        var akPOId = $("#Id").val();
+        var akIndenId = $("#Id").val();
         var id = $("#moPerihalId").val();
         var bil = $("#moPerihalBil").val();
         var perihal = $("#moPerihalPerihal").val();
@@ -647,8 +647,8 @@
         var amaun = $("#moPerihalAmaun").val();
         var jumlah = $("#perihalJumlah");
 
-        var AkPOPerihal = {
-            AkPOId: akPOId,
+        var AkIndenPerihal = {
+            AkIndenId: akIndenId,
             Id: id,
             Bil: bil,
             Perihal: perihal,
@@ -659,8 +659,8 @@
         }
         $.ajax({
             type: "POST",
-            url: '@Url.Action("SaveAnItemFromCartAkPOPerihal", "AkPO")',
-            data: AkPOPerihal,
+            url: '@Url.Action("SaveAnItemFromCartAkIndenPerihal", "AkInden")',
+            data: AkIndenPerihal,
             dataType: "json",
             success: function (r) {
                 //insert notification here

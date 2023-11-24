@@ -25,7 +25,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("Kategori Kelulusan")]
         public EnKategoriKelulusan EnKategoriKelulusan { get; set; }
         [DisplayName("Jenis Modul")]
-        public EnJenisModul EnJenisModul { get; set; }
+        public EnJenisModulKelulusan EnJenisModul { get; set; }
         [DisplayName("Amaun Disemak RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal MinAmaun { get; set; }
@@ -37,5 +37,6 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("Tandatangan")]
         public string? Tandatangan { get; set; }
         public string? KodLama { get; set; } // dummy
+        public bool IsAktif { get; set; }
     }
 }

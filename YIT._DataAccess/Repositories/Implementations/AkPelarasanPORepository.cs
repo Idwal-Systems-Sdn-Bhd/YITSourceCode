@@ -136,7 +136,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akPelarasanPOList;
         }
 
-        public List<AkPelarasanPO> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
+        public List<AkPelarasanPO> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul)
         {
 
             // get all data with details
@@ -149,7 +149,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return results;
         }
 
-        public List<AkPelarasanPO> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPelarasanPO> akPelarasanPOList)
+        public List<AkPelarasanPO> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPelarasanPO> akPelarasanPOList)
         {
             // initialize result sets
             List<AkPelarasanPO> results = new List<AkPelarasanPO>();
@@ -223,7 +223,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
 
 
-        public List<AkPelarasanPO> FilterByComparingJumlahAkPelarasanPOWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPelarasanPO> filterings)
+        public List<AkPelarasanPO> FilterByComparingJumlahAkPelarasanPOWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPelarasanPO> filterings)
         {
             //initialize new list akPelarasanPO
             List<AkPelarasanPO> results = new List<AkPelarasanPO>();

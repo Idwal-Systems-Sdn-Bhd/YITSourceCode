@@ -11,8 +11,8 @@ namespace YIT._DataAccess.Repositories.Interfaces
     public interface IAkPelarasanPORepository : _IGenericRepository<AkPelarasanPO>
     {
         public List<AkPelarasanPO> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang);
-        public List<AkPelarasanPO> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul);
-        public List<AkPelarasanPO> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPelarasanPO> akPPList);
+        public List<AkPelarasanPO> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul);
+        public List<AkPelarasanPO> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPelarasanPO> akPPList);
         public AkPelarasanPO GetDetailsById(int id);
         public string GetMaxRefNo(string initNoRujukan, string tahun);
         public Task<bool> IsSahAsync(int id);

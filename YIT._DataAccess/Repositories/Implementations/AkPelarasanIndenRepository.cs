@@ -136,7 +136,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akPelarasanIndenList;
         }
 
-        public List<AkPelarasanInden> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
+        public List<AkPelarasanInden> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul)
         {
 
             // get all data with details
@@ -149,7 +149,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return results;
         }
 
-        public List<AkPelarasanInden> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPelarasanInden> akPelarasanIndenList)
+        public List<AkPelarasanInden> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPelarasanInden> akPelarasanIndenList)
         {
             // initialize result sets
             List<AkPelarasanInden> results = new List<AkPelarasanInden>();
@@ -223,7 +223,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
 
 
-        public List<AkPelarasanInden> FilterByComparingJumlahAkPelarasanIndenWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPelarasanInden> filterings)
+        public List<AkPelarasanInden> FilterByComparingJumlahAkPelarasanIndenWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPelarasanInden> filterings)
         {
             //initialize new list akPelarasanInden
             List<AkPelarasanInden> results = new List<AkPelarasanInden>();

@@ -179,7 +179,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return abWaranList;
         }
 
-        public List<AbWaran> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
+        public List<AbWaran> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul)
         {
 
             // get all data with details
@@ -192,7 +192,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return filterings;
         }
 
-        public List<AbWaran> FilterByComparingJBahagianAbWaranObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AbWaran> abWaranList)
+        public List<AbWaran> FilterByComparingJBahagianAbWaranObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AbWaran> abWaranList)
         {
             // initialize result sets
             List<AbWaran> results = new List<AbWaran>();

@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "Konfigurasi Kelulusan - Hapus";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var kategoriKelulusan = "";
-    var jenisModul = "";
 }
 <div class="card box-shadow">
     <div class="card-body">
@@ -17,45 +15,15 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                @switch (Model.EnKategoriKelulusan)
-                {
-                    case EnKategoriKelulusan.Pengesah:
-                        kategoriKelulusan = "Pengesah";
-                        break;
-                    case EnKategoriKelulusan.Penyemak:
-                        kategoriKelulusan = "Penyemak";
-                        break;
-                    case EnKategoriKelulusan.Pelulus:
-                        kategoriKelulusan = "Pelulus";
-                        break;
-                }
                 <div class="form-group">
                     <label asp-for="EnKategoriKelulusan" class="control-label"></label>
-                    <input asp-for="EnKategoriKelulusan" class="form-control form-control-sm text-uppercase" value="@kategoriKelulusan" readonly />
+                    <input asp-for="EnKategoriKelulusan" class="form-control form-control-sm text-uppercase" value="@Model.EnKategoriKelulusan.GetDisplayName()" readonly />
                 </div>
             </div>
             <div class="col-md-6">
-                @switch (Model.EnJenisModul)
-                {
-                    case EnJenisModul.Perolehan:
-                        jenisModul = "Perolehan";
-                        break;
-                    case EnJenisModul.Bajet:
-                        jenisModul = "Bajet";
-                        break;
-                    case EnJenisModul.Baucer:
-                        jenisModul = "Baucer";
-                        break;
-                    case EnJenisModul.Tanggungan:
-                        jenisModul = "Tanggungan";
-                        break;
-                    case EnJenisModul.Jurnal:
-                        jenisModul = "Jurnal";
-                        break;
-                }
                 <div class="form-group">
                     <label asp-for="EnJenisModul" class="control-label"></label>
-                    <input asp-for="EnJenisModul" class="form-control form-control-sm text-uppercase" value="@jenisModul" readonly />
+                    <input asp-for="EnJenisModul" class="form-control form-control-sm text-uppercase" value="@Model.EnJenisModul.GetDisplayName()" readonly />
                 </div>
             </div>
         </div>

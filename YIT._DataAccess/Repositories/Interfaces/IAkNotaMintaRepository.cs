@@ -11,8 +11,8 @@ namespace YIT._DataAccess.Repositories.Interfaces
     public interface IAkNotaMintaRepository : _IGenericRepository<AkNotaMinta>
     {
         public List<AkNotaMinta> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang);
-        public List<AkNotaMinta> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul);
-        public List<AkNotaMinta> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkNotaMinta> akPPList);
+        public List<AkNotaMinta> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul);
+        public List<AkNotaMinta> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkNotaMinta> akPPList);
         public AkNotaMinta GetDetailsById(int id);
         public string GetMaxRefNo(string initNoRujukan, string tahun);
         public Task<bool> IsSahAsync(int id);

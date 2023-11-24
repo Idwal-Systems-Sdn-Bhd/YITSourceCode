@@ -234,7 +234,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return RedirectToAction(nameof(Index));
         }
 
-        private bool KonfigKelulusanExists(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, int? jBahagianId)
+        private bool KonfigKelulusanExists(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, int? jBahagianId)
         {
             return _unitOfWork.DKonfigKelulusanRepo
             .IsExist(p => p.DPekerjaId == dPekerjaId && p.EnKategoriKelulusan == enKategoriKelulusan && p.EnJenisModul == enJenisModul && p.JBahagianId == jBahagianId);
@@ -250,7 +250,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
             ViewBag.EnKategoriKelulusan = kategoriKelulusan;
 
-            var jenisModul = EnumHelper<EnJenisModul>.GetList();
+            var jenisModul = EnumHelper<EnJenisModulKelulusan>.GetList();
 
             ViewBag.EnJenisModul = jenisModul;
         }

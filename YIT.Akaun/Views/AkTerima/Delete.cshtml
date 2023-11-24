@@ -65,7 +65,11 @@
                 </div>
             </div>
         </div>
+        <div class="form-group">
+            <label asp-for="JCawanganId" class="control-label"></label>
+            <input value="@Model.JCawangan?.Kod - @Model.JCawangan?.Perihal" class="form-control form-control-sm text-uppercase" readonly />
 
+        </div>
         <div class="form-group">
             <label asp-for="DDaftarAwamId" class="control-label"></label>
             <input value="@Model.DDaftarAwam?.Kod - @Model.DDaftarAwam?.Nama" class="form-control form-control-sm text-uppercase" readonly />

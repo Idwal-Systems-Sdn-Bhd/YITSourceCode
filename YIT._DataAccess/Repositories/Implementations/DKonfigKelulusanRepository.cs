@@ -28,7 +28,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return _context.DKonfigKelulusan.Include(p => p.DPekerja).Include(p => p.JBahagian).FirstOrDefault(p => p.Id == id) ?? new DKonfigKelulusan();
         }
 
-        public List<DKonfigKelulusan> GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
+        public List<DKonfigKelulusan> GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul)
         {
             var results = _context.DKonfigKelulusan
                  .Include(kk => kk.DPekerja)
@@ -45,12 +45,12 @@ namespace YIT._DataAccess.Repositories.Implementations
             return results ?? new List<DKonfigKelulusan>();
         }
 
-        public bool IsPersonAvailable(EnJenisModul enJenisModul, EnKategoriKelulusan enKategoriKelulusan, int jBahagianId, decimal jumlah)
+        public bool IsPersonAvailable(EnJenisModulKelulusan enJenisModul, EnKategoriKelulusan enKategoriKelulusan, int jBahagianId, decimal jumlah)
         {
             return _context.DKonfigKelulusan.Any(kk => kk.EnJenisModul == enJenisModul && kk.EnKategoriKelulusan == enKategoriKelulusan && kk.JBahagianId == jBahagianId);
         }
 
-        public bool IsValidUser(int dPekerjaId, string password, EnJenisModul enJenisModul, EnKategoriKelulusan enKategoriKelulusan)
+        public bool IsValidUser(int dPekerjaId, string password, EnJenisModulKelulusan enJenisModul, EnKategoriKelulusan enKategoriKelulusan)
         {
             return _context.DKonfigKelulusan.Any(kk => kk.DPekerjaId == dPekerjaId && kk.KataLaluan == password && kk.EnJenisModul == enJenisModul && kk.EnKategoriKelulusan == enKategoriKelulusan);
         }

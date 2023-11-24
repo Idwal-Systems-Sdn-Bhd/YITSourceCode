@@ -132,7 +132,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 foreach (var item in _cart.AkPenilaianPerolehanObjek)
                 {
-                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JKWPTJBahagianId, akPP.Jumlah) == false)
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pengesah, item.JKWPTJBahagianId, akPP.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
                         ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PN.GetDisplayName(), akPP.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
@@ -205,7 +205,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 foreach (var item in _cart.AkPenilaianPerolehanObjek)
                 {
-                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModul.Perolehan, EnKategoriKelulusan.Pengesah, item.JKWPTJBahagianId, akPP.Jumlah) == false)
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pengesah, item.JKWPTJBahagianId, akPP.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
                         PopulateDropDownList(fullName ?? "", akPP.JKWId);

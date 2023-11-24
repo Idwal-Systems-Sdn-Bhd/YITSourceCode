@@ -14,24 +14,24 @@ using YIT.Akaun.Infrastructure;
 namespace YIT.Akaun.Controllers._03Akaun
 {
     [Authorize]
-    public class AkIndenLulusController : Microsoft.AspNetCore.Mvc.Controller
+    public class AkPelarasanIndenLulusController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = Modules.kodLulusAkInden;
-        public const string namamodul = Modules.namaLulusAkInden;
+        public const string modul = Modules.kodLulusAkPelarasanInden;
+        public const string namamodul = Modules.namaLulusAkPelarasanInden;
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly _AppLogIRepository<AppLog, int> _appLog;
         private readonly UserServices _userServices;
-        private readonly CartAkInden _cart;
+        private readonly CartAkPelarasanInden _cart;
 
-        public AkIndenLulusController(
+        public AkPelarasanIndenLulusController(
             ApplicationDbContext context,
             _IUnitOfWork unitOfWork,
             UserManager<IdentityUser> userManager,
             _AppLogIRepository<AppLog, int> appLog,
             UserServices userServices,
-            CartAkInden cart
+            CartAkPelarasanInden cart
             )
         {
             _context = context;
@@ -55,7 +55,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             PopulateFormFields(searchString, password, searchDate1, searchDate2);
 
-            List<AkInden> akInden = new List<AkInden>();
+            List<AkPelarasanInden> akPelarasanInden = new List<AkPelarasanInden>();
             if (!string.IsNullOrEmpty(searchDate1) && !string.IsNullOrEmpty(searchDate2))
             {
                 date1 = DateTime.Parse(searchDate1);
@@ -67,7 +67,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 // cek is user and password valid or not
                 HttpContext.Session.SetInt32("DPelulusId", (int)dKonfigKelulusanId);
 
-                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password, EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pelulus) == false)
+                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password, EnJenisModulKelulusan.PelarasanInden, EnKategoriKelulusan.Pelulus) == false)
                 {
                     TempData[SD.Error] = "Katalaluan Tidak Sah";
                     return View();
@@ -75,13 +75,13 @@ namespace YIT.Akaun.Controllers._03Akaun
                 else
                 {
 
-                    akInden = _unitOfWork.AkIndenRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.None, (int)dKonfigKelulusanId, EnKategoriKelulusan.Pelulus, EnJenisModulKelulusan.Inden);
+                    akPelarasanInden = _unitOfWork.AkPelarasanIndenRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.None, (int)dKonfigKelulusanId, EnKategoriKelulusan.Pelulus, EnJenisModulKelulusan.PelarasanInden);
 
 
                 }
             }
 
-            return View(akInden);
+            return View(akPelarasanInden);
         }
 
         private void PopulateFormFields(string searchString, string password, string searchDate1, string searchDate2)
@@ -90,7 +90,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.password = password;
             ViewBag.searchDate1 = searchDate1 ?? DateTime.Now.ToString("dd/MM/yyyy");
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
-            ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pelulus,EnJenisModulKelulusan.Inden);
+            ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pelulus, EnJenisModulKelulusan.PelarasanInden);
         }
 
         public IActionResult Details(int? id)
@@ -100,53 +100,37 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            var akInden = _unitOfWork.AkIndenRepo.GetDetailsById((int)id);
+            var akInden = _unitOfWork.AkPelarasanIndenRepo.GetDetailsById((int)id);
             if (akInden == null)
             {
                 return NotFound();
             }
             EmptyCart();
             ViewBag.DKonfigKelulusanId = HttpContext.Session.GetInt32("DPelulusId");
-            PopulateCartAkIndenFromDb(akInden);
+            PopulateCartAkPelarasanIndenFromDb(akInden);
             return View(akInden);
         }
 
-        // jsonResults
-        public JsonResult EmptyCart()
+        private void PopulateCartAkPelarasanIndenFromDb(AkPelarasanInden akPelarasanInden)
         {
-            try
+            if (akPelarasanInden.AkPelarasanIndenObjek != null)
             {
-                _cart.ClearObjek();
-                _cart.ClearPerihal();
-
-                return Json(new { result = "OK" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { result = "ERROR", message = ex.Message });
-            }
-        }
-
-        private void PopulateCartAkIndenFromDb(AkInden akInden)
-        {
-            if (akInden.AkIndenObjek != null)
-            {
-                foreach (var item in akInden.AkIndenObjek)
+                foreach (var item in akPelarasanInden.AkPelarasanIndenObjek)
                 {
                     _cart.AddItemObjek(
-                            akInden.Id,
+                            akPelarasanInden.Id,
                             item.JKWPTJBahagianId,
                             item.AkCartaId,
                             item.Amaun);
                 }
             }
 
-            if (akInden.AkIndenPerihal != null)
+            if (akPelarasanInden.AkPelarasanIndenPerihal != null)
             {
-                foreach (var item in akInden.AkIndenPerihal)
+                foreach (var item in akPelarasanInden.AkPelarasanIndenPerihal)
                 {
                     _cart.AddItemPerihal(
-                        akInden.Id,
+                        akPelarasanInden.Id,
                         item.Bil,
                         item.Perihal,
                         item.Kuantiti,
@@ -162,9 +146,9 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         private void PopulateListViewFromCart()
         {
-            List<AkIndenObjek> objek = _cart.AkIndenObjek.ToList();
+            List<AkPelarasanIndenObjek> objek = _cart.AkPelarasanIndenObjek.ToList();
 
-            foreach (AkIndenObjek item in objek)
+            foreach (AkPelarasanIndenObjek item in objek)
             {
                 var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
@@ -179,24 +163,39 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             ViewBag.akIndenObjek = objek;
 
-            List<AkIndenPerihal> perihal = _cart.AkIndenPerihal.ToList();
+            List<AkPelarasanIndenPerihal> perihal = _cart.AkPelarasanIndenPerihal.ToList();
 
             ViewBag.akIndenPerihal = perihal;
         }
 
+        public JsonResult EmptyCart()
+        {
+            try
+            {
+                _cart.ClearObjek();
+                _cart.ClearPerihal();
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
         public async Task<IActionResult> Lulus(int id, int dKonfigKelulusanId, string syscode)
         {
-            var akInden = _unitOfWork.AkIndenRepo.GetById((int)id);
+            var akPelarasanInden = _unitOfWork.AkPelarasanIndenRepo.GetById((int)id);
 
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-            if (akInden != null)
+            if (akPelarasanInden != null)
             {
 
-                _unitOfWork.AkIndenRepo.Lulus(id, dKonfigKelulusanId, user?.UserName ?? "");
+                _unitOfWork.AkPelarasanIndenRepo.Lulus(id, dKonfigKelulusanId, user?.UserName ?? "");
 
-                _appLog.Insert("Posting", "Melulus " + akInden.NoRujukan ?? "" + "; pelulusId: " + dKonfigKelulusanId.ToString(), akInden.NoRujukan ?? "", id, akInden.Jumlah, pekerjaId, modul, syscode, namamodul, user);
+                _appLog.Insert("Posting", "Melulus " + akPelarasanInden.NoRujukan ?? "" + "; pelulusId: " + dKonfigKelulusanId.ToString(), akPelarasanInden.NoRujukan ?? "", id, akPelarasanInden.Jumlah, pekerjaId, modul, syscode, namamodul, user);
                 _context.SaveChanges();
                 TempData[SD.Success] = "Data berjaya diluluskan..!";
             }
@@ -210,16 +209,16 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         public async Task<IActionResult> HantarSemulaAsync(int id, string? tindakan, string syscode)
         {
-            var akInden = _unitOfWork.AkIndenRepo.GetById((int)id);
+            var akPelarasanInden = _unitOfWork.AkPelarasanIndenRepo.GetById((int)id);
 
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-            if (akInden != null)
+            if (akPelarasanInden != null)
             {
-                _unitOfWork.AkIndenRepo.BatalLulus(id, tindakan, user?.UserName ?? "");
+                _unitOfWork.AkPelarasanIndenRepo.BatalLulus(id, tindakan, user?.UserName ?? "");
 
-                _appLog.Insert("Ubah", "Hantar Semula " + akInden.NoRujukan ?? "", akInden.NoRujukan ?? "", id, akInden.Jumlah, pekerjaId, modul, syscode, namamodul, user);
+                _appLog.Insert("Ubah", "Hantar Semula " + akPelarasanInden.NoRujukan ?? "", akPelarasanInden.NoRujukan ?? "", id, akPelarasanInden.Jumlah, pekerjaId, modul, syscode, namamodul, user);
                 _context.SaveChanges();
                 TempData[SD.Success] = "Data berjaya dihantar semula..!";
             }

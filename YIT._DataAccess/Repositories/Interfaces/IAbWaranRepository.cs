@@ -15,7 +15,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
 
         public AbWaran GetAllDetailsById(int id);
         public List<AbWaran> GetAllDetails();
-        public List<AbWaran> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul);
+        public List<AbWaran> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul);
         public AbWaran GetDetailsById(int id);
         public Task<bool> IsSahAsync(int id);
         public void Sah(int id, int? pengesahId, string? userId);
