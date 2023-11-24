@@ -28,6 +28,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public decimal Debit { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Kredit { get; set; }
-        public string? NoRujukanLama { get; set; }
+        public string? NoRujukanLama { get; set; } // dummy
     }
 }

@@ -1032,7 +1032,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
                         JKWId = 1,
                         JPTJId = 1,
                         JBahagianId = 10,
-                        Kod = "11001"
+                        Kod = "10110"
                     },
                     new JKWPTJBahagian
                     {
@@ -1060,7 +1060,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
                         JKWId = 1,
                         JPTJId = 1,
                         JBahagianId = 12,
-                        Kod = "10212"
+                        Kod = "10112"
                     },
                     new JKWPTJBahagian
                     {
@@ -1093,41 +1093,41 @@ namespace YIT._DataAccess.Data.DataConfigurations
                 //context.DDaftarAwam.AddRange(
                 //    new DDaftarAwam
                 //    {
-                        //Kod = "I0001",
-                        //Nama = "IDWAL SYSTEMS SDN BHD",
-                        //JNegeriId = 10,
-                        //JBankId = 8,
-                        //NoPendaftaran = "187842-T",
-                        //NoKPLama = "",
-                        //Alamat1 = "Lot 605G, Kompleks Diamond",
-                        //Alamat2 = "Bangi Business Park",
-                        //Alamat3 = "Jalan Medan Bangi, Off Persiaran Bandar",
-                        //Poskod = "43650",
-                        //Bandar = "Bandar Baru Bangi",
-                        //Telefon1 = "03-89663520",
-                        //Telefon2 = "",
-                        //Telefon3 = "",
-                        //Handphone = "",
-                        //Emel = "far@idwal.com.my",
-                        //NoAkaunBank = "12029010003756",
-                        //EnKategoriAhli = EnKategoriAhli.Tiada,
-                        //EnKategoriDaftarAwam = EnKategoriDaftarAwam.Pembekal,
-                        //Faks = "03-89663520",
-                        //IsBekalan = false,
-                        //IsPerkhidmatan = true,
-                        //IsKerja = false,
-                        //JangkaMasaDari = null,
-                        //JangkaMasaHingga = null,
-                        //KodM2E = "PI0001",
-                        //DPekerjaMasukId = null,
-                        //UserId = "superadmin@idwal.com.my",
-                        //TarMasuk = DateTime.Now,
-                        //DPekerjaKemaskiniId = null,
-                        //TarKemaskini = null,
-                        //FlHapus = 0,
-                        //TarHapus = null,
-                        //SebabHapus = ""
-                    //});
+                //        Kod = "I0001",
+                //        Nama = "IDWAL SYSTEMS SDN BHD",
+                //        JNegeriId = 10,
+                //        JBankId = 8,
+                //        NoPendaftaran = "187842-T",
+                //        NoKPLama = "",
+                //        Alamat1 = "Lot 605G, Kompleks Diamond",
+                //        Alamat2 = "Bangi Business Park",
+                //        Alamat3 = "Jalan Medan Bangi, Off Persiaran Bandar",
+                //        Poskod = "43650",
+                //        Bandar = "Bandar Baru Bangi",
+                //        Telefon1 = "03-89663520",
+                //        Telefon2 = "",
+                //        Telefon3 = "",
+                //        Handphone = "",
+                //        Emel = "far@idwal.com.my",
+                //        NoAkaunBank = "12029010003756",
+                //        EnKategoriAhli = EnKategoriAhli.Tiada,
+                //        EnKategoriDaftarAwam = EnKategoriDaftarAwam.Pembekal,
+                //        Faks = "03-89663520",
+                //        IsBekalan = false,
+                //        IsPerkhidmatan = true,
+                //        IsKerja = false,
+                //        JangkaMasaDari = null,
+                //        JangkaMasaHingga = null,
+                //        KodM2E = "PI0001",
+                //        DPekerjaMasukId = null,
+                //        UserId = "superadmin@idwal.com.my",
+                //        TarMasuk = DateTime.Now,
+                //        DPekerjaKemaskiniId = null,
+                //        TarKemaskini = null,
+                //        FlHapus = 0,
+                //        TarHapus = null,
+                //        SebabHapus = ""
+                //    });
             }
             context.SaveChanges();
             // -- Second Layer Insert END
