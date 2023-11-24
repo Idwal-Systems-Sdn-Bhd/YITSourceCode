@@ -36,6 +36,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam { get; set; }
         public string? Ringkasan { get; set; }
+        public string? NoRujukanLama { get; set; } // dummy
         public ICollection<AkIndenObjek>? AkIndenObjek { get; set; }
         public ICollection<AkIndenPerihal>? AkIndenPerihal { get; set; }
         public ICollection<AkPelarasanInden>? AkPelarasanInden { get; set; }

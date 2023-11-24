@@ -34,6 +34,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("Pembekal")]
         public int DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam{ get; set; }
+        public string? NoRujukanLama { get; set; } // dummy
         public ICollection<AkPOObjek>? AkPOObjek { get; set; }
         public ICollection<AkPOPerihal>? AkPOPerihal { get; set; }
         public ICollection<AkPelarasanPO>? AkPelarasanPO { get; set; }

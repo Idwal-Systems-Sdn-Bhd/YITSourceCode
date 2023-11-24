@@ -27,6 +27,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         public string? Ringkasan { get; set; }
+        public string? NoRujukanLama { get; set; } // dummy
         public ICollection<AkPelarasanPOObjek>? AkPelarasanPOObjek { get; set; }
         public ICollection<AkPelarasanPOPerihal>? AkPelarasanPOPerihal { get; set; }
     }

@@ -53,7 +53,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("Cadangan Pembekal")]
         public int DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam { get; set; }
-        
+        public string? NoRujukanLama { get; set; } // dummy
+
         public ICollection<AkPenilaianPerolehanObjek>? AkPenilaianPerolehanObjek { get; set; }
         public ICollection<AkPenilaianPerolehanPerihal>? AkPenilaianPerolehanPerihal { get; set; }
 

@@ -30,5 +30,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
 
         public void RemovePostingFromAbBukuVot(AkPO akPO,string userId);
         Task<bool> IsPostedAsync(int id, string noRujukan);
+        List<AkPO> GetAllByStatus(EnStatusBorang enStatusBorang);
     }
 }

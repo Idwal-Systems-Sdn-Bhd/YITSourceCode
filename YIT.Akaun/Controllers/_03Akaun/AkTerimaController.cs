@@ -80,7 +80,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 return NotFound();
             }
-
+            EmptyCart();
             PopulateCartAkTerimaFromDb(akTerima);
             return View(akTerima);
         }
@@ -97,7 +97,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 return NotFound();
             }
-
+            EmptyCart();
             PopulateCartAkTerimaFromDb(akTerima);
             return View(akTerima);
         }

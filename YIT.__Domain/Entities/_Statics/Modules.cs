@@ -77,10 +77,16 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodAkPO = "AK0008";
         public const string namaAkPO = "Tanggungan Pesanan Tempatan";
 
-        public const string kodAkInden = "AK0009";
+        public const string kodAkPelarasanPO = "AK0009";
+        public const string namaAkPelarasanPO = "Pelarasan Pesanan Tempatan";
+
+        public const string kodAkInden = "AK0010";
         public const string namaAkInden = "Tanggungan Inden Kerja";
 
-        public const string kodAkTerima = "AK0010";
+        public const string kodAkPelarasanInden = "AK0011";
+        public const string namaAkPelarasanInden = "Pelarasan Inden Kerja";
+
+        public const string kodAkTerima = "AK0012";
         public const string namaAkTerima = "Terimaan Resit Rasmi";
         //
 

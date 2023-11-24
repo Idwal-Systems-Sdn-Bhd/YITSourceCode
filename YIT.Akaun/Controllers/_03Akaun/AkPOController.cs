@@ -77,7 +77,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 return NotFound();
             }
-
+            EmptyCart();
             PopulateCartAkPOFromDb(akPO);
             return View(akPO);
         }
@@ -100,7 +100,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Hapus data tidak dibenarkan..!";
                 return (RedirectToAction(nameof(Index)));
             }
-
+            EmptyCart();
             PopulateCartAkPOFromDb(akPO);
             return View(akPO);
         }

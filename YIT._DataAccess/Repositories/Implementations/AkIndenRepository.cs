@@ -547,9 +547,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 _context.RemoveRange(abBukuVotList);
             }
 
-            // update akPO posting fields
+            // update akInden posting fields
             BatalLulus(akInden.Id, "Pembatalan Posting", userId);
 
+        }
+
+        public List<AkInden> GetAllByStatus(EnStatusBorang enStatusBorang)
+        {
+            return _context.AkInden.Where(pp => pp.EnStatusBorang == enStatusBorang).ToList();
         }
     }
 }

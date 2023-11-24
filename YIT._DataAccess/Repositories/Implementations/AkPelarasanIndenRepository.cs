@@ -8,71 +8,72 @@ using YIT._DataAccess.Repositories.Interfaces;
 
 namespace YIT._DataAccess.Repositories.Implementations
 {
-    public class AkPORepository : _GenericRepository<AkPO>, IAkPORepository
+    public class AkPelarasanIndenRepository : _GenericRepository<AkPelarasanInden>, IAkPelarasanIndenRepository
     {
         private readonly ApplicationDbContext _context;
 
-        public AkPORepository(ApplicationDbContext context) : base(context)
+        public AkPelarasanIndenRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
         }
-        public AkPO GetDetailsById(int id)
+
+        public AkPelarasanInden GetDetailsById(int id)
         {
-            return _context.AkPO
+            return _context.AkPelarasanInden
                 .IgnoreQueryFilters()
                 .Include(t => t.JKW)
-                .Include(t => t.DDaftarAwam)
+                .Include(t => t.AkInden)
+                    .ThenInclude(t => t!.DDaftarAwam)
                 .Include(t => t.DPekerjaPosting)
-                .Include(t => t.AkPenilaianPerolehan)
                 .Include(t => t.DPengesah)
                     .ThenInclude(t => t!.DPekerja)
                 .Include(t => t.DPenyemak)
                     .ThenInclude(t => t!.DPekerja)
                 .Include(t => t.DPelulus)
                     .ThenInclude(t => t!.DPekerja)
-                .Include(t => t.AkPOObjek)!
+                .Include(t => t.AkPelarasanIndenObjek)!
                     .ThenInclude(to => to.AkCarta)
-                .Include(t => t.AkPOObjek)!
+                .Include(t => t.AkPelarasanIndenObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JKW)
-                .Include(t => t.AkPOObjek)!
+                .Include(t => t.AkPelarasanIndenObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JPTJ)
-                .Include(t => t.AkPOObjek)!
+                .Include(t => t.AkPelarasanIndenObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JBahagian)
-                .Include(t => t.AkPOPerihal)
-                .FirstOrDefault(pp => pp.Id == id) ?? new AkPO();
+                .Include(t => t.AkPelarasanIndenPerihal)
+                .FirstOrDefault(pp => pp.Id == id) ?? new AkPelarasanInden();
         }
 
-        public List<AkPO> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang)
+        public List<AkPelarasanInden> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang)
         {
             if (searchString == null && dateFrom == null && dateTo == null && orderBy == null)
             {
-                return new List<AkPO>();
+                return new List<AkPelarasanInden>();
             }
 
-            var akPOList = _context.AkPO
+            var akPelarasanIndenList = _context.AkPelarasanInden
                 .IgnoreQueryFilters()
                 .Include(t => t.JKW)
-                .Include(t => t.DDaftarAwam)
+                .Include(t => t.AkInden)
+                    .ThenInclude(t => t!.DDaftarAwam)
                 .Include(t => t.DPekerjaPosting)
-                .Include(t => t.AkPenilaianPerolehan)
                 .Include(t => t.DPengesah)
                     .ThenInclude(t => t!.DPekerja)
                 .Include(t => t.DPenyemak)
                     .ThenInclude(t => t!.DPekerja)
                 .Include(t => t.DPelulus)
                     .ThenInclude(t => t!.DPekerja)
-                .Include(t => t.AkPOObjek)!
+                .Include(t => t.AkPelarasanIndenObjek)!
                     .ThenInclude(to => to.AkCarta)
-                .Include(t => t.AkPOObjek)!
+                .Include(t => t.AkPelarasanIndenObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JKW)
-                .Include(t => t.AkPOObjek)!
+                .Include(t => t.AkPelarasanIndenObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JPTJ)
-                .Include(t => t.AkPOObjek)!
+                .Include(t => t.AkPelarasanIndenObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JBahagian)
                 .ToList();
@@ -80,9 +81,9 @@ namespace YIT._DataAccess.Repositories.Implementations
             // searchstring filters
             if (searchString != null)
             {
-                akPOList = akPOList.Where(t =>
+                akPelarasanIndenList = akPelarasanIndenList.Where(t =>
                 t.NoRujukan!.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-                || t.DDaftarAwam!.Nama!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                || t.AkInden!.DDaftarAwam!.Nama!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
             // searchString filters end
@@ -90,7 +91,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             // date filters
             if (dateFrom != null && dateTo != null)
             {
-                akPOList = akPOList.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99)).ToList();
+                akPelarasanIndenList = akPelarasanIndenList.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99)).ToList();
             }
             // date filters end
 
@@ -98,16 +99,16 @@ namespace YIT._DataAccess.Repositories.Implementations
             switch (enStatusBorang)
             {
                 case EnStatusBorang.None:
-                    akPOList = akPOList.Where(pp => pp.EnStatusBorang == EnStatusBorang.None).ToList();
+                    akPelarasanIndenList = akPelarasanIndenList.Where(pp => pp.EnStatusBorang == EnStatusBorang.None).ToList();
                     break;
                 case EnStatusBorang.Sah:
-                    akPOList = akPOList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Sah).ToList();
+                    akPelarasanIndenList = akPelarasanIndenList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Sah).ToList();
                     break;
                 case EnStatusBorang.Semak:
-                    akPOList = akPOList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Semak).ToList();
+                    akPelarasanIndenList = akPelarasanIndenList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Semak).ToList();
                     break;
                 case EnStatusBorang.Lulus:
-                    akPOList = akPOList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Lulus).ToList();
+                    akPelarasanIndenList = akPelarasanIndenList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Lulus).ToList();
                     break;
                 case EnStatusBorang.Semua:
                     break;
@@ -120,38 +121,38 @@ namespace YIT._DataAccess.Repositories.Implementations
                 switch (orderBy)
                 {
                     case "Nama":
-                        akPOList = akPOList.OrderBy(t => t.DDaftarAwam!.Nama).ToList();
+                        akPelarasanIndenList = akPelarasanIndenList.OrderBy(t => t.AkInden!.DDaftarAwam!.Nama).ToList();
                         break;
                     case "Tarikh":
-                        akPOList = akPOList.OrderBy(t => t.Tarikh).ToList(); break;
+                        akPelarasanIndenList = akPelarasanIndenList.OrderBy(t => t.Tarikh).ToList(); break;
                     default:
-                        akPOList = akPOList.OrderBy(t => t.NoRujukan).ToList();
+                        akPelarasanIndenList = akPelarasanIndenList.OrderBy(t => t.NoRujukan).ToList();
                         break;
                 }
 
             }
             // order by filters end
 
-            return akPOList;
+            return akPelarasanIndenList;
         }
 
-        public List<AkPO> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
+        public List<AkPelarasanInden> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul)
         {
 
             // get all data with details
-            List<AkPO> akPOList = GetResults(searchString, dateFrom, dateTo, orderBy, enStatusBorang);
+            List<AkPelarasanInden> akPelarasanIndenList = GetResults(searchString, dateFrom, dateTo, orderBy, enStatusBorang);
 
-            var filterings = FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModul, akPOList);
+            var filterings = FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModul, akPelarasanIndenList);
 
-            var results = FilterByComparingJumlahAkPOWithMinAmountMaxAmountDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModul, filterings);
+            var results = FilterByComparingJumlahAkPelarasanIndenWithMinAmountMaxAmountDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModul, filterings);
 
             return results;
         }
 
-        public List<AkPO> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPO> akPOList)
+        public List<AkPelarasanInden> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPelarasanInden> akPelarasanIndenList)
         {
             // initialize result sets
-            List<AkPO> results = new List<AkPO>();
+            List<AkPelarasanInden> results = new List<AkPelarasanInden>();
 
             //get all pengesah/penyemak/pelulus with same dpekerjaId, group by pekerjaId and bahagianId
 
@@ -181,17 +182,17 @@ namespace YIT._DataAccess.Repositories.Implementations
                     if (item.JBahagian != null) konfigKelulusanBahagianList.Add(item.JBahagian);
                 }
 
-                var akPOGroup = new List<AkPOObjek>().GroupBy(objek => objek.JKWPTJBahagianId);
-                if (akPOList != null && akPOList.Count > 0)
+                var akPelarasanIndenGroup = new List<AkPelarasanIndenObjek>().GroupBy(objek => objek.JKWPTJBahagianId);
+                if (akPelarasanIndenList != null && akPelarasanIndenList.Count > 0)
                 {
-                    foreach (var akPO in akPOList)
+                    foreach (var akPelarasanInden in akPelarasanIndenList)
                     {
                         var penilaianPerolehanObjekBahagianList = new List<JBahagian>();
 
-                        // group akPOObjek by bahagian
-                        if (akPO.AkPOObjek != null && akPO.AkPOObjek.Count > 0)
+                        // group akPelarasanIndenObjek by bahagian
+                        if (akPelarasanInden.AkPelarasanIndenObjek != null && akPelarasanInden.AkPelarasanIndenObjek.Count > 0)
                         {
-                            foreach (var item in akPO.AkPOObjek)
+                            foreach (var item in akPelarasanInden.AkPelarasanIndenObjek)
                             {
                                 penilaianPerolehanObjekBahagianList.Add(item.JKWPTJBahagian?.JBahagian ?? new JBahagian());
                             }
@@ -200,7 +201,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                         // if konfigKelulusan bahagian null, bypass all, add to results
                         if (konfigKelulusanBahagianList.Count == 0)
                         {
-                            results.Add(akPO);
+                            results.Add(akPelarasanInden);
                             continue;
                         }
 
@@ -210,7 +211,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                             || penilaianPerolehanObjekBahagianList.All(konfigKelulusanBahagianList.Contains))
                         {
 
-                            results.Add(akPO);
+                            results.Add(akPelarasanInden);
                             continue;
                         };
                     }
@@ -222,10 +223,10 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
 
 
-        public List<AkPO> FilterByComparingJumlahAkPOWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPO> filterings)
+        public List<AkPelarasanInden> FilterByComparingJumlahAkPelarasanIndenWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPelarasanInden> filterings)
         {
-            //initialize new list akPO
-            List<AkPO> results = new List<AkPO>();
+            //initialize new list akPelarasanInden
+            List<AkPelarasanInden> results = new List<AkPelarasanInden>();
 
             // get list of dKonfigKelulusan with same DPekerjaId, enKategoriKelulusan, enJenisModul
             var konfigKelulusanList = _context.DKonfigKelulusan.Include(kk => kk.DPekerja)
@@ -255,7 +256,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
         public async Task<bool> IsSahAsync(int id)
         {
-            bool isSah = await _context.AkPO.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Sah || t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus);
+            bool isSah = await _context.AkPelarasanInden.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Sah || t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus);
             if (isSah)
             {
                 return true;
@@ -266,7 +267,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public async Task<bool> IsSemakAsync(int id)
         {
-            bool isSemak = await _context.AkPO.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus);
+            bool isSemak = await _context.AkPelarasanInden.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus);
             if (isSemak)
             {
                 return true;
@@ -278,7 +279,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public async Task<bool> IsLulusAsync(int id)
         {
-            bool isLulus = await _context.AkPO.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Lulus);
+            bool isLulus = await _context.AkPelarasanInden.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Lulus);
             if (isLulus)
             {
                 return true;
@@ -289,7 +290,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public async Task<bool> IsPostedAsync(int id, string noRujukan)
         {
-            bool isPosted = await _context.AkPO.AnyAsync(t => t.Id == id && t.FlPosting == 1);
+            bool isPosted = await _context.AkPelarasanInden.AnyAsync(t => t.Id == id && t.FlPosting == 1);
             if (isPosted)
             {
                 return true;
@@ -303,12 +304,12 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
 
             return false;
-            
+
         }
 
         public void Sah(int id, int? pengesahId, string? userId)
         {
-            var data = _context.AkPO.FirstOrDefault(pp => pp.Id == id);
+            var data = _context.AkPelarasanInden.FirstOrDefault(pp => pp.Id == id);
             var pengesah = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == pengesahId);
             if (data != null)
             {
@@ -327,7 +328,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public void BatalSah(int id, string? tindakan, string? userId)
         {
-            var data = _context.AkPO.FirstOrDefault(pp => pp.Id == id);
+            var data = _context.AkPelarasanInden.FirstOrDefault(pp => pp.Id == id);
 
             if (data != null)
             {
@@ -345,7 +346,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public void Semak(int id, int penyemakId, string? userId)
         {
-            var data = _context.AkPO.FirstOrDefault(pp => pp.Id == id);
+            var data = _context.AkPelarasanInden.FirstOrDefault(pp => pp.Id == id);
             var penyemak = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == penyemakId);
             if (data != null)
             {
@@ -364,7 +365,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public void BatalSemak(int id, string? tindakan, string? userId)
         {
-            var data = _context.AkPO.FirstOrDefault(pp => pp.Id == id);
+            var data = _context.AkPelarasanInden.FirstOrDefault(pp => pp.Id == id);
 
             if (data != null)
             {
@@ -410,7 +411,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public void BatalLulus(int id, string? tindakan, string? userId)
         {
-            var data = _context.AkPO.FirstOrDefault(pp => pp.Id == id);
+            var data = _context.AkPelarasanInden.FirstOrDefault(pp => pp.Id == id);
 
             if (data != null)
             {
@@ -438,7 +439,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public async Task<bool> IsBatalAsync(int id)
         {
-            bool isBatal = await _context.AkPO.AnyAsync(t => t.Id == id && t.FlBatal == 1);
+            bool isBatal = await _context.AkPelarasanInden.AnyAsync(t => t.Id == id && t.FlBatal == 1);
             if (isBatal)
             {
                 return true;
@@ -449,7 +450,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public void Batal(int id, string? sebabBatal, string? userId)
         {
-            var data = _context.AkPO.FirstOrDefault(pp => pp.Id == id);
+            var data = _context.AkPelarasanInden.FirstOrDefault(pp => pp.Id == id);
 
             if (data != null)
             {
@@ -466,7 +467,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public string GetMaxRefNo(string initNoRujukan, string tahun)
         {
-            var max = _context.AkPO.Where(pp => pp.Tahun == tahun).OrderByDescending(pp => pp.NoRujukan).ToList();
+            var max = _context.AkPelarasanInden.Where(pp => pp.Tahun == tahun).OrderByDescending(pp => pp.NoRujukan).ToList();
 
             if (max != null)
             {
@@ -479,26 +480,26 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public void PostingToAbBukuVot(AkPO akPO)
+        public void PostingToAbBukuVot(AkPelarasanInden akPelarasanInden)
         {
             List<AbBukuVot> abBukuVotList = new List<AbBukuVot>();
 
-            if (akPO.AkPOObjek != null && akPO.AkPOObjek.Count > 0)
+            if (akPelarasanInden.AkPelarasanIndenObjek != null && akPelarasanInden.AkPelarasanIndenObjek.Count > 0)
             {
 
 
-                foreach (var item in akPO.AkPOObjek)
+                foreach (var item in akPelarasanInden.AkPelarasanIndenObjek)
                 {
                     AbBukuVot abBukuVot = new AbBukuVot()
                     {
-                        Tahun = akPO.Tahun,
-                        JKWId = item.JKWPTJBahagian?.JKWId ?? akPO.JKWId,
+                        Tahun = akPelarasanInden.Tahun,
+                        JKWId = item.JKWPTJBahagian?.JKWId ?? akPelarasanInden.JKWId,
                         JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
                         JBahagianId = item.JKWPTJBahagian.JBahagianId,
-                        Tarikh = akPO.Tarikh,
-                        DDaftarAwamId = akPO.DDaftarAwamId,
+                        Tarikh = akPelarasanInden.Tarikh,
+                        DDaftarAwamId = akPelarasanInden.AkInden!.DDaftarAwamId,
                         VotId = item.AkCartaId,
-                        NoRujukan = akPO.NoRujukan,
+                        NoRujukan = akPelarasanInden.NoRujukan,
                         Tanggungan = item.Amaun
                     };
 
@@ -509,23 +510,18 @@ namespace YIT._DataAccess.Repositories.Implementations
             _context.AbBukuVot.AddRange(abBukuVotList);
         }
 
-        public void RemovePostingFromAbBukuVot(AkPO akPO, string userId)
+        public void RemovePostingFromAbBukuVot(AkPelarasanInden akPelarasanInden, string userId)
         {
-            var abBukuVotList = _context.AbBukuVot.Where(b => b.NoRujukan == akPO.NoRujukan).ToList();
+            var abBukuVotList = _context.AbBukuVot.Where(b => b.NoRujukan == akPelarasanInden.NoRujukan).ToList();
 
             if (abBukuVotList != null && abBukuVotList.Count > 0)
             {
                 _context.RemoveRange(abBukuVotList);
             }
 
-            // update akPO posting fields
-            BatalLulus(akPO.Id, "Pembatalan Posting", userId);
+            // update akPelarasanInden posting fields
+            BatalLulus(akPelarasanInden.Id, "Pembatalan Posting", userId);
 
-        }
-
-        public List<AkPO> GetAllByStatus(EnStatusBorang enStatusBorang)
-        {
-            return _context.AkPO.Where(pp => pp.EnStatusBorang == enStatusBorang).ToList();
         }
     }
 }

@@ -8,12 +8,12 @@ using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT._DataAccess.Repositories.Interfaces
 {
-    public interface IAkIndenRepository : _IGenericRepository<AkInden>
+    public interface IAkPelarasanPORepository : _IGenericRepository<AkPelarasanPO>
     {
-        public List<AkInden> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang);
-        public List<AkInden> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul);
-        public List<AkInden> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkInden> akPPList);
-        public AkInden GetDetailsById(int id);
+        public List<AkPelarasanPO> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang);
+        public List<AkPelarasanPO> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul);
+        public List<AkPelarasanPO> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModul enJenisModul, List<AkPelarasanPO> akPPList);
+        public AkPelarasanPO GetDetailsById(int id);
         public string GetMaxRefNo(string initNoRujukan, string tahun);
         public Task<bool> IsSahAsync(int id);
         public void Sah(int id, int? pengesahId, string? userId);
@@ -26,11 +26,9 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public void BatalLulus(int id, string? tindakan, string? userId);
         public Task<bool> IsBatalAsync(int id);
         public void Batal(int id, string? sebabBatal, string? userId);
+        public void PostingToAbBukuVot(AkPelarasanPO akPelarasanPO);
 
-        public void PostingToAbBukuVot(AkInden akPO, string userId, int? dPekerjaMasukId);
-        void PostingToAbBukuVot(AkInden akInden);
-        void RemovePostingFromAbBukuVot(AkInden akInden, string userId);
+        public void RemovePostingFromAbBukuVot(AkPelarasanPO akPelarasanPO, string userId);
         Task<bool> IsPostedAsync(int id, string noRujukan);
-        List<AkInden> GetAllByStatus(EnStatusBorang enStatusBorang);
     }
 }

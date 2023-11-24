@@ -36,5 +36,6 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public string? KataLaluan { get; set; }
         [DisplayName("Tandatangan")]
         public string? Tandatangan { get; set; }
+        public string? KodLama { get; set; } // dummy
     }
 }
