@@ -37,8 +37,10 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [Required(ErrorMessage = "Negeri diperlukan")]
         public int JNegeriId { get; set; }
         [DisplayName("No Telefon Rumah")]
+        [RegularExpression(@"^[\d+]*$", ErrorMessage = "Nombor sahaja dibenarkan")]
         public string? TelefonRumah { get; set; }
         [DisplayName("No Telefon Bimbit")]
+        [RegularExpression(@"^[\d+]*$", ErrorMessage = "Nombor sahaja dibenarkan")]
         public string? TelefonBimbit { get; set; }
         [Required(ErrorMessage = "Emel diperlukan")]
         [EmailAddress(ErrorMessage = "Emel tidak sah"), MaxLength(100)]
@@ -52,9 +54,9 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public JBangsa? JBangsa { get; set; }
         [DisplayName("Jawatan")]
         public string? Jawatan { get; set; }
-
-        [DisplayName("No Akaun Bank")]
         [Required(ErrorMessage = "No Akaun Bank diperlukan")]
+        [DisplayName("No Akaun Bank")]
+        [RegularExpression(@"^[\d+]*$", ErrorMessage = "Nombor sahaja dibenarkan")]
         public string? NoAkaunBank { get; set; }
         public bool IsAdmin { get; set; }
 

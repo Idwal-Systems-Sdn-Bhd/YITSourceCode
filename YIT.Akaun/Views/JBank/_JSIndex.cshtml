@@ -11,6 +11,9 @@
                 { orderable: false, targets: '_all' }
             ],
             "order": [[1, "asc"]],
+            "scrollY": "50vh",
+            "scrollX": true,
+            "scrollCollapse": true,
             dom: 'lrt'
         });
 
@@ -22,7 +25,6 @@
             table.destroy();
 
             table = $('.table').DataTable({
-                "paging": false,
                 rowReorder: true,
                 columnDefs: [
                     { orderable: true, className: 'reorder', targets: 1 },
@@ -32,6 +34,7 @@
                 "order": [[1, "asc"]],
                 dom: 'lrt'
             });
+            
             // refresh table end
         });
 
@@ -55,4 +58,5 @@
             }
         });
     });
+
 </script>

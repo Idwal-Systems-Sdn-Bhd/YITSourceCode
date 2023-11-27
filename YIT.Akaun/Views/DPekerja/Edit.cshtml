@@ -22,19 +22,22 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <input name="syscode" value="SPPB" hidden />
-            <div class="form-group">
-                <label asp-for="NoGaji" class="control-label"></label>
-                <input asp-for="NoGaji" class="form-control form-control-sm" />
-                <span asp-validation-for="NoGaji" class="text-danger"></span>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label asp-for="NoKp" class="control-label"></label>
-                        <input asp-for="NoKp" class="form-control form-control-sm text-uppercase" readonly />
-                        <span asp-validation-for="NoKp" class="text-danger"></span>
-                    </div>
+
+         <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="NoGaji" class="control-label"></label>
+                    <input asp-for="NoGaji" class="form-control form-control-sm" />
+                    <span asp-validation-for="NoGaji" class="text-danger"></span>
                 </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="NoKp" class="control-label"></label>
+                    <input asp-for="NoKp" class="form-control form-control-sm text-uppercase" />
+                    <span asp-validation-for="NoKp" class="text-danger"></span>
+                </div>
+            </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="Nama" class="control-label"></label>

@@ -30,6 +30,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [Column(TypeName = "decimal(18, 2)")]
         public decimal MinAmaun { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
+
         public decimal MaksAmaun { get; set; }
         [DataType(DataType.Password)]
         [DisplayName("Kata Laluan")]

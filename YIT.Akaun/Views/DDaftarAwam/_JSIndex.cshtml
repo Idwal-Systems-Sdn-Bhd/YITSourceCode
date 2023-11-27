@@ -3,17 +3,30 @@
     $(document).ready(function () {
 
         var table = $('.table').DataTable({
-            "paging": false,
             rowReorder: true,
             columnDefs: [
                 { orderable: true, className: 'reorder', targets: 1 },
                 { orderable: true, className: 'reorder', targets: 2 },
+                { orderable: true, className: 'reorder', targets: 3 },
+                { orderable: true, className: 'reorder', targets: 4 },
+                { orderable: true, className: 'reorder', targets: 5 },
+                { orderable: true, className: 'reorder', targets: 6 },
                 { orderable: false, targets: '_all' }
             ],
             "order": [[1, "asc"]],
-            dom: 'lrt'
+            "scrollY": "50vh",
+            "scrollX": true,
+            "scrollCollapse": true,
+            "paging": true,
+            dom: 'rtip',
+            "language": {
+                "info": "_TOTAL_ entri yang dipamerkan",
+                "infoEmpty": "Tiada data untuk dipamerkan",
+                "infoFiltered": " - ditapis daripada _MAX_ jumlah keseluruhan rekod"
+            },
+            "pagingType": "numbers",
+            "pageLength": 100
         });
-
 
         $('#columnSearch').change(function () {
             columnSearchVar = $(this).val();
@@ -22,7 +35,6 @@
             table.destroy();
 
             table = $('.table').DataTable({
-                "paging": false,
                 rowReorder: true,
                 columnDefs: [
                     { orderable: true, className: 'reorder', targets: 1 },
@@ -30,9 +42,10 @@
                     { orderable: false, targets: '_all' }
                 ],
                 "order": [[1, "asc"]],
-                dom: 'lrt'
+                dom: 'rtp'
             });
             // refresh table end
+
         });
 
         table.on('order.dt search.dt', function () {
