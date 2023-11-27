@@ -13,8 +13,8 @@ namespace YIT._DataAccess.Repositories.Interfaces
     {
         public List<DKonfigKelulusan> GetAllDetails();
         public DKonfigKelulusan GetAllDetailsById(int id);
-        public bool IsPersonAvailable(EnJenisModulKelulusan enJenisModul, EnKategoriKelulusan enKategoriKelulusan, int jBahagianId, decimal jumlah);
-        public List<DKonfigKelulusan> GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul);
-        public bool IsValidUser(int dPekerjaId, string password, EnJenisModulKelulusan enJenisModul, EnKategoriKelulusan enKategoriKelulusan);
+        public bool IsPersonAvailable(EnJenisModulKelulusan enJenisModulKelulusan, EnKategoriKelulusan enKategoriKelulusan, int jBahagianId, decimal jumlah);
+        public List<DKonfigKelulusan> GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan);
+        public bool IsValidUser(int dPekerjaId, string password, EnJenisModulKelulusan enJenisModulKelulusan, EnKategoriKelulusan enKategoriKelulusan);
     }
 }

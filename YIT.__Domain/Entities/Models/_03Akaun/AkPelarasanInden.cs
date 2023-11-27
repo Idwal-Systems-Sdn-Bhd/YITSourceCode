@@ -17,7 +17,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("No Rujukan")]
         public string? NoRujukan { get; set; }
         public DateTime Tarikh { get; set; }
-        [DisplayName("No Pesanan Tempatan")]
+        [DisplayName("No Inden Kerja")]
         public int AkIndenId { get; set; }
         public AkInden? AkInden { get; set; }
         [DisplayName("Jumlah RM")]

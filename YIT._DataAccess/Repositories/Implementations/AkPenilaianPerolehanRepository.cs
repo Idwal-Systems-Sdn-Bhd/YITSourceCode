@@ -140,20 +140,20 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akPPList;
         }
 
-        public List<AkPenilaianPerolehan> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul)
+        public List<AkPenilaianPerolehan> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan)
         {
             
             // get all data with details
             List<AkPenilaianPerolehan> akPPList = GetResults(searchString, dateFrom, dateTo, orderBy, enStatusBorang);
 
-            var filterings = FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(dPekerjaId,enKategoriKelulusan,enJenisModul, akPPList);
+            var filterings = FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(dPekerjaId,enKategoriKelulusan,enJenisModulKelulusan, akPPList);
 
-            var results = FilterByComparingJumlahAkPenilaianPerolehanWithMinAmountMaxAmountDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModul, filterings);
+            var results = FilterByComparingJumlahAkPenilaianPerolehanWithMinAmountMaxAmountDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModulKelulusan, filterings);
 
             return results;
         }
 
-        public List<AkPenilaianPerolehan> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPenilaianPerolehan> akPPList)
+        public List<AkPenilaianPerolehan> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AkPenilaianPerolehan> akPPList)
         {
             // initialize result sets
             List<AkPenilaianPerolehan> results = new List<AkPenilaianPerolehan>();
@@ -165,7 +165,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                  .Include(kk => kk.JBahagian)
                 .Where(b => b.EnKategoriKelulusan == enKategoriKelulusan 
                 && b.DPekerjaId == dPekerjaId
-                && b.EnJenisModul == enJenisModul)
+                && b.EnJenisModulKelulusan == enJenisModulKelulusan)
                 .GroupBy(b => new { b.DPekerjaId, b.JBahagianId }).Select(l => new DKonfigKelulusan
                 {
                     Id = l.First().DPekerjaId,
@@ -227,17 +227,17 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
 
 
-        public List<AkPenilaianPerolehan> FilterByComparingJumlahAkPenilaianPerolehanWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AkPenilaianPerolehan> filterings)
+        public List<AkPenilaianPerolehan> FilterByComparingJumlahAkPenilaianPerolehanWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AkPenilaianPerolehan> filterings)
         {
             //initialize new list akPP
             List<AkPenilaianPerolehan> results = new List<AkPenilaianPerolehan>();
 
-            // get list of dKonfigKelulusan with same DPekerjaId, enKategoriKelulusan, enJenisModul
+            // get list of dKonfigKelulusan with same DPekerjaId, enKategoriKelulusan, enJenisModulKelulusan
             var konfigKelulusanList = _context.DKonfigKelulusan.Include(kk => kk.DPekerja)
                  .Include(kk => kk.JBahagian)
                 .Where(b => b.EnKategoriKelulusan == enKategoriKelulusan
                 && b.DPekerjaId == dPekerjaId
-                && b.EnJenisModul == enJenisModul).ToList();
+                && b.EnJenisModulKelulusan == enJenisModulKelulusan).ToList();
 
             if (filterings != null && filterings.Count > 0) 
             { 

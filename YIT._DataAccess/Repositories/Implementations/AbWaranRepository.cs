@@ -179,20 +179,20 @@ namespace YIT._DataAccess.Repositories.Implementations
             return abWaranList;
         }
 
-        public List<AbWaran> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul)
+        public List<AbWaran> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan)
         {
 
             // get all data with details
             List<AbWaran> abWaranList = GetResults(searchString, dateFrom, dateTo, orderBy, enStatusBorang);
 
-            var filterings = FilterByComparingJBahagianAbWaranObjekWithJBahagianDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModul, abWaranList);
+            var filterings = FilterByComparingJBahagianAbWaranObjekWithJBahagianDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModulKelulusan, abWaranList);
 
-            //var results = FilterByComparingJumlahAkPenilaianPerolehanWithMinAmountMaxAmountDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModul, filterings);
+            //var results = FilterByComparingJumlahAkPenilaianPerolehanWithMinAmountMaxAmountDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModulKelulusan, filterings);
 
             return filterings;
         }
 
-        public List<AbWaran> FilterByComparingJBahagianAbWaranObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, List<AbWaran> abWaranList)
+        public List<AbWaran> FilterByComparingJBahagianAbWaranObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AbWaran> abWaranList)
         {
             // initialize result sets
             List<AbWaran> results = new List<AbWaran>();
@@ -204,7 +204,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                  .Include(kk => kk.JBahagian)
                 .Where(b => b.EnKategoriKelulusan == enKategoriKelulusan
                 && b.DPekerjaId == dPekerjaId
-                && b.EnJenisModul == enJenisModul)
+                && b.EnJenisModulKelulusan == enJenisModulKelulusan)
                 .GroupBy(b => new { b.DPekerjaId, b.JBahagianId }).Select(l => new DKonfigKelulusan
                 {
                     Id = l.First().DPekerjaId,

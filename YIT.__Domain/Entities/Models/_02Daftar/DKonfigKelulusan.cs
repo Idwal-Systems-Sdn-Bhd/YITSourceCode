@@ -25,7 +25,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("Kategori Kelulusan")]
         public EnKategoriKelulusan EnKategoriKelulusan { get; set; }
         [DisplayName("Jenis Modul")]
-        public EnJenisModulKelulusan EnJenisModul { get; set; }
+        public EnJenisModulKelulusan EnJenisModulKelulusan { get; set; }
         [DisplayName("Amaun Disemak RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal MinAmaun { get; set; }

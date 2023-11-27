@@ -50,7 +50,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DKonfigKelulusan konfigKelulusan, string syscode)
         {
-            if (KonfigKelulusanExists(konfigKelulusan.DPekerjaId,konfigKelulusan.EnKategoriKelulusan,konfigKelulusan.EnJenisModul,konfigKelulusan.JBahagianId) == true)
+            if (KonfigKelulusanExists(konfigKelulusan.DPekerjaId,konfigKelulusan.EnKategoriKelulusan,konfigKelulusan.EnJenisModulKelulusan,konfigKelulusan.JBahagianId) == true)
             {
                 TempData[SD.Error] = "Data ini telah wujud..!";
                 PopulateDropdownList();
@@ -150,7 +150,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!KonfigKelulusanExists(konfigKelulusan.Id, konfigKelulusan.EnKategoriKelulusan, konfigKelulusan.EnJenisModul, konfigKelulusan.JBahagianId))
+                    if (!KonfigKelulusanExists(konfigKelulusan.Id, konfigKelulusan.EnKategoriKelulusan, konfigKelulusan.EnJenisModulKelulusan, konfigKelulusan.JBahagianId))
                     {
                         return NotFound();
                     }
@@ -234,10 +234,10 @@ namespace YIT.Akaun.Controllers._02Daftar
             return RedirectToAction(nameof(Index));
         }
 
-        private bool KonfigKelulusanExists(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModul, int? jBahagianId)
+        private bool KonfigKelulusanExists(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, int? jBahagianId)
         {
             return _unitOfWork.DKonfigKelulusanRepo
-            .IsExist(p => p.DPekerjaId == dPekerjaId && p.EnKategoriKelulusan == enKategoriKelulusan && p.EnJenisModul == enJenisModul && p.JBahagianId == jBahagianId);
+            .IsExist(p => p.DPekerjaId == dPekerjaId && p.EnKategoriKelulusan == enKategoriKelulusan && p.EnJenisModulKelulusan == enJenisModulKelulusan && p.JBahagianId == jBahagianId);
         }
 
         private void PopulateDropdownList()
@@ -250,9 +250,9 @@ namespace YIT.Akaun.Controllers._02Daftar
 
             ViewBag.EnKategoriKelulusan = kategoriKelulusan;
 
-            var jenisModul = EnumHelper<EnJenisModulKelulusan>.GetList();
+            var jenisModulKelulusan = EnumHelper<EnJenisModulKelulusan>.GetList();
 
-            ViewBag.EnJenisModul = jenisModul;
+            ViewBag.EnJenisModulKelulusan = jenisModulKelulusan;
         }
     }
 }

@@ -100,15 +100,15 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            var akPO = _unitOfWork.AkPelarasanPORepo.GetDetailsById((int)id);
-            if (akPO == null)
+            var akPelarasanPO = _unitOfWork.AkPelarasanPORepo.GetDetailsById((int)id);
+            if (akPelarasanPO == null)
             {
                 return NotFound();
             }
             EmptyCart();
             ViewBag.DKonfigKelulusanId = HttpContext.Session.GetInt32("DPelulusId");
-            PopulateCartAkPelarasanPOFromDb(akPO);
-            return View(akPO);
+            PopulateCartAkPelarasanPOFromDb(akPelarasanPO);
+            return View(akPelarasanPO);
         }
 
         private void PopulateCartAkPelarasanPOFromDb(AkPelarasanPO akPelarasanPO)
@@ -161,11 +161,11 @@ namespace YIT.Akaun.Controllers._03Akaun
                 item.AkCarta = akCarta;
             }
 
-            ViewBag.akPOObjek = objek;
+            ViewBag.akPelarasanPOObjek = objek;
 
             List<AkPelarasanPOPerihal> perihal = _cart.AkPelarasanPOPerihal.ToList();
 
-            ViewBag.akPOPerihal = perihal;
+            ViewBag.akPelarasanPOPerihal = perihal;
         }
 
         public JsonResult EmptyCart()

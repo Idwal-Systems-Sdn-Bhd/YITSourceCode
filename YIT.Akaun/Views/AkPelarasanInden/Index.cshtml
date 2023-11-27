@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<AkPelarasanInden>
 
 @{
-    ViewData["Title"] = "Pelarasan Pesanan Tempatan";
+    ViewData["Title"] = "Pelarasan Inden Kerja";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <partial name="_JSIndex" />
@@ -33,7 +33,7 @@
                                 Jumlah RM
                             </th>
                             <th class="jumlah">
-                                Jumlah Sebenar RM
+                                Jumlah Terkini RM
                             </th>
                             <th class="pembekal">
                                 Pembekal
@@ -66,7 +66,7 @@
                                     @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")
                                 </td>
                                 <td class="text-uppercase text-end">
-                                    @Convert.ToDecimal(item.AkInden?.Jumlah ?? 0 + item.Jumlah).ToString("#,##0.00")
+                                    @Convert.ToDecimal(item.AkInden?.Jumlah + item.Jumlah).ToString("#,##0.00")
                                 </td>
                                 <td class="text-uppercase">
                                     @item.AkInden?.DDaftarAwam?.Nama
