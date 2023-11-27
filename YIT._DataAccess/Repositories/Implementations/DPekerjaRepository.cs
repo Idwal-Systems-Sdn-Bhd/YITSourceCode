@@ -27,6 +27,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(p => p.JBahagian)
                 .Include(p => p.JNegeri)
                 .Include(p => p.JBangsa)
+                .Include(p => p.JCawangan)
                 .ToList();
         }
 
@@ -38,6 +39,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(p => p.JPTJ)
                 .Include(p => p.JNegeri)
                 .Include(p => p.JBangsa)
+                .Include(p => p.JCawangan)
                 .FirstOrDefault(p => p.Id == id) ?? new DPekerja();
         }
 

@@ -36,9 +36,12 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public string? Alamat1 { get; set; }
         public string? Alamat2 { get; set; }
         public string? Alamat3 { get; set; }
+        [MaxLength(5)]
+        [RegularExpression(@"^[\d+]*$", ErrorMessage = "Nombor sahaja dibenarkan")]
         public string? Poskod { get; set; }
         public string? Bandar { get; set; }
         [DisplayName("No Telefon 1")]
+        [RegularExpression(@"^[\d+]*$", ErrorMessage = "Nombor sahaja dibenarkan")]
         public string? Telefon1 { get; set; }
         [DisplayName("No Telefon 2")]
         public string? Telefon2 { get; set; }
@@ -46,8 +49,10 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public string? Telefon3 { get; set; }
         [DisplayName("Tel. Bimbit")]
         public string? Handphone { get; set; }
+        [EmailAddress(ErrorMessage = "Emel tidak sah"), MaxLength(100)]
         public string? Emel { get; set; }
         [DisplayName("No Akaun Bank")]
+        [RegularExpression(@"^[\d+]*$", ErrorMessage = "Nombor sahaja dibenarkan")]
         public string? NoAkaunBank { get; set; }
         [DisplayName("Kategori Daftar Awam")]
         public EnKategoriDaftarAwam EnKategoriDaftarAwam { get; set; }
