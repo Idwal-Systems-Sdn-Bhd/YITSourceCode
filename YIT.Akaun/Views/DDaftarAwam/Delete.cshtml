@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Daftar Awam - Hapus";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var kategoriDaftarAwam = "";
 }
 <div class="card box-shadow">
     <div class="card-body">
@@ -24,36 +23,9 @@
                 </div>
             </div>
             <div class="col-md-4">
-                @switch (Model.EnKategoriDaftarAwam)
-                {
-                    case EnKategoriDaftarAwam.Pembekal:
-                        kategoriDaftarAwam = "Pembekal";
-                        break;
-                    case EnKategoriDaftarAwam.Penghutang:
-                        kategoriDaftarAwam = "Penghutang";
-                        break;
-                     case EnKategoriDaftarAwam.Penyewa:
-                        kategoriDaftarAwam = "Penyewa";
-                        break;
-                    case EnKategoriDaftarAwam.Pekerja:
-                        kategoriDaftarAwam = "Pekerja";
-                        break;
-                    case EnKategoriDaftarAwam.DaftarAwam:
-                        kategoriDaftarAwam = "Daftar Awam";
-                        break;
-                    case EnKategoriDaftarAwam.Penceramah:
-                        kategoriDaftarAwam = "Penceramah";
-                        break;
-                    case EnKategoriDaftarAwam.AhliMajlis:
-                        kategoriDaftarAwam = "Ahli Majlis";
-                        break;
-                    case EnKategoriDaftarAwam.LainLain:
-                        kategoriDaftarAwam = "Lain-lain";
-                        break;
-                }
                 <div class="form-group">
                     <label asp-for="EnKategoriDaftarAwam" class="control-label"></label>
-                    <input asp-for="EnKategoriDaftarAwam" class="form-control form-control-sm text-uppercase" value="@kategoriDaftarAwam" readonly />
+                    <input asp-for="EnKategoriDaftarAwam" class="form-control form-control-sm text-uppercase" value="@Model.EnKategoriDaftarAwam.GetDisplayName()" readonly />
                 </div>
             </div>
         </div>

@@ -97,22 +97,7 @@ item.EnParas == EnParas.Paras3 ? "table-info" : null;
                     @Html.DisplayFor(modelItem => item.EnJenis)
                 </td>
                 <td class="text-uppercase">
-                    @switch (item.EnParas)
-                    {
-                        case EnParas.Paras1:
-                            <label class="mb-0">1</label>
-                            break;
-                        case EnParas.Paras2:
-                            <label class="mb-0">2</label>
-                            break;
-                        case EnParas.Paras3:
-                            <label class="mb-0">3</label>
-                            break;
-                        case EnParas.Paras4:
-                            <label class="mb-0">4</label>
-                            break;
-
-                    }
+                   <label class="mb-0">@item.EnParas.GetDisplayName()</label>
                 </td>
 
                 @if (item.DebitKredit?.ToString() == "D")

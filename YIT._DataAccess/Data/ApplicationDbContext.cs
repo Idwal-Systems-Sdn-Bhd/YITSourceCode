@@ -74,6 +74,9 @@ namespace YIT._DataAccess.Data
         public DbSet<AkInden> AkInden { get; set; }
         public DbSet<AkIndenObjek> AkIndenObjek { get; set; }
         public DbSet<AkIndenPerihal> AkIndenPerihal { get; set; }
+        public DbSet<AkBelian> AkBelian { get; set; }
+        public DbSet<AkBelianObjek> AkBelianObjek { get; set; }
+        public DbSet<AkBelianPerihal> AkBelianPerihal { get; set; }
         //
 
         // 07Pembayaran (PV)
