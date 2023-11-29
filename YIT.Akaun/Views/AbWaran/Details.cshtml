@@ -117,7 +117,7 @@
                             foreach (var item in ViewBag.abWaranObjek)
                             {
                                 <tr>
-                                    <td class="text-uppercase">@BelanjawanFormatter.ConvertToBahagian(item.JBahagian?.JPTJ?.JKW?.Kod, item.JBahagian?.JPTJ?.Kod, item.JBahagian?.Kod) - @item.JBahagian?.Perihal </td>
+                                    <td class="text-uppercase">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal) </td>
                                     <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal </td>
                                     <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
                                     <td class="editable-text">@item.TK </td>

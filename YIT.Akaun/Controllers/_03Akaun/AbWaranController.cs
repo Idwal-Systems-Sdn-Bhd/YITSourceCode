@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -67,6 +68,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 return NotFound();
             }
+            EmptyCart();
             PopulateCartAbWaranFromDb(abWaran);
             return View(abWaran);
         }
@@ -205,6 +207,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 return NotFound();
             }
+            EmptyCart();
             PopulateCartAbWaranFromDb(abWaran);
             return View(abWaran);
         }
@@ -276,6 +279,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAllDetails();
             ViewBag.JKW = _unitOfWork.JKWRepo.GetAllDetails();
+            ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
         }
 
         private void PopulateCartAbWaranFromDb(AbWaran abWaran)
@@ -302,9 +306,11 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             foreach (AbWaranObjek item in objek)
             {
-                var jBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById(item.JKWPTJBahagian!.JBahagianId);
+                var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
-                item.JKWPTJBahagian.JBahagian = jBahagian;
+                item.JKWPTJBahagian = jkwPtjBahagian;
+
+                item.JKWPTJBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jkwPtjBahagian.JKW?.Kod, jkwPtjBahagian.JPTJ?.Kod, jkwPtjBahagian.JBahagian?.Kod);
 
                 var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 
@@ -329,7 +335,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 }
             }
 
-            public JsonResult GetJBahagianAkCarta(int JKWPTJBahagianId, int AkCartaId)
+            public JsonResult GetJKWPTJBahagianAkCarta(int JKWPTJBahagianId, int AkCartaId)
             {
                 try
                 {
@@ -479,7 +485,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         {
             string prefix = "WR/" + year + "/";
             int x = 1;
-            string noRujukan = prefix + "0000";
+            string noRujukan = prefix + "00000";
 
             var LatestNoRujukan = _context.AbWaran
                        .IgnoreQueryFilters()
@@ -488,13 +494,13 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             if (LatestNoRujukan == null)
             {
-                noRujukan = string.Format("{0:" + prefix + "0000}", x);
+                noRujukan = string.Format("{0:" + prefix + "00000}", x);
             }
             else
             {
                 x = int.Parse(LatestNoRujukan.Substring(9));
                 x++;
-                noRujukan = string.Format("{0:" + prefix + "0000}", x);
+                noRujukan = string.Format("{0:" + prefix + "00000}", x);
             }
             return noRujukan;
         }

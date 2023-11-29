@@ -101,6 +101,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // GET: KW/Create
         public IActionResult Create()
         {
+            
             return View();
         }
 
@@ -135,7 +136,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             {
                 TempData[SD.Error] = "Kod ini telah wujud..!";
             }
-
+            PopulateListViewFromCart();
             return View(kW);
         }
 
@@ -153,8 +154,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             {
                 return NotFound();
             }
-            EmptyCart();
-            PopulateDropDownList(kW);
+            
             PopulateCartJKWFromDb(kW);
             return View(kW);
         }
@@ -236,6 +236,7 @@ namespace YIT.Akaun.Controllers._01Jadual
                 }
                 return RedirectToAction(nameof(Index));
             }
+            PopulateListViewFromCart();
             return View(kW);
         }
 

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Waran - Ubah";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<partial name="_JSEdit" />
+<partial name="_JSCreate" />
 <div class="card box-shadow">
     <div class="card-body">
         <div class="row">
@@ -51,7 +51,7 @@
                             </div>
                             <div class="form-row col-sm ml-2">
                                 <div class="custom-control custom-radio col-md-6 ">
-                                    <input class="custom-control-input" type="radio" id="FlJenisPindahan0" asp-for="FlJenisPindahan" value="0" checked>
+                                    <input class="custom-control-input" type="radio" id="FlJenisPindahan0" asp-for="FlJenisPindahan" value="0">
                                     <label class="custom-control-label" for="FlJenisPindahan0">
                                         Dalam Bahagian
                                     </label>
@@ -127,8 +127,8 @@
                                 foreach (var item in ViewBag.abWaranObjek)
                                 {
                                     <tr>
-                                        <td hidden>@item.JBahagianId</td>
-                                        <td class="text-uppercase">@BelanjawanFormatter.ConvertToBahagian(item.JBahagian?.JPTJ?.JKW?.Kod, item.JBahagian?.JPTJ?.Kod, item.JBahagian?.Kod) - @item.JBahagian?.Perihal </td>
+                                        <td hidden>@item.JKWPTJBahagianId</td>
+                                        <td class="text-uppercase">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal) </td>
                                         <td hidden>@item.AkCartaId</td>
                                         <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal </td>
                                         <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
@@ -147,11 +147,11 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <select class="form-control form-control-sm text-uppercase" id="objekJBahagianId">
+                                    <select class="form-control form-control-sm text-uppercase" id="objekJKWPTJBahagianId">
                                         <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
-                                        @foreach (var s in ViewBag.JBahagian)
+                                        @foreach (var s in ViewBag.JKWPTJBahagian)
                                         {
-                                            <option value="@s.Id"> @BelanjawanFormatter.ConvertToBahagian(s.JPTJ?.JKW?.Kod, s.JPTJ?.Kod,s.Kod) - @s.Perihal </option>
+                                            <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
                                         }
                                     </select>
                                 </td>
@@ -212,11 +212,11 @@
                     <input id="moObjekId" hidden />
                     <div class="form-group">
                         <label class="col-form-label">Bahagian</label>
-                        <select class="form-control form-control-sm text-uppercase" id="moObjekJBahagianId" disabled>
+                        <select class="form-control form-control-sm text-uppercase" id="moObjekJKWPTJBahagianId" disabled>
                             <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
-                            @foreach (var s in ViewBag.JBahagian)
+                            @foreach (var s in ViewBag.JKWPTJBahagian)
                             {
-                                <option value="@s.Id"> @BelanjawanFormatter.ConvertToBahagian(s.JPTJ?.JKW?.Kod, s.JPTJ?.Kod,s.Kod) - @s.Perihal </option>
+                                <option value="@s.Id"> @s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
                             }
                         </select>
                     </div>
