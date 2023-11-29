@@ -19,7 +19,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? Tahun { get; set; }
         [DisplayName("No Rujukan")]
         public string? NoRujukan { get; set; }
-        [DisplayName("No Rujukan")]
+        [DisplayName("Tarikh")]
         public DateTime Tarikh { get; set; }
         [DisplayName("Tarikh Terima Bahagian")]
         public DateTime TarikhTerimaBahagian { get; set; }
@@ -27,6 +27,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public DateTime? TarikhTerimaKewangan { get; set; }
         [DisplayName("Tarikh Akuan Kewangan")]
         public DateTime? TarikhAkuanKewangan { get; set; }
+        [DisplayName("Bayaran Untuk")]
         public EnJenisBayaranBelian EnJenisBayaranBelian { get; set; }
         [DisplayName("No Inden Kerja")]
         public int? AkIndenId { get; set; }
