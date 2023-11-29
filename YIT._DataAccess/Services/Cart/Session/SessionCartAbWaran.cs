@@ -23,23 +23,23 @@ namespace YIT._DataAccess.Services.Cart.Session
         //TerimaObjek
         public override void AddItemObjek(
             int akTerimaId,
-            int jBahagianId,
+            int jKWPTJBahagianId,
             int akCartaId,
             decimal amaun,
             string? TK
            )
         {
             base.AddItemObjek(akTerimaId,
-                          jBahagianId,
+                          jKWPTJBahagianId,
                           akCartaId,
                           amaun,
                           TK);
 
             Session?.SetJson("CartAbWaran", this);
         }
-        public override void RemoveItemObjek(int jBahagianId, int akCartaId)
+        public override void RemoveItemObjek(int jKWPTJBahagianId, int akCartaId)
         {
-            base.RemoveItemObjek(jBahagianId, akCartaId);
+            base.RemoveItemObjek(jKWPTJBahagianId, akCartaId);
             Session?.SetJson("CartAbWaran", this);
         }
         public override void ClearObjek()

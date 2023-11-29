@@ -16,7 +16,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label asp-for="Kod" class="control-label"></label>
-                        <input asp-for="Kod" class="form-control form-control-sm text-uppercase" required />
+                        <input asp-for="Kod" class="form-control form-control-sm text-uppercase" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" required />
                         <span asp-validation-for="Kod" class="text-danger"></span>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label asp-for="NoAkaun" class="control-label"></label>
-                        <input asp-for="NoAkaun" class="form-control form-control-sm text-uppercase" required />
+                        <input asp-for="NoAkaun" class="form-control form-control-sm text-uppercase" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" required />
                         <span asp-validation-for="NoAkaun" class="text-danger"></span>
                     </div>
                 </div>

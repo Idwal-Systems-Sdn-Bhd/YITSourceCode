@@ -43,7 +43,7 @@
         $.ajax({
             type: "POST",
             //url: "/AkPV/JsonEmptyCart",
-            url: '@Url.Action("JsonEmptyCart", "AbWaran")',
+            url: '@Url.Action("EmptyCart", "AbWaran")',
             dataType: "json",
             success: function (msg) {
                 $("table tbody#tbodyObjek").empty();
@@ -124,7 +124,7 @@
                     for (var i = 0; i < r.objek.length; i++) {
                         var item1 = r.objek[i];
                         var str = "<tr><td hidden>" + item1.jkwptjBahagianId +
-                            "</td><td class='text-uppercase'>" + item1.jBahagian.Kod + " - " + item1.jBahagian.perihal +
+                            "</td><td class='text-uppercase'>" + item1.jkwptjBahagian.Kod + " - " + item1.jkwptjBahagian.jBahagian.perihal + " (" + item1.jkwptjBahagian.jptj.perihal + ") " +
                             "</td><td hidden>" + item1.akCartaId +
                             "</td><td class='text-uppercase'>" + item1.akCarta.kod + " - " + item1.akCarta.perihal +
                             "</td><td class='text-end'>" + (item1.amaun).toFixed(2) +
@@ -165,7 +165,7 @@
                     //Send the JSON array to Controller using AJAX.
                     $.ajax({
                         type: "POST",
-                        url: '@Url.Action("GetJKWPTJBahagianAkCarta", "AbWaran")',
+                        url: '@Url.Action("GetJKWPTJBahagianAkCarta", "JKW")',
                         data: Objek,
                         dataType: "json",
                         success: function (r) {
@@ -205,12 +205,12 @@
 
                                     //Add jkwptjBahagianId cell.
                                     var cell = $(row.insertCell(-1));
-                                    cell.html(r.jKWPTJBahagian.id);
+                                    cell.html(r.jkwPtjBahagian.id);
                                     cell.prop("hidden", !this.checked);
 
                                     //Add jkwptjBahagian cell.
                                     var cell = $(row.insertCell(-1));
-                                    cell.html(r.kod + ' - ' + r.jBahagian.perihal);
+                                    cell.html(r.jkwPtjBahagian.kod + ' - ' + r.jkwPtjBahagian.jBahagian.perihal);
                                     cell.addClass('text-uppercase');
 
                                     //Add akCartaId cell.
@@ -321,7 +321,7 @@
                             success: function (r) {
                                 //insert data in modal objek
                                 $("#moObjekId").val(r.record.id);
-                                $("#moObjekJKWPTJBahagianId").val(r.record.jKWPTJBahagianId);
+                                $("#moObjekJKWPTJBahagianId").val(r.record.jkwptjBahagianId);
                                 $("#moObjekAkCartaId").val(r.record.akCartaId);
                                 $("#moObjekAmaun").val(r.record.amaun.toFixed(2));
                                 $("#moObjekTK").val(r.record.TK);
