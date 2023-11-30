@@ -107,6 +107,54 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPP);
         }
 
+        public IActionResult BatalLulus(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetDetailsById((int)id);
+            if (akPP == null)
+            {
+                return NotFound();
+            }
+
+            if (akPP.EnStatusBorang != EnStatusBorang.Lulus)
+            {
+                TempData[SD.Error] = "Data belum diluluskan..!";
+                return (RedirectToAction(nameof(Index)));
+            }
+            EmptyCart();
+            PopulateCartAkPenilaianPerolehanFromDb(akPP);
+            return View(akPP);
+        }
+
+        [HttpPost, ActionName("BatalLulus")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BatalLulusConfirmed(int id, string tindakan, string syscode)
+        {
+            var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetById((int)id);
+
+            var user = await _userManager.GetUserAsync(User);
+            int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+
+            if (akPP != null)
+            {
+                _unitOfWork.AkPenilaianPerolehanRepo.BatalLulus(id, tindakan, user?.Email);
+
+                _appLog.Insert("Hapus", akPP.NoRujukan ?? "", akPP.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+                await _context.SaveChangesAsync();
+                TempData[SD.Success] = "Data berjaya batal kelulusan..!";
+            }
+            else
+            {
+                TempData[SD.Error] = "Data telah disahkan / disemak / diluluskan";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         public async Task<IActionResult> Create()
         {
             var user = await _userManager.GetUserAsync(User);

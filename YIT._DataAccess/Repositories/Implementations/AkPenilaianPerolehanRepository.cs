@@ -311,24 +311,6 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public  void BatalSah(int id, string? tindakan, string? userId)
-        {
-            var data = _context.AkPenilaianPerolehan.FirstOrDefault(pp => pp.Id == id);
-
-            if (data != null)
-            {
-                data.EnStatusBorang = EnStatusBorang.None;
-                data.DPengesahId = null;
-                data.TarikhSah = null;
-
-                data.Tindakan = tindakan;
-                data.UserIdKemaskini = userId ?? "";
-                data.TarKemaskini = DateTime.Now;
-
-                _context.Update(data);
-            }
-        }
-
         public void Semak(int id, int penyemakId, string? userId)
         {
             var data = _context.AkPenilaianPerolehan.FirstOrDefault(pp => pp.Id == id);
@@ -345,27 +327,6 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                 _context.Update(data);
 
-            }
-        }
-
-        public void BatalSemak(int id, string? tindakan, string? userId)
-        {
-            var data = _context.AkPenilaianPerolehan.FirstOrDefault(pp => pp.Id == id);
-
-            if (data != null)
-            {
-                data.EnStatusBorang = EnStatusBorang.None;
-                data.DPengesahId = null;
-                data.TarikhSah = null;
-
-                data.DPenyemakId = null;
-                data.TarikhSemak = null;
-
-                data.Tindakan = tindakan;
-                data.UserIdKemaskini = userId ?? "";
-                data.TarKemaskini = DateTime.Now;
-
-                _context.Update(data);
             }
         }
 
@@ -392,7 +353,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public  void BatalLulus(int id, string? tindakan, string? userId)
+        public  void HantarSemula(int id, string? tindakan, string? userId)
         {
             var data = _context.AkPenilaianPerolehan.FirstOrDefault(pp => pp.Id == id);
 
@@ -465,6 +426,12 @@ namespace YIT._DataAccess.Repositories.Implementations
         public List<AkPenilaianPerolehan> GetAllByJenis(int flPOInden)
         {
             return _context.AkPenilaianPerolehan.Where(pp => pp.EnStatusBorang == EnStatusBorang.Lulus && pp.FlPOInden == flPOInden).ToList();
+        }
+
+        public void BatalLulus(int id, string? tindakan, string? userId)
+        {
+            HantarSemula(id, tindakan, userId);
+
         }
     }
 }

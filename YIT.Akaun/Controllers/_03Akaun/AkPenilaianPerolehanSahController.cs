@@ -150,7 +150,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             if (akPP != null)
             {
-                _unitOfWork.AkPenilaianPerolehanRepo.BatalSah(id, tindakan, user?.UserName ?? "");
+                _unitOfWork.AkPenilaianPerolehanRepo.HantarSemula(id, tindakan, user?.UserName ?? "");
 
                 _appLog.Insert("Ubah", "Hantar Semula " + akPP.NoRujukan ?? "", akPP.NoRujukan ?? "", id, akPP.Jumlah, pekerjaId, modul, syscode, namamodul, user);
                 _context.SaveChanges();
