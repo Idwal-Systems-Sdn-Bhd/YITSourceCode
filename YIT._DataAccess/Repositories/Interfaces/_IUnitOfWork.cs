@@ -19,6 +19,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IJCaraBayarRepository JCaraBayarRepo { get; }
         IJNegeriRepository JNegeriRepo { get; }
         IJBahagianRepository JBahagianRepo { get; }
+        IJCukaiRepository JCukaiRepo { get; }
         IAkCartaRepository AkCartaRepo { get; }
         IAkBankRepository AkBankRepo { get; }
         IAkTerimaRepository AkTerimaRepo { get; }
@@ -32,6 +33,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IAkPelarasanPORepository AkPelarasanPORepo { get; }
         IAkPelarasanIndenRepository AkPelarasanIndenRepo { get; }
         IAkBelianRepository AkBelianRepo { get; }
+
         int Save();
     }
 }

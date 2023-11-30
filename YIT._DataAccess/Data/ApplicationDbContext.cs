@@ -34,6 +34,7 @@ namespace YIT._DataAccess.Data
         public DbSet<JBahagian> JBahagian { get; set; }
         public DbSet<JKWPTJBahagian> JKWPTJBahagian { get; set; }
         public DbSet<JCawangan> JCawangan { get; set; }
+        public DbSet<JCukai> JCukai { get; set; }
         //
 
         // 02Daftar (D)

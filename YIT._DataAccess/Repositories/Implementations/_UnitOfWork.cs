@@ -30,6 +30,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             JBahagianRepo = new JBahagianRepository(_context);
             JCawanganRepo = new JCawanganRepository(_context);
             JKWPTJBahagianRepo = new JKWPTJBahagianRepository(context);
+            JCukaiRepo = new JCukaiRepository(context);
 
             AkCartaRepo = new AkCartaRepository(_context);
             AkBankRepo = new AkBankRepository(_context);
@@ -95,6 +96,8 @@ namespace YIT._DataAccess.Repositories.Implementations
         public IAkPelarasanIndenRepository AkPelarasanIndenRepo { get; private set; }
 
         public IAkBelianRepository AkBelianRepo { get; }
+
+        public IJCukaiRepository JCukaiRepo { get; }
 
         public void Dispose()
         {

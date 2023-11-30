@@ -888,6 +888,155 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     );
             }
 
+            if (context.JCukai.Any())
+            {
+
+            }
+            else
+            {
+                context.JCukai.AddRange(
+                    new JCukai
+                    {
+                        Kod = "AJP",
+                        Perihal = "ANY ADJUSTMENT MADE TO INPUT TAX",
+                        Peratus = 6
+                    },
+                    new JCukai
+                    {
+                        Kod = "AJS",
+                        Perihal = "ANY ADJUSTMENT MADE TO OUTPUT TAX",
+                        Peratus = 6
+                    },
+                    new JCukai
+                    {
+                        Kod = "BL",
+                        Perihal = "PURCHASES WITH GST INCURRED BUT NOT CLAIMABLE (DISALLOWANCE OF INPUT TAX)",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "DS",
+                        Perihal = "DEEMED SUPPLIES (EG. TRANSFER OR DISPOSAL OF BUSINESS ASSETS)",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "EP",
+                        Perihal = "PURCAHSES EXEMPTED FROM GST",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "ES",
+                        Perihal = "EXEMPT SUPPLIES UNDER GST",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "ES43",
+                        Perihal = "INCIDENTAL EXEMPT SUPPLIES",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "GP",
+                        Perihal = "PURCHASE TRANSACTIONS WHICH DISREGARDED UNDER GST LEGISLATION",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "GS",
+                        Perihal = "DISREGARDED SUPPLIES",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "IM",
+                        Perihal = "IMPORT OF GOODS WITH GST INCURRED",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "IS",
+                        Perihal = "IMPORTS UNDER SPECIAL SCHEME WITH NO GST INCURRED",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "NR",
+                        Perihal = "PURCHASE FROM NON GST-REGISTERED SUPPLIER WITH NO GST INCURRED",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "OP",
+                        Perihal = "PURCHASE TRANSACTIONS WHICH IS OUT OF THE SCOPE OF GST LEGISLATION",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "OS",
+                        Perihal = "OUT-OF-SCOPE SUPPLIES",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "RS",
+                        Perihal = "RELIEF SUPPLY UNDER GST",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "SR",
+                        Perihal = "STANDARD-RATED SUPPLIES WITH GST CHARGED",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "TX",
+                        Perihal = "PURCHASE WITH GST INCURRED AT 6% AND DIRECTLY ATTIBUTABLE TO",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "TX-E43",
+                        Perihal = "PURCHASE WITH GST INCURRED DIRECTLY ATTIBUTABLE TO",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "TX-n43",
+                        Perihal = "PURCHASE WITH GST INCURRED DIRECTLY ATTIBUTABLE TO",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "TX-RE",
+                        Perihal = "PURCHASE WITH GST INCURRED THAT IS NOT DIRECTLY ATTRIBUTABLE TO OR TAXABLE OR",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "ZP",
+                        Perihal = "PURCHASE FROM GST-REGISTERED SUPPLIER WITH NO GST INCURRED",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "ZRE",
+                        Perihal = "EXPORTATION OF GOODS OR SERVICES WHIC ARE SUBJECT TO ZERO RATED SUPPLIES",
+                        Peratus = 0
+                    },
+                    new JCukai
+                    {
+                        Kod = "ZRL",
+                        Perihal = "LOCAL SUPPLY OF GOODS OR SERVICES WHICH ARE SUBJET TO ZERO RATED SUPPLIES",
+                        Peratus = 0
+                    }
+
+                    );
+            }
+
             context.SaveChanges();
 
             // -- First Layer Insert END
