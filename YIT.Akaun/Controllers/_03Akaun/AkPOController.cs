@@ -189,43 +189,6 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPO);
         }
 
-        public async Task<IActionResult> PosSemula(int id, string syscode)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
-
-            var obj = await _context.AkPO.IgnoreQueryFilters()
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            // Pos operation
-
-            if (obj != null && !string.IsNullOrEmpty(obj.NoRujukan))
-            {
-                // check is it posted or not
-                if (await _unitOfWork.AkPORepo.IsPostedAsync((int)id, obj.NoRujukan))
-                {
-                    TempData[SD.Error] = "Data sudah diposting.";
-                    return RedirectToAction(nameof(Index));
-                }
-
-                if (await _unitOfWork.AkPORepo.IsLulusAsync(id))
-                {
-                    TempData[SD.Error] = "Data telah diluluskan";
-                    return RedirectToAction(nameof(Index));
-                }
-
-                _unitOfWork.AkPORepo.Lulus(id,pekerjaId,user?.UserName);
-
-                // Batal operation end
-                _appLog.Insert("Posting", obj.NoRujukan ?? "", obj.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
-
-                await _context.SaveChangesAsync();
-                TempData[SD.Success] = "Data berjaya pos semula..!";
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-
         [HttpPost, ActionName("BatalPos")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> BatalPosConfirmed(int id, string tindakan, string syscode)
@@ -259,6 +222,43 @@ namespace YIT.Akaun.Controllers._03Akaun
             else
             {
                 TempData[SD.Error] = "Data belum disahkan / disemak / diluluskan";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> PosSemula(int id, string syscode)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+
+            var obj = await _context.AkPO.IgnoreQueryFilters()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            // Pos operation
+
+            if (obj != null && !string.IsNullOrEmpty(obj.NoRujukan))
+            {
+                // check is it posted or not
+                if (await _unitOfWork.AkPORepo.IsPostedAsync((int)id, obj.NoRujukan))
+                {
+                    TempData[SD.Error] = "Data sudah diposting.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (await _unitOfWork.AkPORepo.IsLulusAsync(id))
+                {
+                    TempData[SD.Error] = "Data telah diluluskan";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _unitOfWork.AkPORepo.Lulus(id,pekerjaId,user?.UserName);
+
+                // Batal operation end
+                _appLog.Insert("Posting", obj.NoRujukan ?? "", obj.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+
+                await _context.SaveChangesAsync();
+                TempData[SD.Success] = "Data berjaya pos semula..!";
             }
 
             return RedirectToAction(nameof(Index));

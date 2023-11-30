@@ -352,11 +352,11 @@ namespace YIT._DataAccess.Repositories.Implementations
             {
                 if (data.EnStatusBorang != EnStatusBorang.Kemaskini)
                 {
-                    data.EnStatusBorang = EnStatusBorang.Lulus;
                     data.DPelulusId = pelulus!.Id;
                     data.TarikhLulus = DateTime.Now;
                 }
 
+                data.EnStatusBorang = EnStatusBorang.Lulus;
                 data.FlPosting = 1;
                 data.DPekerjaPostingId = pelulusId;
                 data.TarikhPosting = DateTime.Now;
@@ -389,6 +389,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             if (data != null)
             {
+                data.EnStatusBorang = EnStatusBorang.Batal;
                 data.FlBatal = 1;
                 data.TarBatal = DateTime.Now;
                 data.SebabBatal = sebabBatal;

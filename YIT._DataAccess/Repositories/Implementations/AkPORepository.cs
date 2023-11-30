@@ -392,6 +392,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             if (data != null)
             {
+                data.EnStatusBorang = EnStatusBorang.Batal;
                 data.FlBatal = 1;
                 data.TarBatal = DateTime.Now;
                 data.SebabBatal = sebabBatal;

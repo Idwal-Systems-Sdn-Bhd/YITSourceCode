@@ -336,10 +336,13 @@ namespace YIT._DataAccess.Repositories.Implementations
             var pelulus = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == pelulusId);
             if (data != null)
             {
-                data.EnStatusBorang = EnStatusBorang.Lulus;
-                data.DPelulusId = pelulus!.Id;
-                data.TarikhLulus = DateTime.Now;
+                if (data.EnStatusBorang != EnStatusBorang.Kemaskini)
+                {
+                    data.DPelulusId = pelulus!.Id;
+                    data.TarikhLulus = DateTime.Now;
+                }
 
+                data.EnStatusBorang = EnStatusBorang.Lulus;
                 data.FlPosting = 1;
                 data.DPekerjaPostingId = pelulusId;
                 data.TarikhPosting = DateTime.Now;
@@ -375,6 +378,9 @@ namespace YIT._DataAccess.Repositories.Implementations
                 data.Tindakan = tindakan;
                 data.UserIdKemaskini = userId ?? "";
                 data.TarKemaskini = DateTime.Now;
+
+                data.FlPosting = 0;
+                data.TarikhPosting = null;
 
                 _context.Update(data);
             }

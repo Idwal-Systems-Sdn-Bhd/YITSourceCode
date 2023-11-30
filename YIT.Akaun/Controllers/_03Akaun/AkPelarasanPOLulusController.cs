@@ -216,7 +216,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             if (akPelarasanPO != null)
             {
-                _unitOfWork.AkPelarasanPORepo.BatalLulus(id, tindakan, user?.UserName ?? "");
+                _unitOfWork.AkPelarasanPORepo.HantarSemula(id, tindakan, user?.UserName ?? "");
 
                 _appLog.Insert("Ubah", "Hantar Semula " + akPelarasanPO.NoRujukan ?? "", akPelarasanPO.NoRujukan ?? "", id, akPelarasanPO.Jumlah, pekerjaId, modul, syscode, namamodul, user);
                 _context.SaveChanges();

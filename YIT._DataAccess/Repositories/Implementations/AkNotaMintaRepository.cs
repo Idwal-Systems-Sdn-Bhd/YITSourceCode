@@ -306,24 +306,6 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public void BatalSah(int id, string? tindakan, string? userId)
-        {
-            var data = _context.AkNotaMinta.FirstOrDefault(pp => pp.Id == id);
-
-            if (data != null)
-            {
-                data.EnStatusBorang = EnStatusBorang.None;
-                data.DPengesahId = null;
-                data.TarikhSah = null;
-
-                data.Tindakan = tindakan;
-                data.UserIdKemaskini = userId ?? "";
-                data.TarKemaskini = DateTime.Now;
-
-                _context.Update(data);
-            }
-        }
-
         public void Semak(int id, int penyemakId, string? userId)
         {
             var data = _context.AkNotaMinta.FirstOrDefault(pp => pp.Id == id);
@@ -343,36 +325,19 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public void BatalSemak(int id, string? tindakan, string? userId)
-        {
-            var data = _context.AkNotaMinta.FirstOrDefault(pp => pp.Id == id);
-
-            if (data != null)
-            {
-                data.EnStatusBorang = EnStatusBorang.None;
-                data.DPengesahId = null;
-                data.TarikhSah = null;
-
-                data.DPenyemakId = null;
-                data.TarikhSemak = null;
-
-                data.Tindakan = tindakan;
-                data.UserIdKemaskini = userId ?? "";
-                data.TarKemaskini = DateTime.Now;
-
-                _context.Update(data);
-            }
-        }
-
         public void Lulus(int id, int pelulusId, string? userId)
         {
             var data = _context.AkNotaMinta.FirstOrDefault(pp => pp.Id == id);
             var pelulus = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == pelulusId);
             if (data != null)
             {
+                if (data.EnStatusBorang != EnStatusBorang.Kemaskini)
+                {
+                    data.DPelulusId = pelulus!.Id;
+                    data.TarikhLulus = DateTime.Now;
+                }
+
                 data.EnStatusBorang = EnStatusBorang.Lulus;
-                data.DPelulusId = pelulus!.Id;
-                data.TarikhLulus = DateTime.Now;
 
                 data.FlPosting = 1;
                 data.DPekerjaPostingId = pelulusId;
@@ -384,33 +349,6 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                 _context.Update(data);
 
-            }
-        }
-
-        public void BatalLulus(int id, string? tindakan, string? userId)
-        {
-            var data = _context.AkNotaMinta.FirstOrDefault(pp => pp.Id == id);
-
-            if (data != null)
-            {
-                data.EnStatusBorang = EnStatusBorang.None;
-                data.DPengesahId = null;
-                data.TarikhSah = null;
-
-                data.DPenyemakId = null;
-                data.TarikhSemak = null;
-
-                data.DPelulusId = null;
-                data.TarikhLulus = null;
-
-                data.DPekerjaPostingId = null;
-                data.TarikhPosting = null;
-
-                data.Tindakan = tindakan;
-                data.UserIdKemaskini = userId ?? "";
-                data.TarKemaskini = DateTime.Now;
-
-                _context.Update(data);
             }
         }
 
@@ -431,6 +369,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             if (data != null)
             {
+                data.EnStatusBorang = EnStatusBorang.Batal;
                 data.FlBatal = 1;
                 data.TarBatal = DateTime.Now;
                 data.SebabBatal = sebabBatal;
@@ -457,5 +396,65 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
+        public List<AkNotaMinta> GetAllByStatus(EnStatusBorang enStatusBorang)
+        {
+            return _context.AkNotaMinta.Where(pp => pp.EnStatusBorang == enStatusBorang).ToList();
+        }
+
+        public void HantarSemula(int id, string? tindakan, string? userId)
+        {
+            var data = _context.AkNotaMinta.FirstOrDefault(pp => pp.Id == id);
+
+            if (data != null)
+            {
+                data.EnStatusBorang = EnStatusBorang.None;
+                data.DPengesahId = null;
+                data.TarikhSah = null;
+
+                data.DPenyemakId = null;
+                data.TarikhSemak = null;
+
+                data.DPelulusId = null;
+                data.TarikhLulus = null;
+
+                data.DPekerjaPostingId = null;
+                data.TarikhPosting = null;
+
+                data.Tindakan = tindakan;
+                data.UserIdKemaskini = userId ?? "";
+                data.TarKemaskini = DateTime.Now;
+
+                _context.Update(data);
+
+            }
+        }
+
+        public void BatalLulus(int id, string? tindakan, string? userId)
+        {
+            var data = _context.AkNotaMinta.FirstOrDefault(pp => pp.Id == id);
+
+            if (data != null)
+            {
+                HantarSemula(id, tindakan, userId);
+
+            }
+        }
+
+        public void BatalPosting(int id, string? tindakan, string? userId)
+        {
+            var data = _context.AkNotaMinta.FirstOrDefault(pp => pp.Id == id);
+
+            if (data != null)
+            {
+                data.EnStatusBorang = EnStatusBorang.Kemaskini;
+                data.Tindakan = tindakan;
+
+                data.UserIdKemaskini = userId ?? "";
+                data.TarKemaskini = DateTime.Now;
+
+                _context.Update(data);
+
+            }
+        }
     }
 }

@@ -141,15 +141,21 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             if (akPP != null)
             {
+                if (await _unitOfWork.AkPenilaianPerolehanRepo.IsLulusAsync(id) == false)
+                {
+                    TempData[SD.Error] = "Data belum diluluskan";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 _unitOfWork.AkPenilaianPerolehanRepo.BatalLulus(id, tindakan, user?.Email);
 
-                _appLog.Insert("Hapus", akPP.NoRujukan ?? "", akPP.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+                _appLog.Insert("UnPosting", "Batal Lulus " + akPP.NoRujukan ?? "", akPP.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya batal kelulusan..!";
             }
             else
             {
-                TempData[SD.Error] = "Data telah disahkan / disemak / diluluskan";
+                TempData[SD.Error] = "Data tidak wujud";
             }
 
             return RedirectToAction(nameof(Index));

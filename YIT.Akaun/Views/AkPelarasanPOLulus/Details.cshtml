@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Kelulusan Pelarasan Pesanan Tempatan - Papar";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    decimal jumlahPerihal = 0;
 }
 
 <div class="card box-shadow mb-2">
@@ -19,126 +18,8 @@
 
         </div>
         <hr />
-        @*maklumat umum*@
-        <div class="row">
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label asp-for="NoRujukan" class="control-label"></label>
-                    <input asp-for="NoRujukan" class="form-control form-control-sm" readonly />
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label asp-for="Tahun" class="control-label"></label>
-                    <input asp-for="Tahun" class="form-control form-control-sm" readonly />
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label asp-for="Tarikh" class="control-label"></label>
-                    <input asp-for="Tarikh" class="form-control form-control-sm" readonly />
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label asp-for="AkPOId" class="control-label"></label>
-                    <input class="form-control form-control-sm text-uppercase" value="@Model.AkPO?.NoRujukan" readonly />
+        <partial name="~/Views/AkPelarasanPO/__DetailsPartial.cshtml" />
 
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="JKWId" class="control-label"></label>
-            <input class="form-control form-control-sm text-uppercase" value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" readonly />
-
-        </div>
-        <br />
-        @*table Objek*@
-        <div class="card box-shadow mb-3">
-            <div class="card-header">
-                <h6>Objek</h6>
-            </div>
-            <div class="card-body">
-                <table id="tblObjek" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th style="width:40%">Bahagian</th>
-                            <th style="width:40%">Kod</th>
-                            <th style="width:20%">Amaun RM</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyObjek">
-                        @if (ViewBag.akPelarasanPOObjek != null)
-                        {
-                            foreach (var item in ViewBag.akPelarasanPOObjek)
-                            {
-                                <tr>
-                                    <td hidden>@item.JKWPTJBahagianId</td>
-                                    <td class="text-uppercase">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal)</td>
-                                    <td hidden>@item.AkCartaId</td>
-                                    <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
-                                    <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-footer">
-                <div class="form-group">
-                    <label asp-for="Jumlah" class="control-label">Jumlah Objek RM</label>
-                    <input asp-for="Jumlah" class="form-control form-control-sm" readonly />
-                </div>
-            </div>
-        </div>
-        @*table Objek end*@
-
-        @*table Perihal*@
-        <div class="card box-shadow mb-3">
-            <div class="card-header">
-                <h6>Perihal</h6>
-            </div>
-            <div class="card-body">
-                <table id="tblPerihal" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th style="width:10%">Bil</th>
-                            <th style="width:40%">Perihal</th>
-                            <th style="width:10%">Ktt.</th>
-                            <th style="width:10%">Unit</th>
-                            <th style="width:10%">Hrg/Unit RM</th>
-                            <th style="width:20%">Amaun RM</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyPerihal">
-                        @if (ViewBag.akPelarasanPOPerihal != null)
-                        {
-                            foreach (var item in ViewBag.akPelarasanPOPerihal)
-                            {
-                                <tr>
-                                    <td class="text-end">@item.Bil</td>
-                                    <td class="text-uppercase">@item.Perihal</td>
-                                    <td class="text-end">@item.Kuantiti</td>
-                                    <td class="text-uppercase">@item.Unit</td>
-                                    <td class="text-end">@Convert.ToDecimal(item.Harga).ToString("#,##0.00")</td>
-                                    <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
-                                </tr>
-                                jumlahPerihal += item.Amaun;
-                            }
-
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-footer">
-                <div class="form-group">
-                    <label name="perihalJumlah" class="control-label">Jumlah Perihal RM</label>
-                    <input name="perihalJumlah" id="perihalJumlah" class="form-control form-control-sm" value="@Convert.ToDecimal(jumlahPerihal).ToString("#,##0.00")" readonly />
-                </div>
-            </div>
-        </div>
-        @*table Perihal end*@
-        <hr />
 
         <div class="form-group">
             <a asp-action="Lulus" asp-route-id="@Model.Id" asp-route-syscode="SPPB" asp-route-dKonfigKelulusanId="@ViewBag.DKonfigKelulusanId" class="btn ac-primary btn-sm">Lulus</a>
