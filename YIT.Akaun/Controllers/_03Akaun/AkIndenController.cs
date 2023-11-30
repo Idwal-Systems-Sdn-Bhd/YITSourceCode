@@ -105,6 +105,165 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akInden);
         }
 
+        public IActionResult BatalLulus(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var akInden = _unitOfWork.AkIndenRepo.GetDetailsById((int)id);
+            if (akInden == null)
+            {
+                return NotFound();
+            }
+
+            if (akInden.EnStatusBorang != EnStatusBorang.Lulus)
+            {
+                TempData[SD.Error] = "Data belum diluluskan..!";
+                return (RedirectToAction(nameof(Index)));
+            }
+            EmptyCart();
+            PopulateCartAkIndenFromDb(akInden);
+            return View(akInden);
+        }
+
+        [HttpPost, ActionName("BatalLulus")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BatalLulusConfirmed(int id, string tindakan, string syscode)
+        {
+            var akInden = _unitOfWork.AkIndenRepo.GetById((int)id);
+
+            var user = await _userManager.GetUserAsync(User);
+            int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+
+            if (akInden != null && !string.IsNullOrEmpty(akInden.NoRujukan))
+            {
+                // check is it posted or not
+                if (await _unitOfWork.AkIndenRepo.IsPostedAsync((int)id, akInden.NoRujukan) == false)
+                {
+                    TempData[SD.Error] = "Data belum diposting.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (await _unitOfWork.AkIndenRepo.IsLulusAsync(id) == false)
+                {
+                    TempData[SD.Error] = "Data belum diluluskan";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _unitOfWork.AkIndenRepo.BatalLulus(id, tindakan, user?.Email);
+
+                _appLog.Insert("UnPosting", "Batal Lulus " + akInden.NoRujukan ?? "", akInden.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+                await _context.SaveChangesAsync();
+                TempData[SD.Success] = "Data berjaya batal kelulusan..!";
+            }
+            else
+            {
+                TempData[SD.Error] = "Data tidak wujud";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult BatalPos(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var akInden = _unitOfWork.AkIndenRepo.GetDetailsById((int)id);
+            if (akInden == null)
+            {
+                return NotFound();
+            }
+
+            if (akInden.EnStatusBorang != EnStatusBorang.Lulus)
+            {
+                TempData[SD.Error] = "Data belum diluluskan..!";
+                return (RedirectToAction(nameof(Index)));
+            }
+            EmptyCart();
+            PopulateCartAkIndenFromDb(akInden);
+            return View(akInden);
+        }
+
+        [HttpPost, ActionName("BatalPos")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BatalPosConfirmed(int id, string tindakan, string syscode)
+        {
+            var akInden = _unitOfWork.AkIndenRepo.GetById((int)id);
+
+            var user = await _userManager.GetUserAsync(User);
+            int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+
+            if (akInden != null && !string.IsNullOrEmpty(akInden.NoRujukan))
+            {
+                // check is it posted or not
+                if (await _unitOfWork.AkIndenRepo.IsPostedAsync((int)id, akInden.NoRujukan) == false)
+                {
+                    TempData[SD.Error] = "Data belum diposting.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (await _unitOfWork.AkIndenRepo.IsLulusAsync(id) == false)
+                {
+                    TempData[SD.Error] = "Data belum diluluskan";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _unitOfWork.AkIndenRepo.BatalPos(id, tindakan, user?.UserName);
+
+                _appLog.Insert("UnPosting", "Batal Pos " + akInden.NoRujukan ?? "", akInden.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+                await _context.SaveChangesAsync();
+                TempData[SD.Success] = "Data berjaya batal pos..!";
+            }
+            else
+            {
+                TempData[SD.Error] = "Data belum disahkan / disemak / diluluskan";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> PosSemula(int id, string syscode)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+
+            var obj = await _context.AkInden.IgnoreQueryFilters()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            // Pos operation
+
+            if (obj != null && !string.IsNullOrEmpty(obj.NoRujukan))
+            {
+                // check is it posted or not
+                if (await _unitOfWork.AkIndenRepo.IsPostedAsync((int)id, obj.NoRujukan))
+                {
+                    TempData[SD.Error] = "Data sudah diposting.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (await _unitOfWork.AkIndenRepo.IsLulusAsync(id))
+                {
+                    TempData[SD.Error] = "Data telah diluluskan";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _unitOfWork.AkIndenRepo.Lulus(id, pekerjaId, user?.UserName);
+
+                // Batal operation end
+                _appLog.Insert("Posting", obj.NoRujukan ?? "", obj.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+
+                await _context.SaveChangesAsync();
+                TempData[SD.Success] = "Data berjaya pos semula..!";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         public async Task<IActionResult> Create()
         {
             var user = await _userManager.GetUserAsync(User);

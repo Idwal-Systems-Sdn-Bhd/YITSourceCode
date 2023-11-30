@@ -17,20 +17,19 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public string GetMaxRefNo(string initNoRujukan, string tahun);
         public Task<bool> IsSahAsync(int id);
         public void Sah(int id, int? pengesahId, string? userId);
-        public void BatalSah(int id, string? tindakan, string? userId);
         public Task<bool> IsSemakAsync(int id);
         public void Semak(int id, int penyemakId, string? userId);
-        public void BatalSemak(int id, string? tindakan, string? userId);
         public Task<bool> IsLulusAsync(int id);
-        public void Lulus(int id, int pelulusId, string? userId);
-        public void BatalLulus(int id, string? tindakan, string? userId);
+        public void Lulus(int id, int? pelulusId, string? userId);
+        public void HantarSemula(int id, string? tindakan, string? userId);
         public Task<bool> IsBatalAsync(int id);
         public void Batal(int id, string? sebabBatal, string? userId);
 
-        public void PostingToAbBukuVot(AkInden akPO, string userId, int? dPekerjaMasukId);
-        void PostingToAbBukuVot(AkInden akInden);
+        public void PostingToAbBukuVot(AkInden akPO);
         void RemovePostingFromAbBukuVot(AkInden akInden, string userId);
         Task<bool> IsPostedAsync(int id, string noRujukan);
         List<AkInden> GetAllByStatus(EnStatusBorang enStatusBorang);
+        public void BatalLulus(int id, string? tindakan, string? userId);
+        public void BatalPos(int id, string? tindakan, string? userId);
     }
 }

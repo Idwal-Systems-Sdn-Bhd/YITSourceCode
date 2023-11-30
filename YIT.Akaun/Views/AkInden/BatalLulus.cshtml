@@ -1,0 +1,33 @@
+﻿@model AkInden
+
+@{
+    ViewData["Title"] = "Inden Kerja - Batal Kelulusan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
+
+        <p class="text-danger">Anda pasti untuk membatalkan kelulusan maklumat berikut?</p>
+        <partial name="__DetailsPartial.cshtml">
+
+            <form asp-action="BatalLulus">
+                <div asp-validation-summary="ModelOnly"></div>
+                <input type="hidden" asp-for="Id" />
+                <input name="syscode" value="SPPB" hidden />
+                <div class="row mb-2">
+                    <div class="form-group">
+                        <label class="control-label">Sebab Batal Kelulusan</label>
+                        <input name="tindakan" class="form-control text-uppercase form-control-sm" required>
+                        <span class="text-danger">sila isi ruang ini untuk meneruskan operasi</span>
+                    </div>
+                </div>
+                <input type="submit" value="Batal Lulus" class="btn ac-danger btn-sm" />
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
