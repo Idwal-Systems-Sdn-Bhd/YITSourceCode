@@ -124,6 +124,9 @@
                                 Liabiliti RM
                             </th>
                             <th>
+                                Belanja RM
+                            </th>
+                            <th>
                                 Baki RM
                             </th>
                         </tr>
@@ -135,6 +138,7 @@
                             decimal jumKredit = 0;
                             decimal jumTanggungan = 0;
                             decimal jumLiabiliti = 0;
+                            decimal jumBelanja = 0;
 
                         }
                         @foreach (var item in Model)
@@ -143,6 +147,7 @@
                             jumKredit += item.Kredit;
                             jumTanggungan += item.Tanggungan;
                             jumLiabiliti += item.Liabiliti;
+                            jumBelanja += item.Belanja;
                             <tr>
                                 <td>
                                 </td>
@@ -171,6 +176,9 @@
                                     @Convert.ToDecimal(item.Liabiliti).ToString("#,##0.00")
                                 </td>
                                 <td class="text-end">
+                                    @Convert.ToDecimal(item.Belanja).ToString("#,##0.00")
+                                </td>
+                                <td class="text-end">
                                     @{
                                         baki += item.Kredit - item.Debit - item.Tanggungan;
                                     }
@@ -187,6 +195,7 @@
                             <td class="text-end">@Convert.ToDecimal(jumKredit).ToString("#,##0.00")</td>
                             <td class="text-end">@Convert.ToDecimal(jumTanggungan).ToString("#,##0.00")</td>
                             <td class="text-end">@Convert.ToDecimal(jumLiabiliti).ToString("#,##0.00")</td>
+                            <td class="text-end">@Convert.ToDecimal(jumBelanja).ToString("#,##0.00")</td>
                             <td class="text-end">@Convert.ToDecimal(baki).ToString("#,##0.00")</td>
                         </tr>
                     </tfoot>

@@ -30,7 +30,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         Task<bool> IsPostedAsync(int id, string noRujukan);
         List<AkBelian> GetAllByStatus(EnStatusBorang enStatusBorang);
         public void BatalLulus(int id, string? tindakan, string? userId);
-        public void BatalPosting(int id, string? tindakan, string? userId);
+        public void BatalPos(int id, string? tindakan, string? userId);
 
     }
 }

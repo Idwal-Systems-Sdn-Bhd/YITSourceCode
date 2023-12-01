@@ -442,7 +442,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                         DDaftarAwamId = akBelian.DDaftarAwamId,
                         VotId = item.AkCartaId,
                         NoRujukan = akBelian.NoRujukan,
-                        Tanggungan = item.Amaun
+                        Liabiliti = item.Amaun
                     };
 
                     abBukuVotList.Add(abBukuVot);
@@ -468,7 +468,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return _context.AkBelian.Where(pp => pp.EnStatusBorang == enStatusBorang).ToList();
         }
 
-        public void BatalPosting(int id, string? tindakan, string? userId)
+        public void BatalPos(int id, string? tindakan, string? userId)
         {
             var data = _context.AkBelian.FirstOrDefault(pp => pp.Id == id);
 
@@ -479,6 +479,9 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                 data.UserIdKemaskini = userId ?? "";
                 data.TarKemaskini = DateTime.Now;
+
+                data.FlPosting = 0;
+                data.TarikhPosting = null;
 
                 _context.Update(data);
 

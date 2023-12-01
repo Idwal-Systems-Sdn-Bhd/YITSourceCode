@@ -1,7 +1,7 @@
-﻿@model IEnumerable<AkPelarasanPO>
+﻿@model IEnumerable<AkBelian>
 
 @{
-    ViewData["Title"] = "Kelulusan Pelarasan Pesanan Tempatan";
+    ViewData["Title"] = "Kelulusan Invois Pembekal";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <partial name="_JSIndex" />
@@ -52,7 +52,7 @@
                                     @item.Tarikh.ToString("dd/MM/yyyy")
                                 </td>
                                 <td class="text-uppercase">
-                                    @item.AkPO?.DDaftarAwam?.Nama
+                                    @item.DDaftarAwam?.Nama
                                 </td>
                                 <td class="text-uppercase text-end">
                                     @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")

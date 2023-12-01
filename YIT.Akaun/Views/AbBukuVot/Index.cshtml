@@ -46,7 +46,7 @@
 
                                     <div class="input-group mb-2 input-group-sm ">
                                         <span class="input-group-text" id="basic-addon1">Dari</span>
-                                        <input class="form-control form-control-sm text-uppercase" type="text" name="KataKunciDari" value="@ViewBag.KataKunciDari" required id="KataKunciDari" />
+                                        <input class="form-control form-control-sm text-uppercase" type="text" name="KataKunciDari" value="@ViewBag.KataKunciDari" required id="KataKunciDari" maxlength="6" />
                                         <label class="invalid-feedback">Sila isi ruangan ini</label>
                                     </div>
                                 </div>
@@ -54,7 +54,7 @@
 
                                     <div class="input-group mb-2 input-group-sm ">
                                         <span class="input-group-text" id="basic-addon1">Hingga</span>
-                                        <input class="form-control form-control-sm text-uppercase" type="text" name="KataKunciHingga" value="@ViewBag.KataKunciHingga" required id="KataKunciHingga" />
+                                        <input class="form-control form-control-sm text-uppercase" type="text" name="KataKunciHingga" value="@ViewBag.KataKunciHingga" required id="KataKunciHingga" maxlength="6" />
                                         <label class="invalid-feedback">Sila isi ruangan ini</label>
                                     </div>
                                 </div>
@@ -133,6 +133,9 @@
                                 Liabiliti RM
                             </th>
                             <th>
+                                Belanja RM
+                            </th>
+                            <th>
                                 Baki RM
                             </th>
                             <th>
@@ -153,7 +156,7 @@
                                     @BelanjawanFormatter.ConvertToKW(item.JKW?.Kod)
                                 </td>
                                 <td>
-                                    @BelanjawanFormatter.ConvertToPTJ(item.JKW?.Kod,item.JPTJ?.Kod)
+                                    @BelanjawanFormatter.ConvertToPTJ(item.JKW?.Kod, item.JPTJ?.Kod)
                                 </td>
                                 <td>
                                     @BelanjawanFormatter.ConvertToBahagian(item.JKW?.Kod, item.JPTJ?.Kod, item.JBahagian?.Kod)
@@ -175,6 +178,9 @@
                                 </td>
                                 <td>
                                     @Convert.ToDecimal(item.Liabiliti).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Belanja).ToString("#,##0.00")
                                 </td>
                                 <td>
                                     @{

@@ -110,6 +110,24 @@
                                                    data-toggle="tooltip" data-placement="top"
                                                    title="Hapus"><i class="fas fa-trash"></i></a>
                                             }
+                                            else if (item.EnStatusBorang == EnStatusBorang.Lulus)
+                                            {
+                                                <a asp-action="BatalPos" asp-route-id="@item.Id"
+                                                   class="btn text-warning btn-sm bg-white" type="button"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Batal Pos"><i class="fas fa-angle-left"></i></a>
+                                                <a asp-action="BatalLulus" asp-route-id="@item.Id"
+                                                   class="btn text-danger btn-sm bg-white" type="button"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Batal Kelulusan"><i class="fas fa-history"></i></a>
+                                            }
+                                            else if (item.EnStatusBorang == EnStatusBorang.Kemaskini)
+                                            {
+                                                <a asp-action="PosSemula" asp-route-id="@item.Id" asp-route-syscode="SPPB"
+                                                   class="btn text-success btn-sm bg-white" type="button"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Pos Semula"><i class="fas fa-angle-right"></i></a>
+                                            }
                                         }
                                         else
                                         {
