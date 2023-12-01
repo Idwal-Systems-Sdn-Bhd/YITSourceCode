@@ -27,6 +27,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkAkaunAkru)
                 .Include(t => t.AkInden)
                 .Include(t => t.AkPO)
+                .Include(t => t.AkNotaMinta)
                 .Include(t => t.DPengesah)
                     .ThenInclude(t => t!.DPekerja)
                 .Include(t => t.DPenyemak)
@@ -63,6 +64,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkAkaunAkru)
                 .Include(t => t.AkInden)
                 .Include(t => t.AkPO)
+                .Include(t => t.AkNotaMinta)
                 .Include(t => t.DPengesah)
                     .ThenInclude(t => t!.DPekerja)
                 .Include(t => t.DPenyemak)
@@ -294,7 +296,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public async Task<bool> IsPostedAsync(int id, string noRujukan)
         {
-            bool isPosted = await _context.AkPO.AnyAsync(t => t.Id == id && t.FlPosting == 1);
+            bool isPosted = await _context.AkBelian.AnyAsync(t => t.Id == id && t.FlPosting == 1);
             if (isPosted)
             {
                 return true;
@@ -330,24 +332,6 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public void BatalSah(int id, string? tindakan, string? userId)
-        {
-            var data = _context.AkBelian.FirstOrDefault(pp => pp.Id == id);
-
-            if (data != null)
-            {
-                data.EnStatusBorang = EnStatusBorang.None;
-                data.DPengesahId = null;
-                data.TarikhSah = null;
-
-                data.Tindakan = tindakan;
-                data.UserIdKemaskini = userId ?? "";
-                data.TarKemaskini = DateTime.Now;
-
-                _context.Update(data);
-            }
-        }
-
         public void Semak(int id, int penyemakId, string? userId)
         {
             var data = _context.AkBelian.FirstOrDefault(pp => pp.Id == id);
@@ -367,37 +351,19 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public void BatalSemak(int id, string? tindakan, string? userId)
-        {
-            var data = _context.AkBelian.FirstOrDefault(pp => pp.Id == id);
-
-            if (data != null)
-            {
-                data.EnStatusBorang = EnStatusBorang.None;
-                data.DPengesahId = null;
-                data.TarikhSah = null;
-
-                data.DPenyemakId = null;
-                data.TarikhSemak = null;
-
-                data.Tindakan = tindakan;
-                data.UserIdKemaskini = userId ?? "";
-                data.TarKemaskini = DateTime.Now;
-
-                _context.Update(data);
-            }
-        }
-
-        public void Lulus(int id, int pelulusId, string? userId)
+        public void Lulus(int id, int? pelulusId, string? userId)
         {
             var data = GetDetailsById(id);
             var pelulus = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == pelulusId);
             if (data != null)
             {
-                data.EnStatusBorang = EnStatusBorang.Lulus;
-                data.DPelulusId = pelulus!.Id;
-                data.TarikhLulus = DateTime.Now;
+                if (data.EnStatusBorang != EnStatusBorang.Kemaskini)
+                {
+                    data.DPelulusId = pelulus!.Id;
+                    data.TarikhLulus = DateTime.Now;
+                }
 
+                data.EnStatusBorang = EnStatusBorang.Lulus;
                 data.FlPosting = 1;
                 data.DPekerjaPostingId = pelulusId;
                 data.TarikhPosting = DateTime.Now;
@@ -409,34 +375,6 @@ namespace YIT._DataAccess.Repositories.Implementations
                 _context.Update(data);
 
                 PostingToAbBukuVot(data);
-            }
-        }
-
-        public void BatalLulus(int id, string? tindakan, string? userId)
-        {
-            var data = _context.AkBelian.FirstOrDefault(pp => pp.Id == id);
-
-            if (data != null)
-            {
-                data.EnStatusBorang = EnStatusBorang.None;
-                data.DPengesahId = null;
-                data.TarikhSah = null;
-
-                data.DPenyemakId = null;
-                data.TarikhSemak = null;
-
-                data.DPelulusId = null;
-                data.TarikhLulus = null;
-
-                data.DPekerjaPostingId = null;
-                data.TarikhPosting = null;
-
-                data.Tindakan = tindakan;
-                data.UserIdKemaskini = userId ?? "";
-                data.TarKemaskini = DateTime.Now;
-
-                _context.Update(data);
-
             }
         }
 
@@ -457,6 +395,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             if (data != null)
             {
+                data.EnStatusBorang = EnStatusBorang.Batal;
                 data.FlBatal = 1;
                 data.TarBatal = DateTime.Now;
                 data.SebabBatal = sebabBatal;
@@ -483,36 +422,6 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public void PostingToAbBukuVot(AkBelian akBelian, string userId, int? dPekerjaMasukId)
-        {
-            List<AbBukuVot> abBukuVotList = new List<AbBukuVot>();
-
-            if (akBelian.AkBelianObjek != null && akBelian.AkBelianObjek.Count > 0)
-            {
-
-
-                foreach (var item in akBelian.AkBelianObjek)
-                {
-                    AbBukuVot abBukuVot = new AbBukuVot()
-                    {
-                        Tahun = akBelian.Tahun,
-                        JKWId = item.JKWPTJBahagian?.JKWId ?? akBelian.JKWId,
-                        JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
-                        JBahagianId = item.JKWPTJBahagian.JBahagianId,
-                        Tarikh = akBelian.Tarikh,
-                        DDaftarAwamId = akBelian.DDaftarAwamId,
-                        VotId = item.AkCartaId,
-                        NoRujukan = akBelian.NoRujukan,
-                        Tanggungan = item.Amaun
-                    };
-
-                    abBukuVotList.Add(abBukuVot);
-                }
-            }
-
-            _context.AbBukuVot.AddRange(abBukuVotList);
-
-        }
         public void PostingToAbBukuVot(AkBelian akBelian)
         {
             List<AbBukuVot> abBukuVotList = new List<AbBukuVot>();
@@ -552,14 +461,74 @@ namespace YIT._DataAccess.Repositories.Implementations
                 _context.RemoveRange(abBukuVotList);
             }
 
-            // update akBelian posting fields
-            BatalLulus(akBelian.Id, "Pembatalan Posting", userId);
-
         }
 
         public List<AkBelian> GetAllByStatus(EnStatusBorang enStatusBorang)
         {
             return _context.AkBelian.Where(pp => pp.EnStatusBorang == enStatusBorang).ToList();
+        }
+
+        public void BatalPosting(int id, string? tindakan, string? userId)
+        {
+            var data = _context.AkBelian.FirstOrDefault(pp => pp.Id == id);
+
+            if (data != null)
+            {
+                data.EnStatusBorang = EnStatusBorang.Kemaskini;
+                data.Tindakan = tindakan;
+
+                data.UserIdKemaskini = userId ?? "";
+                data.TarKemaskini = DateTime.Now;
+
+                _context.Update(data);
+
+                RemovePostingFromAbBukuVot(data, userId ?? "");
+
+            }
+        }
+
+        public void HantarSemula(int id, string? tindakan, string? userId)
+        {
+            var data = _context.AkBelian.FirstOrDefault(pp => pp.Id == id);
+
+            if (data != null)
+            {
+                data.EnStatusBorang = EnStatusBorang.None;
+                data.DPengesahId = null;
+                data.TarikhSah = null;
+
+                data.DPenyemakId = null;
+                data.TarikhSemak = null;
+
+                data.DPelulusId = null;
+                data.TarikhLulus = null;
+
+                data.DPekerjaPostingId = null;
+                data.TarikhPosting = null;
+
+                data.Tindakan = tindakan;
+                data.UserIdKemaskini = userId ?? "";
+                data.TarKemaskini = DateTime.Now;
+
+                data.FlPosting = 0;
+                data.TarikhPosting = null;
+
+                _context.Update(data);
+
+            }
+        }
+
+        public void BatalLulus(int id, string? tindakan, string? userId)
+        {
+            var data = _context.AkBelian.FirstOrDefault(pp => pp.Id == id);
+
+            if (data != null)
+            {
+                HantarSemula(id, tindakan, userId);
+
+                RemovePostingFromAbBukuVot(data, userId ?? "");
+
+            }
         }
     }
 }

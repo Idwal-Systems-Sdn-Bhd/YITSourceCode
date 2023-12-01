@@ -31,5 +31,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
         List<AkInden> GetAllByStatus(EnStatusBorang enStatusBorang);
         public void BatalLulus(int id, string? tindakan, string? userId);
         public void BatalPos(int id, string? tindakan, string? userId);
+        public AkInden GetBalanceAdjustmentFromAkPelarasanInden(AkInden akInden);
     }
 }

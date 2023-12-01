@@ -531,5 +531,104 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             }
         }
+
+        public AkPO GetBalanceAdjustmentFromAkPelarasanPO(AkPO akPO)
+        {
+
+            var akPelarasanPOObjekAkPOObjekGrouped = new List<AkPOObjek>();
+            var akPelarasanPOPerihalAkPOPerihalGrouped = new List<AkPOPerihal>();
+
+            var akPelarasanPO = _context.AkPelarasanPO
+                .Include(t => t.AkPelarasanPOObjek)!
+                    .ThenInclude(to => to.AkCarta)
+                .Include(t => t.AkPelarasanPOObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkPelarasanPOObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JPTJ)
+                .Include(t => t.AkPelarasanPOObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
+                .Include(t => t.AkPelarasanPOPerihal)
+                .FirstOrDefault(pp => pp.AkPOId == akPO.Id);
+
+            if (akPelarasanPO != null)
+            {
+                akPO.Jumlah += akPelarasanPO.Jumlah;
+
+                if (akPelarasanPO.AkPelarasanPOObjek != null && akPelarasanPO.AkPelarasanPOObjek.Count > 0 && akPO.AkPOObjek != null && akPO.AkPOObjek.Count > 0)
+                {
+
+                    foreach (var objek in akPO.AkPOObjek)
+                    {
+                        akPelarasanPOObjekAkPOObjekGrouped.Add(objek);
+                    }
+
+                    foreach (var objek in akPelarasanPO.AkPelarasanPOObjek)
+                    {
+                        var akPelarasanPOObjek = new AkPOObjek
+                        {
+                            AkPOId = akPO.Id,
+                            AkPO = akPO,
+                            JKWPTJBahagianId = objek.JKWPTJBahagianId,
+                            JKWPTJBahagian = objek.JKWPTJBahagian,
+                            AkCartaId = objek.AkCartaId,
+                            AkCarta = objek.AkCarta,
+                            Amaun = objek.Amaun
+                        };
+                        akPelarasanPOObjekAkPOObjekGrouped.Add(akPelarasanPOObjek);
+                    }
+
+                    akPelarasanPOObjekAkPOObjekGrouped = akPelarasanPOObjekAkPOObjekGrouped.GroupBy(b => new {b.AkCartaId, b.JKWPTJBahagianId}).Select(l => new AkPOObjek
+                    {
+                        Id =l.First().Id,
+                        AkPOId = l.First().AkPOId,
+                        AkPO = l.First().AkPO,
+                        JKWPTJBahagianId = l.First().JKWPTJBahagianId,
+                        JKWPTJBahagian = l.First().JKWPTJBahagian,
+                        AkCartaId = l.First().AkCartaId,
+                        AkCarta = l.First().AkCarta,
+                        Amaun = l.Sum(l => l.Amaun)
+                    }).ToList();
+                    
+                }
+
+                if (akPelarasanPO.AkPelarasanPOPerihal != null && akPelarasanPO.AkPelarasanPOPerihal.Count > 0 && akPO.AkPOPerihal != null && akPO.AkPOPerihal.Count > 0)
+                {
+
+                    decimal bil = 1;
+                    foreach (var perihal in akPO.AkPOPerihal)
+                    {
+                        akPelarasanPOPerihalAkPOPerihalGrouped.Add(perihal);
+                        bil++;
+                    }
+
+                    foreach (var perihal in akPelarasanPO.AkPelarasanPOPerihal)
+                    {
+                        var akPelarasanPOPerihal = new AkPOPerihal
+                        {
+                            AkPOId = akPO.Id,
+                            AkPO = akPO,
+                            Bil = bil,
+                            Perihal = perihal.Perihal,
+                            Kuantiti = perihal.Kuantiti,
+                            Unit = perihal.Unit,
+                            Harga = perihal.Harga,
+                            Amaun = perihal.Amaun
+                        };
+                        bil++;
+                        akPelarasanPOPerihalAkPOPerihalGrouped.Add(akPelarasanPOPerihal);
+                    }
+
+                }
+
+                akPO.AkPOObjek = akPelarasanPOObjekAkPOObjekGrouped;
+                akPO.AkPOPerihal = akPelarasanPOPerihalAkPOPerihalGrouped;
+
+            }
+
+            return akPO;
+        }
     }
 }

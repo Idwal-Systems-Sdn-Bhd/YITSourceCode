@@ -182,7 +182,6 @@ namespace YIT._DataAccess.Repositories.Implementations
                     if (item.JBahagian != null) konfigKelulusanBahagianList.Add(item.JBahagian);
                 }
 
-                var akPelarasanPOGroup = new List<AkPelarasanPOObjek>().GroupBy(objek => objek.JKWPTJBahagianId);
                 if (akPelarasanPOList != null && akPelarasanPOList.Count > 0)
                 {
                     foreach (var akPelarasanPO in akPelarasanPOList)

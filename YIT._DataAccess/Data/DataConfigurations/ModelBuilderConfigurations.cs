@@ -24,10 +24,12 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<JPTJ>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<JCaraBayar>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<JCawangan>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<JCukai>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             //
 
             // Daftar
-            modelBuilder.Entity<DPekerja>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<DPekerja>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0)
+                .HasQueryFilter(m => EF.Property<bool>(m,"IsAdmin") == false);
             modelBuilder.Entity<DKonfigKelulusan>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<DDaftarAwam>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             //

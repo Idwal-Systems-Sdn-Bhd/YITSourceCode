@@ -1,7 +1,7 @@
-﻿@model IEnumerable<AkPenilaianPerolehan>
+﻿@model IEnumerable<AkBelian>
 
 @{
-    ViewData["Title"] = "Penilaian Perolehan";
+    ViewData["Title"] = "Invois Pembekal";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <partial name="_JSIndex" />
@@ -24,37 +24,28 @@
                         <tr>
                             <th width="5%">Bil</th>
                             <th class="kod" width="10%">
-                                No Rujukan
+                                No Invois
                             </th>
                             <th class="tarikh">
                                 Tarikh
                             </th>
-                            <th class="jumlah">
-                                Anggaran Jumlah RM
+                            <th class="tarikhTerima">
+                                Tarikh Terima
                             </th>
-                            <th class="tindakan">
-                                Tindakan
+                            <th class="jumlah">
+                                Jumlah RM
+                            </th>
+                            <th class="noLoIn">
+                                No LO / IN
+                            </th>
+                            <th class="pembekal">
+                                Pembekal
                             </th>
                             <th class="status">
                                 Status
                             </th>
                             <th>
-                                Pengesah
-                            </th>
-                            <th>
-                                Penyemak
-                            </th>
-                            <th>
-                                Pelulus
-                            </th>
-                            <th>
-                                No Pesanan
-                            </th>
-                            <th>
-                                No Baucer
-                            </th>
-                            <th>
-                                Kaedah
+                                Tahun
                             </th>
                             <th>
                                 Batal
@@ -75,31 +66,22 @@
                                     @item.Tarikh.ToString("dd/MM/yyyy")
                                 </td>
                                 <td class="text-uppercase text-end">
+                                    @item.TarikhTerimaBahagian.ToString("dd/MM/yyyy")
+                                </td>
+                                <td class="text-uppercase text-end">
                                     @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")
                                 </td>
+                                <td>
+                                    @item.AkPO?.NoRujukan @item.AkInden?.NoRujukan  @item.AkNotaMinta?.NoRujukan
+                                </td>
                                 <td class="text-uppercase">
-                                    @item.Tindakan
+                                    @item.DDaftarAwam?.Nama
                                 </td>
                                 <td class="text-uppercase">
                                     @item.EnStatusBorang.GetDisplayName()
                                 </td>
                                 <td class="text-uppercase">
-                                    @item.DPengesah?.DPekerja?.NoGaji
-                                </td>
-                                <td class="text-uppercase">
-                                    @item.DPenyemak?.DPekerja?.NoGaji
-                                </td>
-                                <td class="text-uppercase">
-                                    @item.DPelulus?.DPekerja?.NoGaji
-                                </td>
-                                <td class="text-uppercase">
-                                    NoPesanan
-                                </td>
-                                <td class="text-uppercase">
-                                    NoBaucer
-                                </td>
-                                <td class="text-uppercase">
-                                    @item.EnKaedahPerolehan.GetDisplayName()
+                                    @item.Tahun
                                 </td>
                                 @if (item.FlBatal == 1)
                                 {
@@ -127,13 +109,6 @@
                                                    class="btn text-danger btn-sm bg-white" type="button"
                                                    data-toggle="tooltip" data-placement="top"
                                                    title="Hapus"><i class="fas fa-trash"></i></a>
-                                            }
-                                            else if (item.EnStatusBorang == EnStatusBorang.Lulus)
-                                            {
-                                                <a asp-action="BatalLulus" asp-route-id="@item.Id"
-                                                   class="btn text-danger btn-sm bg-white" type="button"
-                                                   data-toggle="tooltip" data-placement="top"
-                                                   title="Batal Kelulusan"><i class="fas fa-history"></i></a>
                                             }
                                         }
                                         else

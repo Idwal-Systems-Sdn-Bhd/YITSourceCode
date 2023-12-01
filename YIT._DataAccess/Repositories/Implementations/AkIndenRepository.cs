@@ -528,5 +528,104 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             }
         }
+
+        public AkInden GetBalanceAdjustmentFromAkPelarasanInden(AkInden akInden)
+        {
+
+            var akPelarasanIndenObjekAkIndenObjekGrouped = new List<AkIndenObjek>();
+            var akPelarasanIndenPerihalAkIndenPerihalGrouped = new List<AkIndenPerihal>();
+
+            var akPelarasanInden = _context.AkPelarasanInden
+                .Include(t => t.AkPelarasanIndenObjek)!
+                    .ThenInclude(to => to.AkCarta)
+                .Include(t => t.AkPelarasanIndenObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkPelarasanIndenObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JPTJ)
+                .Include(t => t.AkPelarasanIndenObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
+                .Include(t => t.AkPelarasanIndenPerihal)
+                .FirstOrDefault(pp => pp.AkIndenId == akInden.Id);
+
+            if (akPelarasanInden != null)
+            {
+                akInden.Jumlah += akPelarasanInden.Jumlah;
+
+                if (akPelarasanInden.AkPelarasanIndenObjek != null && akPelarasanInden.AkPelarasanIndenObjek.Count > 0 && akInden.AkIndenObjek != null && akInden.AkIndenObjek.Count > 0)
+                {
+
+                    foreach (var objek in akInden.AkIndenObjek)
+                    {
+                        akPelarasanIndenObjekAkIndenObjekGrouped.Add(objek);
+                    }
+
+                    foreach (var objek in akPelarasanInden.AkPelarasanIndenObjek)
+                    {
+                        var akPelarasanIndenObjek = new AkIndenObjek
+                        {
+                            AkIndenId = akInden.Id,
+                            AkInden = akInden,
+                            JKWPTJBahagianId = objek.JKWPTJBahagianId,
+                            JKWPTJBahagian = objek.JKWPTJBahagian,
+                            AkCartaId = objek.AkCartaId,
+                            AkCarta = objek.AkCarta,
+                            Amaun = objek.Amaun
+                        };
+                        akPelarasanIndenObjekAkIndenObjekGrouped.Add(akPelarasanIndenObjek);
+                    }
+
+                    akPelarasanIndenObjekAkIndenObjekGrouped = akPelarasanIndenObjekAkIndenObjekGrouped.GroupBy(b => new { b.AkCartaId, b.JKWPTJBahagianId }).Select(l => new AkIndenObjek
+                    {
+                        Id = l.First().Id,
+                        AkIndenId = l.First().AkIndenId,
+                        AkInden = l.First().AkInden,
+                        JKWPTJBahagianId = l.First().JKWPTJBahagianId,
+                        JKWPTJBahagian = l.First().JKWPTJBahagian,
+                        AkCartaId = l.First().AkCartaId,
+                        AkCarta = l.First().AkCarta,
+                        Amaun = l.Sum(l => l.Amaun)
+                    }).ToList();
+
+                }
+
+                if (akPelarasanInden.AkPelarasanIndenPerihal != null && akPelarasanInden.AkPelarasanIndenPerihal.Count > 0 && akInden.AkIndenPerihal != null && akInden.AkIndenPerihal.Count > 0)
+                {
+
+                    decimal bil = 1;
+                    foreach (var perihal in akInden.AkIndenPerihal)
+                    {
+                        akPelarasanIndenPerihalAkIndenPerihalGrouped.Add(perihal);
+                        bil++;
+                    }
+
+                    foreach (var perihal in akPelarasanInden.AkPelarasanIndenPerihal)
+                    {
+                        var akPelarasanIndenPerihal = new AkIndenPerihal
+                        {
+                            AkIndenId = akInden.Id,
+                            AkInden = akInden,
+                            Bil = bil,
+                            Perihal = perihal.Perihal,
+                            Kuantiti = perihal.Kuantiti,
+                            Unit = perihal.Unit,
+                            Harga = perihal.Harga,
+                            Amaun = perihal.Amaun
+                        };
+                        bil++;
+                        akPelarasanIndenPerihalAkIndenPerihalGrouped.Add(akPelarasanIndenPerihal);
+                    }
+
+                }
+
+                akInden.AkIndenObjek = akPelarasanIndenObjekAkIndenObjekGrouped;
+                akInden.AkIndenPerihal = akPelarasanIndenPerihalAkIndenPerihalGrouped;
+
+            }
+
+            return akInden;
+        }
     }
 }
