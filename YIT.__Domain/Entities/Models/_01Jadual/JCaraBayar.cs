@@ -9,5 +9,7 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public string? Kod { get; set; }
         public string? Perihal { get; set; }
         public ICollection<AkTerimaCaraBayar>? AkTerimaCaraBayar { get; set; }
+        public ICollection<AkPVPenerima>? AkPVPenerima { get; set; }
+
     }
 }

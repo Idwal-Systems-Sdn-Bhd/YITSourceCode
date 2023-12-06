@@ -52,8 +52,10 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         public string? Ringkasan { get; set; }
+        public string? KodPbklLama { get; set; }
         public ICollection<AkBelianObjek>? AkBelianObjek { get; set; }
         public ICollection<AkBelianPerihal>? AkBelianPerihal { get; set; }
+        public ICollection<AkPVInvois>? AkPVInvois { get; set; }
 
     }
 }

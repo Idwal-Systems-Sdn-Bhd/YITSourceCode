@@ -22,5 +22,6 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public ICollection<AbWaran> AbWaran { get; set; } = new List<AbWaran>();
         public ICollection<AkPO> AkPO { get; set; } = new List<AkPO>();
         public ICollection<AkInden> AkInden { get; set; } = new List<AkInden>();
+        public ICollection<AkNotaDebitKreditDiterima> AkNotaDebitKreditDiterima { get; set; } = new List<AkNotaDebitKreditDiterima>();
     }
 }

@@ -1,24 +1,18 @@
-﻿using YIT.__Domain.Entities._Enums;
-using YIT.__Domain.Entities.Bases;
-using YIT.__Domain.Entities.Models._01Jadual;
-using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YIT.__Domain.Entities.Models._03Akaun;
+using YIT.__Domain.Entities._Enums;
+using YIT.__Domain.Entities.Models._01Jadual;
+using YIT.__Domain.Entities.Bases;
 
 namespace YIT.__Domain.Entities.Models._02Daftar
 {
-    public class DDaftarAwam : GenericFields
+    public class DPenerimaZakat : GenericFields
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "Kod Diperlukan")]
         [DisplayName("Kod")]
         public string? Kod { get; set; }
-        
+
         [Required(ErrorMessage = "Nama Diperlukan")]
         [DisplayName("Nama")]
         public string? Nama { get; set; }
@@ -59,19 +53,10 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("Kategori Ahli")]
         public EnKategoriAhli EnKategoriAhli { get; set; }
         public string? Faks { get; set; }
-        [DisplayName("Bekalan")]
-        public bool IsBekalan { get; set; }
-        [DisplayName("Perkhidmatan")]
-        public bool IsPerkhidmatan { get; set; }
-        [DisplayName("Kerja")]
-        public bool IsKerja { get; set; }
         [DisplayName("Jangka Masa")]
         public DateTime? JangkaMasaDari { get; set; }
         public DateTime? JangkaMasaHingga { get; set; }
         [DisplayName("Kod M2E")]
         public string? KodM2E { get; set; }
-        public string? KodLama { get; set; } // dummy field; for migration purpos;e
-        public virtual ICollection<AkInden>? AkInden { get; set; }
-        public virtual ICollection<AkPO>? AkPO { get; set; }
     }
 }

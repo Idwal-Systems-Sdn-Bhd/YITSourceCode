@@ -5,6 +5,7 @@ using YIT.__Domain.Entities.Models._00Sistem;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
+using YIT.__Domain.Entities.Models._04Sumber;
 using YIT._DataAccess.Data.DataConfigurations;
 
 namespace YIT._DataAccess.Data
@@ -19,11 +20,11 @@ namespace YIT._DataAccess.Data
         public DbSet<ExceptionLogger> ExceptionLogger { get; set; }
         //
 
-        // 00Sistem (Si)
+        // 00Sistem 
         public DbSet<SiAppInfo> SiAppInfo { get; set; }
         //
 
-        // 01Jadual (J)
+        // 01Jadual 
         public DbSet<JNegeri> JNegeri { get; set;}
         public DbSet<JAgama> JAgama { get; set;}
         public DbSet<JBangsa> JBangsa { get; set;}
@@ -35,15 +36,17 @@ namespace YIT._DataAccess.Data
         public DbSet<JKWPTJBahagian> JKWPTJBahagian { get; set; }
         public DbSet<JCawangan> JCawangan { get; set; }
         public DbSet<JCukai> JCukai { get; set; }
+        public DbSet<JElaunPotongan> JElaunPotongan { get; set; }
         //
 
-        // 02Daftar (D)
+        // 02Daftar
         public DbSet<DPekerja> DPekerja { get; set;}
+        public DbSet<DPekerjaElaunPotongan> DPekerjaElaunPotongan { get; set; }
         public DbSet<DDaftarAwam> DDaftarAwam { get; set; }
         public DbSet<DKonfigKelulusan> DKonfigKelulusan { get; set; }
         //
 
-        // 03Kewangan (AK)
+        // 03Kewangan 
         public DbSet<AkCarta> AkCarta { get;set; }  
         public DbSet<AkBank> AkBank { get; set; }
         public DbSet<AkAkaun> AkAkaun { get; set; }
@@ -53,13 +56,13 @@ namespace YIT._DataAccess.Data
 
         //
 
-        // 04Penerimaan (TR)
+        // 04Penerimaan 
         public DbSet<AkTerima> AkTerima { get; set; }
         public DbSet<AkTerimaCaraBayar> AkTerimaCaraBayar { get; set; }
         public DbSet<AkTerimaObjek> AkTerimaObjek { get; set; }
         //
 
-        // 05Perolehan (PR)
+        // 05Perolehan 
         public DbSet<AkPenilaianPerolehan> AkPenilaianPerolehan { get; set; }
         public DbSet<AkPenilaianPerolehanObjek> AkPenilaianPerolehanObjek { get; set; }
         public DbSet<AkPenilaianPerolehanPerihal> AkPenilaianPerolehanPerihal { get; set; }
@@ -68,7 +71,7 @@ namespace YIT._DataAccess.Data
         public DbSet<AkNotaMintaPerihal> AkNotaMintaPerihal { get; set; }
         //
 
-        // 06Tanggungan (TG)
+        // 06Tanggungan 
         public DbSet<AkPO> AkPO { get; set; }
         public DbSet<AkPOObjek> AkPOObjek { get; set; }
         public DbSet<AkPOPerihal> AkPOPerihal { get; set; }
@@ -80,17 +83,37 @@ namespace YIT._DataAccess.Data
         public DbSet<AkBelianPerihal> AkBelianPerihal { get; set; }
         //
 
-        // 07Pembayaran (PV)
-
+        // 07Pembayaran 
+        public DbSet<AkPV> AkPV { get; set; }
+        public DbSet<AkPVObjek> AkPVObjek { get; set; }
+        public DbSet<AkPVInvois> AkPVInvois { get; set; }
+        public DbSet<AkPVPenerima> AkPVPenerima { get; set; }
         //
 
-        // 08Pelarasan (PT)
+        // 08EFT
+        public DbSet<AkEFT> AkEFT { get; set; }
+        public DbSet<AkEFTPenerima> AkEFTPenerima { get; set; }
+        //
+
+        // 09Panjar
+        public DbSet<AkPanjarLejar> AkPanjarLejar { get; set; }
+        public DbSet<AkRekup> AkRekup { get; set; }
+        public DbSet<AkCV> AkCV { get; set; }
+        public DbSet<AkCVObjek> AkCVObjek { get; set; }
+        //
+        // 10Pelarasan 
         public DbSet<AkPelarasanPO> AkPelarasanPO { get; set; }
         public DbSet<AkPelarasanPOObjek> AkPelarasanPOObjek { get; set; }
         public DbSet<AkPelarasanPOPerihal> AkPelarasanPOPerihal { get; set; }
         public DbSet<AkPelarasanInden> AkPelarasanInden { get; set; }
         public DbSet<AkPelarasanIndenObjek> AkPelarasanIndenObjek { get; set; }
         public DbSet<AkPelarasanIndenPerihal> AkPelarasanIndenPerihal { get; set; }
+        //
+
+        // 11Sumber
+        public DbSet<SuGajiBulanan> SuGajiBulanan { get; set; }
+        public DbSet<SuGajiBulananPekerja> SuGajiBulananPekerja { get; set; }
+        public DbSet<SuGajiElaunPotongan> SuGajiElaunPotongan { get; set; }
         //
 
         protected override void OnModelCreating(ModelBuilder builder)

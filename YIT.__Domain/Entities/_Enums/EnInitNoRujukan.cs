@@ -40,7 +40,17 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "JU")]
         JU = 15, // pelarasan baucer jurnal
         [Display(Name = "WR")]
-        WR = 15, // waran
+        WR = 16, // waran
+        [Display(Name = "CV")]
+        CV = 17, // baucer runcit
+        [Display(Name = "RK")]
+        RK = 18, // rekup
+        [Display(Name = "GJ")]
+        GJ = 19, // janaan gaji
+        [Display(Name = "EFT")]
+        EF = 20, // janaan EFT
+        [Display(Name = "PV")]
+        PV = 21, // baucer pembayaran
 
     }
 }
