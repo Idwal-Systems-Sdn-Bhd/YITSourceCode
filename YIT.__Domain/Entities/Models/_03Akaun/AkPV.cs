@@ -40,6 +40,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int? SuGajiBulananId { get; set; }
         public SuGajiBulanan? SuGajiBulanan { get; set; }
         public DateTime? TarikhJanaanProfil { get; set; }
+        public string? NamaPenerima { get; set; }
+        public bool IsGanda { get; set; }
         public ICollection<AkPVObjek>? AkPVObjek { get; set; }
         public ICollection<AkPVInvois>? AkPVInvois { get; set; }
         public ICollection<AkPVPenerima>? AkPVPenerima { get; set; }
