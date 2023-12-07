@@ -108,6 +108,9 @@ namespace YIT._DataAccess.Data
         public DbSet<AkPelarasanInden> AkPelarasanInden { get; set; }
         public DbSet<AkPelarasanIndenObjek> AkPelarasanIndenObjek { get; set; }
         public DbSet<AkPelarasanIndenPerihal> AkPelarasanIndenPerihal { get; set; }
+        public DbSet<AkNotaDebitKreditDiterima> AkNotaDebitKreditDiterima { get; set; }
+        public DbSet<AkNotaDebitKreditDiterimaObjek> AkNotaDebitKreditDiterimaObjek { get; set; }
+        public DbSet<AkNotaDebitKreditDiterimaPerihal> AkNotaDebitKreditDiterimaPerihal { get; set; }
         //
 
         // 11Sumber

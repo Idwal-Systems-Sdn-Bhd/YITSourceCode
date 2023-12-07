@@ -10,7 +10,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int Id { get; set; }
         public int AkPVId { get; set; }
         public AkPV? AkPV { get; set; }
-        public int AkJanaanProfilId { get; set; }
+        public int? AkJanaanProfilId { get; set; }
         public AkJanaanProfil? AkJanaanProfil { get; set; }
         public EnKategoriDaftarAwam EnKategoriDaftarAwam { get; set; }
         public int? DDaftarAwamId { get; set; }
