@@ -26,6 +26,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Jumlah { get; set; }
         public bool IsInvois { get; set; }
+        public bool IsAkru { get; set; }
+        public bool IsTanggungan { get; set; }
         [DisplayName("Akaun Bank")]
         public int AkBankId { get; set; }
         public AkBank? AkBank { get; set; }

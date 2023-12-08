@@ -43,7 +43,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam { get; set; }
         [DisplayName("Akaun Pemiutang")]
-        public int AkAkaunAkruId { get; set; }
+        public int? AkAkaunAkruId { get; set; }
         public AkCarta? AkAkaunAkru { get; set; }
         [DisplayName("Jumlah RM")]
         [Column(TypeName = "decimal(18, 2)")]
