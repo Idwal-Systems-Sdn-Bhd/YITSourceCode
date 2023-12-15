@@ -19,6 +19,9 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? NoRujukan { get; set; }
         [DisplayName("Tarikh")]
         public DateTime Tarikh { get; set; }
+        // nota :
+        // 0 - debit
+        // 1 - kredit
         public int FlDebitKredit { get; set; }
         public int AkBelianId { get; set; }
         public AkBelian? AkBelian { get; set; }

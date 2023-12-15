@@ -75,7 +75,9 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkPOObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JBahagian)
-                .ToList();
+                        .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
+                        .ToList();
+
 
             // searchstring filters
             if (searchString != null)
@@ -86,13 +88,6 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ToList();
             }
             // searchString filters end
-
-            // date filters
-            if (dateFrom != null && dateTo != null)
-            {
-                akPOList = akPOList.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99)).ToList();
-            }
-            // date filters end
 
             // status borang filters
             switch (enStatusBorang)
@@ -141,14 +136,14 @@ namespace YIT._DataAccess.Repositories.Implementations
             // get all data with details
             List<AkPO> akPOList = GetResults(searchString, dateFrom, dateTo, orderBy, enStatusBorang);
 
-            var filterings = FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModulKelulusan, akPOList);
+            var filterings = FilterByComparingJBahagianAkPOObjekWithJBahagianDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModulKelulusan, akPOList);
 
             var results = FilterByComparingJumlahAkPOWithMinAmountMaxAmountDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModulKelulusan, filterings);
 
             return results;
         }
 
-        public List<AkPO> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AkPO> akPOList)
+        public List<AkPO> FilterByComparingJBahagianAkPOObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AkPO> akPOList)
         {
             // initialize result sets
             List<AkPO> results = new List<AkPO>();

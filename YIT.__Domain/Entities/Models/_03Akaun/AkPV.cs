@@ -42,8 +42,11 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int? SuGajiBulananId { get; set; }
         public SuGajiBulanan? SuGajiBulanan { get; set; }
         public DateTime? TarikhJanaanProfil { get; set; }
+        [DisplayName("Nama Penerima")]
         public string? NamaPenerima { get; set; }
         public bool IsGanda { get; set; }
+        [DisplayName("Jenis Bayaran")]
+        public EnJenisBayaran EnJenisBayaran { get; set; }
         public ICollection<AkPVObjek>? AkPVObjek { get; set; }
         public ICollection<AkPVInvois>? AkPVInvois { get; set; }
         public ICollection<AkPVPenerima>? AkPVPenerima { get; set; }

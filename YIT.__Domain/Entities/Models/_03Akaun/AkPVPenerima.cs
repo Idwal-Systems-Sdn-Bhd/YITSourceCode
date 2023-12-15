@@ -45,5 +45,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public bool IsCekDitunaikan { get; set; }
         public DateTime? TarikhCekDitunaikan { get; set; }
         public EnStatusProses EnStatusEFT { get; set; }
+        public int? Bil { get; set; }
     }
 }

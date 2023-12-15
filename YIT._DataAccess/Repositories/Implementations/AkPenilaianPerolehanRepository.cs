@@ -80,7 +80,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkPenilaianPerolehanObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JBahagian)
-                .ToList();
+                        .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99)).ToList();
 
             // searchstring filters
             if (searchString != null)
@@ -91,13 +91,6 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ToList();
             }
             // searchString filters end
-
-            // date filters
-            if (dateFrom != null && dateTo != null)
-            {
-                akPPList = akPPList.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99)).ToList();
-            }
-            // date filters end
 
             // status borang filters
             switch (enStatusBorang)

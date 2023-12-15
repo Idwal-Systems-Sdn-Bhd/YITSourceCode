@@ -1,4 +1,6 @@
-﻿using YIT.__Domain.Entities.Bases;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using YIT.__Domain.Entities.Bases;
 using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT.__Domain.Entities.Models._01Jadual
@@ -8,6 +10,10 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public int Id { get; set; }
         public string? Kod { get; set; }
         public string? Perihal { get; set; }
+        public bool IsLimit { get; set; }
+        [Display(Name = "Maksimum Amaun RM")]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal MaksAmaun { get; set; }
         public ICollection<AkTerimaCaraBayar>? AkTerimaCaraBayar { get; set; }
         public ICollection<AkPVPenerima>? AkPVPenerima { get; set; }
 

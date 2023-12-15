@@ -75,6 +75,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkIndenObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JBahagian)
+                        .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
                 .ToList();
 
             // searchstring filters
@@ -86,13 +87,6 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ToList();
             }
             // searchString filters end
-
-            // date filters
-            if (dateFrom != null && dateTo != null)
-            {
-                akIndenList = akIndenList.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99)).ToList();
-            }
-            // date filters end
 
             // status borang filters
             switch (enStatusBorang)

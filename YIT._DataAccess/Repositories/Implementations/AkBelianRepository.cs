@@ -8,7 +8,7 @@ using YIT._DataAccess.Repositories.Interfaces;
 
 namespace YIT._DataAccess.Repositories.Implementations
 {
-    internal class AkBelianRepository : _GenericRepository<AkBelian>, IAkBelianRepository
+    public class AkBelianRepository : _GenericRepository<AkBelian>, IAkBelianRepository
     {
         private readonly ApplicationDbContext _context;
 
@@ -82,6 +82,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkBelianObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JBahagian)
+                        .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
                 .ToList();
 
             // searchstring filters
@@ -93,13 +94,6 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ToList();
             }
             // searchString filters end
-
-            // date filters
-            if (dateFrom != null && dateTo != null)
-            {
-                akBelianList = akBelianList.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99)).ToList();
-            }
-            // date filters end
 
             // status borang filters
             switch (enStatusBorang)
@@ -532,6 +526,80 @@ namespace YIT._DataAccess.Repositories.Implementations
                 RemovePostingFromAbBukuVot(data, userId ?? "");
 
             }
+        }
+
+        public AkBelian GetBalanceAdjustmentFromAkDebitKreditDiterima(AkBelian akBelian)
+        {
+            var akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped = new List<AkBelianObjek>();
+
+            var akNotaDebitKreditDiterima = _context.AkNotaDebitKreditDiterima
+                .Include(t => t.AkNotaDebitKreditDiterimaObjek)!
+                    .ThenInclude(to => to.AkCarta)
+                .Include(t => t.AkNotaDebitKreditDiterimaObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkNotaDebitKreditDiterimaObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JPTJ)
+                .Include(t => t.AkNotaDebitKreditDiterimaObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
+                .FirstOrDefault(pp => pp.AkBelianId == akBelian.Id);
+
+            if (akNotaDebitKreditDiterima != null)
+            {
+                if (akNotaDebitKreditDiterima.FlDebitKredit == 0)
+                {
+                    akBelian.Jumlah += akNotaDebitKreditDiterima.Jumlah;
+                }
+                else
+                {
+                    akBelian.Jumlah -= akNotaDebitKreditDiterima.Jumlah;
+                }
+                
+
+                if (akNotaDebitKreditDiterima.AkNotaDebitKreditDiterimaObjek != null && akNotaDebitKreditDiterima.AkNotaDebitKreditDiterimaObjek.Count > 0 && akBelian.AkBelianObjek != null && akBelian.AkBelianObjek.Count > 0)
+                {
+
+                    foreach (var objek in akBelian.AkBelianObjek)
+                    {
+                        akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped.Add(objek);
+                    }
+
+                    foreach (var objek in akNotaDebitKreditDiterima.AkNotaDebitKreditDiterimaObjek)
+                    {
+                        var akNotaDebitKreditDiterimaObjek = new AkBelianObjek
+                        {
+                            AkBelianId = akBelian.Id,
+                            AkBelian = akBelian,
+                            JKWPTJBahagianId = objek.JKWPTJBahagianId,
+                            JKWPTJBahagian = objek.JKWPTJBahagian,
+                            AkCartaId = objek.AkCartaId,
+                            AkCarta = objek.AkCarta,
+                            Amaun = objek.Amaun
+                        };
+                        akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped.Add(akNotaDebitKreditDiterimaObjek);
+                    }
+
+                    akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped = akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped.GroupBy(b => new {b.AkCartaId, b.JKWPTJBahagianId}).Select(l => new AkBelianObjek
+                    {
+                        Id =l.First().Id,
+                        AkBelianId = l.First().AkBelianId,
+                        AkBelian = l.First().AkBelian,
+                        JKWPTJBahagianId = l.First().JKWPTJBahagianId,
+                        JKWPTJBahagian = l.First().JKWPTJBahagian,
+                        AkCartaId = l.First().AkCartaId,
+                        AkCarta = l.First().AkCarta,
+                        Amaun = l.Sum(l => l.Amaun)
+                    }).ToList();
+                    
+                }
+
+                akBelian.AkBelianObjek = akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped;
+
+            }
+
+            return akBelian;
         }
     }
 }
