@@ -42,22 +42,28 @@
                 <div class="card-body">
                     <label asp-for="EnJenisBayaranBelian" class="control-label"></label>
                     <div class="row">
-                        <div class="col-4">
+                        <div class="col-3">
                             <div class="custom-control custom-radio">
                                 <input asp-for="EnJenisBayaranBelian" type="radio" name="EnJenisBayaranBelian" class="custom-control-input" value="@EnJenisBayaranBelian.PO">
                                 <label class="custom-control-label" for="EnJenisBayaranBelian1">@EnJenisBayaranBelian.PO.GetDisplayName()</label>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
                             <div class="custom-control custom-radio">
                                 <input asp-for="EnJenisBayaranBelian" type="radio" name="EnJenisBayaranBelian" class="custom-control-input" value="@EnJenisBayaranBelian.Inden">
                                 <label class="custom-control-label" for="EnJenisBayaranBelian2">@EnJenisBayaranBelian.Inden.GetDisplayName()</label>
                             </div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-3">
+                            <div class="custom-control custom-radio">
+                                <input asp-for="EnJenisBayaranBelian" type="radio" name="EnJenisBayaranBelian" class="custom-control-input" value="@EnJenisBayaranBelian.NotaMinta">
+                                <label class="custom-control-label" for="EnJenisBayaranBelian3">@EnJenisBayaranBelian.NotaMinta.GetDisplayName()</label>
+                            </div>
+                        </div>
+                        <div class="col-3">
                             <div class="custom-control custom-radio">
                                 <input asp-for="EnJenisBayaranBelian" type="radio" name="EnJenisBayaranBelian" class="custom-control-input" value="@EnJenisBayaranBelian.LainLain">
-                                <label class="custom-control-label" for="EnJenisBayaranBelian3">@EnJenisBayaranBelian.LainLain.GetDisplayName()</label>
+                                <label class="custom-control-label" for="EnJenisBayaranBelian4">@EnJenisBayaranBelian.LainLain.GetDisplayName()</label>
                             </div>
                         </div>
                     </div>
@@ -139,7 +145,7 @@
                 <div class="col-md-8">
                     <div class="form-group">
                         <label asp-for="AkAkaunAkruId" class="control-label"></label>
-                        <select asp-for="AkAkaunAkruId" class="form-control form-control-sm text-uppercase select2" required>
+                        <select asp-for="AkAkaunAkruId" class="form-control form-control-sm text-uppercase select2">
                             <option value="" disabled selected>-- Pilih Kod Akaun --</option>
                             @foreach (var s in ViewBag.AkCarta)
                             {

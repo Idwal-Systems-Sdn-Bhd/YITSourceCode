@@ -15,12 +15,16 @@
                 $("#divAkIndenId").removeAttr('hidden');
                 $("#divAkNotaMintaId").prop('hidden', true);
                 break;
-            case "@EnJenisBayaranBelian.LainLain":
+            case "@EnJenisBayaranBelian.NotaMinta":
                 $("#divAkPOId").prop('hidden',true);
                 $("#divAkIndenId").prop('hidden', true);
                 $("#divAkNotaMintaId").removeAttr('hidden');
                 break;
-
+            default:
+                $("#divAkPOId").prop('hidden', true);
+                $("#divAkIndenId").prop('hidden', true);
+                $("#divAkNotaMintaId").prop('hidden', true);
+                break;
         }
     });
     // on click end
@@ -195,7 +199,7 @@
                 $("table tbody#tbodyObjek").empty();
                 $("table tbody#tbodyPerihal").empty();
                 $("#objekJumlah").val("0.00");
-                $("#objekJumlahPerihal").val("0.00");
+                $("#perihalJumlah").val("0.00");
                 $("#objekAkCartaId option").prop('disabled', false);
                 $("#objekAkCartaId option:selected").prop('disabled', true);
                 $("#objekJBahagianId option").prop('disabled', false);

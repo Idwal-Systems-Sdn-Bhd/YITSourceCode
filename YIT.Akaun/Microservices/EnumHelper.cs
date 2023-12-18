@@ -19,7 +19,7 @@ namespace YIT.Akaun.Microservices
                 {
                     id = item.GetDisplayCode(),
                     indek = item.GetDisplayCode(),
-                    perihal = item.GetDisplayName()
+                    perihal = item.GetDisplayName().ToUpper()
                 });
             }
             return resultList;

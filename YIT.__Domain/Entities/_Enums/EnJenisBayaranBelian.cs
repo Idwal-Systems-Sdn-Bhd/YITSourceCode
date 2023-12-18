@@ -14,6 +14,8 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "Pesanan Tempatan")]
         PO = 1,
         [Display(Name = "Inden Kerja")]
-        Inden = 2
+        Inden = 2,
+        [Display(Name = "Nota Minta")]
+        NotaMinta = 3
     }
 }

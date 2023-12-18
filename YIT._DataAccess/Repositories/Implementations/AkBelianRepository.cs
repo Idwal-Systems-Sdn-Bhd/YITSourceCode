@@ -369,6 +369,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                 _context.Update(data);
 
                 PostingToAbBukuVot(data);
+
+                PostingToAkAkaun(data);
             }
         }
 
@@ -446,6 +448,51 @@ namespace YIT._DataAccess.Repositories.Implementations
             _context.AbBukuVot.AddRange(abBukuVotList);
         }
 
+        public void PostingToAkAkaun(AkBelian akBelian)
+        {
+            List<AkAkaun> akAkaunList = new List<AkAkaun>();
+
+            if (akBelian.AkBelianObjek != null && akBelian.AkBelianObjek.Count > 0)
+            {
+
+                if (akBelian.AkAkaunAkruId != null)
+                {
+
+                    foreach (var item in akBelian.AkBelianObjek)
+                    {
+                            AkAkaun akAkaun1 = new AkAkaun()
+                            {
+                                JKWId = akBelian.JKWId,
+                                JPTJId = item.JKWPTJBahagian?.JPTJId,
+                                JBahagianId = item.JKWPTJBahagian?.JBahagianId,
+                                NoRujukan = akBelian.NoRujukan,
+                                Tarikh = akBelian.Tarikh,
+                                AkCarta1Id = (int)akBelian.AkAkaunAkruId,
+                                AkCarta2Id = item.AkCartaId,
+                                Kredit = item.Amaun
+                            };
+                            akAkaunList.Add(akAkaun1);
+
+                            AkAkaun akAkaun2 = new AkAkaun()
+                            {
+                                JKWId = akBelian.JKWId,
+                                JPTJId = item.JKWPTJBahagian?.JPTJId,
+                                JBahagianId = item.JKWPTJBahagian?.JBahagianId,
+                                NoRujukan = akBelian.NoRujukan,
+                                Tarikh = akBelian.Tarikh,
+                                AkCarta1Id = item.AkCartaId,
+                                AkCarta2Id = (int)akBelian.AkAkaunAkruId,
+                                Debit = item.Amaun
+                            };
+
+                            akAkaunList.Add(akAkaun2);
+                        }
+                    }
+            
+
+                _context.AkAkaun.AddRange(akAkaunList);
+            }
+        }
         public void RemovePostingFromAbBukuVot(AkBelian akBelian, string userId)
         {
             var abBukuVotList = _context.AbBukuVot.Where(b => b.NoRujukan == akBelian.NoRujukan).ToList();
@@ -455,6 +502,16 @@ namespace YIT._DataAccess.Repositories.Implementations
                 _context.RemoveRange(abBukuVotList);
             }
 
+        }
+
+        public void RemovePostingFromAkAkaun(AkBelian akBelian)
+        {
+            var akAkaunList = _context.AkAkaun.Where(b => b.NoRujukan == akBelian.NoRujukan).ToList();
+
+            if (akAkaunList != null && akAkaunList.Count > 0)
+            {
+                _context.RemoveRange(akAkaunList);
+            }
         }
 
         public List<AkBelian> GetAllByStatus(EnStatusBorang enStatusBorang)
@@ -480,6 +537,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 _context.Update(data);
 
                 RemovePostingFromAbBukuVot(data, userId ?? "");
+                RemovePostingFromAkAkaun(data);
 
             }
         }
@@ -524,6 +582,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 HantarSemula(id, tindakan, userId);
 
                 RemovePostingFromAbBukuVot(data, userId ?? "");
+                RemovePostingFromAkAkaun(data);
 
             }
         }
