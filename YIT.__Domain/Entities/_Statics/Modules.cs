@@ -89,7 +89,10 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodAkBelian = "AK0012";
         public const string namaAkBelian = "Tanggungan Invois Pembekal";
 
-        public const string kodAkTerima = "AK0013";
+        public const string kodAkPV = "AK0013";
+        public const string namaAkPV = "Baucer Pembayaran";
+
+        public const string kodAkTerima = "AK0014";
         public const string namaAkTerima = "Terimaan Resit Rasmi";
         //
 
@@ -160,8 +163,8 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodLulusAkBelian = "PP0022";
         public const string namaLulusAkBelian = "Pemprosesan Lulus Invois Pembekal";
         //
-        // Laporan
-        public const string kodLTerimaan = "LP0001";
+        // Laporan Akaun
+        public const string kodLTerimaan = "LAK001";
         public const string namaLTerimaan = "Laporan Daftar Resit";
         //
     }

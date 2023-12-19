@@ -32,6 +32,23 @@
                 <input asp-for="Perihal" class="form-control form-control-sm text-uppercase" onkeydown="return /[a-zA-Z]/i.test(event.key)" />
                 <span asp-validation-for="Perihal" class="text-danger"></span>
             </div>
+            <div class="card">
+                <div class="card-body">
+                    <label asp-for="IsLimit" class="control-label"></label>
+                    <div class="custom-control custom-radio">
+                        <input asp-for="IsLimit" type="radio" id="IsLimit1" class="custom-control-input" value="false">
+                        <label class="custom-control-label" for="IsLimit">Tidak</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input asp-for="IsLimit" type="radio" id="IsLimit2" class="custom-control-input" value="true">
+                        <label class="custom-control-label" for="IsLimit2">Ya</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaksAmaun" class="control-label"></label>
+                <input asp-for="MaksAmaun" type="number" step="0.01" class="form-control form-control-sm" />
+            </div>
             <hr />
             <div class="form-group">
                 <input type="submit" value="Simpan" class="btn ac-primary btn-sm" />

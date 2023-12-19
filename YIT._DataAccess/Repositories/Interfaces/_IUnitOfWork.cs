@@ -33,6 +33,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IAkPelarasanPORepository AkPelarasanPORepo { get; }
         IAkPelarasanIndenRepository AkPelarasanIndenRepo { get; }
         IAkBelianRepository AkBelianRepo { get; }
+        IAkPVRepository AkPVRepo { get; }
 
         int Save();
     }

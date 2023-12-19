@@ -28,6 +28,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
                     options.UseTriggers(triggerOptions =>
                     {
                         triggerOptions.AddTrigger<SoftDeleteTrigger>();
+                        triggerOptions.AddTrigger<SoftDeleteTransactionTrigger>();
 
                     });
 

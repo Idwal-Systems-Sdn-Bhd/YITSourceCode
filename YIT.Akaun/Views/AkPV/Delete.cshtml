@@ -1,7 +1,7 @@
-﻿@model AkTerima
+﻿@model AkPV
 
 @{
-    ViewData["Title"] = "Resit Rasmi - Hapus";
+    ViewData["Title"] = "Baucer Pembayaran - Hapus";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,12 +10,19 @@
         <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
 
         <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
-        
         <partial name="__DetailsPartial.cshtml" />
 
         <form asp-action="Delete">
+            <div asp-validation-summary="ModelOnly"></div>
             <input type="hidden" asp-for="Id" />
             <input name="syscode" value="SPPB" hidden />
+            <div class="row mb-2">
+                <div class="form-group">
+                    <label class="control-label">Sebab Hapus</label>
+                    <input name="sebabHapus" class="form-control text-uppercase form-control-sm" required>
+                    <span class="text-danger">sila isi ruang ini untuk meneruskan operasi</span>
+                </div>
+            </div>
             <input type="submit" value="Hapus" class="btn ac-danger btn-sm" />
             <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
         </form>

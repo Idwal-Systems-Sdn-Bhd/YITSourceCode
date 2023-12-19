@@ -10,6 +10,7 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public int Id { get; set; }
         public string? Kod { get; set; }
         public string? Perihal { get; set; }
+        [Display(Name = "Cara bayar ini mempunyai had?")]
         public bool IsLimit { get; set; }
         [Display(Name = "Maksimum Amaun RM")]
         [Column(TypeName = "decimal(18, 2)")]
