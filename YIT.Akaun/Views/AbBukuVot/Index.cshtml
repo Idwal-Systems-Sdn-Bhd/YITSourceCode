@@ -184,7 +184,7 @@
                                 </td>
                                 <td>
                                     @{
-                                        var baki = item.Kredit - item.Debit - item.Tanggungan;
+                                        var baki = item.Kredit - item.Debit - item.Tanggungan + item.Belanja;
                                     }
                                     @Convert.ToDecimal(baki).ToString("#,##0.00")
                                 </td>

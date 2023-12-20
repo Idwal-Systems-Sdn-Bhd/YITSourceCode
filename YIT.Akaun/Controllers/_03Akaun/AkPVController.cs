@@ -91,7 +91,6 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
             EmptyCart();
-            PopulateDropDownList(akPV.JKWId);
             PopulateCartAkPVFromDb(akPV);
             return View(akPV);
         }
@@ -115,7 +114,6 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return (RedirectToAction(nameof(Index)));
             }
             EmptyCart();
-            PopulateDropDownList(akPV.JKWId);
             PopulateCartAkPVFromDb(akPV);
             return View(akPV);
         }
@@ -312,7 +310,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     var jKWPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
-                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pelulus, jKWPtjBahagian.JBahagianId, akPV.Jumlah) == false)
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.PV, EnKategoriKelulusan.Pelulus, jKWPtjBahagian.JBahagianId, akPV.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pelulus yang wujud untuk senarai kod bahagian berikut.";
                         ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PV.GetDisplayName(), akPV.Tahun ?? DateTime.Now.ToString("yyyy"));

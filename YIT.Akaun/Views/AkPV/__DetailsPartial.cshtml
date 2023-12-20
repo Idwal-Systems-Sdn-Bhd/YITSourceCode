@@ -68,13 +68,7 @@
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="EnJenisBayaran" class="control-label"></label>
-            <select asp-for="EnJenisBayaran" class="form-control form-control-sm text-uppercase" disabled>
-                <option value="0">- SILA PILIH -</option>
-                @foreach (var item in ViewBag.EnJenisBayaran)
-                {
-                    <option value="@item.id">@item.perihal</option>
-                }
-            </select>
+            <input value="@Model.EnJenisBayaran.GetDisplayName() " class="form-control form-control-sm" readonly />
         </div>
     </div>
     <div class="col-md-8">

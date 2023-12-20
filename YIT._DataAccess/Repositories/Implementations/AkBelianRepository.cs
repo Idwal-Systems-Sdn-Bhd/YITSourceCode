@@ -256,7 +256,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
         public async Task<bool> IsSahAsync(int id)
         {
-            bool isSah = await _context.AkBelian.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Sah || t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus);
+            bool isSah = await _context.AkBelian.AnyAsync(t => t.Id == id && (t.EnStatusBorang == EnStatusBorang.Sah || t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus));
             if (isSah)
             {
                 return true;
@@ -267,7 +267,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public async Task<bool> IsSemakAsync(int id)
         {
-            bool isSemak = await _context.AkBelian.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus);
+            bool isSemak = await _context.AkBelian.AnyAsync(t => t.Id == id && (t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus));
             if (isSemak)
             {
                 return true;

@@ -1,7 +1,7 @@
-﻿@model AkBelian
+﻿@model AkPV
 
 @{
-    ViewData["Title"] = "Kelulusan Invois Pembekal - Papar";
+    ViewData["Title"] = "Kelulusan Baucer Pembayaran - Papar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -18,7 +18,7 @@
 
         </div>
         <hr />
-        <partial name="~/Views/AkBelian/__DetailsPartial.cshtml" />
+        <partial name="~/Views/AkPV/__DetailsPartial.cshtml" />
 
         <div class="form-group">
             <a asp-action="Lulus" asp-route-id="@Model.Id" asp-route-syscode="SPPB" asp-route-dKonfigKelulusanId="@ViewBag.DKonfigKelulusanId" class="btn ac-primary btn-sm">Lulus</a>

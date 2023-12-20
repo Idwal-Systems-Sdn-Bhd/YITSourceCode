@@ -162,6 +162,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodLulusAkBelian = "PP0022";
         public const string namaLulusAkBelian = "Pemprosesan Lulus Invois Pembekal";
+
+        public const string kodLulusAkPV = "PP0023";
+        public const string namaLulusAkPV = "Pemprosesan Lulus Baucer Pembayaran";
         //
         // Laporan Akaun
         public const string kodLTerimaan = "LAK001";
