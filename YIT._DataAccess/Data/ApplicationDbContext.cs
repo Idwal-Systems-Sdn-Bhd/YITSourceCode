@@ -88,6 +88,8 @@ namespace YIT._DataAccess.Data
         public DbSet<AkPVObjek> AkPVObjek { get; set; }
         public DbSet<AkPVInvois> AkPVInvois { get; set; }
         public DbSet<AkPVPenerima> AkPVPenerima { get; set; }
+        public DbSet<AkJanaanProfil> AkJanaanProfil { get; set; }
+        public DbSet<AkJanaanProfilPenerima> AkJanaanProfilPenerima { get; set; }
         //
 
         // 08EFT

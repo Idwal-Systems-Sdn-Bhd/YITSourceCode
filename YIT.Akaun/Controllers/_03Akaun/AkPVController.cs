@@ -669,7 +669,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.AddItemPenerima(item.Id,
                                           akPV.Id,
-                                          item.AkJanaanProfilId,
+                                          item.AkJanaanProfilPenerimaId,
                                           item.EnKategoriDaftarAwam,
                                           item.DDaftarAwamId,
                                           item.DPekerjaId,
@@ -1435,7 +1435,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                             int bil = _cart.AkPVPenerima.Count() + 1;
 
-                            _cart.AddItemPenerima(akPVPenerima.Id, akPVPenerima.AkPVId, akPVPenerima.AkJanaanProfilId, akPVPenerima.EnKategoriDaftarAwam,
+                            _cart.AddItemPenerima(akPVPenerima.Id, akPVPenerima.AkPVId, akPVPenerima.AkJanaanProfilPenerimaId, akPVPenerima.EnKategoriDaftarAwam,
                                 akPVPenerima.DDaftarAwamId, akPVPenerima.DPekerjaId, akPVPenerima.NoPendaftaranPenerima, akPVPenerima.NamaPenerima, akPVPenerima.NoPendaftaranPemohon, akPVPenerima.Catatan, akPVPenerima.AkEFTPenerimaId, akPVPenerima.JCaraBayarId, akPVPenerima.JBankId, akPVPenerima.NoAkaunBank, akPVPenerima.Alamat1, akPVPenerima.Alamat2, akPVPenerima.Alamat3, akPVPenerima.Emel, akPVPenerima.KodM2E, akPVPenerima.NoCek, akPVPenerima.TarikhCek, akPVPenerima.Amaun, akPVPenerima.NoRujukanMohon, akPVPenerima.AkRekupId, akPVPenerima.AkPanjarId, akPVPenerima.IsCekDitunaikan, akPVPenerima.TarikhCekDitunaikan, EnStatusProses.None, bil);
                         }
                         else
@@ -1548,7 +1548,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                             _cart.UpdateItemPenerima(akPVPenerima.Id,
                                                  akPVPenerima.AkPVId,
-                                                 akPVPenerima.AkJanaanProfilId,
+                                                 akPVPenerima.AkJanaanProfilPenerimaId,
                                                  akPVPenerima.EnKategoriDaftarAwam,
                                                  akPVPenerima.DDaftarAwamId,
                                                  akPVPenerima.DPekerjaId,

@@ -160,7 +160,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.AddItemPenerima(item.Id,
                                           akPV.Id,
-                                          item.AkJanaanProfilId,
+                                          item.AkJanaanProfilPenerimaId,
                                           item.EnKategoriDaftarAwam,
                                           item.DDaftarAwamId,
                                           item.DPekerjaId,

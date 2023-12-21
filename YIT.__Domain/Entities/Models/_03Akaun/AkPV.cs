@@ -36,9 +36,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public JKW? JKW { get; set; }
         public string? Ringkasan { get; set; }
         public string? NoRujukanLama { get; set; } // dummy
-        public string? NoRujukanJanaanProfil { get; set; }
-        public bool IsBaucer { get; set; }
-        public string? UserIdJanaanProfil { get; set; }
+        public int? AkJanaanProfilId { get; set; }
+        public AkJanaanProfil? AkJanaanProfil { get; set; }
         public int? SuGajiBulananId { get; set; }
         public SuGajiBulanan? SuGajiBulanan { get; set; }
         public DateTime? TarikhJanaanProfil { get; set; }

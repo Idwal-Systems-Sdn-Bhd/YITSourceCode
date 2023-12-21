@@ -416,9 +416,9 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
             modelBuilder.Entity<AkPVPenerima>()
-                    .HasOne(m => m.AkJanaanProfil)
+                    .HasOne(m => m.AkJanaanProfilPenerima)
                     .WithMany(t => t.AkPVPenerima)
-                    .HasForeignKey(m => m.AkJanaanProfilId)
+                    .HasForeignKey(m => m.AkJanaanProfilPenerimaId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
             modelBuilder.Entity<AkPVPenerima>()
@@ -540,6 +540,24 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .WithMany(t => t.AkEFTPenerima)
                     .HasForeignKey(m => m.AkEFTId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkJanaanProfilPenerima>()
+                .HasOne(m => m.AkJanaanProfil)
+                .WithMany(t => t.AkJanaanProfilPenerima)
+                .HasForeignKey(m => m.AkJanaanProfilId)
+                .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkJanaanProfilPenerima>()
+                .HasOne(m => m.JCaraBayar)
+                .WithMany(t => t.AkJanaanProfilPenerima)
+                .HasForeignKey(m => m.AkJanaanProfilId)
+                .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkJanaanProfilPenerima>()
+                .HasOne(m => m.JCawangan)
+                .WithMany(t => t.AkJanaanProfilPenerima)
+                .HasForeignKey(m => m.AkJanaanProfilId)
+                .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
         }
     }
 }
