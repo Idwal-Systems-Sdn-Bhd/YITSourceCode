@@ -51,6 +51,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             AkBelianRepo = new AkBelianRepository(_context);
 
             AkPVRepo = new AkPVRepository(_context);
+            AkJanaanProfilRepo = new AkJanaanProfilRepository(_context);
         }
 
         public IJKWRepository JKWRepo { get; private set; }
@@ -102,6 +103,8 @@ namespace YIT._DataAccess.Repositories.Implementations
         public IJCukaiRepository JCukaiRepo { get; }
 
         public IAkPVRepository AkPVRepo { get; }
+
+        public IAkJanaanProfilRepository AkJanaanProfilRepo {  get; }
 
         public void Dispose()
         {

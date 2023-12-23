@@ -21,7 +21,7 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public AkBank? AkBank { get; set; }
         public ICollection<DPenyelia>? DPenyelia { get; set; }
         public ICollection<AkTerima>? AkTerima { get; set; }
-        public ICollection<AkJanaanProfilPenerima>? AkJanaanProfilPenerima { get; set; }
+        public ICollection<AkJanaanProfil>? AkJanaanProfil { get; set; }
 
     }
 }

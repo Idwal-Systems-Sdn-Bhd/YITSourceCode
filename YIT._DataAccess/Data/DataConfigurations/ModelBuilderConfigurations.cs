@@ -550,13 +550,13 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<AkJanaanProfilPenerima>()
                 .HasOne(m => m.JCaraBayar)
                 .WithMany(t => t.AkJanaanProfilPenerima)
-                .HasForeignKey(m => m.AkJanaanProfilId)
+                .HasForeignKey(m => m.JCaraBayarId)
                 .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
-            modelBuilder.Entity<AkJanaanProfilPenerima>()
+            modelBuilder.Entity<AkJanaanProfil>()
                 .HasOne(m => m.JCawangan)
-                .WithMany(t => t.AkJanaanProfilPenerima)
-                .HasForeignKey(m => m.AkJanaanProfilId)
+                .WithMany(t => t.AkJanaanProfil)
+                .HasForeignKey(m => m.JCawanganId)
                 .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
         }
     }

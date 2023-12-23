@@ -51,6 +51,8 @@ namespace YIT.__Domain.Entities._Enums
         EF = 20, // janaan EFT
         [Display(Name = "PV")]
         PV = 21, // baucer pembayaran
+        [Display(Name = "JP")]
+        JP = 22, // Janaan Profil
 
     }
 }

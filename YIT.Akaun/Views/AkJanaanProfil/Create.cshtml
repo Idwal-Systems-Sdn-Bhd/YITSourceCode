@@ -1,0 +1,287 @@
+﻿@model AkJanaanProfil
+
+@{
+    ViewData["Title"] = "JanaanProfil - Tambah";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<partial name="_JSCreate" />
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleCreatePartial.cshtml" />
+
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="syscode" value="SPPB" hidden />
+            @*maklumat umum*@
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="NoRujukan" class="control-label"></label>
+                    <input asp-for="NoRujukan" class="form-control form-control-sm" required readonly value="@ViewBag.NoRujukan" />
+                    <span asp-validation-for="NoRujukan" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="Tarikh" class="control-label"></label>
+                    <input asp-for="Tarikh" class="form-control form-control-sm" required />
+                    <span asp-validation-for="Tarikh" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="JCawanganId" class="control-label"></label>
+                    <select asp-for="JCawanganId" class="form-control form-control-sm text-uppercase select2" required>
+                        @foreach (var item in ViewBag.JCawangan)
+                        {
+                            <option value="@item.Id">@item.Kod - @item.Perihal  </option>
+                        }
+                    </select>
+                    <span asp-validation-for="JCawanganId" class="text-danger"></span>
+
+                </div>
+            </div>
+        </div>
+            @*div end*@
+            <div class="form-group">
+                <label asp-for="EnJenisModulProfil" class="control-label"></label>
+                <select asp-for="EnJenisModulProfil" class="form-control form-control-sm text-uppercase" required>
+                    <option value="0">- SILA PILIH -</option>
+                    @foreach (var item in ViewBag.EnJenisModulProfil)
+                    {
+                        <option value="@item.id">@item.perihal</option>
+                    }
+                </select>
+            </div>
+
+            @*end*@
+            <br />
+
+            @*table Penerima*@
+            <div class="card box-shadow mb-3">
+                <div class="card-header">
+                    <h6>Penerima</h6>
+                </div>
+                <div class="card-body">
+                    <table id="tblPenerima" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th style="width:10%">Bil</th>
+                                <th style="width:60%">Nama Penerima</th>
+                                <th style="width:20%">Amaun RM</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyPenerima">
+                            @if (ViewBag.akJanaanProfilPenerima != null)
+                            {
+                                foreach (var item in ViewBag.akJanaanProfilPenerima)
+                                {
+                                    <tr>
+                                        <td >@item.Bil</td>
+                                        <td class="text-uppercase">@item.NamaPenerima</td>
+                                        <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                                        <td>
+                                            <button class="btn ac-primary btn-sm" type="button" data-toggle="modal" data-target="#moPenerima" onclick="UpdatePenerima(this)"><i class="fa fa-edit"></i></button>
+                                        </td>
+                                        <td>
+                                            <button class="btn ac-danger btn-sm" type="button" onclick="RemovePenerima(this)"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                    <button class="btn btn-success btn-sm btn-block" type="button" data-toggle="modal" data-target="#moPenerima" onclick="AddPenerima()" value="Tambah Penerima"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="card-footer">
+                    <div class="form-group">
+                        <label asp-for="Jumlah" class="control-label"></label>
+                        <input asp-for="Jumlah" class="form-control form-control-sm" value="0.00" readonly />
+                    </div>
+                </div>
+            </div>
+            @*table Penerima end*@
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Simpan" id="btnSave" class="btn ac-primary btn-sm" />
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Penerima -->
+<div class="modal fade bd-example-modal-lg modal-dialog-scrollable" id="moPenerima" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Penerima</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input id="moPenerimaId" hidden />
+                    <input id="moPenerimaAkJanaanProfilId" hidden />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Kategori Daftar Awam</label>
+                                <select id="moPenerimaEnKategoriDaftarAwam" class="form-control form-control-sm text-uppercase">
+                                    <option value="">- SILA PILIH -</option>
+                                    @foreach (var item in ViewBag.EnKategoriDaftarAwam)
+                                    {
+                                        <option class="text-uppercase" value="@item.id">@item.indek - @item.perihal</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group" id="moPenerimaDivDDaftarAwamId" hidden>
+                                <label class="control-label">Daftar Awam</label>
+                                <select id="moPenerimaDDaftarAwamId" class="form-control form-control-sm text-uppercase select2">
+                                    <option value="">- SILA PILIH -</option>
+                                    @foreach (var item in ViewBag.DDaftarAwam)
+                                    {
+                                        <option value="@item.Id">@item.Kod - @item.Nama?.ToUpper()</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group" id="moPenerimaDivDPekerjaId" hidden>
+                                <label class="control-label">Pekerja</label>
+                                <select id="moPenerimaDPekerjaId" class="form-control form-control-sm text-uppercase select2">
+                                    <option value="">- SILA PILIH -</option>
+                                    @foreach (var item in ViewBag.DPekerja)
+                                    {
+                                        <option value="@item.Id">@item.NoGaji - @item.Nama?.ToUpper()</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="col-form-label">No Pend. / IC Penerima</label>
+                                <input type="text" class="form-control form-control-sm" id="moPenerimaNoPendaftaranPenerima">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Nama Penerima</label>
+                                <input type="text" class="form-control form-control-sm" id="moPenerimaNamaPenerima">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="col-form-label">No Pend. / IC Pemohon</label>
+                                <input type="text" class="form-control form-control-sm" id="moPenerimaNoPendaftaranPemohon">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Catatan</label>
+                        <textarea id="moPenerimaCatatan" class="form-control form-control-sm text-uppercase" rows="2"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Cara Bayar</label>
+                                <select id="moPenerimaJCaraBayarId" class="form-control form-control-sm text-uppercase" required>
+                                    <option value="">- SILA PILIH -</option>
+                                    @foreach (var item in ViewBag.JCaraBayar)
+                                    {
+                                        <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Bank</label>
+                                <select id="moPenerimaJBankId" class="form-control form-control-sm text-uppercase" required>
+                                    <option value="">- SILA PILIH -</option>
+                                    @foreach (var item in ViewBag.JBank)
+                                    {
+                                        <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="col-form-label">No Akaun Bank</label>
+                                <input type="text" class="form-control form-control-sm" id="moPenerimaNoAkaunBank">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-form-label">Alamat</label>
+                        <input type="text" class="form-control form-control-sm" id="moPenerimaAlamat1">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" id="moPenerimaAlamat2">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" id="moPenerimaAlamat3">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-form-label">Emel</label>
+                                <input type="text" class="form-control form-control-sm" id="moPenerimaEmel">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-form-label">Kod M2E</label>
+                                <input type="text" class="form-control form-control-sm" id="moPenerimaKodM2E">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-form-label">No Permohonan</label>
+                                <input type="text" class="form-control form-control-sm" id="moPenerimaRujukanMohon">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" hidden>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">No Cek</label>
+                                <input type="text" class="form-control form-control-sm" id="moPenerimaNoCek">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Tarikh Cek</label>
+                                <input type="date" class="form-control form-control-sm" id="moPenerimaTarikhCek">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-form-label">Amaun RM</label>
+                        <input type="number" class="form-control form-control-sm" id="moPenerimaAmaun">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="moAddModalPenerima" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="AddModalPenerima()">OK</button>
+                <button type="button" id="moUpdateModalPenerima" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="UpdateModalPenerima()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Penerima End -->

@@ -685,5 +685,10 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             }
         }
+
+        public bool HaveAkJanaanProfil(int akJanaanProfilId)
+        {
+            return _context.AkPV.Any(pv => pv.AkJanaanProfilId == akJanaanProfilId);
+        }
     }
 }

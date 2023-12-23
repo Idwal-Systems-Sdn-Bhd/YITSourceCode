@@ -92,7 +92,10 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodAkPV = "AK0013";
         public const string namaAkPV = "Baucer Pembayaran";
 
-        public const string kodAkTerima = "AK0014";
+        public const string kodAkJanaanProfil = "AK0014";
+        public const string namaAkJanaanProfil = "Janaan Profil";
+
+        public const string kodAkTerima = "AK0015";
         public const string namaAkTerima = "Terimaan Resit Rasmi";
         //
 

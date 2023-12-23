@@ -13,11 +13,9 @@ namespace YIT.__Domain.Entities.Models._03Akaun
     public  class AkJanaanProfilPenerima
     {
         public int Id { get; set; }
-        public int Bil { get; set; }
+        public int? Bil { get; set; }
         public int AkJanaanProfilId { get; set; }
         public AkJanaanProfil? AkJanaanProfil { get; set; }
-        public int JCawanganId { get; set; }
-        public JCawangan? JCawangan { get; set; }
         public EnKategoriDaftarAwam EnKategoriDaftarAwam { get; set; }
         public int? DPenerimaZakatId { get; set; }
         public DPenerimaZakat? DPenerimaZakat { get; set; }

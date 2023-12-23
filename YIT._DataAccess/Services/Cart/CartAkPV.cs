@@ -81,7 +81,7 @@ namespace YIT._DataAccess.Services.Cart
         public virtual void AddItemPenerima(
             int id,
             int akPVId,
-            int? akJanaanProfilId,
+            int? akJanaanProfilPenerimaId,
             EnKategoriDaftarAwam enKategoriDaftarAwam,
             int? dDaftarAwamId,
             int? dPekerjaId,
@@ -119,7 +119,7 @@ namespace YIT._DataAccess.Services.Cart
                 {
                     Id = id,
                     AkPVId = akPVId,
-                    AkJanaanProfilId = akJanaanProfilId,
+                    AkJanaanProfilPenerimaId = akJanaanProfilPenerimaId,
                     EnKategoriDaftarAwam = enKategoriDaftarAwam,
                     DDaftarAwamId = dDaftarAwamId,
                     DPekerjaId = dPekerjaId,
@@ -153,7 +153,7 @@ namespace YIT._DataAccess.Services.Cart
         public virtual void UpdateItemPenerima(
             int id,
             int akPVId,
-            int? akJanaanProfilId,
+            int? akJanaanProfilPenerimaId,
             EnKategoriDaftarAwam enKategoriDaftarAwam,
             int? dDaftarAwamId,
             int? dPekerjaId,
@@ -191,7 +191,7 @@ namespace YIT._DataAccess.Services.Cart
                 {
                     Id = id,
                     AkPVId = akPVId,
-                    AkJanaanProfilId = akJanaanProfilId,
+                    AkJanaanProfilPenerimaId = akJanaanProfilPenerimaId,
                     EnKategoriDaftarAwam = enKategoriDaftarAwam,
                     DDaftarAwamId = dDaftarAwamId,
                     DPekerjaId = dPekerjaId,
