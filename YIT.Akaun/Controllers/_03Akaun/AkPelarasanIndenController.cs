@@ -363,14 +363,14 @@ namespace YIT.Akaun.Controllers._03Akaun
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-            // check if there is pengesah available or not based on modul, kelulusan, and bahagian
+            // check if there is pelulus available or not based on modul, kelulusan, and bahagian
             if (_cart.AkPelarasanIndenObjek != null && _cart.AkPelarasanIndenObjek.Count() > 0)
             {
                 foreach (var item in _cart.AkPelarasanIndenObjek)
                 {
                     var jKWPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
-                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pelulus, jKWPtjBahagian.JBahagianId, akPelarasanInden.Jumlah) == false)
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.PelarasanInden, EnKategoriKelulusan.Pelulus, jKWPtjBahagian.JBahagianId, akPelarasanInden.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pelulus yang wujud untuk senarai kod bahagian berikut.";
                         ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.IX.GetDisplayName(), akPelarasanInden.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
@@ -438,16 +438,16 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            // check if there is pengesah available or not based on modul, kelulusan, and bahagian
+            // check if there is pelulus available or not based on modul, kelulusan, and bahagian
             if (_cart.AkPelarasanIndenObjek != null && _cart.AkPelarasanIndenObjek.Count() > 0)
             {
                 foreach (var item in _cart.AkPelarasanIndenObjek)
                 {
                     var jKWPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
-                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pengesah, jKWPtjBahagian.JBahagianId, akPelarasanInden.Jumlah) == false)
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.PelarasanInden, EnKategoriKelulusan.Pelulus, jKWPtjBahagian.JBahagianId, akPelarasanInden.Jumlah) == false)
                     {
-                        TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
+                        TempData[SD.Error] = "Tiada Pelulus yang wujud untuk senarai kod bahagian berikut.";
                         PopulateDropDownList(akPelarasanInden.JKWId);
                         PopulateListViewFromCart();
                         return View(akPelarasanInden);

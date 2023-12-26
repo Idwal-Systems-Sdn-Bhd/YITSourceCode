@@ -251,13 +251,27 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         public async Task<IActionResult> Lulus(int id, int dKonfigKelulusanId, string syscode)
         {
-            var akPV = _unitOfWork.AkPVRepo.GetById((int)id);
+            var akPV = _unitOfWork.AkPVRepo.GetDetailsById((int)id);
 
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
             if (akPV != null)
             {
+                decimal jumlahPenerima = 0;
+                if (akPV.AkPVPenerima != null && akPV.AkPVPenerima.Count > 0)
+                {
+                    foreach (var item in akPV.AkPVPenerima)
+                    {
+                        jumlahPenerima += item.Amaun;
+                    }
+
+                    if (jumlahPenerima != akPV.Jumlah)
+                    {
+                        TempData[SD.Error] = "Jumlah RM tidak sama dengan Jumlah Penerima RM";
+                        return RedirectToAction(nameof(Details),new { id });
+                    }
+                }
 
                 _unitOfWork.AkPVRepo.Lulus(id, dKonfigKelulusanId, user?.UserName ?? "");
 

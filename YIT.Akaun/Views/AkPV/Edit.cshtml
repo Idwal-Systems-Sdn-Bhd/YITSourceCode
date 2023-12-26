@@ -28,6 +28,7 @@
             <input name="syscode" value="SPPB" hidden />
             <input asp-for="JKWId" hidden />
             <input asp-for="SuGajiBulananId" hidden />
+            <input asp-for="AkJanaanProfilId" hidden />
 
             @*maklumat umum*@
             <div class="row mb-2">
@@ -55,16 +56,16 @@
             </div>
             @*div gaji*@
             @*<div class="form-group" id="divSuGajiBulananId" hidden>
-                    <label asp-for="SuGajiBulananId" class="control-label"></label>
-                    <select asp-for="SuGajiBulananId" class="form-control form-control-sm text-uppercase select2" required>
-                        <option value="" disabled selected>- SILA PILIH -</option>
-                        @foreach (var item in ViewBag.SuGajiBulanan)
-                        {
-                            <option value="@item.Id">@item.Tahun / @item.Bulan </option>
-                        }
-                    </select>
-                    <span asp-validation-for="SuGajiBulananId" class="text-danger"></span>
-                </div>*@
+            <label asp-for="SuGajiBulananId" class="control-label"></label>
+            <select asp-for="SuGajiBulananId" class="form-control form-control-sm text-uppercase select2" required>
+                <option value="" disabled selected>- SILA PILIH -</option>
+                @foreach (var item in ViewBag.SuGajiBulanan)
+                {
+                    <option value="@item.Id">@item.Tahun / @item.Bulan </option>
+                }
+            </select>
+            <span asp-validation-for="SuGajiBulananId" class="text-danger"></span>
+        </div>*@
             @*div end*@
             <div class="row">
                 <div class="col-md-4">
@@ -125,7 +126,7 @@
                 <div class="col-md-8">
                     <div class="form-group">
                         <label asp-for="NamaPenerima" class="control-label"></label>
-                        <input asp-for="NamaPenerima" class="form-control form-control-sm" required />
+                        <input asp-for="NamaPenerima" class="form-control form-control-sm text-uppercase" required />
                         <span asp-validation-for="NamaPenerima" class="text-danger"></span>
                     </div>
                 </div>

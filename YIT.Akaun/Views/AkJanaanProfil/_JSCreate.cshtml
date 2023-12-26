@@ -309,7 +309,8 @@
                 dataType: "json",
                 success: function (r) {
                     //insert data in modal objek
-                    $("#moPenerimaId").val(r.record.bil);
+                    $("#moBil").val(r.record.bil);
+                    $("#moPenerimaId").val(r.record.id);
                     $("#moPenerimaAkJanaanProfilId").val(r.record.akJanaanProfilId);
                     $("#moPenerimaEnKategoriDaftarAwam").val(r.record.enKategoriDaftarAwam);
                     switch (r.record.enKategoriDaftarAwam) {
@@ -349,7 +350,8 @@
     }
 
     function UpdateModalPenerima() {
-    var bil = $("#moPenerimaId").val();
+    var id = $("#moPenerimaId").val();
+    var bil = $("#moBil").val();
     var akJanaanProfilId = $("#Id").val();
     var enKategoriDaftarAwam = $("#moPenerimaEnKategoriDaftarAwam").val();
     var dDaftarAwamId = $("#moPenerimaDDaftarAwamId").val();
@@ -372,6 +374,7 @@
     var rujukanMohon = $("#moPenerimaRujukanMohon").val();
 
     var AkJanaanProfilPenerima = {
+        Id: id,
         Bil: bil,
         AkJanaanProfilId: akJanaanProfilId,
         EnKategoriDaftarAwam: enKategoriDaftarAwam,

@@ -20,7 +20,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="NoRujukan" class="control-label"></label>
-                        <input asp-for="NoRujukan" class="form-control form-control-sm" required readonly value="@ViewBag.NoRujukan"/>
+                        <input asp-for="NoRujukan" class="form-control form-control-sm" required readonly value="@ViewBag.NoRujukan" />
                         <span asp-validation-for="NoRujukan" class="text-danger"></span>
                     </div>
                 </div>
@@ -39,6 +39,7 @@
                     </div>
                 </div>
             </div>
+
             @*div gaji*@
             @*<div class="form-group" id="divSuGajiBulananId" hidden>
             <label asp-for="SuGajiBulananId" class="control-label"></label>
@@ -93,7 +94,7 @@
                     </div>
                 </div>
             </div>
-           
+
 
             <div class="row">
                 <div class="col-md-4">
@@ -111,7 +112,7 @@
                 <div class="col-md-8">
                     <div class="form-group">
                         <label asp-for="NamaPenerima" class="control-label"></label>
-                        <input asp-for="NamaPenerima" class="form-control form-control-sm" required />
+                        <input asp-for="NamaPenerima" class="form-control form-control-sm text-uppercase" required />
                         <span asp-validation-for="NamaPenerima" class="text-danger"></span>
                     </div>
                 </div>
@@ -123,6 +124,20 @@
                 <span asp-validation-for="Ringkasan" class="text-danger"></span>
             </div>
 
+            @*div janaan profil*@
+            <div class="form-group" id="divAkJanaanProfil" @ViewBag.DivJanaanProfil>
+                <label asp-for="AkJanaanProfilId" class="control-label"></label>
+                <select asp-for="AkJanaanProfilId" class="form-control form-control-sm text-uppercase select2" required>
+                    <option value="" disabled selected>- SILA PILIH -</option>
+                    @foreach (var item in ViewBag.AkJanaanProfil)
+                    {
+                        <option value="@item.Id">@item.Tarikh.ToString("dd/MM/yyyy") - @item.NoRujukan </option>
+                    }
+                </select>
+                <span asp-validation-for="AkJanaanProfilId" class="text-danger"></span>
+            </div>
+            <input asp-for="TarikhJanaanProfil" hidden/>
+            @*div end*@
 
             @*end*@
             <br />
@@ -298,7 +313,7 @@
                                 foreach (var item in ViewBag.akPVPenerima)
                                 {
                                     <tr>
-                                        <td >@item.Bil</td>
+                                        <td>@item.Bil</td>
                                         <td class="text-uppercase">@item.NamaPenerima</td>
                                         <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
                                         <td>

@@ -67,7 +67,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 // cek is user and password valid or not
                 HttpContext.Session.SetInt32("DPelulusId", (int)dKonfigKelulusanId);
 
-                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password, EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pelulus) == false)
+                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password, EnJenisModulKelulusan.Inden, EnKategoriKelulusan.Pelulus) == false)
                 {
                     TempData[SD.Error] = "Katalaluan Tidak Sah";
                     return View();

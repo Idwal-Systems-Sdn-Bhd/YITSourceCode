@@ -13,6 +13,41 @@
         //
     });
 
+    // on click janaanProfil dropdown
+    $("body").on('change', "#AkJanaanProfilId", function () {
+        var akPVId = $("#Id").val();
+        var akJanaanProfilId = $("#AkJanaanProfilId").val();
+        if (akJanaanProfilId != null || akJanaanProfilId != "")
+        {
+            EmptyCart();
+            AkJanaanProfil = {
+                AkJanaanProfilId: akJanaanProfilId,
+                AkPVId: akPVId
+            }
+             $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAkJanaanProfil","AkPV")',
+                data: AkJanaanProfil,
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.result === "Error") {
+                        $("#AkJanaanProfilId").val("").change();
+                        toastr.error(msg.message);
+                        toastr.options.timeOut = 2000; // 2s
+                    }
+                    else if (msg.result === "OK") {
+                        $("#TarikhJanaanProfil").val(msg.tarikhJanaanProfil);
+                        PopulateTablesFromCart();
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+    });
+    //
+
     // on click kategoriDaftarAwam dropdown
     $("body").on('change', "#moPenerimaEnKategoriDaftarAwam", function () {
         var kategoriDaftarAwam = $("#moPenerimaEnKategoriDaftarAwam").val();
@@ -117,13 +152,20 @@
     // on click jenisBayaran dropdown
     $("body").on('change', "#EnJenisBayaran", function () {
         EmptyCart();
+        $("#AkJanaanProfilId").val("").change();
         var enJenisBayaran = $("#EnJenisBayaran").val();
         switch (enJenisBayaran) {
             case "@EnJenisBayaran.Invois.GetDisplayCode()":
                 $("#divInvois").removeAttr('hidden');
+                $("#divAkJanaanProfil").prop('hidden', true);
+                break;
+            case "@EnJenisBayaran.JanaanProfil.GetDisplayCode()":
+                $("#divInvois").prop('hidden', true);
+                $("#divAkJanaanProfil").removeAttr('hidden');
                 break;
             default:
                 $("#divInvois").prop('hidden', true);
+                $("#divAkJanaanProfil").prop('hidden', true);
                 break;
         }
     });
@@ -377,7 +419,7 @@
                             toastr.error(msg.message);
                             toastr.options.timeOut = 2000; // 2s
                         }
-                        
+
                     }
                 });
 
@@ -775,7 +817,7 @@
                     toastr.error(msg.message);
                     toastr.options.timeOut = 2000; // 2s
                 }
-               
+
             }
         });
     }

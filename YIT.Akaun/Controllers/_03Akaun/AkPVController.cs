@@ -91,6 +91,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
             EmptyCart();
+            ManipulateHiddenDiv(akPV.EnJenisBayaran);
             PopulateCartAkPVFromDb(akPV);
             return View(akPV);
         }
@@ -114,6 +115,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return (RedirectToAction(nameof(Index)));
             }
             EmptyCart();
+            ManipulateHiddenDiv(akPV.EnJenisBayaran);
             PopulateCartAkPVFromDb(akPV);
             return View(akPV);
         }
@@ -282,7 +284,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             var user = await _userManager.GetUserAsync(User);
 
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PV.GetDisplayName(), DateTime.Now.ToString("yyyy"));
-            ViewBag.DivInvois = "hidden";
+            ManipulateHiddenDiv(EnJenisBayaran.Am);
             EmptyCart();
             PopulateDropDownList(1);
             return View();
@@ -303,7 +305,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-            // check if there is pengesah available or not based on modul, kelulusan, and bahagian
+            // check if there is pelulus available or not based on modul, kelulusan, and bahagian
             if (_cart.AkPVObjek != null && _cart.AkPVObjek.Count() > 0)
             {
                 foreach (var item in _cart.AkPVObjek)
@@ -316,14 +318,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                         ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PV.GetDisplayName(), akPV.Tahun ?? DateTime.Now.ToString("yyyy"));
                         PopulateDropDownList(akPV.JKWId);
                         PopulateListViewFromCart();
-                        if (akPV.EnJenisBayaran == EnJenisBayaran.Invois)
-                        {
-                            ViewBag.DivInvois = "";
-                        }
-                        else
-                        {
-                            ViewBag.DivInvois = "hidden";
-                        }
+                        ManipulateHiddenDiv(akPV.EnJenisBayaran);
+                        
                         return View(akPV);
                     }
                 }
@@ -344,14 +340,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                         ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PV.GetDisplayName(), akPV.Tahun ?? DateTime.Now.ToString("yyyy"));
                         PopulateDropDownList(akPV.JKWId);
                         PopulateListViewFromCart();
-                        if (akPV.EnJenisBayaran == EnJenisBayaran.Invois)
-                        {
-                            ViewBag.DivInvois = "";
-                        }
-                        else
-                        {
-                            ViewBag.DivInvois = "hidden";
-                        }
+                        ManipulateHiddenDiv(akPV.EnJenisBayaran);
                         return View(akPV);
                     }
                 }
@@ -408,7 +397,27 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PV.GetDisplayName(), akPV.Tahun ?? DateTime.Now.ToString("yyyy"));
             PopulateDropDownList(akPV.JKWId);
             PopulateListViewFromCart();
+            ManipulateHiddenDiv(akPV.EnJenisBayaran);
             return View(akPV);
+        }
+
+        private void ManipulateHiddenDiv(EnJenisBayaran enJenisBayaran)
+        {
+            switch (enJenisBayaran)
+            {
+                case EnJenisBayaran.Invois:
+                    ViewBag.DivInvois = "";
+                    ViewBag.DivJanaanProfil = "hidden";
+                    break;
+                case EnJenisBayaran.JanaanProfil:
+                    ViewBag.DivInvois = "hidden";
+                    ViewBag.DivJanaanProfil = "";
+                    break;
+                default:
+                    ViewBag.DivInvois = "hidden";
+                    ViewBag.DivJanaanProfil = "hidden";
+                    break;
+            }
         }
 
         public IActionResult Edit(int? id)
@@ -431,6 +440,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
 
             EmptyCart();
+            ManipulateHiddenDiv(akPV.EnJenisBayaran);
             PopulateDropDownList(akPV.JKWId);
             PopulateCartAkPVFromDb(akPV);
             return View(akPV);
@@ -445,21 +455,57 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            // check if there is pengesah available or not based on modul, kelulusan, and bahagian
+            // check if there is pelulus available or not based on modul, kelulusan, and bahagian
             if (_cart.AkPVObjek != null && _cart.AkPVObjek.Count() > 0)
             {
                 foreach (var item in _cart.AkPVObjek)
                 {
                     var jKWPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
-                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.Penilaian, EnKategoriKelulusan.Pengesah, jKWPtjBahagian.JBahagianId, akPV.Jumlah) == false)
+                    if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.PV, EnKategoriKelulusan.Pelulus, jKWPtjBahagian.JBahagianId, akPV.Jumlah) == false)
                     {
-                        TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
+                        TempData[SD.Error] = "Tiada Pelulus yang wujud untuk senarai kod bahagian berikut.";
                         PopulateDropDownList(akPV.JKWId);
                         PopulateListViewFromCart();
+                        ManipulateHiddenDiv(akPV.EnJenisBayaran);
                         return View(akPV);
                     }
                 }
+            }
+            //
+
+            // double check if every penerima have jCaraBayarId or not
+            decimal jumlahPenerima = 0;
+
+            if (_cart.AkPVPenerima != null && _cart.AkPVPenerima.Count() > 0)
+            {
+
+                if (_cart.AkPVPenerima.Count() > 1) akPV.IsGanda = true;
+                
+                foreach (var item in _cart.AkPVPenerima)
+                {
+                    if (item.JCaraBayarId == 0)
+                    {
+                        TempData[SD.Error] = "Terdapat penerima yang tiada pilihan cara bayar.";
+                        PopulateDropDownList(akPV.JKWId);
+                        PopulateListViewFromCart();
+                        ManipulateHiddenDiv(akPV.EnJenisBayaran);
+                        return View(akPV);
+                    }
+                    jumlahPenerima += item.Amaun;
+
+                }
+            }
+            // 
+
+            // check if Jumlah equal to Jumlah Penerima RM
+            if (akPV.Jumlah != jumlahPenerima)
+            {
+                TempData[SD.Error] = "Jumlah RM tidak sama dengan Jumlah Penerima RM.";
+                PopulateDropDownList(akPV.JKWId);
+                PopulateListViewFromCart();
+                ManipulateHiddenDiv(akPV.EnJenisBayaran);
+                return View(akPV);
             }
             //
 
@@ -496,14 +542,14 @@ namespace YIT.Akaun.Controllers._03Akaun
                         }
                     }
 
-                    //if (objAsal.AkPVPenerima != null && objAsal.AkPVPenerima.Count > 0)
-                    //{
-                    //    foreach (var item in objAsal.AkPVPenerima)
-                    //    {
-                    //        var model = _context.AkPVPenerima.FirstOrDefault(b => b.Id == item.Id);
-                    //        if (model != null) _context.Remove(model);
-                    //    }
-                    //}
+                    if (objAsal.AkPVPenerima != null && objAsal.AkPVPenerima.Count > 0)
+                    {
+                        foreach (var item in objAsal.AkPVPenerima)
+                        {
+                            var model = _context.AkPVPenerima.FirstOrDefault(b => b.Id == item.Id);
+                            if (model != null) _context.Remove(model);
+                        }
+                    }
 
                     _context.Entry(objAsal).State = EntityState.Detached;
 
@@ -511,7 +557,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akPV.TarKemaskini = DateTime.Now;
                     akPV.AkPVObjek = _cart.AkPVObjek?.ToList();
                     akPV.AkPVInvois = _cart.AkPVInvois.ToList();
-                    akPV.AkPVPenerima = _cart.AkPVPenerima.ToList();
+                    akPV.AkPVPenerima = _cart.AkPVPenerima?.ToList();
 
                     _unitOfWork.AkPVRepo.Update(akPV);
 
@@ -545,6 +591,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             PopulateDropDownList(akPV.JKWId);
             PopulateListViewFromCart();
+            ManipulateHiddenDiv(akPV.EnJenisBayaran);
             return View(akPV);
         }
 
@@ -615,6 +662,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         {
             ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
             ViewBag.JCukai = _unitOfWork.JCukaiRepo.GetAll();
+            ViewBag.AkJanaanProfil = _unitOfWork.AkJanaanProfilRepo.GetAll();
             ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
             ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAllDetails();
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
@@ -1364,6 +1412,59 @@ namespace YIT.Akaun.Controllers._03Akaun
                     if (data != null)
                     {
                         return Json(new { result = "OK", record = data });
+                    }
+                    else
+                    {
+                        return Json(new { result = "Error", message = "data tidak wujud!" });
+                    }
+                }
+                //EmptyCart();
+                else
+                {
+                    return Json(new { result = "None" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+        }
+
+        public JsonResult GetAkJanaanProfil(int akJanaanProfilId, int akPVId)
+        {
+            try
+            {
+                if (akJanaanProfilId != 0)
+                {
+                    var data = _unitOfWork.AkJanaanProfilRepo.GetDetailsById(akJanaanProfilId);
+
+                    if (data != null)
+                    {
+                        // check if already have pv linked
+                        if (_unitOfWork.AkPVRepo.HaveAkJanaanProfil(akJanaanProfilId))
+                        {
+                            return Json(new { result = "Error", message = "Data terkait dengan baucer lain" });
+                        }
+                        //
+
+                        // insert AkJanaanProfilPenerima into cart AkPVPenerima
+                        if (data.AkJanaanProfilPenerima != null && data.AkJanaanProfilPenerima.Count() > 0)
+                        {
+                            int bil = 1;
+                            foreach( var item in data.AkJanaanProfilPenerima)
+                            {
+                                _cart.AddItemPenerima(0, akPVId, item.Id, item.EnKategoriDaftarAwam, item.DDaftarAwamId, item.DPekerjaId, item.NoPendaftaranPenerima, item.NamaPenerima, item.NoPendaftaranPemohon, item.Catatan, null, item.JCaraBayarId, item.JBankId, item.NoAkaunBank, item.Alamat1, item.Alamat2, item.Alamat3, item.Emel, item.KodM2E, null, null, item.Amaun, item.NoRujukanMohon, item.AkRekupId, null, false, null, EnStatusProses.None, bil);
+
+                                bil++;
+                            }
+                            
+                        }
+                        else
+                        {
+                            return Json(new { result = "Error", message = "Senarai penerima pada janaan tidak wujud!" });
+                        }
+                        //
+                        return Json(new { result = "OK", tarikhJanaanProfil = data.Tarikh });
                     }
                     else
                     {

@@ -213,8 +213,11 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             if (_unitOfWork.AkPVRepo.HaveAkJanaanProfil((int)id))
             {
-                TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
-                return (RedirectToAction(nameof(Index)));
+                if (_context.AkPV.Any(pv => pv.AkJanaanProfilId == (int)id && (pv.EnStatusBorang != EnStatusBorang.None || pv.EnStatusBorang != EnStatusBorang.Kemaskini)))
+                {
+                    TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
+                    return (RedirectToAction(nameof(Index)));
+                }
             }
 
             EmptyCart();
@@ -246,11 +249,93 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akJanaanProfil.TarMasuk = objAsal.TarMasuk;
                     akJanaanProfil.DPekerjaMasukId = objAsal.DPekerjaMasukId;
 
-                    _context.Entry(objAsal).State = EntityState.Detached;
-
                     akJanaanProfil.UserIdKemaskini = user?.UserName ?? "";
                     akJanaanProfil.TarKemaskini = DateTime.Now;
                     akJanaanProfil.AkJanaanProfilPenerima = _cart.AkJanaanProfilPenerima.ToList();
+                    int akPVId = 0;
+
+                    if (!_unitOfWork.AkPVRepo.HaveAkJanaanProfil((int)id))
+                    {
+                        if(objAsal.AkJanaanProfilPenerima != null && objAsal.AkJanaanProfilPenerima.Count > 0)
+                        {
+                            foreach (var item in objAsal.AkJanaanProfilPenerima)
+                            {
+                                var model = _context.AkJanaanProfilPenerima.FirstOrDefault(b => b.Id == item.Id);
+                                if (model != null) _context.Remove(model);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (_context.AkPV.Any(pv => pv.AkJanaanProfilId == (int)id && (pv.EnStatusBorang == EnStatusBorang.None || pv.EnStatusBorang == EnStatusBorang.Kemaskini)))
+                        {
+                            if (objAsal.AkJanaanProfilPenerima != null && objAsal.AkJanaanProfilPenerima.Count > 0)
+                            {
+                                foreach (var item in objAsal.AkJanaanProfilPenerima)
+                                {
+                                    var model = _context.AkJanaanProfilPenerima.FirstOrDefault(b => b.Id == item.Id);
+                                    if (model != null)
+                                    {
+                                        var akPVPenerima = _context.AkPVPenerima.FirstOrDefault(pp => pp.AkJanaanProfilPenerimaId == item.Id);
+
+                                        if (akPVPenerima != null)
+                                        {
+                                            akPVId = akPVPenerima.AkPVId;
+                                            _context.Remove(akPVPenerima);
+
+                                        }
+
+                                        _context.Remove(model);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            TempData[SD.Error] = "Data telah diluluskan";
+                            PopulateDropDownList();
+                            PopulateListViewFromCart();
+                            return View(akJanaanProfil);
+                        }
+                        
+                    }
+
+                    if (_cart.AkJanaanProfilPenerima != null && akPVId != 0)
+                    {
+                        int bil = 1;
+                        foreach (var akJanaanProfilPenerima in _cart.AkJanaanProfilPenerima)
+                        {
+
+                            _context.Add(new AkPVPenerima
+                            {
+                                AkPVId = akPVId,
+                                AkJanaanProfilPenerimaId = akJanaanProfilPenerima.Id,
+                                EnKategoriDaftarAwam = akJanaanProfilPenerima.EnKategoriDaftarAwam,
+                                DDaftarAwamId = akJanaanProfilPenerima.DDaftarAwamId,
+                                DPekerjaId = akJanaanProfilPenerima.DPekerjaId,
+                                NoPendaftaranPenerima = akJanaanProfilPenerima.NoPendaftaranPenerima,
+                                NamaPenerima = akJanaanProfilPenerima.NamaPenerima,
+                                NoPendaftaranPemohon = akJanaanProfilPenerima.NoPendaftaranPemohon,
+                                JCaraBayarId = akJanaanProfilPenerima.JCaraBayarId,
+                                JBankId = akJanaanProfilPenerima.JBankId,
+                                NoAkaunBank = akJanaanProfilPenerima.NoAkaunBank,
+                                Alamat1 = akJanaanProfilPenerima.Alamat1,
+                                Alamat2 = akJanaanProfilPenerima.Alamat2,
+                                Alamat3 = akJanaanProfilPenerima.Alamat3,
+                                Emel = akJanaanProfilPenerima.Emel,
+                                KodM2E = akJanaanProfilPenerima.KodM2E,
+                                Amaun = akJanaanProfilPenerima.Amaun,
+                                NoRujukanMohon = akJanaanProfilPenerima.NoRujukanMohon,
+                                AkRekupId = akJanaanProfilPenerima.AkRekupId,
+                                Bil = bil
+                            });
+                            bil++;
+                        }
+                    }
+
+                    _context.Entry(objAsal).State = EntityState.Detached;
+
+                    akJanaanProfil.AkJanaanProfilPenerima = _cart.AkJanaanProfilPenerima?.ToList();
 
                     _unitOfWork.AkJanaanProfilRepo.Update(akJanaanProfil);
 

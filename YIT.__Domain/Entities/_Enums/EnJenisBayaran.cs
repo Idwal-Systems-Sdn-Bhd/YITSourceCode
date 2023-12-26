@@ -11,6 +11,8 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "Gaji")]
         Gaji = 2,
         [Display(Name = "Panjar")]
-        Panjar = 3
+        Panjar = 3,
+        [Display(Name = "Janaan Profil")]
+        JanaanProfil = 4
     }
 }

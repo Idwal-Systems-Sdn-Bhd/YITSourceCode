@@ -16,7 +16,7 @@
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="Tahun" class="control-label"></label>
-            <input asp-for="Tahun" class="form-control form-control-sm"  readonly />
+            <input asp-for="Tahun" class="form-control form-control-sm" readonly />
         </div>
     </div>
     <div class="col-md-4">
@@ -68,13 +68,13 @@
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="EnJenisBayaran" class="control-label"></label>
-            <input value="@Model.EnJenisBayaran.GetDisplayName() " class="form-control form-control-sm" readonly />
+            <input value="@Model.EnJenisBayaran.GetDisplayName() " class="form-control form-control-sm text-uppercase" readonly />
         </div>
     </div>
     <div class="col-md-8">
         <div class="form-group">
             <label asp-for="NamaPenerima" class="control-label"></label>
-            <input asp-for="NamaPenerima" class="form-control form-control-sm" readonly />
+            <input asp-for="NamaPenerima" class="form-control form-control-sm text-uppercase" readonly />
         </div>
     </div>
 </div>
@@ -84,6 +84,12 @@
     <textarea asp-for="Ringkasan" class="form-control form-control-sm text-uppercase" readonly rows="2"></textarea>
 </div>
 
+@*div janaan profil*@
+<div class="form-group" id="divAkJanaanProfil" @ViewBag.DivJanaanProfil>
+    <label asp-for="AkJanaanProfilId" class="control-label"></label>
+    <input class="form-control form-control-sm text-uppercase" value="@Model.AkJanaanProfil?.Tarikh.ToString("dd/MM/yyyy") - @Model.AkJanaanProfil?.NoRujukan"/>
+</div>
+@*div end*@
 
 @*end*@
 <br />
@@ -165,7 +171,7 @@
     <div class="card-footer">
         <div class="form-group">
             <label asp-for="Jumlah" class="control-label">Jumlah Objek RM</label>
-            <input asp-for="Jumlah" class="form-control form-control-sm"  readonly />
+            <input asp-for="Jumlah" class="form-control form-control-sm" readonly />
         </div>
     </div>
 </div>
