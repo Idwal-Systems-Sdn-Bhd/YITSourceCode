@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._02Daftar;
@@ -40,11 +41,13 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? NoRujukanMohon { get; set; }
         public int? AkRekupId { get; set; }
         public AkRekup? AkRekup { get; set; }
-        public int? AkPanjarId { get; set; }
-        public AkPanjar? AkPanjar { get; set; }
+        public int? DPanjarId { get; set; }
+        public DPanjar? DPanjar { get; set; }
         public bool IsCekDitunaikan { get; set; }
         public DateTime? TarikhCekDitunaikan { get; set; }
         public EnStatusProses EnStatusEFT { get; set; }
         public int? Bil { get; set; }
+        [Display(Name = "Jenis Id")]
+        public EnJenisId EnJenisId { get; set; }
     }
 }

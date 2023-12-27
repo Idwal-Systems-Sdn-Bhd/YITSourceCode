@@ -52,7 +52,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<AkBelian>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkNotaDebitKreditDiterima>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkPV>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
-            modelBuilder.Entity<AkPanjar>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<DPanjar>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkJanaanProfil>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkCV>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkEFT>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
@@ -488,27 +488,27 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
             modelBuilder.Entity<AkRekup>()
-                    .HasOne(m => m.AkPanjar)
+                    .HasOne(m => m.DPanjar)
                     .WithMany(t => t.AkRekup)
-                    .HasForeignKey(m => m.AkPanjarId)
+                    .HasForeignKey(m => m.DPanjarId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
-            modelBuilder.Entity<AkPemegangPanjar>()
-                    .HasOne(m => m.AkPanjar)
-                    .WithMany(t => t.AkPemegangPanjar)
-                    .HasForeignKey(m => m.AkPanjarId)
+            modelBuilder.Entity<DPanjarPemegang>()
+                    .HasOne(m => m.DPanjar)
+                    .WithMany(t => t.DPanjarPemegang)
+                    .HasForeignKey(m => m.DPanjarId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
-            modelBuilder.Entity<AkPemegangPanjar>()
+            modelBuilder.Entity<DPanjarPemegang>()
                     .HasOne(m => m.DPekerja)
-                    .WithMany(t => t.AkPemegangPanjar)
+                    .WithMany(t => t.DPanjarPemegang)
                     .HasForeignKey(m => m.DPekerjaId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
             modelBuilder.Entity<AkPanjarLejar>()
-                    .HasOne(m => m.AkPanjar)
+                    .HasOne(m => m.DPanjar)
                     .WithMany(t => t.AkPanjarLejar)
-                    .HasForeignKey(m => m.AkPanjarId)
+                    .HasForeignKey(m => m.DPanjarId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
             modelBuilder.Entity<AkNotaDebitKreditDiterimaObjek>()

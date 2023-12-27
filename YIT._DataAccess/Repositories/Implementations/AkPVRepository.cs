@@ -98,6 +98,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ThenInclude(t => t!.DPekerja)
                 .Include(t => t.DPelulus)
                     .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.AkJanaanProfil)
                 .Include(t => t.SuGajiBulanan)
                     .ThenInclude(t => t!.SuGajiBulananPekerja)!
                         .ThenInclude(t => t.SuGajiElaunPotongan)!
@@ -126,7 +127,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkPVPenerima)!
                     .ThenInclude(t => t.JBank)
                 .Include(t => t.AkPVPenerima)!
-                    .ThenInclude(t => t.AkPanjar)
+                    .ThenInclude(t => t.DPanjar)
                 .Include(t => t.AkPVPenerima)!
                     .ThenInclude(t => t.AkRekup)
                 .FirstOrDefault(pp => pp.Id == id) ?? new AkPV();
@@ -167,25 +168,25 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ThenInclude(t => t!.DPekerja)
                 .Include(t => t.DPelulus)
                     .ThenInclude(t => t!.DPekerja)
-                .Include(t => t.SuGajiBulanan)
-                    .ThenInclude(t => t!.SuGajiBulananPekerja)!
-                        .ThenInclude(t => t.SuGajiElaunPotongan)!
-                            .ThenInclude(t => t.JElaunPotongan)
-                .Include(t => t.AkPVObjek)!
-                    .ThenInclude(to => to.AkCarta)
-                .Include(t => t.AkPVObjek)!
-                    .ThenInclude(to => to.JKWPTJBahagian)
-                        .ThenInclude(b => b!.JKW)
-                .Include(t => t.AkPVObjek)!
-                    .ThenInclude(to => to.JKWPTJBahagian)
-                        .ThenInclude(b => b!.JPTJ)
-                .Include(t => t.AkPVObjek)!
-                    .ThenInclude(to => to.JKWPTJBahagian)
-                        .ThenInclude(b => b!.JBahagian)
-                .Include(t => t.AkPVObjek)!
-                    .ThenInclude(t => t.JCukai)
-                .Include(t => t.AkPVInvois)!
-                    .ThenInclude(t => t.AkBelian)
+                //.Include(t => t.SuGajiBulanan)
+                //    .ThenInclude(t => t!.SuGajiBulananPekerja)!
+                //        .ThenInclude(t => t.SuGajiElaunPotongan)!
+                //            .ThenInclude(t => t.JElaunPotongan)
+                //.Include(t => t.AkPVObjek)!
+                //    .ThenInclude(to => to.AkCarta)
+                //.Include(t => t.AkPVObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JKW)
+                //.Include(t => t.AkPVObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JPTJ)
+                //.Include(t => t.AkPVObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JBahagian)
+                //.Include(t => t.AkPVObjek)!
+                //    .ThenInclude(t => t.JCukai)
+                //.Include(t => t.AkPVInvois)!
+                //    .ThenInclude(t => t.AkBelian)
                     .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
                 .ToList();
 

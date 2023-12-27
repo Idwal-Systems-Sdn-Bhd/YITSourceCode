@@ -58,5 +58,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public DateTime? JangkaMasaHingga { get; set; }
         [DisplayName("Kod M2E")]
         public string? KodM2E { get; set; }
+        [Display(Name = "Jenis Id")]
+        public EnJenisId EnJenisId { get; set; }
     }
 }

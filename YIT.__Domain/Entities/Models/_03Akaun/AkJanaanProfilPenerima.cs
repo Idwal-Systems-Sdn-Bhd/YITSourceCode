@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -42,6 +43,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? NoRujukanMohon { get; set; }
         public int? AkRekupId { get; set; }
         public AkRekup? AkRekup { get; set; }
+        [Display(Name = "Jenis Id")]
+        public EnJenisId EnJenisId { get; set; }
         public ICollection<AkPVPenerima>? AkPVPenerima { get; set; }
     }
 }

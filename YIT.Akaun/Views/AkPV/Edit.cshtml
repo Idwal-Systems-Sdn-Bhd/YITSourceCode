@@ -613,9 +613,9 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label">No Panjar</label>
-                            <select id="moPenerimaAkPanjarId" class="form-control form-control-sm text-uppercase" >
+                            <select id="moPenerimaDPanjarId" class="form-control form-control-sm text-uppercase" >
                                 <option value="">- SILA PILIH -</option>
-                                @foreach (var item in ViewBag.AkPanjar)
+                                @foreach (var item in ViewBag.DPanjar)
                                 {
                                     <option value="@item.id">@item.JCawangan?.Kod (@item.AkCarta?.Kod)</option>
                                 }

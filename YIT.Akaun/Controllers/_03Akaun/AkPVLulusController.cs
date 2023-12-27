@@ -182,7 +182,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                                           item.Amaun,
                                           item.NoRujukanMohon,
                                           item.AkRekupId,
-                                          item.AkPanjarId,
+                                          item.DPanjarId,
                                           item.IsCekDitunaikan,
                                           item.TarikhCekDitunaikan,
                                           item.EnStatusEFT,

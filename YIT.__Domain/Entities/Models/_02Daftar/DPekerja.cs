@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities._Enums;
-using YIT.__Domain.Entities.Models._03Akaun;
 using YIT.__Domain.Entities.Models._04Sumber;
 
 namespace YIT.__Domain.Entities.Models._02Daftar
@@ -85,13 +84,14 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public int JCawanganId { get; set; }
         public JCawangan? JCawangan { get; set; }
         public ICollection<DPenyelia>? DPenyelia { get; set; }
-        public EnJenisKadPengenalan EnJenisKadPengenalan { get; set; }
         [DisplayName("PTJ")]
         public int JPTJId { get; set; }
         public JPTJ? JPTJ { get; set; }
+        [Display(Name = "Jenis Id")]
+        public EnJenisId EnJenisId { get; set; }
         public ICollection<DPekerjaElaunPotongan>? DPekerjaElaunPotongan { get; set; }
         public ICollection<SuGajiBulananPekerja>? SuGajiBulananPekerja { get; set; }
-        public ICollection<AkPemegangPanjar>? AkPemegangPanjar { get; set; }
+        public ICollection<DPanjarPemegang>? DPanjarPemegang { get; set; }
 
 
     }

@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using YIT.__Domain.Entities.Models._02Daftar;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
     public class AkPanjarLejar
     {
         public int Id { get; set; }
-        public int AkPanjarId { get; set; }
-        public AkPanjar? AkPanjar { get; set; }
+        public int DPanjarId { get; set; }
+        public DPanjar? DPanjar { get; set; }
         public int? AkCVId { get; set; }
         public AkCV? AkCV { get; set; }
         public int? AkPVId { get; set; }

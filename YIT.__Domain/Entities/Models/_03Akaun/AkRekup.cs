@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using YIT.__Domain.Entities.Models._02Daftar;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
@@ -8,7 +9,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? NoRujukan { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Jumlah { get; set; }
-        public int AkPanjarId { get; set; }
-        public AkPanjar? AkPanjar { get; set; }
+        public int DPanjarId { get; set; }
+        public DPanjar? DPanjar { get; set; }
     }
 }

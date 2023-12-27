@@ -71,6 +71,8 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         [DisplayName("Kod M2E")]
         public string? KodM2E { get; set; }
         public string? KodLama { get; set; } // dummy field; for migration purpos;e
+        [Display(Name = "Jenis Id")]
+        public EnJenisId EnJenisId { get; set; }
         public virtual ICollection<AkInden>? AkInden { get; set; }
         public virtual ICollection<AkPO>? AkPO { get; set; }
     }
