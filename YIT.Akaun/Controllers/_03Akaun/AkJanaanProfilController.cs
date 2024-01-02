@@ -138,6 +138,9 @@ namespace YIT.Akaun.Controllers._03Akaun
             var jenisModulProfil = EnumHelper<EnJenisModulProfil>.GetList();
 
             ViewBag.EnJenisModulProfil = jenisModulProfil;
+
+            var jenisId = EnumHelper<EnJenisId>.GetList();
+            ViewBag.EnJenisId = jenisId;
         }
 
         private string GenerateRunningNumber(string initNoRujukan, string tahun)
@@ -463,7 +466,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                           item.KodM2E,
                                           item.Amaun,
                                           item.NoRujukanMohon,
-                                          item.AkRekupId);
+                                          item.AkRekupId,
+                                          item.EnJenisId);
                 }
             }
             PopulateListViewFromCart();
@@ -584,6 +588,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akJanaanProfilPenerima.Emel = akJanaanProfilPenerima.Emel ?? dDaftarAwam.Emel;
                             akJanaanProfilPenerima.KodM2E = akJanaanProfilPenerima.KodM2E ?? dDaftarAwam.KodM2E;
                             akJanaanProfilPenerima.NoAkaunBank = akJanaanProfilPenerima.NoAkaunBank ?? dDaftarAwam.NoAkaunBank;
+                            akJanaanProfilPenerima.EnJenisId = dDaftarAwam.EnJenisId;
                             break;
                         case EnKategoriDaftarAwam.Pekerja:
                             var dPekerja = _unitOfWork.DPekerjaRepo.GetAllDetailsById((int)akJanaanProfilPenerima.DPekerjaId!);
@@ -597,6 +602,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akJanaanProfilPenerima.Emel = akJanaanProfilPenerima.Emel ?? dPekerja.Emel;
                             akJanaanProfilPenerima.KodM2E = akJanaanProfilPenerima.KodM2E ?? dPekerja.KodM2E;
                             akJanaanProfilPenerima.NoAkaunBank = akJanaanProfilPenerima.NoAkaunBank ?? dPekerja.NoAkaunBank;
+                            akJanaanProfilPenerima.EnJenisId = dPekerja.EnJenisId;
                             break;
                     }
                     if (akJanaanProfilPenerima.JCaraBayarId != 0)
@@ -615,10 +621,33 @@ namespace YIT.Akaun.Controllers._03Akaun
                                 }
                             }
 
-                            int bil = _cart.AkJanaanProfilPenerima.Count() + 1;
+                            int? bil = _cart.AkJanaanProfilPenerima.OrderByDescending(b => b.Bil).Max()?.Bil ?? 0;
 
-                            _cart.AddItemPenerima(akJanaanProfilPenerima.Id, bil,akJanaanProfilPenerima.AkJanaanProfilId, akJanaanProfilPenerima.EnKategoriDaftarAwam, akJanaanProfilPenerima.DPenerimaZakatId,
-                                akJanaanProfilPenerima.DDaftarAwamId, akJanaanProfilPenerima.DPekerjaId, akJanaanProfilPenerima.NoPendaftaranPenerima, akJanaanProfilPenerima.NamaPenerima, akJanaanProfilPenerima.NoPendaftaranPemohon, akJanaanProfilPenerima.Catatan, akJanaanProfilPenerima.JCaraBayarId, akJanaanProfilPenerima.JBankId, akJanaanProfilPenerima.NoAkaunBank, akJanaanProfilPenerima.Alamat1, akJanaanProfilPenerima.Alamat2, akJanaanProfilPenerima.Alamat3, akJanaanProfilPenerima.Emel, akJanaanProfilPenerima.KodM2E, akJanaanProfilPenerima.Amaun, akJanaanProfilPenerima.NoRujukanMohon, akJanaanProfilPenerima.AkRekupId);
+                            bil += 1;
+
+                            _cart.AddItemPenerima(akJanaanProfilPenerima.Id,
+                                                  bil,
+                                                  akJanaanProfilPenerima.AkJanaanProfilId,
+                                                  akJanaanProfilPenerima.EnKategoriDaftarAwam,
+                                                  akJanaanProfilPenerima.DPenerimaZakatId,
+                                                  akJanaanProfilPenerima.DDaftarAwamId,
+                                                  akJanaanProfilPenerima.DPekerjaId,
+                                                  akJanaanProfilPenerima.NoPendaftaranPenerima,
+                                                  akJanaanProfilPenerima.NamaPenerima,
+                                                  akJanaanProfilPenerima.NoPendaftaranPemohon,
+                                                  akJanaanProfilPenerima.Catatan,
+                                                  akJanaanProfilPenerima.JCaraBayarId,
+                                                  akJanaanProfilPenerima.JBankId,
+                                                  akJanaanProfilPenerima.NoAkaunBank,
+                                                  akJanaanProfilPenerima.Alamat1,
+                                                  akJanaanProfilPenerima.Alamat2,
+                                                  akJanaanProfilPenerima.Alamat3,
+                                                  akJanaanProfilPenerima.Emel,
+                                                  akJanaanProfilPenerima.KodM2E,
+                                                  akJanaanProfilPenerima.Amaun,
+                                                  akJanaanProfilPenerima.NoRujukanMohon,
+                                                  akJanaanProfilPenerima.AkRekupId,
+                                                  akJanaanProfilPenerima.EnJenisId);
                         }
                         else
                         {
@@ -697,6 +726,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akJanaanProfilPenerima.Emel = akJanaanProfilPenerima.Emel ?? dDaftarAwam.Emel;
                             akJanaanProfilPenerima.KodM2E = akJanaanProfilPenerima.KodM2E ?? dDaftarAwam.KodM2E;
                             akJanaanProfilPenerima.NoAkaunBank = akJanaanProfilPenerima.NoAkaunBank ?? dDaftarAwam.NoAkaunBank;
+                            akJanaanProfilPenerima.EnJenisId = dDaftarAwam.EnJenisId;
                             break;
                         case EnKategoriDaftarAwam.Pekerja:
                             var dPekerja = _unitOfWork.DPekerjaRepo.GetAllDetailsById((int)akJanaanProfilPenerima.DPekerjaId!);
@@ -710,6 +740,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akJanaanProfilPenerima.Emel = akJanaanProfilPenerima.Emel ?? dPekerja.Emel;
                             akJanaanProfilPenerima.KodM2E = akJanaanProfilPenerima.KodM2E ?? dPekerja.KodM2E;
                             akJanaanProfilPenerima.NoAkaunBank = akJanaanProfilPenerima.NoAkaunBank ?? dPekerja.NoAkaunBank;
+                            akJanaanProfilPenerima.EnJenisId = dPekerja.EnJenisId;
                             break;
                     }
                     if (akJanaanProfilPenerima.JCaraBayarId != 0)
@@ -749,7 +780,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                                  akJanaanProfilPenerima.KodM2E,
                                                  akJanaanProfilPenerima.Amaun,
                                                  akJanaanProfilPenerima.NoRujukanMohon,
-                                                 akJanaanProfilPenerima.AkRekupId);
+                                                 akJanaanProfilPenerima.AkRekupId,
+                                                 akJanaanProfilPenerima.EnJenisId);
                         }
                         else
                         {

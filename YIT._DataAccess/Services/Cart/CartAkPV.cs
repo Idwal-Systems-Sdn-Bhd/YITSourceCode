@@ -107,7 +107,8 @@ namespace YIT._DataAccess.Services.Cart
             bool isCekDitunaikan,
             DateTime? tarikhCekDitunaikan,
             EnStatusProses enStatusEFT,
-            int? bil
+            int? bil,
+            EnJenisId enJenisId
             )
         {
             AkPVPenerima line = collectionPenerima.FirstOrDefault(pp => pp.Bil == bil)!;
@@ -145,7 +146,8 @@ namespace YIT._DataAccess.Services.Cart
                     IsCekDitunaikan = isCekDitunaikan,
                     TarikhCekDitunaikan = tarikhCekDitunaikan,
                     EnStatusEFT = enStatusEFT,
-                    Bil = bil
+                    Bil = bil,
+                    EnJenisId = enJenisId
                 });
             }
         }
@@ -179,7 +181,9 @@ namespace YIT._DataAccess.Services.Cart
             bool isCekDitunaikan,
             DateTime? tarikhCekDitunaikan,
             EnStatusProses enStatusEFT,
-            int bil)
+            int bil,
+            EnJenisId enJenisId
+            )
         {
             AkPVPenerima line = collectionPenerima.FirstOrDefault(pp => pp.Bil == bil)!;
 
@@ -217,7 +221,8 @@ namespace YIT._DataAccess.Services.Cart
                     IsCekDitunaikan = isCekDitunaikan,
                     TarikhCekDitunaikan = tarikhCekDitunaikan,
                     EnStatusEFT = enStatusEFT,
-                    Bil = bil
+                    Bil = bil,
+                    EnJenisId = enJenisId
                 });
 
             }

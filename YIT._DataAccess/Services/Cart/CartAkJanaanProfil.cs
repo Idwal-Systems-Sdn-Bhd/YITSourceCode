@@ -34,7 +34,8 @@ namespace YIT._DataAccess.Services.Cart
             string? kodM2E,
             decimal amaun,
             string? noRujukanMohon,
-            int? akRekupId
+            int? akRekupId,
+            EnJenisId enJenisId
             )
         {
             AkJanaanProfilPenerima line = collectionPenerima.FirstOrDefault(pp => pp.Bil == bil)!;
@@ -64,7 +65,8 @@ namespace YIT._DataAccess.Services.Cart
                     KodM2E = kodM2E,
                     Amaun = amaun,
                     NoRujukanMohon = noRujukanMohon,
-                    AkRekupId = akRekupId
+                    AkRekupId = akRekupId,
+                    EnJenisId = enJenisId
                 });
             }
         }
@@ -91,7 +93,8 @@ namespace YIT._DataAccess.Services.Cart
             string? kodM2E,
             decimal amaun,
             string? noRujukanMohon,
-            int? akRekupId
+            int? akRekupId,
+            EnJenisId enJenisId
             )
         {
             AkJanaanProfilPenerima line = collectionPenerima.FirstOrDefault(pp => pp.Bil == bil)!;
@@ -123,7 +126,8 @@ namespace YIT._DataAccess.Services.Cart
                     KodM2E = kodM2E,
                     Amaun = amaun,
                     NoRujukanMohon = noRujukanMohon,
-                    AkRekupId = akRekupId
+                    AkRekupId = akRekupId,
+                    EnJenisId = enJenisId
                 });
             }
         }

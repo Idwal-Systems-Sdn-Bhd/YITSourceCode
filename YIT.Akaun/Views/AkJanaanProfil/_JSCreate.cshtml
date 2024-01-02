@@ -197,6 +197,7 @@
         $("#moPenerimaKodM2E").val("");
         $("#moPenerimaAmaun").val(0);
         $("#moPenerimaRujukanMohon").val("");
+        $("#moPenerimaEnJenisId").val("");
     }
 
     function AddModalPenerima() {
@@ -219,6 +220,7 @@
         var kodM2E = $("#moPenerimaKodM2E").val();
         var amaun = $("#moPenerimaAmaun").val();
         var rujukanMohon = $("#moPenerimaRujukanMohon").val();
+        var enJenisId = $("#moPenerimaEnJenisId").val();
 
         var AkJanaanProfilPenerima = {
             Id: id,
@@ -239,7 +241,8 @@
             Emel: emel,
             KodM2E: kodM2E,
             Amaun: amaun,
-            RujukanMohon: rujukanMohon
+            RujukanMohon: rujukanMohon,
+            EnJenisId: enJenisId
         }
         $.ajax({
             type: "POST",
@@ -340,6 +343,7 @@
                     $("#moPenerimaKodM2E").val(r.record.kodM2E);
                     $("#moPenerimaAmaun").val(r.record.amaun);
                     $("#moPenerimaRujukanMohon").val(r.record.rujukanMohon);
+                    $("#moPenerimaEnJenisId").val(r.record.enJenisId).change();
 
                     //show modal penerima
                     $("#moPenerima").modal({ backdrop: 'static', keyboard: false });
@@ -350,70 +354,73 @@
     }
 
     function UpdateModalPenerima() {
-    var id = $("#moPenerimaId").val();
-    var bil = $("#moBil").val();
-    var akJanaanProfilId = $("#Id").val();
-    var enKategoriDaftarAwam = $("#moPenerimaEnKategoriDaftarAwam").val();
-    var dDaftarAwamId = $("#moPenerimaDDaftarAwamId").val();
-    var dPekerjaId = $("#moPenerimaDPekerjaId").val();
-    var noPendaftaranPenerima = $("#moPenerimaNoPendaftaranPenerima").val();
-    var namaPenerima = $("#moPenerimaNamaPenerima").val();
-    var noPendaftaranPemohon = $("#moPenerimaNoPendaftaranPemohon").val();
-    var catatan = $("#moPenerimaCatatan").val();
-    var jCaraBayarId = $("#moPenerimaJCaraBayarId").val();
-    var jBankId = $("#moPenerimaJBankId").val();
-    var noAkaunBank = $("#moPenerimaNoAkaunBank").val();
-    var alamat1 = $("#moPenerimaAlamat1").val();
-    var alamat2 = $("#moPenerimaAlamat2").val();
-    var alamat3 = $("#moPenerimaAlamat3").val();
-    var emel = $("#moPenerimaEmel").val();
-    var kodM2E = $("#moPenerimaKodM2E").val();
-    var noCek = $("#moPenerimaNoCek").val();
-    var tarikhCek = $("#moPenerimaTarikhCek").val();
-    var amaun = $("#moPenerimaAmaun").val();
-    var rujukanMohon = $("#moPenerimaRujukanMohon").val();
+        var id = $("#moPenerimaId").val();
+        var bil = $("#moBil").val();
+        var akJanaanProfilId = $("#Id").val();
+        var enKategoriDaftarAwam = $("#moPenerimaEnKategoriDaftarAwam").val();
+        var dDaftarAwamId = $("#moPenerimaDDaftarAwamId").val();
+        var dPekerjaId = $("#moPenerimaDPekerjaId").val();
+        var noPendaftaranPenerima = $("#moPenerimaNoPendaftaranPenerima").val();
+        var namaPenerima = $("#moPenerimaNamaPenerima").val();
+        var noPendaftaranPemohon = $("#moPenerimaNoPendaftaranPemohon").val();
+        var catatan = $("#moPenerimaCatatan").val();
+        var jCaraBayarId = $("#moPenerimaJCaraBayarId").val();
+        var jBankId = $("#moPenerimaJBankId").val();
+        var noAkaunBank = $("#moPenerimaNoAkaunBank").val();
+        var alamat1 = $("#moPenerimaAlamat1").val();
+        var alamat2 = $("#moPenerimaAlamat2").val();
+        var alamat3 = $("#moPenerimaAlamat3").val();
+        var emel = $("#moPenerimaEmel").val();
+        var kodM2E = $("#moPenerimaKodM2E").val();
+        var noCek = $("#moPenerimaNoCek").val();
+        var tarikhCek = $("#moPenerimaTarikhCek").val();
+        var amaun = $("#moPenerimaAmaun").val();
+        var rujukanMohon = $("#moPenerimaRujukanMohon").val();
+        var enJenisId = $("#moPenerimaEnJenisId").val();
 
-    var AkJanaanProfilPenerima = {
-        Id: id,
-        Bil: bil,
-        AkJanaanProfilId: akJanaanProfilId,
-        EnKategoriDaftarAwam: enKategoriDaftarAwam,
-        DDaftarAwamId: dDaftarAwamId,
-        DPekerjaId: dPekerjaId,
-        NoPendaftaranPenerima: noPendaftaranPenerima,
-        NamaPenerima: namaPenerima,
-        NoPendaftaranPemohon: noPendaftaranPemohon,
-        Catatan: catatan,
-        JCarabayarId: jCaraBayarId,
-        JBankId: jBankId,
-        NoAkaunBank: noAkaunBank,
-        Alamat1: alamat1,
-        Alamat2: alamat2,
-        Alamat3: alamat3,
-        Emel: emel,
-        KodM2E: kodM2E,
-        NoCek: noCek,
-        TarikhCek: tarikhCek,
-        Amaun: amaun,
-        RujukanMohon: rujukanMohon
-    }
-    $.ajax({
-        type: "POST",
-        url: '@Url.Action("SaveAnItemFromCartAkJanaanProfilPenerima", "AkJanaanProfil")',
-        data: AkJanaanProfilPenerima,
-        dataType: "json",
-        success: function (msg) {
-            if (msg.result == "OK") {
-                //insert notification here
-                ClearFieldsModalPenerima();
-                PopulateTablesFromCart();
-            }
-            else {
-                toastr.error(msg.message);
-                toastr.options.timeOut = 2000; // 2s
-            }
+
+        var AkJanaanProfilPenerima = {
+            Id: id,
+            Bil: bil,
+            AkJanaanProfilId: akJanaanProfilId,
+            EnKategoriDaftarAwam: enKategoriDaftarAwam,
+            DDaftarAwamId: dDaftarAwamId,
+            DPekerjaId: dPekerjaId,
+            NoPendaftaranPenerima: noPendaftaranPenerima,
+            NamaPenerima: namaPenerima,
+            NoPendaftaranPemohon: noPendaftaranPemohon,
+            Catatan: catatan,
+            JCarabayarId: jCaraBayarId,
+            JBankId: jBankId,
+            NoAkaunBank: noAkaunBank,
+            Alamat1: alamat1,
+            Alamat2: alamat2,
+            Alamat3: alamat3,
+            Emel: emel,
+            KodM2E: kodM2E,
+            NoCek: noCek,
+            TarikhCek: tarikhCek,
+            Amaun: amaun,
+            RujukanMohon: rujukanMohon,
+            EnJensId: enJenisId
         }
-    });
-}
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveAnItemFromCartAkJanaanProfilPenerima", "AkJanaanProfil")',
+            data: AkJanaanProfilPenerima,
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result == "OK") {
+                    //insert notification here
+                    ClearFieldsModalPenerima();
+                    PopulateTablesFromCart();
+                }
+                else {
+                    toastr.error(msg.message);
+                    toastr.options.timeOut = 2000; // 2s
+                }
+            }
+        });
+    }
     //
 </script>

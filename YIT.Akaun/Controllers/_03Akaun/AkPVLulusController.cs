@@ -186,7 +186,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                           item.IsCekDitunaikan,
                                           item.TarikhCekDitunaikan,
                                           item.EnStatusEFT,
-                                          item.Bil);
+                                          item.Bil,
+                                          item.EnJenisId);
                 }
             }
             PopulateListViewFromCart();

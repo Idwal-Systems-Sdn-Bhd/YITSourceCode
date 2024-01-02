@@ -681,6 +681,9 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             ViewBag.EnKategoriDaftarAwam = kategoriDaftarAwam;
 
+            var jenisId = EnumHelper<EnJenisId>.GetList();
+
+            ViewBag.EnJenisId = jenisId;
 
             //ViewBag.SuGajiBulanan = _context.SuGajiBulanan.ToList();
         }
@@ -743,7 +746,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                           item.IsCekDitunaikan,
                                           item.TarikhCekDitunaikan,
                                           item.EnStatusEFT,
-                                          item.Bil);
+                                          item.Bil,
+                                          item.EnJenisId);
                 }
             }
             PopulateListViewFromCart();
@@ -1043,7 +1047,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                               false,
                                               null,
                                               EnStatusProses.None,
-                                              bil);
+                                              bil,
+                                              data.DDaftarAwam?.EnJenisId ?? EnJenisId.None);
                         }
                         else
                         {
@@ -1075,7 +1080,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                               false,
                                               null,
                                               EnStatusProses.None,
-                                              bil);
+                                              bil,
+                                              data.DDaftarAwam?.EnJenisId ?? EnJenisId.None);
                         }
                         
 
@@ -1191,7 +1197,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                                   false,
                                                   null,
                                                   EnStatusProses.None,
-                                                  bil);
+                                                  bil,
+                                                  data.DDaftarAwam?.EnJenisId ?? EnJenisId.None);
                             }
                             else
                             {
@@ -1340,7 +1347,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                           false,
                                           null,
                                           EnStatusProses.None,
-                                          currentPenerima.Bil);
+                                          currentPenerima.Bil,
+                                          akBelian.DDaftarAwam?.EnJenisId ?? EnJenisId.None);
                     }
                     //
                 }
@@ -1453,7 +1461,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             int bil = 1;
                             foreach( var item in data.AkJanaanProfilPenerima)
                             {
-                                _cart.AddItemPenerima(0, akPVId, item.Id, item.EnKategoriDaftarAwam, item.DDaftarAwamId, item.DPekerjaId, item.NoPendaftaranPenerima, item.NamaPenerima, item.NoPendaftaranPemohon, item.Catatan, null, item.JCaraBayarId, item.JBankId, item.NoAkaunBank, item.Alamat1, item.Alamat2, item.Alamat3, item.Emel, item.KodM2E, null, null, item.Amaun, item.NoRujukanMohon, item.AkRekupId, null, false, null, EnStatusProses.None, bil);
+                                _cart.AddItemPenerima(0, akPVId, item.Id, item.EnKategoriDaftarAwam, item.DDaftarAwamId, item.DPekerjaId, item.NoPendaftaranPenerima, item.NamaPenerima, item.NoPendaftaranPemohon, item.Catatan, null, item.JCaraBayarId, item.JBankId, item.NoAkaunBank, item.Alamat1, item.Alamat2, item.Alamat3, item.Emel, item.KodM2E, null, null, item.Amaun, item.NoRujukanMohon, item.AkRekupId, null, false, null, EnStatusProses.None, item.Bil, item.EnJenisId);
 
                                 bil++;
                             }
@@ -1503,6 +1511,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akPVPenerima.Emel = akPVPenerima.Emel ?? dDaftarAwam.Emel;
                             akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? dDaftarAwam.KodM2E;
                             akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? dDaftarAwam.NoAkaunBank;
+                            akPVPenerima.EnJenisId = dDaftarAwam.EnJenisId;
                             break;
                         case EnKategoriDaftarAwam.Pekerja:
                             var dPekerja = _unitOfWork.DPekerjaRepo.GetAllDetailsById((int)akPVPenerima.DPekerjaId!);
@@ -1516,6 +1525,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akPVPenerima.Emel = akPVPenerima.Emel ?? dPekerja.Emel;
                             akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? dPekerja.KodM2E;
                             akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? dPekerja.NoAkaunBank;
+                            akPVPenerima.EnJenisId = dPekerja.EnJenisId;
                             break;
                     }
                     if (akPVPenerima.JCaraBayarId != 0)
@@ -1534,10 +1544,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                                 }
                             }
 
-                            int bil = _cart.AkPVPenerima.Count() + 1;
+                            int? bil = _cart.AkPVPenerima.OrderByDescending(b => b.Bil).Max()?.Bil ?? 0;
+
+                            bil += 1;
 
                             _cart.AddItemPenerima(akPVPenerima.Id, akPVPenerima.AkPVId, akPVPenerima.AkJanaanProfilPenerimaId, akPVPenerima.EnKategoriDaftarAwam,
-                                akPVPenerima.DDaftarAwamId, akPVPenerima.DPekerjaId, akPVPenerima.NoPendaftaranPenerima, akPVPenerima.NamaPenerima, akPVPenerima.NoPendaftaranPemohon, akPVPenerima.Catatan, akPVPenerima.AkEFTPenerimaId, akPVPenerima.JCaraBayarId, akPVPenerima.JBankId, akPVPenerima.NoAkaunBank, akPVPenerima.Alamat1, akPVPenerima.Alamat2, akPVPenerima.Alamat3, akPVPenerima.Emel, akPVPenerima.KodM2E, akPVPenerima.NoCek, akPVPenerima.TarikhCek, akPVPenerima.Amaun, akPVPenerima.NoRujukanMohon, akPVPenerima.AkRekupId, akPVPenerima.DPanjarId, akPVPenerima.IsCekDitunaikan, akPVPenerima.TarikhCekDitunaikan, EnStatusProses.None, bil);
+                                akPVPenerima.DDaftarAwamId, akPVPenerima.DPekerjaId, akPVPenerima.NoPendaftaranPenerima, akPVPenerima.NamaPenerima, akPVPenerima.NoPendaftaranPemohon, akPVPenerima.Catatan, akPVPenerima.AkEFTPenerimaId, akPVPenerima.JCaraBayarId, akPVPenerima.JBankId, akPVPenerima.NoAkaunBank, akPVPenerima.Alamat1, akPVPenerima.Alamat2, akPVPenerima.Alamat3, akPVPenerima.Emel, akPVPenerima.KodM2E, akPVPenerima.NoCek, akPVPenerima.TarikhCek, akPVPenerima.Amaun, akPVPenerima.NoRujukanMohon, akPVPenerima.AkRekupId, akPVPenerima.DPanjarId, akPVPenerima.IsCekDitunaikan, akPVPenerima.TarikhCekDitunaikan, EnStatusProses.None, bil, akPVPenerima.EnJenisId);
                         }
                         else
                         {
@@ -1616,6 +1628,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akPVPenerima.Emel = akPVPenerima.Emel ?? dDaftarAwam.Emel;
                             akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? dDaftarAwam.KodM2E;
                             akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? dDaftarAwam.NoAkaunBank;
+                            akPVPenerima.EnJenisId = dDaftarAwam.EnJenisId;
                             break;
                         case EnKategoriDaftarAwam.Pekerja:
                             var dPekerja = _unitOfWork.DPekerjaRepo.GetAllDetailsById((int)akPVPenerima.DPekerjaId!);
@@ -1629,6 +1642,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akPVPenerima.Emel = akPVPenerima.Emel ?? dPekerja.Emel;
                             akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? dPekerja.KodM2E;
                             akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? dPekerja.NoAkaunBank;
+                            akPVPenerima.EnJenisId = dPekerja.EnJenisId;
                             break;
                     }
                     if (akPVPenerima.JCaraBayarId != 0)
@@ -1675,7 +1689,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                                  akPVPenerima.IsCekDitunaikan,
                                                  akPVPenerima.TarikhCekDitunaikan,
                                                  akPVPenerima.EnStatusEFT,
-                                                 (int)akPVPenerima.Bil);
+                                                 (int)akPVPenerima.Bil,
+                                                 akPVPenerima.EnJenisId);
                         }
                         else
                         {
