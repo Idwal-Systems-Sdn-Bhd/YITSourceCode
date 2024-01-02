@@ -22,8 +22,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? NamaPenerima { get; set; }
         public string? NoPendaftaranPemohon { get; set; }
         public string? Catatan { get; set; }
-        public int? AkEFTPenerimaId { get; set; }
-        public AkEFTPenerima? AkEFTPenerima { get; set; }
         public int JCaraBayarId { get; set; }
         public JCaraBayar? JCaraBayar { get; set; }
         public int? JBankId { get; set; }
@@ -49,5 +47,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int? Bil { get; set; }
         [Display(Name = "Jenis Id")]
         public EnJenisId EnJenisId { get; set; }
+        public ICollection<AkEFTPenerima>? AkEFTPenerima { get; set; }
     }
 }

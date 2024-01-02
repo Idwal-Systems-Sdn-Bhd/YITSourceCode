@@ -168,7 +168,6 @@ namespace YIT.Akaun.Controllers._03Akaun
                                           item.NamaPenerima,
                                           item.NoPendaftaranPemohon,
                                           item.Catatan,
-                                          item.AkEFTPenerimaId,
                                           item.JCaraBayarId,
                                           item.JBankId,
                                           item.NoAkaunBank,

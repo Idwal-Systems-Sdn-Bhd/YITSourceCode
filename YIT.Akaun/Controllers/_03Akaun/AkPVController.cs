@@ -728,7 +728,6 @@ namespace YIT.Akaun.Controllers._03Akaun
                                           item.NamaPenerima,
                                           item.NoPendaftaranPemohon,
                                           item.Catatan,
-                                          item.AkEFTPenerimaId,
                                           item.JCaraBayarId,
                                           item.JBankId,
                                           item.NoAkaunBank,
@@ -1029,7 +1028,6 @@ namespace YIT.Akaun.Controllers._03Akaun
                                               data.DDaftarAwam?.Nama,
                                               "",
                                               data.Ringkasan,
-                                              null,
                                               0,
                                               data.DDaftarAwam?.JBankId,
                                               data.DDaftarAwam?.NoAkaunBank,
@@ -1062,7 +1060,6 @@ namespace YIT.Akaun.Controllers._03Akaun
                                               data.DDaftarAwam?.Nama,
                                               "",
                                               data.Ringkasan,
-                                              null,
                                               0,
                                               data.DDaftarAwam?.JBankId,
                                               data.DDaftarAwam?.NoAkaunBank,
@@ -1179,7 +1176,6 @@ namespace YIT.Akaun.Controllers._03Akaun
                                                   data.DDaftarAwam?.Nama,
                                                   "",
                                                   data.Ringkasan,
-                                                  null,
                                                   0,
                                                   data.DDaftarAwam?.JBankId,
                                                   data.DDaftarAwam?.NoAkaunBank,
@@ -1329,7 +1325,6 @@ namespace YIT.Akaun.Controllers._03Akaun
                                           akBelian.DDaftarAwam?.Nama,
                                           "",
                                           akBelian.Ringkasan,
-                                          null,
                                           0,
                                           akBelian.DDaftarAwam?.JBankId,
                                           akBelian.DDaftarAwam?.NoAkaunBank,
@@ -1461,7 +1456,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             int bil = 1;
                             foreach( var item in data.AkJanaanProfilPenerima)
                             {
-                                _cart.AddItemPenerima(0, akPVId, item.Id, item.EnKategoriDaftarAwam, item.DDaftarAwamId, item.DPekerjaId, item.NoPendaftaranPenerima, item.NamaPenerima, item.NoPendaftaranPemohon, item.Catatan, null, item.JCaraBayarId, item.JBankId, item.NoAkaunBank, item.Alamat1, item.Alamat2, item.Alamat3, item.Emel, item.KodM2E, null, null, item.Amaun, item.NoRujukanMohon, item.AkRekupId, null, false, null, EnStatusProses.None, item.Bil, item.EnJenisId);
+                                _cart.AddItemPenerima(0, akPVId, item.Id, item.EnKategoriDaftarAwam, item.DDaftarAwamId, item.DPekerjaId, item.NoPendaftaranPenerima, item.NamaPenerima, item.NoPendaftaranPemohon, item.Catatan, item.JCaraBayarId, item.JBankId, item.NoAkaunBank, item.Alamat1, item.Alamat2, item.Alamat3, item.Emel, item.KodM2E, null, null, item.Amaun, item.NoRujukanMohon, item.AkRekupId, null, false, null, EnStatusProses.None, item.Bil, item.EnJenisId);
 
                                 bil++;
                             }
@@ -1549,7 +1544,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             bil += 1;
 
                             _cart.AddItemPenerima(akPVPenerima.Id, akPVPenerima.AkPVId, akPVPenerima.AkJanaanProfilPenerimaId, akPVPenerima.EnKategoriDaftarAwam,
-                                akPVPenerima.DDaftarAwamId, akPVPenerima.DPekerjaId, akPVPenerima.NoPendaftaranPenerima, akPVPenerima.NamaPenerima, akPVPenerima.NoPendaftaranPemohon, akPVPenerima.Catatan, akPVPenerima.AkEFTPenerimaId, akPVPenerima.JCaraBayarId, akPVPenerima.JBankId, akPVPenerima.NoAkaunBank, akPVPenerima.Alamat1, akPVPenerima.Alamat2, akPVPenerima.Alamat3, akPVPenerima.Emel, akPVPenerima.KodM2E, akPVPenerima.NoCek, akPVPenerima.TarikhCek, akPVPenerima.Amaun, akPVPenerima.NoRujukanMohon, akPVPenerima.AkRekupId, akPVPenerima.DPanjarId, akPVPenerima.IsCekDitunaikan, akPVPenerima.TarikhCekDitunaikan, EnStatusProses.None, bil, akPVPenerima.EnJenisId);
+                                akPVPenerima.DDaftarAwamId, akPVPenerima.DPekerjaId, akPVPenerima.NoPendaftaranPenerima, akPVPenerima.NamaPenerima, akPVPenerima.NoPendaftaranPemohon, akPVPenerima.Catatan, akPVPenerima.JCaraBayarId, akPVPenerima.JBankId, akPVPenerima.NoAkaunBank, akPVPenerima.Alamat1, akPVPenerima.Alamat2, akPVPenerima.Alamat3, akPVPenerima.Emel, akPVPenerima.KodM2E, akPVPenerima.NoCek, akPVPenerima.TarikhCek, akPVPenerima.Amaun, akPVPenerima.NoRujukanMohon, akPVPenerima.AkRekupId, akPVPenerima.DPanjarId, akPVPenerima.IsCekDitunaikan, akPVPenerima.TarikhCekDitunaikan, EnStatusProses.None, bil, akPVPenerima.EnJenisId);
                         }
                         else
                         {
@@ -1671,7 +1666,6 @@ namespace YIT.Akaun.Controllers._03Akaun
                                                  akPVPenerima.NamaPenerima,
                                                  akPVPenerima.NoPendaftaranPemohon,
                                                  akPVPenerima.Catatan,
-                                                 akPVPenerima.AkEFTPenerimaId,
                                                  akPVPenerima.JCaraBayarId,
                                                  akPVPenerima.JBankId,
                                                  akPVPenerima.NoAkaunBank,
