@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
@@ -918,5 +920,33 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return Json(new { result = "ERROR", message = ex.Message });
             }
         }
+
+        // printing akPenilaianPerolehan
+        [AllowAnonymous]
+        public async Task<IActionResult> PrintPDFById(int id)
+        {
+            AkInden akInden = _unitOfWork.AkIndenRepo.GetDetailsById(id);
+
+            var company = await _userServices.GetCompanyDetails();
+            EmptyCart();
+            PopulateCartAkIndenFromDb(akInden);
+            //string customSwitches = "--page-offset 0 --footer-center [page] / [toPage] --footer-font-size 6";
+
+            return new ViewAsPdf(modul + EnJenisFail.PDF, akInden,
+                new ViewDataDictionary(ViewData) {
+                    { "NamaSyarikat", company.NamaSyarikat },
+                    { "AlamatSyarikat1", company.AlamatSyarikat1 },
+                    { "AlamatSyarikat2", company.AlamatSyarikat2 },
+                    { "AlamatSyarikat3", company.AlamatSyarikat3 }
+                })
+            {
+                PageMargins = { Left = 15, Bottom = 10, Right = 15, Top = 10 },
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                //CustomSwitches = "--footer-center \"[page]/[toPage]\"" +
+                        //" --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+            };
+        }
+        // printing akPenilaianPerolehan end
     }
 }

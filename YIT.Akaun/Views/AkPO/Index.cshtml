@@ -91,6 +91,10 @@
                                                class="btn text-primary btn-sm bg-white" type="button"
                                                data-toggle="tooltip" data-placement="top"
                                                title="Ubah/Papar"><i class="fas fa-edit"></i></a>
+                                            <a asp-action="PrintPDFById" asp-route-id="@item.Id"
+                                               class="btn text-primary btn-sm bg-white" type="button"
+                                               data-toggle="tooltip" target="_blank" data-placement="top"
+                                               title="Cetak"><i class="fas fa-print"></i></a>
                                             @if (item.EnStatusBorang == EnStatusBorang.None)
                                             {
                                                 <a asp-action="Delete" asp-route-id="@item.Id"

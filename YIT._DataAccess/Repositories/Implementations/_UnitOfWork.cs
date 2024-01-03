@@ -19,6 +19,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             DPekerjaRepo = new DPekerjaRepository(_context);
             DDaftarAwamRepo = new DDaftarAwamRepository(_context);
             DKonfigKelulusanRepo = new DKonfigKelulusanRepository(_context);
+            DPenerimaCekGajiRepo = new DPenerimaCekGajiRepository(_context);
 
             JKWRepo = new JKWRepository(_context);
             JPTJRepo = new JPTJRepository(_context);
@@ -76,6 +77,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         public IDKonfigKelulusanRepository DKonfigKelulusanRepo {get; private set; }
 
         public IDDaftarAwamRepository DDaftarAwamRepo {get; private set; }
+        public IDPenerimaCekGajiRepository DPenerimaCekGajiRepo { get; private set; }
 
         public IAkCartaRepository AkCartaRepo {get; private set;}
 

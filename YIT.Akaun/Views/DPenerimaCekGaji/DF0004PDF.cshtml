@@ -1,0 +1,51 @@
+﻿@model DPenerimaCekGaji
+
+@{
+    ViewData["Title"] = "Cetakan Senarai Penerima Cek Gaji";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+}
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("hh:mm:ss tt")</p>
+    </div>
+</div>
+<br />
+
+<div class="form-group">
+    <table class="table table-borderless table-sm" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td style="padding-top:20px; font-size:14px">Kod</td> <td style="padding-top:20px">:</td><td style="padding-top:20px; font-size:14px"><strong>@Model.Kod</strong></td>
+            <td style="padding-top:20px; font-size:14px">KodM2E</td> <td style="padding-top:20px">:</td><td style="padding-top:20px; font-size:14px"><strong>@Model.DDaftarAwam?.KodM2E</strong></td>
+
+            </tr>
+            <tr>
+                <td style="padding-top:20px; font-size:14px">Nama</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.DDaftarAwam?.Nama</strong></td>
+                 <td style="padding-top:20px; font-size:14px">Emel</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.DDaftarAwam?.Emel</strong></td>
+            </tr>
+            
+            <tr>
+            <td style="padding-top:20px; font-size:14px">No Pendaftaran</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px;"><strong>@Model.DDaftarAwam?.NoPendaftaran</strong></td>
+                <td style="padding-top:20px; font-size:14px">Surat Nama</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.SuratNama</strong></td>
+                <td style="padding-top:20px; font-size:14px">Surat Jabatan</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.SuratJabatan</strong></td>
+            </tr>
+        <tr>
+             <td style="padding-top:20px; font-size:14px">Rujukan Kami</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.RujukanKami</strong></td>
+        </tr>
+            <tr>
+             <td style="padding-top:20px; font-size:14px">Alamat</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.DDaftarAwam?.Alamat1</strong> <br/> <strong>@Model.DDaftarAwam?.Alamat2</strong><br/><strong>@Model.DDaftarAwam?.Alamat3</strong></td>
+            </tr>
+        <tr>
+             <td style="padding-top:20px; font-size:14px">Kod Bank</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@ViewBag.JBank?.KodBNMEFT</strong></td>
+              <td style="padding-top:20px; font-size:14px">No Akaun Bank</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.DDaftarAwam?.NoAkaunBank</strong></td>
+        </tr>
+        <tr>
+              <td style="padding-top:20px; font-size:14px">Amaun (RM)</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.AmaunGaji</strong></td>
+        </tr>
+        </table>
+        </div>

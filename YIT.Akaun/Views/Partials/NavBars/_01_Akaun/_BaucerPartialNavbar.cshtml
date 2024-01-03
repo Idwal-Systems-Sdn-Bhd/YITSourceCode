@@ -4,12 +4,14 @@
     @Html.ActiveClass("AkJanaanProfil")
     @Html.ActiveClass("AkPV")
     @Html.ActiveClass("AkEFT")
-    @Html.ActiveClass("AkJurnal")" href="#submenuBaucer" data-toggle="collapse" data-target="#submenuBaucer"><img src="~/img/svg/baucer.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Baucer</span></a>
+    @Html.ActiveClass("AkJurnal")
+    @Html.ActiveClass("DPenerimaCekGaji")"href="#submenuBaucer" data-toggle="collapse" data-target="#submenuBaucer"><img src="~/img/svg/baucer.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Baucer</span></a>
     <div class="collapse" id="submenuBaucer" aria-expanded="false">
         <ul class="flex-column ps-2 nav">
             <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkJanaanProfil")" asp-controller="AkJanaanProfil" asp-action="Index"><span>Janaan Profil</span></a></li>
             <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkPV")" asp-controller="AkPV" asp-action="Index"><span>Baucer Pembayaran</span></a></li>
             <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkEFT")" asp-controller="AkEFT" asp-action="Index"><span>Maybank2E</span></a></li>
+            <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("DPenerimaCekGaji")" asp-controller="DPenerimaCekGaji" asp-action="Index"><span>Penerima Cek Gaji</span></a></li>
         </ul>
     </div>
 </li>

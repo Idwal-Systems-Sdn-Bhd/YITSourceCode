@@ -1,0 +1,138 @@
+﻿@model DPenerimaCekGaji
+
+@{
+    ViewData["Title"] = "Penerima Cek Gaji - Ubah";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card box-shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-primary mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah</span>
+            </div>
+            <div class="col-4 ">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="syscode" value="SPPB" hidden />
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Kod" class="control-label"></label>
+                        <input asp-for="Kod" class="form-control form-control-sm text-uppercase" required readonly />
+                        <span asp-validation-for="Kod" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Kod M2E</label>
+                        <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.KodM2E" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="DDaftarAwamId" class="control-label"></label>
+                        <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase select2" required>
+                            <option value="">- SILA PILIH -</option>
+                            @foreach (var item in ViewBag.DDaftarAwam)
+                            {
+                                <option value="@item.Id">@item.Kod - @item.Nama</option>
+                            }
+                        </select>
+                        <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Emel</label>
+                        <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.Emel" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">No Pendaftaran</label>
+                        <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.NoPendaftaran" readonly />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="SuratNama" class="control-label"></label>
+                        <input asp-for="SuratNama" class="form-control form-control-sm text-uppercase" />
+                        <span asp-validation-for="SuratNama" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="SuratJabatan" class="control-label"></label>
+                        <input asp-for="SuratJabatan" class="form-control form-control-sm text-uppercase" />
+                        <span asp-validation-for="SuratJabatan" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="RujukanKami" class="control-label"></label>
+                        <input asp-for="RujukanKami" class="form-control form-control-sm text-uppercase" />
+                        <span asp-validation-for="RujukanKami" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Alamat</label>
+                <input class="form-control form-control-sm mb-2 text-uppercase" value="@Model.DDaftarAwam?.Alamat1" readonly />
+                <input class="form-control form-control-sm mb-2 text-uppercase" value="@Model.DDaftarAwam?.Alamat2" readonly />
+                <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.Alamat3" readonly />
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Kod Bank</label>
+                        <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.JBank?.KodBNMEFT" readonly />
+                        <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">No Akaun Bank</label>
+                        <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.NoAkaunBank" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="AmaunGaji" class="control-label"></label>
+                        <input asp-for="AmaunGaji" class="form-control form-control-sm" />
+                        <span asp-validation-for="AmaunGaji" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Simpan" class="btn ac-primary btn-sm" />
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -88,7 +88,7 @@
                     <option value="0">- SILA PILIH -</option>
                     @foreach (var item in ViewBag.DDaftarAwam)
                     {
-                        <option value="@item.Id">@item.KodSyarikat - @item.NamaSyarikat</option>
+                        <option value="@item.Id">@item.Kod - @item.Nama</option>
                     }
                 </select>
                 <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>

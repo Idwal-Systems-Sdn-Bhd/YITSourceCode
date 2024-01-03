@@ -1,0 +1,166 @@
+﻿@model AkPenilaianPerolehan
+
+@{
+    ViewData["Title"] = "Cetakan Penilaian Perolehan";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal jumlahPerihal = 0;
+}
+
+<div class="row flexrow mb-1 text-center">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+        <p style="margin-top:2px">Kod Laporan: @Modules.kodAkPenilaianPerolehan - @Modules.namaAkPenilaianPerolehan</p>
+    </div>
+
+</div>
+<div class="form-group">
+    <p style="background-color:#020202; font-size:18px; color:#FFFFFF; padding-left:10px"><strong>BAHAGIAN A: MAKLUMAT PERMOHONAN PEROLEHAN</strong></p>
+</div>
+
+<div class="form-group">
+    <table>
+        <tr><td style="padding-bottom:10px; width:20%"><h4><strong>No Rujukan</strong></h4></td><td style="padding-bottom:10px; padding-left:10px">:</td><td style="padding-bottom:10px; padding-left:6px"><h4><strong> @Model.NoRujukan</strong></h4></td></tr>
+        <tr><td style="padding-bottom:10px; font-size: 14px">1. Tarikh</td><td style="padding-bottom:10px; font-size: 14px; padding-left:10px">:</td><td style="padding-bottom:10px; font-size: 14px; padding-left:6px"> @Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td></tr>
+        <tr><td style="padding-bottom:10px; font-size: 14px">2. Kump. Wang</td><td style="padding-bottom:10px; font-size: 14px; padding-left:10px">:</td><td style="padding-bottom:10px; font-size: 14px; padding-left:6px"> @BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal</td></tr>
+        <tr><td style="padding-bottom:10px; font-size: 14px">3. Tarikh Perlu</td><td style="padding-bottom:10px; font-size: 14px; padding-left:10px">:</td><td style="padding-bottom:10px; font-size: 14px; padding-left:6px"> @Convert.ToDateTime(Model.TarikhPerlu).ToString("dd/MM/yyyy")</td></tr>
+        <tr><td style="padding-bottom:5px; font-size: 14px">4. Justifikasi Pembelian</td><td style="padding-bottom:5px; font-size: 14px; padding-left:10px">:</td><td style="padding-bottom:5px; font-size: 14px; padding-left:6px"> @Model.Sebab</td></tr>
+    </table>
+</div>
+
+<div class="form-group">
+@*table Perihal*@
+        <table id="tblPerihal" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+            <thead>
+        <tr style="background-color:#07B2F3; padding-bottom:12px">
+                    <th style="width:10%; padding-left: 10px">Bil</th>
+                    <th style="width:40%">Perihal</th>
+                    <th style="width:10%">Ktt.</th>
+                    <th style="width:10%">Unit</th>
+                    <th style="width:10%">Hrg/Unit RM</th>
+                    <th style="width:20%">Amaun RM</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyPerihal">
+                @if (ViewBag.akPenilaianPerolehanPerihal != null)
+                {
+                    foreach (var item in ViewBag.akPenilaianPerolehanPerihal)
+                    {
+                <tr style="background-color:white">
+                            <td class="text-end" style="padding-left:10px">@item.Bil</td>
+                            <td class="text-uppercase">@item.Perihal</td>
+                            <td class="text-end">@item.Kuantiti</td>
+                            <td class="text-uppercase">@item.Unit</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Harga).ToString("#,##0.00")</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                        </tr>
+                        jumlahPerihal += item.Amaun;
+                    }
+
+                }
+            </tbody>
+    <tfoot>
+        <tr style="background-color:#07B2F3; color:white">
+            <th style="width:40%; text-align: center" colspan="5"><strong>Jumlah Perihal RM</strong></th>
+            <td class="text-end" style="margin-left:100px" name="perihalJumlah"><strong>@Convert.ToDecimal(jumlahPerihal).ToString("#,##0.00")</strong></td>
+        </tr>
+    </tfoot>
+       </table>
+     </div> 
+
+<div class="form-group">
+    <p style="background-color:#020202; font-size:18px; color:#FFFFFF; padding-left:10px"><strong>BAHAGIAN B: KAEDAH PEROLEHAN DAN MAKLUMAT PERUNTUKAN</strong></p>
+</div>
+<div class="form-group">
+    <table>
+        <tr><td style="padding-bottom:5px; font-size: 14px">5. Kaedah Perolehan</td><td style="padding-bottom:5px; font-size: 16px; padding-left:15px">:</td><td style="padding-bottom:5px; font-size: 16px; padding-left:6px"> @Model.EnKaedahPerolehan.GetDisplayName()</td></tr>
+    </table>
+</div>
+
+@*table Objek*@
+<div class="form-group">
+        <table id="tblObjek" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr style="background-color:#07B2F3; padding-top:12px; padding-bottom:12px">
+                    <th style="width:40%; padding-left:10px">Bahagian</th>
+                    <th style="width:40%">Kod</th>
+                    <th style="width:20%">Amaun RM</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyObjek">
+                @if (ViewBag.akPenilaianPerolehanObjek != null)
+                {
+                    foreach (var item in ViewBag.akPenilaianPerolehanObjek)
+                    {
+                        <tr style="background-color:white">
+                            <td hidden>@item.JKWPTJBahagianId</td>
+                            <td class="text-uppercase" style="padding-left:10px">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal)</td>
+                            <td hidden>@item.AkCartaId</td>
+                            <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot>
+                <tr style="background-color:#07B2F3; color:white">
+                    <th style="width:40%; text-align: center" colspan="2"><strong>Jumlah Objek RM</strong></th>
+                    <td class="text-end" style="margin-left:100px"><strong>@Model.Jumlah</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+  </div>
+
+<div class="form-group">
+    <p style="background-color:#020202; font-size:18px; color:#FFFFFF; padding-left:10px"><strong>BAHAGIAN C: MAKLUMAT PEMBEKAL/SEBUTHARGA</strong></p>
+</div>
+<div class="form-group">
+    <table>
+        <tr><td style="padding-bottom:10px; font-size: 14px">6. Bil Sebutharga Diperolehi</td><td style="padding-bottom:10px; font-size: 14px; padding-left:15px">:</td><td style="padding-bottom:10px; font-size: 14px; padding-left:6px"> @Model.BilSebutharga</td></tr>
+        <tr><td style="padding-bottom:10px; font-size: 14px">7. Harga SebutHarga Yang Diterima</td><td style="padding-bottom:10px; font-size: 14px; padding-left:15px">:</td><td style="padding-bottom:10px; font-size: 14px; padding-left:6px"> RM </td></tr>
+        <tr><td style="padding-bottom:10px; font-size: 14px">8. Tempoh Siap</td><td style="padding-bottom:10px; font-size: 14px; padding-left:15px">:</td><td style="padding-bottom:10px; font-size: 14px; padding-left:6px"> </td></tr>
+        <tr><td style="padding-bottom:5px; font-size: 14px">6. Maklumat Sebutharga</td><td style="padding-bottom:5px; font-size: 14px; padding-left:15px">:</td><td style="padding-bottom:5px; font-size: 14px; padding-left:6px"> @Model.MaklumatSebutHarga</td></tr>
+    </table>
+</div>
+
+<div class="form-group">
+    <p style="background-color:#020202; font-size:18px; color:#FFFFFF; padding-left:10px"><strong>BAHAGIAN D: SYOR PEMBEKAL DAN KELULUSAN</strong></p>
+</div>
+<div class="form-group">
+    <table>
+        <tr><td style="padding-bottom:10px; font-size: 14px">8. Cadangan Pembekal</td><td style="padding-bottom:10px; font-size: 14px; padding-left:15px">:</td><td style="padding-bottom:10px; font-size: 14px; padding-left:6px"> @Model.DDaftarAwam?.Kod - @Model.DDaftarAwam?.Nama</td></tr>
+        <tr><td style="padding-bottom:10px; font-size: 14px">9. Harga Tawaran</td><td style="padding-bottom:10px; font-size: 14px; padding-left:15px">:</td><td style="padding-bottom:10px; font-size: 14px; padding-left:6px"> RM @Model.HargaTawaran</td></tr>
+        <tr><td style="padding-bottom:10px; font-size: 14px">10. No Pesanan</td><td style="padding-bottom:10px; font-size: 14px; padding-left:15px">:</td><td style="padding-bottom:10px; font-size: 14px; padding-left:6px"></td></tr>
+        <tr><td style="padding-bottom:5px; font-size: 14px">11. Pengesahan dan Kelulusan</td><td style="padding-bottom:5px; font-size: 14px; padding-left:15px">:</td><td style="padding-bottom:5px"></td>
+    </table>
+</div>
+
+<div class="form-group">
+    <table style="border-spacing: 10px; border-collapse: separate; margin-left: -10px; margin-right: -10px" width="100%">
+        <tr>
+            <td style="padding-bottom:60px; font-size: 14px; border-bottom:1px solid black">Disediakan oleh,</td>
+            <td style="padding-bottom:60px; font-size: 14px; border-bottom:1px solid black">Disahkan oleh,</td>
+            <td style="padding-bottom:60px; font-size: 14px; border-bottom:1px solid black">Diluluskan/Ditolak</td>
+        </tr>
+        <tr>
+            <td style="padding-bottom:5px; font-size: 14px; line-height:4px">@Model.DPemohon?.Nama</td>
+            <td style="padding-bottom:5px; font-size: 14px; line-height:4px">@Model.DPengesah?.DPekerja?.Nama</td>
+            <td style="padding-bottom:5px; font-size: 14px; line-height:4px">@Model.DPelulus?.DPekerja?.Nama</td>
+        </tr>
+        <tr>
+            <td style="padding-bottom:5px; font-size: 14px; line-height:4px">@Model.DPemohon?.Jawatan</td>
+            <td style="padding-bottom:5px; font-size: 14px; line-height:4px">@Model.DPengesah?.DPekerja?.Jawatan</td>
+            <td style="padding-bottom:5px; font-size: 14px; line-height:4px">@Model.DPelulus?.DPekerja?.Jawatan</td>
+        </tr>
+        <tr>
+            <td style="padding-bottom:5px; font-size: 14px; line-height:4px">Tarikh : @Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td>
+            <td style="padding-bottom:5px; font-size: 14px; line-height:4px">Tarikh : @Convert.ToDateTime(Model.TarikhSah).ToString("dd/MM/yyyy")</td>
+            <td style="padding-bottom:5px; font-size: 14px; line-height:4px">Tarikh : @Convert.ToDateTime(Model.TarikhLulus).ToString("dd/MM/yyyy")</td>
+        </tr>
+    </table>
+    </div>
+
+  

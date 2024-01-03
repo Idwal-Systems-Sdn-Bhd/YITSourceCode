@@ -44,6 +44,7 @@ namespace YIT._DataAccess.Data
         public DbSet<DPekerjaElaunPotongan> DPekerjaElaunPotongan { get; set; }
         public DbSet<DDaftarAwam> DDaftarAwam { get; set; }
         public DbSet<DKonfigKelulusan> DKonfigKelulusan { get; set; }
+        public DbSet<DPenerimaCekGaji> DPenerimaCekGaji { get; set; }
         //
 
         // 03Kewangan 

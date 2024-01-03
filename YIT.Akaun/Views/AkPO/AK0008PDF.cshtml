@@ -1,0 +1,333 @@
+﻿@model AkPO
+
+@{
+    ViewData["Title"] = "Cetakan Pesanan Tempatan";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal jumlahPerihal = 0;
+}
+
+<div class="form-group" style="border:1px solid black; padding-top:10px; padding-bottom:10px">
+<div class="row flexrow mb-1 text-center" >
+    <img class="image-container mb-2" style="margin-left: 20px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase" style="padding-right:100px">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+        <p style="margin-top:2px">Kod Laporan: @Modules.kodAkPO - @Modules.namaAkPO</p>
+    </div>
+
+</div>
+
+    <table>
+        <tr><td style="font-size:16px" align="center"><strong>PESANAN KERAJAAN</strong></td></tr>
+        <tr>
+            <td style="font-size:12px; border-bottom:1px solid black; padding-bottom:10px; padding-left:100px; padding-right:100px" align="center">
+            Pesanan ini hendaklah dikembalikan dengan invois tuan dan pesanan ini akan dibatalkan jika barang-barang/
+            kerja-kerja tidak diterima/ dilaksana sebelum tarikh tersebut
+</td></tr>
+        <tr>
+            <td style="font-size:14px; padding-top:10px" align="center"><strong>Tahun Belanjawan: @Model.Tahun</strong></td>
+        </tr>
+    </table>
+</div>
+<div class="form-group">
+    <table class="table table-bordered" style="border-color:black">
+        <tr align="center">
+            <th style="border-color:black">Jenis Urusniaga</th>
+            <th style="border-color:black">Pej. Perakaunan</th>
+            <th style="border-color:black">No Rujukan</th>
+            <th style="border-color:black">Tarikh Pesanan</th>
+        </tr>
+        <tr align="center">
+            <td style="border-color:black">@Model.EnJenisPerolehan</td>
+            <td style="border-color:black">Bhgn. Kewangan YIT</td>
+            <td style="border-color:black">@Model.NoRujukan</td>
+            <td style="border-color:black">@Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td>
+        </tr>
+    </table>
+</div>
+<div class="form-group">
+    <table class="table table-bordered">
+        <tr align="left">
+            <th style="border-color:black">Kump. Wang</th>
+            <td style="border-color:black">@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal</td>
+        </tr>
+        <tr align="left">
+            <th style="border-color:black">PTJ/Bahagian</th>
+                @if (ViewBag.akPOObjek != null)
+                {
+                    foreach (var item in ViewBag.akPOObjek)
+                    {
+
+
+                    <td class="text-uppercase style=" style="border-color:black">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal)</td>
+                    
+             
+                    }
+                }
+                </tr>
+    </table>
+</div>
+<div class="form-group">
+    <table class="table table-bordered">
+        <tr align="center">
+            <th style="border-color:black">Ruj. Permintaan Jabatan</th>
+            <th style="border-color:black">Ruj. Panduan/ Kontrak Perbendaharaan</th>
+            <th style="border-color:black">Ruj. Tender/ Kontrak Jabatan</th>
+        </tr>
+        <tr align="center">
+            <td style="border-color:black"></td>
+            <td style="border-color:black"></td>
+            <td style="border-color:black"></td>
+        </tr>
+    </table>
+</div>
+<div class="form-group">
+    <table class="table table-bordered" width="100%">
+        <tr align="left">
+            <td width="50%" style="border-color:black; line-height:10px">
+                <strong>Kepada Pembekal/ Kontraktor</strong><br /><br />
+                @Model.DDaftarAwam?.Nama<br /><br />
+                @Model.DDaftarAwam?.Alamat1<br /><br />
+                @Model.DDaftarAwam?.Alamat2<br /><br />
+                @Model.DDaftarAwam?.Alamat3<br /><br />
+                No Akaun:&nbsp; @Model.DDaftarAwam?.NoAkaunBank &emsp;&emsp;
+                Kod Bank:&nbsp; @Model.DDaftarAwam?.JBank<br />
+            </td>
+            <td width="50%" style="border-color:black">
+                <strong>Sila bekalkan barang-barang/ laksanakan kerja yang tersebut di bawah pada</strong><br />
+                <br />
+                @Convert.ToDateTime(Model.AkPenilaianPerolehan?.TarikhPerlu).ToString("dd/MM/yyyy")
+            </td>
+        </tr>
+    </table>
+</div>
+@*table Objek*@
+        <table id="tblObjek" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+            <thead>
+             <tr style="background-color:lightgrey; padding-top:12px; padding-bottom:12px">
+                    <th style="width:40%; padding-left:10px">Bahagian</th>
+                    <th style="width:40%">Kod</th>
+                    <th style="width:20%">Amaun RM</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyObjek">
+                @if (ViewBag.akPOObjek != null)
+                {
+                    foreach (var item in ViewBag.akPOObjek)
+                    {
+                        <tr>
+                            <td hidden>@item.JKWPTJBahagianId</td>
+                    <td class="text-uppercase" style="padding-left:10px">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal)</td>
+                            <td hidden>@item.AkCartaId</td>
+                            <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+    <tfoot>
+        <tr style="background-color:grey; color:white">
+            <th style="width:40%; text-align: center" colspan="2"><strong>Jumlah Objek RM</strong></th>
+            <td class="text-end" style="margin-left:100px"><strong>@Model.Jumlah</strong></td>
+        </tr>
+    </tfoot>
+</table>
+    
+@*table Objek end*@
+
+@*table Perihal*@
+        <table id="tblPerihal" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+            <thead>
+                 <tr style="background-color:lightgrey; padding-bottom:12px">
+                    <th style="width:10%; padding-left: 10px">Bil</th>
+                    <th style="width:40%">Perihal</th>
+                    <th style="width:10%">Ktt.</th>
+                    <th style="width:10%">Unit</th>
+                    <th style="width:10%">Hrg/Unit RM</th>
+                    <th style="width:20%">Amaun RM</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyPerihal">
+                @if (ViewBag.akPOPerihal != null)
+                {
+                    foreach (var item in ViewBag.akPOPerihal)
+                    {
+                        <tr>
+                             <td class="text-end" style="padding-left: 10px">@item.Bil</td>
+                            <td class="text-uppercase">@item.Perihal</td>
+                            <td class="text-end">@item.Kuantiti</td>
+                            <td class="text-uppercase">@item.Unit</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Harga).ToString("#,##0.00")</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                        </tr>
+                        jumlahPerihal += item.Amaun;
+                    }
+
+                }
+            </tbody>
+    <tfoot>
+        <tr style="background-color:grey; color:white">
+            
+            <td class="text-uppercase" colspan="4" style="text-align: left; padding-left:5px"><strong>Amaun: </strong><strong>&nbsp;@PriceFormatter.JumlahDalamPerkataan(jumlahPerihal)</strong></td>
+            <th style="width:20%; text-align: left"><strong>JUMLAH</strong></th>
+            <td class="text-end" name="perihalJumlah"><strong>@Convert.ToDecimal(jumlahPerihal).ToString("#,##0.00")</strong></td>
+        </tr>
+    </tfoot>
+        </table>
+@*table Perihal end*@
+
+<div class="form-group">
+    <table class="table table-bordered">
+        <tr align="center">
+            <th style="border-color:black">Bil</th>
+            <th style="border-color:black">No. Penilaian Perolehan</th>
+            <th style="border-color:black">Tarikh</th>
+        </tr>
+        <tr align="center">
+            <td style="border-color:black"></td>
+            <td style="border-color:black">@Model.AkPenilaianPerolehan?.NoRujukan</td>
+            <td style="border-color:black">@Convert.ToDateTime(Model.AkPenilaianPerolehan?.Tarikh).ToString("dd/MM/yyyy")</td>
+        </tr>
+    </table>
+</div>
+<div class="form-group">
+    <table class="table table-bordered" cellpadding="0" cellspacing="0">
+        <tr align="left">
+            <td style="border-color:black"><strong>Disediakan</strong></td>
+            <td colspan="3" style="border-color:black">@Model.UserIdKemaskini</td>
+        </tr>
+        <tr align="left">
+            <td style="border-color:black"><strong>Jawatan</strong></td>
+            <td style="border-color:black">@Model.UserIdKemaskini</td>
+            <td align="center" style="border-color:black"><strong>Tarikh</strong></td>
+            <td style="border-color:black">@Model.TarMasuk</td>
+        </tr>
+        <tr align="left">
+            <td style="padding-top:20px; padding-bottom:20px; border-color:black"><strong>Perakuan</strong></td>
+            <td style="padding-top:20px; padding-bottom:20px; border-color:black">@Model.DPelulus?.DPekerja?.Nama</td>
+            <td align="center" style="padding-top:20px; padding-bottom:20px; border-color:black"><strong>Tandatangan</strong></td>
+            <td style="padding-top:20px; padding-bottom:20px; border-color:black"></td>
+        </tr>
+        <tr align="left">
+            <td style="border-color:black"><strong>Jawatan</strong></td>
+            <td style="border-color:black">@Model.DPelulus?.DPekerja?.Jawatan</td>
+            <td align="center" style="border-color:black"><strong>Tarikh</strong></td>
+            <td style="border-color:black">@Model.TarikhLulus</td>
+        </tr>
+        <tr align="left">
+            <td style="border-color:black"><strong>Dibatalkan</strong></td>
+            <td colspan="3" style="border-color:black"></td>
+        </tr>
+        <tr align="left">
+            <td style="border-color:black"><strong>Jawatan</strong></td>
+            <td style="border-color:black"></td>
+            <td align="center" style="border-color:black"><strong>Tarikh</strong></td>
+            <td style="border-color:black"></td>
+        </tr>
+       
+    </table>
+</div>
+<div style="page-break-before: always;"></div>
+<div class="form-group">
+    <table style=" border:1px solid black; padding-bottom:20px; padding-top:20px" width="100%">
+        <tr>
+            <td align="center" style="font-size:12px">
+                <strong>
+                PEMBAYARAN TIDAK AKAN DIBUAT JIKA PERAKUAN MENGENAI MUTU TIDAK DIPENUHKAN ATAU JIKA NASKAH PESANAN TIDAK DIKEMBALIKAN
+                </strong>
+            </td>
+        </tr>
+     </table>
+  </div>
+  <div class="form-group" align="center">
+    <p><strong>PERAKUAN MENGENAI MUTU<br />
+        (Hendaklah dipenuhkan oleh Pembekal)</strong></p>
+  </div>
+
+<div class="form-group" align="center">
+    <p style="font-size: 14px; text-align: justify">
+        Saya memperakui bahawa saya telah membekalkan barang-barang* atau telah melaksanakan kerja yang tersebut di atas mengikut *surat  <br />
+        <br/>
+        saya/ surat tuan ________________________________________________________________________________ bertarikh ____________________________
+    </p>
+</div> 
+<div class="form-group" align="left">
+    <table style="border-spacing: 110px; border-collapse: separate; margin-left: -70px; margin-right: -70px; margin-top: -70px; margin-bottom: -70px; text-align: justify">
+        <tr>
+            <td>Tarikh ________________________________________</td>
+            <td>Tandatangan Pembekal ________________________________________</td>
+        </tr>
+    </table>
+</div>
+<div class="form-group" align="center">
+    <p style="text-align: justify">
+        Nota Peringatan : Sila tandatangan di ruangan pembekal/kontraktor pesanan kerajaan dan cop rasmi syarikat. Kemukakan nama, no. daftar syarikat, alamat<br />
+                          dan no. akaun bank beserta bil/invois 2 salinan. Kelewatan bayaran berlaku jika pesanan kerajaan tidak lengkap.
+    </p>
+</div> 
+<hr style="border:1px solid black" />
+
+<div class="form-group" align="center">
+    <p>
+        <strong>
+            PERAKUAN<br />
+            (Hendaklah dipenuhkan oleh Jabatan)
+        </strong>
+    </p>
+</div>
+<div class="form-group" align="center">
+    <p style="text-align: justify">
+        Saya memperakui bahawa<br />
+        *(1) barang-barang yang dipesan diatas telah diterima dan *dikeluarkan untuk terus digunakan / *disimpan dan dibukukan dalam Lejar setor<br />
+        *(2) kerja yang dibutirkan di atas telah dilaksanakan dengan memuaskan.
+    </p>
+</div>
+<div class="form-group" align="left">
+    <table style="border-spacing: 110px; border-collapse: separate; margin-left: -70px; margin-right: -70px; margin-top: -70px; margin-bottom: -70px; text-align: justify">
+        <tr>
+            <td>Tarikh ________________________________________</td>
+            <td>Tandatangan Penerima ________________________________________</td>
+        </tr>
+    </table>
+</div>
+<p style="text-align: justify">
+   *Potong mana yang tidak berkenaan.
+</p>
+<div class="form-group">
+    <table class="table table-bordered" width="100%">
+        <tr align="left">
+            <th style="font-size:10px; border-color:black">
+               
+                    Pesanan dan invois dikemukakan untuk<br />
+                    pembayaran pada ________________________<br />
+                    <br />
+                    <br />
+                                    ___________________________<br />
+                                    Tandatangan Ringkas
+               
+            </th>
+            <th style="font-size:10px; border-color:black">
+                No Baucer Jabatan __________________________<br />
+                  <br />Bertarikh ______________________
+                
+            </th>
+            <th style="font-size:10px; border-color:black">
+                
+                    Ringkasan No Baucer __________________________<br />
+              <br />Bertarikh ______________________
+                
+            </th>
+        </tr>
+    </table>
+</div>
+<div class="form-group" align="center">
+    <p style="text-align: justify; font-size:10px">
+        "Pembekal/Kontraktor diberi peringatan supaya mengemukakan bil/tuntutan yang lengkap dalam
+        tempoh 14 hari daripada tarikh bekalan atau perkhidmatan dibekalkan atau kerja disempurnakan
+        untuk membolehkan bayaran dibuat dengan segera.  Yayasan Islam Terengganu (YIT)
+        tidak akan bertanggungjawab di atas kelewatan pembayaran kepada pembekal/kontraktor jika
+        bil/tuntutan tidak dihantar dengan segera dalam tempoh 14 hari."
+    </p>
+</div>
