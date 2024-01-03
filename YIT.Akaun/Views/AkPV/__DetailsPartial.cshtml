@@ -161,7 +161,7 @@
                             <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
                             <td hidden>@item.JCukaiId</td>
                             <td class="text-uppercase">@item.JCukai?.Kod</td>
-                            <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
                         </tr>
                     }
                 }

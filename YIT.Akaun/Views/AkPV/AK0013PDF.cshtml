@@ -95,7 +95,7 @@
                         <td hidden>@item.AkCartaId</td>
                         <td class="text-uppercase"> <strong>@item.AkCarta?.Kod</strong></td>
                         <td class="text-uppercase"><strong>@item.AkCarta?.Perihal</strong></td>
-                        <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                        <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
                     </tr>
                     
                 }
@@ -279,7 +279,7 @@
                     <td hidden>@item.AkCartaId</td>
                     <td class="text-uppercase"> <strong>@item.AkCarta?.Kod</strong></td>
                     <td class="text-uppercase"><strong>@item.AkCarta?.Perihal</strong></td>
-                    <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                    <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
                 </tr>
 
             }
