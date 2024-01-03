@@ -51,5 +51,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public ICollection<AkPVObjek>? AkPVObjek { get; set; }
         public ICollection<AkPVInvois>? AkPVInvois { get; set; }
         public ICollection<AkPVPenerima>? AkPVPenerima { get; set; }
+        public ICollection<AkEFTPenerima>? AkEFTPenerima { get; set; }
     }
 }
