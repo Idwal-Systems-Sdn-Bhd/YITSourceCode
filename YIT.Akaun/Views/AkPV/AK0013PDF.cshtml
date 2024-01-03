@@ -1,0 +1,372 @@
+﻿@model AkPV
+
+@{
+    ViewData["Title"] = "Cetakan Baucer Pembayaran";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    //decimal jumlahPerihal = 0;
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase"> 
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+        <p style="margin-top:2px">Kod Laporan: @Modules.kodAkPV - @Modules.namaAkPV</p>
+    </div>
+
+    <div class="form-group" align="right" style="margin-right: 15px">
+        <p align="right" style="line-height:4px; padding-top:1px">Salinan Asal</p>
+        <p align="right" style="text-align: center;background-color:#020202; font-size:16px; color:#FFFFFF; padding-left:10px; padding-top:2px; padding-bottom:2px; padding-right:10px; width:50%"><strong>BAUCER BAYARAN</strong></p>
+
+        <table width="100%" align="right">
+            <tr><td align="right" width="70%" style="font-size:14px"><strong>No Baucer</strong> </td><td align="right" style="font-size:14px">:</td><td align="left" style="padding-left:5px; font-size:14px" width="85%"><strong> @Model.NoRujukan</strong></td></tr>
+            <tr><td align="right" width="70%">Tarikh </td><td align="right">:</td><td align="left" style="padding-left:5px"> @Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td></tr>
+            <tr>
+                <td align="right" width="70%">No Cek </td>
+                <td align="right">:</td>
+                <td align="left" style="padding-left:5px">
+                    @if (ViewBag.akPVPenerima != null)
+                    {
+                        foreach (var item in ViewBag.akPVPenerima)
+                        {
+
+                            @item.NoCek
+
+
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td align="right" width="70%">Tarikh Cek/EFT </td>
+                <td align="right">:</td>
+                <td align="left" style="padding-left:5px">
+                    @if (ViewBag.akPVPenerima != null)
+                    {
+                        foreach (var item in ViewBag.akPVPenerima)
+                        {
+
+                            @Convert.ToDateTime(item.TarikhCek).ToString("dd/MM/yyyy")
+
+
+                        }
+                    }
+                </td>
+            </tr>
+            <tr><td align="right" width="70%">No PBI </td><td align="right">:</td><td align="left" style="padding-left:5px"></td>
+            <tr>
+        </table>
+        <p align="right" width="80%">Bank : @Model.AkBank?.Kod - @Model.AkBank?.Perihal</p>
+    </div>
+
+</div>
+
+<hr style="border:1px solid black" />
+
+<div class="form-group">
+    <table>
+        <tr>
+            <td style="font-size:14px"><strong>Bayar Kepada</strong></td><td>:</td><td style="padding-left:5px"><strong>@Model.NamaPenerima</strong></td>  
+        </tr>
+        <tr>
+             <td style="font-size:14px"></td><td></td><td style="padding-left:5px">@Model.JCawangan?.Perihal</td>
+            </tr>
+    </table>
+    
+</div>
+<br />
+<div class="form-group">
+    <table id="tblObjek" class="table table-sm nowrap table-borderless" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr style="background-color:grey; color:white">
+                <th style="width:10%">Kod</th>
+                <th style="width:50%">Butiran</th>
+                <th style="width:10%">Amaun RM</th>
+            </tr>
+        </thead>
+            @if (ViewBag.akPVObjek != null)
+            {
+                foreach (var item in ViewBag.akPVObjek)
+                {
+                    <tr>
+               
+                        <td hidden>@item.AkCartaId</td>
+                        <td class="text-uppercase"> <strong>@item.AkCarta?.Kod</strong></td>
+                        <td class="text-uppercase"><strong>@item.AkCarta?.Perihal</strong></td>
+                        <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                    </tr>
+                    
+                }
+            }
+            <tr>
+        <td></td><td>@Model.Ringkasan</td><td></td>
+        </tr>
+        <tfoot>
+            <tr style="background-color:grey; color:white">
+                <th style="width:40%; text-align: center" colspan="2"><strong>Jumlah Objek RM</strong></th>
+                <td class="text-end" style="margin-left:100px"><strong>@Model.Jumlah</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+@*table Objek end*@
+<br />
+<p style="font-size:14px">Jumlah dalam perkataan : </p>
+<p style="line-height:4px; font-size:14px">Ringgit Malaysia : <span style="text-transform:uppercase; font-size:14px"><strong>@PriceFormatter.JumlahDalamPerkataan(Model.Jumlah)</strong></span></p>
+<br />
+<br />
+<div class="form-group">
+    <table class="table table-bordered" width="100%">
+        <tr align="left">
+            <td style="font-size:14px; border-color:black; width:50%">
+
+                <strong>Disediakan Oleh:</strong>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <strong>@Model.UserId</strong><br />
+                Jawatan<br />
+                Tarikh
+
+            </td>
+            <td style="font-size:14px; border-color:black; width:50%">
+                <strong>Diluluskan Oleh:</strong>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <strong>@Model.DPelulus?.DPekerja?.Nama</strong><br />
+                @Model.DPelulus?.DPekerja?.Jawatan<br />
+                @Convert.ToDateTime(Model.TarikhLulus).ToString("dd/MM/yyyy")
+
+            </td>
+        </tr>
+        <tr align="left">
+            <td style="font-size:14px; border-color:black; width:50%">
+
+                <strong> Disemak Oleh:</strong>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <strong>@Model.DPenyemak?.DPekerja?.Nama</strong><br />
+                @Model.DPenyemak?.DPekerja?.Jawatan<br />
+                @Convert.ToDateTime(Model.TarikhSemak).ToString("dd/MM/yyyy")
+
+            </td>
+            <td style="font-size:14px; border-color:black; width:50%">
+                <strong>Akuan Penerima:</strong>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                Nama :<br />
+                No Kad Pengenalan :<br />
+                Jawatan/ Cop Syarikat :<br />
+                Tarikh :
+
+            </td>
+        </tr>
+    </table>
+</div>
+<div style="page-break-before: always;"></div>
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+        <p style="margin-top:2px">Kod Laporan: @Modules.kodAkPV - @Modules.namaAkPV</p>
+    </div>
+
+    <div class="form-group" align="right" style="margin-right: 15px">
+        <p align="right" style="line-height:4px; padding-top:1px">Salinan Penerima</p>
+        <p align="right" style="text-align: center;background-color:#020202; font-size:16px; color:#FFFFFF; padding-left:10px; padding-top:2px; padding-bottom:2px; padding-right:10px; width:50%"><strong>BAUCER BAYARAN</strong></p>
+
+        <table width="100%" align="right">
+            <tr><td align="right" width="70%" style="font-size:14px"><strong>No Baucer</strong> </td><td align="right" style="font-size:14px">:</td><td align="left" style="padding-left:5px; font-size:14px" width="85%"><strong> @Model.NoRujukan</strong></td></tr>
+            <tr><td align="right" width="70%">Tarikh </td><td align="right">:</td><td align="left" style="padding-left:5px"> @Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td></tr>
+            <tr>
+                <td align="right" width="70%">No Cek </td>
+                <td align="right">:</td>
+                <td align="left" style="padding-left:5px">
+                    @if (ViewBag.akPVPenerima != null)
+                    {
+                        foreach (var item in ViewBag.akPVPenerima)
+                        {
+
+                            @item.NoCek
+
+
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td align="right" width="70%">Tarikh Cek/EFT </td>
+                <td align="right">:</td>
+                <td align="left" style="padding-left:5px">
+                    @if (ViewBag.akPVPenerima != null)
+                    {
+                        foreach (var item in ViewBag.akPVPenerima)
+                        {
+
+                            @Convert.ToDateTime(item.TarikhCek).ToString("dd/MM/yyyy")
+
+
+                        }
+                    }
+                </td>
+            </tr>
+            <tr><td align="right" width="70%">No PBI </td><td align="right">:</td><td align="left" style="padding-left:5px"></td>
+            <tr>
+        </table>
+        <p align="right" width="80%">Bank : @Model.AkBank?.Kod - @Model.AkBank?.Perihal</p>
+    </div>
+
+</div>
+
+<hr style="border:1px solid black" />
+
+<div class="form-group">
+    <table>
+        <tr>
+            <td style="font-size:14px"><strong>Bayar Kepada</strong></td>
+            <td>:</td>
+            <td style="padding-left:5px"><strong>@Model.NamaPenerima</strong></td>
+        </tr>
+        <tr>
+            <td style="font-size:14px"></td>
+            <td></td>
+            <td style="padding-left:5px">@Model.JCawangan?.Perihal</td>
+        </tr>
+    </table>
+
+</div>
+<br />
+<div class="form-group">
+    <table id="tblObjek" class="table table-sm nowrap table-borderless" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr style="background-color:grey; color:white">
+                <th style="width:10%">Kod</th>
+                <th style="width:50%">Butiran</th>
+                <th style="width:10%">Amaun RM</th>
+            </tr>
+        </thead>
+        @if (ViewBag.akPVObjek != null)
+        {
+            foreach (var item in ViewBag.akPVObjek)
+            {
+                <tr>
+
+                    <td hidden>@item.AkCartaId</td>
+                    <td class="text-uppercase"> <strong>@item.AkCarta?.Kod</strong></td>
+                    <td class="text-uppercase"><strong>@item.AkCarta?.Perihal</strong></td>
+                    <td class="text-uppercase">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                </tr>
+
+            }
+        }
+        <tr>
+            <td></td>
+            <td>@Model.Ringkasan</td>
+            <td></td>
+        </tr>
+        <tfoot>
+            <tr style="background-color:grey; color:white">
+                <th style="width:40%; text-align: center" colspan="2"><strong>Jumlah Objek RM</strong></th>
+                <td class="text-end" style="margin-left:100px"><strong>@Model.Jumlah</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+@*table Objek end*@
+<br />
+<p style="font-size:14px">Jumlah dalam perkataan : </p>
+<p style="line-height:4px; font-size:14px">Ringgit Malaysia : <span style="text-transform:uppercase; font-size:14px"><strong>@PriceFormatter.JumlahDalamPerkataan(Model.Jumlah)</strong></span></p>
+<br />
+<br />
+<div class="form-group">
+    <table class="table table-bordered" width="100%">
+        <tr align="left">
+            <td style="font-size:14px; border-color:black; width:50%">
+
+                <strong>Disediakan Oleh:</strong>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <strong>@Model.UserId</strong><br />
+                Jawatan<br />
+                Tarikh
+
+            </td>
+            <td style="font-size:14px; border-color:black; width:50%">
+                <strong>Diluluskan Oleh:</strong>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <strong>@Model.DPelulus?.DPekerja?.Nama</strong><br />
+                @Model.DPelulus?.DPekerja?.Jawatan<br />
+                @Convert.ToDateTime(Model.TarikhLulus).ToString("dd/MM/yyyy")
+
+            </td>
+        </tr>
+        <tr align="left">
+            <td style="font-size:14px; border-color:black; width:50%">
+
+                <strong> Disemak Oleh:</strong>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <strong>@Model.DPenyemak?.DPekerja?.Nama</strong><br />
+                @Model.DPenyemak?.DPekerja?.Jawatan<br />
+                @Convert.ToDateTime(Model.TarikhSemak).ToString("dd/MM/yyyy")
+
+            </td>
+            <td style="font-size:14px; border-color:black; width:50%">
+                <strong>Akuan Penerima:</strong>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                Nama :<br />
+                No Kad Pengenalan :<br />
+                Jawatan/ Cop Syarikat :<br />
+                Tarikh :
+
+            </td>
+        </tr>
+    </table>
+</div>

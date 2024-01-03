@@ -1,0 +1,67 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        $("body").on('change', "#DDaftarAwamId", function () {
+            var kod = $("#DDaftarAwamId").val();
+            GetKod(kod);
+        });
+
+        function GetKod(kod) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetKod", "DPenerimaCekGaji")',
+                data: { Kod: kod },
+                dataType: "json",
+                success: function (msg) {
+                    $("#Kod").val(msg.record);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+
+        //pick daftar awam
+        $("body").on('change', "#DDaftarAwamId", function () {
+            // $("#objekAkCartaId option").prop('disabled', false);
+            // $("#objekAkCartaId option[value='']").prop('disabled', true);
+            var dDaftarAwamId = $("#DDaftarAwamId").val();
+            var dPenerimaCekGajiId = $("#DPenerimaCekGajiId").val();
+            if (dDaftarAwamId != 0) {
+                GetDDaftarAwamDetails(dDaftarAwamId, dPenerimaCekGajiId);
+            } else {
+
+            }
+
+        });
+
+        function GetDDaftarAwamDetails(dDaftarAwamId, dPenerimaCekGajiId) {
+            if (dDaftarAwamId != null) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetDDaftarAwamDetails", "DPenerimaCekGaji")',
+                    data: { id: dDaftarAwamId, dPenerimaCekGajiId: dPenerimaCekGajiId },
+                    dataType: "json",
+                    success: function (msg) {
+                        $("#KodM2E").val(msg?.record?.kodM2E);
+                        $("#Emel").val(msg?.record?.emel);
+                        $("#NoPendaftaran").val(msg?.record?.noPendaftaran);
+                        $("#NoAkaunBank").val(msg?.record?.noAkaunBank);
+                        $("#Alamat1").val(msg?.record?.alamat1);
+                        $("#Alamat2").val(msg?.record?.alamat2);
+                        $("#Alamat3").val(msg?.record?.alamat3);
+                        $("#JBankId").val(msg?.record?.jBank?.kodBNMEFT);
+                        //$("#DDaftarAwamId").val(msg?.record?.dDaftarAwam?.id).change();
+                        //$("#DDaftarAwamId option").prop('disabled', false);
+
+                    },
+                    error: function (req, status, error) {
+                        alert(error);
+                    }
+                });
+            }
+        }
+        // pick penilaian perolehan end
+    });
+
+
+</script>

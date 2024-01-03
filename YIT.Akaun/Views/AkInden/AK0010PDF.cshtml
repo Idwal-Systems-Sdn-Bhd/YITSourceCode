@@ -1,0 +1,320 @@
+﻿@model AkInden
+
+@{
+    ViewData["Title"] = "Cetakan Inden Kerja";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    //decimal jumlahPerihal = 0;
+}
+
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+        <p style="margin-top:2px">Kod Laporan: @Modules.kodAkInden - @Modules.namaAkInden</p>
+    </div>
+
+</div>
+<div class="form-group">
+    <table align="center">
+        <tr><td style="font-size:16px; padding-top:20px"><strong>BORANG PERJANJIAN INDEN KERJA</strong></td></tr>
+    </table>
+</div>
+<div class="form-group">
+    <table class="table table-borderless table-sm" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <td style="font-size:14px; padding-top:20px">Vot</td><td style="padding-top:20px">:</td>
+        
+            @if (ViewBag.akIndenObjek != null)
+            {
+                foreach (var item in ViewBag.akIndenObjek)
+                {
+
+                        <td style="padding-bottom:10px;padding-top:20px">JKWPTJ &nbsp; : &nbsp; @item.JKWPTJBahagian.Kod &nbsp; Objek &nbsp; : &nbsp; @item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
+                  
+                           
+                }
+    }
+            <td style="font-size:14px; padding-top:20px">No. Inden</td><td style="padding-top:20px">:</td><td style="padding-top:20px"><strong>@Model.NoRujukan</strong></td>
+      </tr>   
+      <tr>
+            <td style="font-size:14px">Kerja</td><td>:</td><td>@Model.Ringkasan</td>
+            <td style="font-size:14px">No. Tanggungan</td><td>:</td><td><strong>@Model.AkPenilaianPerolehan?.NoRujukan</strong></td>
+    </tr>
+    <tr>
+            <td style="font-size:14px">Ruj. Fail</td><td>:</td><td></td>
+            <td style="font-size:14px">Kerani Kewangan</td><td>:</td><td><strong></strong></td>
+    </tr>
+</tbody>
+    </table>
+</div>
+<div class="form-group" style="border:1px solid black; padding-left:10px">
+    <p>A &nbsp; &nbsp; &nbsp;Kepada Kontraktor:</p>
+    <p style="padding-left:40px; line-height:6px">Nama &nbsp; : @Model.DDaftarAwam?.Nama</p>
+    <p style="padding-left:40px; line-height:6px">Alamat &nbsp; : @Model.DDaftarAwam?.Alamat1 </p>
+    <p style="padding-left:40px; line-height:6px">&emsp;&emsp;&emsp;&emsp; @Model.DDaftarAwam?.Alamat2</p>
+    <p style="padding-left:40px; line-height:6px">&emsp;&emsp;&emsp;&emsp; @Model.DDaftarAwam?.Alamat3</p>
+    <p style="padding-left:40px; padding-top:10px">Sila laksanakan kerja-kerja di bawah ini:</p>
+    <table style="border-bottom: 1px black; width: 100%">
+        <tbody id="tbodyPerihal">
+            @if (ViewBag.akIndenPerihal != null)
+            {
+                foreach (var item in ViewBag.akIndenPerihal)
+                {
+                    <tr>
+                        <td class="text-uppercase" style="padding-left:40px">@item.Perihal</td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+    <p style="padding-left:40px">untuk jumlah wang sebanyak Ringgit: <span style="text-transform:uppercase; font-size:13px"><strong>@PriceFormatter.JumlahDalamPerkataan(Model.Jumlah)</strong></span> (<strong> RM @Model.Jumlah </strong>) mengikut syarat-syarat berikut:</p>
+    <p style="padding-left:40px">1. &nbsp; Kontraktor tidak dibenarkan tanpa kebenaran bertulis daripada Pegawai Inden menyerah hak atau menyewakan mana-mana<br />&nbsp;&nbsp;&nbsp;bahagian Kerja.</p>
+    <p style="padding-left:40px">2. &nbsp; Kerja ini hendaklah dimulakan dalam tempoh 2 minggu dari tarikh Inden Kerja dan hendaklah disiapkan pada ______________</p>
+    <p style="padding-left:40px">3. &nbsp; Dokumen-dokumen berikut hendaklah disifatkan menjadi dan dibaca dan ditaksirkan sebagai sebahagian daripada perjanjian<br />&nbsp;&nbsp;&nbsp;SebutHarga.</p>
+    <p style="padding-left:50px; line-height:6px">a) &nbsp; Borang Perjanjian Inden</p>
+    <p style="padding-left:50px; line-height:6px">b) &nbsp; Syarat-syarat SebutHarga</p>
+    <p style="padding-left:50px; line-height:6px">c) &nbsp; Spesifikasi</p>
+    <p style="padding-left:50px; line-height:6px">d) &nbsp; Ringkasan Tender/Senarai</p>
+    <p style="padding-left:50px; line-height:6px">e) &nbsp; Lukisan</p>
+
+    <div class="form-group">
+        <table class="table table-borderless"style="margin-left:40px; margin-right:40px" width="100%">
+            <tr align="left">
+                <td style="padding-top:20px; line-height:16px" width="50%">
+
+                    Tandatangan ______________________________________________<br />
+                    &emsp;&emsp;&emsp;&emsp;&emsp;(Ketua Penolong Pengarah(Pembangunan & Pelaburan)/<br />
+                    &emsp;&emsp;&emsp;&emsp;&emsp;Timbalan Pengarah(Yayasan Islam Terengganu))<br />
+                    <br />Nama &nbsp; : 
+                    <br />Jawatan &nbsp; : 
+                    <br />Tarikh  &nbsp; :
+
+                </td>
+                <td style="padding-top:20px; line-height:16px">
+                    Tandatangan ______________________________________________<br />
+                    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(Pengarah Yayasan Islam Terengganu)
+                    <br />Nama &nbsp; : 
+                    <br />Jawatan &nbsp; : 
+                    <br />Tarikh  &nbsp; : 
+                </td>
+            </tr>
+            <tr align="left">
+                <td style="padding-top:20px; line-height:16px" width="50%">
+
+                    Tandatangan ______________________________________________<br />
+                    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(Kontraktor)
+                    <br />Nama &nbsp; : 
+                    <br />Atas sifat &nbsp; 
+                    <br />diberikan dengan sempurna untuk menandatangani untuk dan bagi pihak
+                    <br />
+                    <br />______________________________________________<br />
+                    &nbsp;&nbsp;&nbsp;(Meterai atau Cop Kontraktor)
+                    <br />
+                    <br />Tarikh  &nbsp; : 
+
+                </td>
+                <td style="padding-top:20px; line-height:16px">
+                    Tandatangan ______________________________________________<br />
+                    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(Saksi)
+                    <br />Nama &nbsp; : 
+                    <br />Jawatan &nbsp; : 
+                    <br />Alamat  &nbsp; : 
+                    <br />Tarikh  &nbsp; : 
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div style="page-break-before: always;"></div>
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+<div class="form-group">
+    <table align="center">
+        <tr><td style="font-size:16px; padding-top:20px"><strong>BORANG PENGESAHAN PENYIAPAN INDEN KERJA</strong></td></tr>
+    </table>
+</div>
+<div class="form-group">
+    <table class="table table-borderless table-sm" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <td style="font-size:14px; padding-top:20px">Vot</td><td style="padding-top:20px">:</td>
+        
+            @if (ViewBag.akIndenObjek != null)
+            {
+                foreach (var item in ViewBag.akIndenObjek)
+                {
+
+                        <td style="padding-bottom:10px;padding-top:20px">JKWPTJ &nbsp; : &nbsp; @item.JKWPTJBahagian.Kod &nbsp; Objek &nbsp; : &nbsp; @item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
+                  
+                           
+                }
+    }
+            <td style="font-size:14px; padding-top:20px">No. Inden</td><td style="padding-top:20px">:</td><td style="padding-top:20px"><strong>@Model.NoRujukan</strong></td>
+      </tr>   
+      <tr>
+            <td style="font-size:14px">Kerja</td><td>:</td><td>@Model.Ringkasan</td>
+            <td style="font-size:14px">No. Tanggungan</td><td>:</td><td><strong>@Model.AkPenilaianPerolehan?.NoRujukan</strong></td>
+    </tr>
+    <tr>
+            <td style="font-size:14px">Ruj. Fail</td><td>:</td><td></td>
+            <td style="font-size:14px">Kerani Kewangan</td><td>:</td><td><strong></strong></td>
+    </tr>
+</tbody>
+    </table>
+</div>
+<div class="form-group">
+    <table class="table table-bordered" width="100%">
+        <tr align="left">
+            <td style="font-size:14px; padding-top:20px; border-color:black; text-align:center" width="5%">
+                A
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                B
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                C
+            </td>
+
+            <td style="padding-top:20px; border-color:black; line-height:18px" width="50%">
+                Saya &nbsp;<strong>@Model.DDaftarAwam?.Nama</strong>&nbsp; mengaku telah menyiapkan kerja-kerja
+                tersebut di atas dengan sempurnanya dan mengembalikan Inden Kerja Asal untuk pemeriksaan dan
+                pembayaran.
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                Tandatangan ______________________________________________<br />
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(Kontraktor)
+                <br />Nama &nbsp; : 
+                <br />Jawatan &nbsp; : 
+                <br />Tarikh  &nbsp; :
+                <br />
+                <br />
+                <br />
+                Penerimaan kembali Inden Kerja ini diakui.
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                Tandatangan ______________________________________________<br />
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(Pegawai/ Penyelia Kerja)
+                <br />Nama &nbsp; : 
+                <br />Jawatan &nbsp; : 
+                <br />Tarikh  &nbsp; :
+                <br />
+                <br />
+                <br />
+                Saya _______________________________________ dengan ini bersetuju dengan jumlah pembayaran muktamad sebanyak RM @Model.Jumlah
+                dan mengaku tidak akan membuat sebarang tuntutan lagi di atas Inden ini.
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                Tandatangan ______________________________________________<br />
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(Kontraktor)
+                <br />Nama &nbsp; : 
+                <br />Jawatan &nbsp; :
+                <br />Tarikh  &nbsp; :
+
+            <td style="padding-top:20px; border-color:black; line-height:16px" width="50%">
+                <strong style="font-size:16px">CATATAN YIT</strong>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                Tandatangan ______________________________________________<br />
+                &emsp;&emsp;&emsp;&emsp;(Ketua Penolong Pengarah(Pembangunan & Pelaburan)/
+                Timbalan Pengarah(Yayasan Islam Terengganu))<br />
+                <br />Nama &nbsp; : 
+                <br />Jawatan &nbsp; : 
+                <br />Tarikh  &nbsp; :
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <strong>
+                    SAYA TELAH MENYEMAK DAN MENGESAHKAN KONTRAKTOR TELAH MENYIAPKAN KERJA DENGAN SEMPURNA
+                    DAN MEMUASKAN SEJAJAR DENGAN
+                    <br />
+                    <br /> BAYAR RM @Model.Jumlah
+                </strong>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                Tandatangan ______________________________________________<br />
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(Pengarah Yayasan Islam Terengganu)
+                <br />Nama &nbsp; : 
+                <br />Jawatan &nbsp; : 
+                <br />Tarikh  &nbsp; :
+
+            </td>
+        </tr>
+
+    </table>
+</div>
+

@@ -448,6 +448,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
             ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
+            ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
 
             ViewBag.EnJenisCek = EnumHelper<EnJenisCek>.GetList();
         }
