@@ -12,5 +12,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public EnStatusProses EnStatusEFT { get; set; }
         public string? SebabGagal { get; set; }
         public DateTime? TarikhKredit { get; set; }
+        public int? Bil { get; set; }
     }
 }

@@ -30,6 +30,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int JBankId { get; set; }
         public JBank? JBank { get; set; }
         public ICollection<AkPV>? AkPV { get; set; }
+        public ICollection<AkEFT>? AkEFT { get; set; }
+
 
     }
 }

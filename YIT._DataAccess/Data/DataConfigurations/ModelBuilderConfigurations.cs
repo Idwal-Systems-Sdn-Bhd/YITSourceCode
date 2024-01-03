@@ -558,6 +558,12 @@ namespace YIT._DataAccess.Data.DataConfigurations
                 .WithMany(t => t.AkJanaanProfil)
                 .HasForeignKey(m => m.JCawanganId)
                 .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkEFT>()
+                .HasOne(m => m.AkBank)
+                .WithMany(t => t.AkEFT)
+                .HasForeignKey(m => m.AkBankId)
+                .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
         }
     }
 }
