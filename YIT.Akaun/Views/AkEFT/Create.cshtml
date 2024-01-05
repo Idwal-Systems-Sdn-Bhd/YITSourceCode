@@ -1,0 +1,179 @@
+﻿@model AkEFT
+
+@{
+    ViewData["Title"] = "Janaan EFT - Tambah";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<partial name="_JSCreate" />
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleCreatePartial.cshtml" />
+
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="syscode" value="SPPB" hidden />
+            @*maklumat umum*@
+            <div class="row mb-2">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Produk" class="control-label"></label>
+                        <select asp-for="Produk" class="form-control form-control-sm text-uppercase" required>
+                            <option value="">- SILA PILIH -</option>
+                            <option value="EFT">EFT</option>
+                            <option value="GAJI">Gaji</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Tarikh" class="control-label"></label>
+                        <input asp-for="Tarikh" class="form-control form-control-sm" required value="@DateTime.Now.ToString("s")" />
+                        <span asp-validation-for="Tarikh" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="TarikhBayar" class="control-label"></label>
+                        <input asp-for="TarikhBayar" class="form-control form-control-sm" required value="@DateTime.Now.ToString("s")" />
+                        <span asp-validation-for="TarikhBayar" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="AkBankId" class="control-label"></label>
+                        <select asp-for="AkBankId" class="form-control form-control-sm text-uppercase select2" required>
+                            @foreach (var item in ViewBag.AkBank)
+                            {
+                                <option value="@item.Id">@item.Kod - @item.Perihal  </option>
+                            }
+                        </select>
+                        <span asp-validation-for="AkBankId" class="text-danger"></span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="JBankId" class="control-label"></label>
+                <select asp-for="JBankId" class="form-control form-control-sm text-uppercase select2" required >
+                    @foreach (var item in ViewBag.JBank)
+                    {
+                        <option value="@item.Id">@item.Kod - @item.Perihal  </option>
+                    }
+                </select>
+                <span asp-validation-for="JBankId" class="text-danger"></span>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="NoRujukan" class="control-label"></label>
+                        <input asp-for="NoRujukan" class="form-control form-control-sm" required readonly value="@ViewBag.NoRujukan" />
+                        <span asp-validation-for="NoRujukan" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="NamaFail" class="control-label"></label>
+                        <input asp-for="NamaFail" class="form-control form-control-sm" required readonly value="@ViewBag.NamaFail" />
+                        <span asp-validation-for="NamaFail" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row align-items-center">
+
+                <div class="col-md-12">
+                    <div class="form-group mb-0">
+                        <label class="control-label">Tarikh Baucer</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 align-items-center">
+
+                <div class="col-md-4">
+                    <input type="date" name="TarDari" class="form-control form-control-sm" id="TarDari" />
+                </div>
+                <div class="col-md-4">
+                    <input type="date" name="TarHingga" class="form-control form-control-sm" id="TarHingga" />
+                </div>
+                <div class="col-auto">
+                    <a class="btn btn-primary text-white btn-sm" onclick="JanaKelompok()">Jana Kelompok</a>
+                    <span class="loading" style="padding-right:3px; padding-top: 3px; display:inline-block;" hidden>
+                        <img src="~/img/Spinner.gif" style="height:40px;">
+                    </span>
+                </div>
+            </div>
+            @*end*@
+            <br />
+
+            @*table Penerima*@
+            <div class="card box-shadow mb-3">
+                <div class="card-header">
+                    <h6>Penerima</h6>
+                </div>
+                <div class="card-body">
+                    <table id="tblPenerima" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th width="5%">Bil</th>
+                                <th width="10%">No Baucer</th>
+                                <th width="5%">No Pend.</th>
+                                <th width="5%">No Akaun</th>
+                                <th width="5%">Kod M2E</th>
+                                <th width="55%">Penerima</th>
+                                <th width="10%">Amaun</th>
+                                <th width="5%">Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyPenerima">
+                            @if (ViewBag.akEFTPenerima != null)
+                            {
+                                foreach (var item in ViewBag.akEFTPenerima)
+                                {
+                                    <tr>
+                                        <td>@item.Bil</td>
+                                        <td>@item.AkPVId</td>
+                                        <td>@item.AkPV?.NoRujukan</td>
+                                        <td>@item.NoPendaftaranPenerima</td>
+                                        <td>@item.NoAkaunBank</td>
+                                        <td class="text-uppercase">@item.KodM2E</td>
+                                        <td class="text-uppercase">@item.NamaPenerima</td>
+                                        <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                                        <td class="text-uppercase">@item.EnStatusEFT.GetDisplayName()</td>
+                                    </tr>
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="form-group">
+                                <label asp-for="BilPenerima" class="control-label"></label>
+                                <input asp-for="BilPenerima" class="form-control form-control-sm" value="0" readonly />
+                            </div>
+                        </div>
+                        <div class="col-10">
+                            <div class="form-group">
+                                <label asp-for="Jumlah" class="control-label"></label>
+                                <input asp-for="Jumlah" class="form-control form-control-sm" value="0.00" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            @*table Penerima end*@
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Simpan" id="btnSave" class="btn ac-primary btn-sm" />
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -9,9 +9,13 @@ namespace YIT.__Domain.Entities.Models._03Akaun
     public class AkEFT : GenericFields
     {
         public int Id { get; set; }
+        [Display(Name = "No Janaan")]
         public string? NoRujukan { get; set; }
+        [Display(Name = "Nama Fail")]
         public string? NamaFail { get; set; }
+        [Display(Name = "Tarikh Jana")]
         public DateTime Tarikh { get; set; }
+        [Display(Name = "Tarikh Bayar")]
         public DateTime TarikhBayar { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Jumlah { get; set; }

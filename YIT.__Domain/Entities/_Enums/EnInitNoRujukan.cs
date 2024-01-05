@@ -47,7 +47,7 @@ namespace YIT.__Domain.Entities._Enums
         RK = 18, // rekup
         [Display(Name = "GJ")]
         GJ = 19, // janaan gaji
-        [Display(Name = "EFT")]
+        [Display(Name = "EF")]
         EF = 20, // janaan EFT
         [Display(Name = "PV")]
         PV = 21, // baucer pembayaran

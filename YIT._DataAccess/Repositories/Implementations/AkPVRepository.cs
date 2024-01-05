@@ -148,7 +148,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public List<AkPV> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang)
+        public List<AkPV> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int? akBankId)
         {
             if (searchString == null && dateFrom == null && dateTo == null && orderBy == null)
             {
@@ -168,25 +168,33 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ThenInclude(t => t!.DPekerja)
                 .Include(t => t.DPelulus)
                     .ThenInclude(t => t!.DPekerja)
-                //.Include(t => t.SuGajiBulanan)
-                //    .ThenInclude(t => t!.SuGajiBulananPekerja)!
-                //        .ThenInclude(t => t.SuGajiElaunPotongan)!
-                //            .ThenInclude(t => t.JElaunPotongan)
-                //.Include(t => t.AkPVObjek)!
-                //    .ThenInclude(to => to.AkCarta)
-                //.Include(t => t.AkPVObjek)!
-                //    .ThenInclude(to => to.JKWPTJBahagian)
-                //        .ThenInclude(b => b!.JKW)
-                //.Include(t => t.AkPVObjek)!
-                //    .ThenInclude(to => to.JKWPTJBahagian)
-                //        .ThenInclude(b => b!.JPTJ)
-                //.Include(t => t.AkPVObjek)!
-                //    .ThenInclude(to => to.JKWPTJBahagian)
-                //        .ThenInclude(b => b!.JBahagian)
-                //.Include(t => t.AkPVObjek)!
-                //    .ThenInclude(t => t.JCukai)
-                //.Include(t => t.AkPVInvois)!
-                //    .ThenInclude(t => t.AkBelian)
+                .Include(t => t.AkPVPenerima)!
+                    .ThenInclude(pp => pp.JBank)
+                .Include(t => t.AkPVPenerima)!
+                    .ThenInclude(pp => pp.JCaraBayar)
+                .Include(t => t.AkPVPenerima)!
+                    .ThenInclude(pp => pp.DDaftarAwam)
+                .Include(t => t.AkPVPenerima)!
+                    .ThenInclude(pp => pp.DPekerja)
+                    //.Include(t => t.SuGajiBulanan)
+                    //    .ThenInclude(t => t!.SuGajiBulananPekerja)!
+                    //        .ThenInclude(t => t.SuGajiElaunPotongan)!
+                    //            .ThenInclude(t => t.JElaunPotongan)
+                    //.Include(t => t.AkPVObjek)!
+                    //    .ThenInclude(to => to.AkCarta)
+                    //.Include(t => t.AkPVObjek)!
+                    //    .ThenInclude(to => to.JKWPTJBahagian)
+                    //        .ThenInclude(b => b!.JKW)
+                    //.Include(t => t.AkPVObjek)!
+                    //    .ThenInclude(to => to.JKWPTJBahagian)
+                    //        .ThenInclude(b => b!.JPTJ)
+                    //.Include(t => t.AkPVObjek)!
+                    //    .ThenInclude(to => to.JKWPTJBahagian)
+                    //        .ThenInclude(b => b!.JBahagian)
+                    //.Include(t => t.AkPVObjek)!
+                    //    .ThenInclude(t => t.JCukai)
+                    //.Include(t => t.AkPVInvois)!
+                    //    .ThenInclude(t => t.AkBelian)
                     .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
                 .ToList();
 
@@ -238,13 +246,17 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
             // order by filters end
 
+            if (akBankId != null)
+            {
+                akPVList = akPVList.Where(pv => pv.AkBankId == akBankId).ToList();
+            }
             return akPVList;
         }
 
         public List<AkPV> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan)
         {
             // get all data with details
-            List<AkPV> akPVList = GetResults(searchString, dateFrom, dateTo, orderBy, enStatusBorang);
+            List<AkPV> akPVList = GetResults(searchString, dateFrom, dateTo, orderBy, enStatusBorang, null);
 
             var filterings = FilterByComparingJBahagianAkPVObjekWithJBahagianDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModulKelulusan, akPVList);
 

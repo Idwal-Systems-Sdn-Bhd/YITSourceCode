@@ -23,10 +23,12 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int? JBankId { get; set; }
         public JBank? JBank { get; set; }
         public string? NoAkaunBank { get; set; }
+        public string? Emel { get; set; }
         public string? KodM2E { get; set; }
-        public string? NoCek { get; set; }
+        public string? NoRujukanCaraBayar { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Amaun { get; set; }
         public EnJenisId EnJenisId { get; set; }
+        
     }
 }

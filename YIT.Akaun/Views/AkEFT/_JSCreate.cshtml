@@ -1,0 +1,171 @@
+﻿<script type="text/javascript">
+   // onchange no Rujukan
+    $("body").on('change', "#Tarikh", function () {
+        var tarikh = $("#Tarikh").val();
+        var noRujukan = moment(tarikh).format('YYYYMM');
+        if (tarikh != null || tarikh != undefined) {
+            GetNoRujukan(tarikh, noRujukan);
+        }
+
+    });
+
+    function GetNoRujukan(tarikh, noRujukan) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetNoRujukan", "AkEFT")',
+            data: { tarikh: tarikh, noRujukan: noRujukan },
+            dataType: "json",
+            success: function (msg) {
+                if (msg.record) {
+                    $("#NoPRujukan").val("@EnInitNoRujukan.EF.GetDisplayName()/" + msg.record);
+                    $("#NamaFail").val("@EnInitNoRujukan.EF.GetDisplayName()" + msg.record + ".txt");
+                }
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    }
+    // onchange no Rujukan end
+
+    // jana kelompok
+    function JanaKelompok() {
+        $(".loading").prop('hidden', false);
+        var loading = 0;
+        var tarDari = $("#TarDari").val();
+        var tarHingga = $("#TarHingga").val();
+        var produk = $("#Produk").val();
+        var akBankId = $("#AkBankId").val();
+
+        var jumlah = $("#Jumlah");
+        var bilPenerima = $("#BilPenerima");
+
+        if (tarHingga < tarDari)
+        {
+            $("#TarHingga").val(tarDari);
+        }
+
+        if (produk != "") {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetPenerimaList", "AkEFT")',
+                data: { tarDari: tarDari, tarHingga: tarHingga, produk: produk, akBankId: akBankId },
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.result == 'OK') {
+                        //refresh updated table Baucer\
+                        $("table tbody#tbodyPenerima").empty();
+                        var sum = 0;
+                        var bil = 0;
+                        if (msg.table.length > 0) {
+                            for (var i = 0; i < msg.table.length; i++) {
+                                var item1 = msg.table[i];
+                                var enJenisId = "Tiada";
+                                switch (item1.enJenisId) {
+                                    case 1:
+                                        enJenisId = "@EnJenisId.KPBaru.GetDisplayName()"
+                                        break;
+                                    case 2:
+                                        enJenisId = "@EnJenisId.KPLama.GetDisplayName()"
+                                        break;
+                                    case 3:
+                                        enJenisId = "@EnJenisId.Passport.GetDisplayName()"
+                                        break;
+                                    case 4:
+                                        enJenisId = "@EnJenisId.KodPembekal.GetDisplayName()"
+                                        break;
+                                    case 5:
+                                        enJenisId = "@EnJenisId.NoTentera.GetDisplayName()"
+                                        break;
+
+                                }
+                                var str = "<tr><td class='text-uppercase'>" + item1.bil +
+                                    "</td><td hidden  >" + item1.akPVId +
+                                    "</td><td class='text-uppercase'>" + item1.akPV.noRujukan +
+                                    "</td><td class='text-uppercase'>" + item1.noPendaftaranPenerima +
+                                    "</td><td class='text-uppercase'>" + item1.noAkaunBank +
+                                    "</td><td class='text-uppercase'>" + item1.kodM2E +
+                                    "</td><td class='text-uppercase'>" + item1.namaPenerima +
+                                    "</td><td class='text-right'>" + (item1.amaun).toFixed(2) +
+                                    "</td><td class='text-uppercase'>" + enJenisId +
+                                    "</td><td>" +
+                                    "<button class='btn ac-danger btn-sm' type='button' id='btnRemove1' onclick='Remove1(this)'><i class='fas fa-trash' ></i></button>" +
+                                    "</td><tr>";
+                                $("table tbody#tbodyPenerima").append(str);
+                                sum += item1.amaun;
+                                bil++;
+
+                                $("#JBankId").val(msg.jBankId).change();
+                            }
+                        }
+                        jumlah.val(sum.toFixed(2));
+                        bilPenerima.val(bil);
+
+                        $(".loading").prop('hidden', true);
+                    }
+                    else {
+                        toastr.error(msg.message, "Ralat");
+                        toastr.options.timeOut = 5000; // 5s
+                        $(".loading").prop('hidden', true);
+                    }
+
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                    $(".loading").prop('hidden', true);
+                }
+            });
+        }
+        else {
+            toastr.error("Sila pilih jenis produk", "Ralat");
+            toastr.options.timeOut = 5000; // 5s
+            $(".loading").prop('hidden', true);
+        }
+
+    }
+    // jana kelompok end
+
+    // remove tbl penerima
+    function Remove1(button) {
+        var row = $(button).closest("TR");
+        var bil = $("TD", row).eq(0).html();
+        var akPVId = $("TD", row).eq(1).html();
+        var noPV = $("TD", row).eq(2).html();
+        var amaun = $("TD", row).eq(7).html();
+        var jumlah = $("#Jumlah");
+        var bilPenerima = $("#BilPenerima");
+        if (confirm("Hapus No Baucer : " + noPV + " ?")) {
+            //Get the reference of the Table.
+            var table = $("#tblPenerima")[0];
+
+            var AkEFTPenerima = {
+                Bil: bil,
+                AkPVId: akPVId
+
+            }
+            if (bil != null) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RemoveAkEFTPenerima", "AkEFT")',
+                    data: AkEFTPenerima,
+                    dataType: "json",
+                    success: function (r) {
+                        //Delete the Table row using it's Index.
+                        table.deleteRow(row[0].rowIndex);
+                        //Sum value to Total text field
+                        var sum = 0;
+                        sum = parseFloat(jumlah.val()) - parseFloat(amaun);
+                        jumlah.val(sum.toFixed(2));
+
+                        var bilBaucer = 0;
+                        bilBaucer = parseFloat(bilPenerima.val()) - 1;
+                        bilPenerima.val(bilBaucer);
+
+                        toastr.success("Data berjaya dihapuskan.")
+                    }
+                });
+            }
+        }
+    }
+    // remove tbl penerima end
+</script>

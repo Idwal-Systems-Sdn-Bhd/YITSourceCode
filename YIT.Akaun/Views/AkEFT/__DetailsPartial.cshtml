@@ -1,0 +1,119 @@
+﻿@model AkEFT
+@*maklumat umum*@
+<div class="row mb-2">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="Produk" class="control-label"></label>
+            <select asp-for="Produk" class="form-control form-control-sm text-uppercase" required>
+                <option value="">- SILA PILIH -</option>
+                <option value="EFT">EFT</option>
+                <option value="GAJI">Gaji</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="Tarikh" class="control-label"></label>
+            <input asp-for="Tarikh" class="form-control form-control-sm" required />
+            <span asp-validation-for="Tarikh" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="TarikhBayar" class="control-label"></label>
+            <input asp-for="TarikhBayar" class="form-control form-control-sm" required />
+            <span asp-validation-for="TarikhBayar" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="AkBankId" class="control-label"></label>
+            <input value="@Model.AkBank?.Kod - @Model.AkBank?.Perihal " class="form-control form-control-sm" readonly />
+        </div>
+    </div>
+</div>
+<div class="form-group" hidden>
+    <label asp-for="JBankId" class="control-label"></label>
+    <input value="@Model.JBank?.Kod - @Model.JBank?.Perihal " class="form-control form-control-sm" readonly />
+
+</div>
+<div class="row mb-2">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="NoRujukan" class="control-label"></label>
+            <input asp-for="NoRujukan" class="form-control form-control-sm" readonly />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="NamaFail" class="control-label"></label>
+            <input asp-for="NamaFail" class="form-control form-control-sm" readonly />
+        </div>
+    </div>
+</div>
+@*div end*@
+
+@*end*@
+<br />
+
+@*table Penerima*@
+<div class="card box-shadow mb-3">
+    <div class="card-header">
+        <h6>Penerima</h6>
+    </div>
+    <div class="card-body">
+        <table id="tblPenerima" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th width="5%">Bil</th>
+                    <th width="10%">No Baucer</th>
+                    <th width="5%">No Pend.</th>
+                    <th width="5%">No Akaun</th>
+                    <th width="5%">Kod M2E</th>
+                    <th width="55%">Penerima</th>
+                    <th width="10%">Amaun</th>
+                    <th width="5%">Status</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyPenerima">
+                @if (ViewBag.akEFTPenerima != null)
+                {
+                    foreach (var item in ViewBag.akEFTPenerima)
+                    {
+                        <tr>
+                            <td>@item.Bil</td>
+                            <td hidden>@item.AkPVId</td>
+                            <td>@item.AkPV?.NoRujukan</td>
+                            <td>@item.NoPendaftaranPenerima</td>
+                            <td>@item.NoAkaunBank</td>
+                            <td class="text-uppercase">@item.KodM2E</td>
+                            <td class="text-uppercase">@item.NamaPenerima</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                            <td class="text-uppercase">@item.EnStatusEFT</td>
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-2">
+                <div class="form-group">
+                    <label asp-for="BilPenerima" class="control-label"></label>
+                    <input asp-for="BilPenerima" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+            <div class="col-10">
+                <div class="form-group">
+                    <label asp-for="Jumlah" class="control-label"></label>
+                    <input asp-for="Jumlah" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@*table Penerima end*@
+<hr />

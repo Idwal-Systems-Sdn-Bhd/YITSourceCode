@@ -20,6 +20,6 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "Kod Pembekal")]
         KodPembekal = 4,
         [Display(Name = "No Tentera")]
-        NoTentera = 4,
+        NoTentera = 5,
     }
 }

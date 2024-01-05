@@ -68,7 +68,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             PopulateFormFields(searchString, searchDate1, searchDate2);
 
-            var akPV = _unitOfWork.AkPVRepo.GetResults(searchString, date1, date2, searchColumn, EnStatusBorang.Semua);
+            var akPV = _unitOfWork.AkPVRepo.GetResults(searchString, date1, date2, searchColumn, EnStatusBorang.Semua, null);
 
             return View(akPV);
         }
@@ -738,8 +738,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                           item.Alamat3,
                                           item.Emel,
                                           item.KodM2E,
-                                          item.NoCek,
-                                          item.TarikhCek,
+                                          item.NoRujukanCaraBayar,
+                                          item.TarikhCaraBayar,
                                           item.Amaun,
                                           item.NoRujukanMohon,
                                           item.AkRekupId,
@@ -1546,7 +1546,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             bil += 1;
 
                             _cart.AddItemPenerima(akPVPenerima.Id, akPVPenerima.AkPVId, akPVPenerima.AkJanaanProfilPenerimaId, akPVPenerima.EnKategoriDaftarAwam,
-                                akPVPenerima.DDaftarAwamId, akPVPenerima.DPekerjaId, akPVPenerima.NoPendaftaranPenerima, akPVPenerima.NamaPenerima, akPVPenerima.NoPendaftaranPemohon, akPVPenerima.Catatan, akPVPenerima.JCaraBayarId, akPVPenerima.JBankId, akPVPenerima.NoAkaunBank, akPVPenerima.Alamat1, akPVPenerima.Alamat2, akPVPenerima.Alamat3, akPVPenerima.Emel, akPVPenerima.KodM2E, akPVPenerima.NoCek, akPVPenerima.TarikhCek, akPVPenerima.Amaun, akPVPenerima.NoRujukanMohon, akPVPenerima.AkRekupId, akPVPenerima.DPanjarId, akPVPenerima.IsCekDitunaikan, akPVPenerima.TarikhCekDitunaikan, EnStatusProses.None, bil, akPVPenerima.EnJenisId);
+                                akPVPenerima.DDaftarAwamId, akPVPenerima.DPekerjaId, akPVPenerima.NoPendaftaranPenerima, akPVPenerima.NamaPenerima, akPVPenerima.NoPendaftaranPemohon, akPVPenerima.Catatan, akPVPenerima.JCaraBayarId, akPVPenerima.JBankId, akPVPenerima.NoAkaunBank, akPVPenerima.Alamat1, akPVPenerima.Alamat2, akPVPenerima.Alamat3, akPVPenerima.Emel, akPVPenerima.KodM2E, akPVPenerima.NoRujukanCaraBayar, akPVPenerima.TarikhCaraBayar, akPVPenerima.Amaun, akPVPenerima.NoRujukanMohon, akPVPenerima.AkRekupId, akPVPenerima.DPanjarId, akPVPenerima.IsCekDitunaikan, akPVPenerima.TarikhCekDitunaikan, EnStatusProses.None, bil, akPVPenerima.EnJenisId);
                         }
                         else
                         {
@@ -1676,8 +1676,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                                                  akPVPenerima.Alamat3,
                                                  akPVPenerima.Emel,
                                                  akPVPenerima.KodM2E,
-                                                 akPVPenerima.NoCek,
-                                                 akPVPenerima.TarikhCek,
+                                                 akPVPenerima.NoRujukanCaraBayar,
+                                                 akPVPenerima.TarikhCaraBayar,
                                                  akPVPenerima.Amaun,
                                                  akPVPenerima.NoRujukanMohon,
                                                  akPVPenerima.AkRekupId,

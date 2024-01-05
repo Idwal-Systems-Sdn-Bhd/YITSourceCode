@@ -32,8 +32,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? Alamat3 { get; set; }
         public string? Emel { get; set; }
         public string? KodM2E { get; set; }
-        public string? NoCek { get; set; }
-        public DateTime? TarikhCek { get; set; }
+        public string? NoRujukanCaraBayar { get; set; }
+        public DateTime? TarikhCaraBayar { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Amaun { get; set; }
         public string? NoRujukanMohon { get; set; }
@@ -47,6 +47,5 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int? Bil { get; set; }
         [Display(Name = "Jenis Id")]
         public EnJenisId EnJenisId { get; set; }
-        public ICollection<AkEFTPenerima>? AkEFTPenerima { get; set; }
     }
 }

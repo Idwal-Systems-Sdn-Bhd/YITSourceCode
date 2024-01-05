@@ -1,0 +1,30 @@
+﻿<script type="text/javascript">
+
+        function GenerateTxt(id) {
+        var blob = "";
+        var namaFail = "@Model.NamaFail";
+        $.ajax({
+            type: "POST",
+            //url: "/AkPV/JsonGetKod",
+            url: '@Url.Action("GenerateTxt", "AkEFT")',
+            data: { id: id },
+            dataType: "json",
+            success: function (msg) {
+                //if (msg.record.length > 0) {
+                //    for (var i = 0; i < msg.record.length; i++) {
+                //        var item1 = msg.record[i];
+                //         str += item1 + '/n';
+                //    }
+                //}
+                var blob = new Blob([msg.record.join('\n')],
+                    { type: "text/plain;charset=utf-8" });
+
+                saveAs(blob, namaFail);
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+
+        }
+</script>

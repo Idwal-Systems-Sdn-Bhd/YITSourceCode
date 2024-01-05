@@ -24,7 +24,7 @@
             <tr><td align="right" width="70%" style="font-size:14px"><strong>No Baucer</strong> </td><td align="right" style="font-size:14px">:</td><td align="left" style="padding-left:5px; font-size:14px" width="85%"><strong> @Model.NoRujukan</strong></td></tr>
             <tr><td align="right" width="70%">Tarikh </td><td align="right">:</td><td align="left" style="padding-left:5px"> @Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td></tr>
             <tr>
-                <td align="right" width="70%">No Cek </td>
+                <td align="right" width="70%">No Ruj. Cara Bayar </td>
                 <td align="right">:</td>
                 <td align="left" style="padding-left:5px">
                     @if (ViewBag.akPVPenerima != null)
@@ -32,7 +32,7 @@
                         foreach (var item in ViewBag.akPVPenerima)
                         {
 
-                            @item.NoCek
+                            @item.NoRujukanCaraBayar
 
 
                         }
@@ -40,7 +40,7 @@
                 </td>
             </tr>
             <tr>
-                <td align="right" width="70%">Tarikh Cek/EFT </td>
+                <td align="right" width="70%">Tarikh Cara Bayar </td>
                 <td align="right">:</td>
                 <td align="left" style="padding-left:5px">
                     @if (ViewBag.akPVPenerima != null)
@@ -48,7 +48,7 @@
                         foreach (var item in ViewBag.akPVPenerima)
                         {
 
-                            @Convert.ToDateTime(item.TarikhCek).ToString("dd/MM/yyyy")
+                            @Convert.ToDateTime(item.TarikhCaraBayar).ToString("dd/MM/yyyy")
 
 
                         }
@@ -204,7 +204,7 @@
             <tr><td align="right" width="70%" style="font-size:14px"><strong>No Baucer</strong> </td><td align="right" style="font-size:14px">:</td><td align="left" style="padding-left:5px; font-size:14px" width="85%"><strong> @Model.NoRujukan</strong></td></tr>
             <tr><td align="right" width="70%">Tarikh </td><td align="right">:</td><td align="left" style="padding-left:5px"> @Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td></tr>
             <tr>
-                <td align="right" width="70%">No Cek </td>
+                <td align="right" width="70%">No Ruj. Cara Bayar </td>
                 <td align="right">:</td>
                 <td align="left" style="padding-left:5px">
                     @if (ViewBag.akPVPenerima != null)
@@ -212,7 +212,7 @@
                         foreach (var item in ViewBag.akPVPenerima)
                         {
 
-                            @item.NoCek
+                            @item.NoRujukanCaraBayar
 
 
                         }
@@ -220,7 +220,7 @@
                 </td>
             </tr>
             <tr>
-                <td align="right" width="70%">Tarikh Cek/EFT </td>
+                <td align="right" width="70%">Tarikh Cara Bayar </td>
                 <td align="right">:</td>
                 <td align="left" style="padding-left:5px">
                     @if (ViewBag.akPVPenerima != null)
@@ -228,7 +228,7 @@
                         foreach (var item in ViewBag.akPVPenerima)
                         {
 
-                            @Convert.ToDateTime(item.TarikhCek).ToString("dd/MM/yyyy")
+                            @Convert.ToDateTime(item.TarikhCaraBayar).ToString("dd/MM/yyyy")
 
 
                         }
