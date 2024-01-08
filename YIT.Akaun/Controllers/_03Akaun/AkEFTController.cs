@@ -556,101 +556,11 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 AkEFT eft = _unitOfWork.AkEFTRepo.GetDetailsById(id);
 
-                if (eft != null && eft.AkEFTPenerima != null && eft.AkEFTPenerima.Count > 0)
+                if (eft != null)
                 {
-                    string l = "|";
-                    List<string> txt = new List<string>();
-                    // batch header record
-                    var header = "00|MYYIT|" + eft.NoRujukan?.Replace("/","") + string.Concat(Enumerable.Repeat(l,26));
-                    // batch header record end
-                    txt.Add(header);
+                    List<string> txt = GenerateMaybank2ETxt(eft);
                     
-                    // detail record
-                    foreach (var penerima in eft.AkEFTPenerima)
-                    {
-                        var kodBNMEFT = _unitOfWork.JBankRepo.GetById((int)penerima.JBankId!).KodBNMEFT;
-
-                        var paymode = "IG";
-
-                        if (kodBNMEFT != null && kodBNMEFT == "MBBEMYKL")
-                        {
-                            paymode = "IT";
-                        }
-
-                        var productProvider = "Domestic Payments (MY)";
-
-                        var valueDate = eft.TarikhBayar.ToString("ddMMyyyy");
-
-                        var noPendaftaran = "";
-                        switch (penerima.EnJenisId)
-                        {
-                            case EnJenisId.KPBaru:
-                                noPendaftaran = penerima.NoPendaftaranPenerima?.Trim() + string.Concat(Enumerable.Repeat(l, 3));
-                                break;
-                            case EnJenisId.KPLama:
-                                noPendaftaran = l + penerima.NoPendaftaranPenerima?.Trim() + string.Concat(Enumerable.Repeat(l, 2));
-                                break;
-                            case EnJenisId.KodPembekal:
-                                noPendaftaran = string.Concat(Enumerable.Repeat(l, 2)) + penerima.NoPendaftaranPenerima?.Trim() + l;
-                                break;
-                            case EnJenisId.NoTentera:
-                                noPendaftaran = string.Concat(Enumerable.Repeat(l, 3)) + penerima.NoPendaftaranPenerima?.Trim();
-                                break;
-
-                        }
-
-                        var maxCatatanLength = 55;
-                        if (penerima.Catatan?.Length > maxCatatanLength)
-                            penerima.Catatan = penerima.Catatan.Substring(0,maxCatatanLength);
-
-
-                        var maxNamaPenerimaLength = 40;
-
-                        if (penerima.NamaPenerima?.Length > maxNamaPenerimaLength)
-                            penerima.NamaPenerima = penerima.NamaPenerima.Substring(0, maxNamaPenerimaLength);
-
-                        var maxRingkasanLength = 55;
-
-                        if (penerima.AkPV?.Ringkasan?.Length > maxRingkasanLength)
-                            penerima.AkPV.Ringkasan = penerima.AkPV.Ringkasan.Substring(0, maxRingkasanLength);
-
-                        var detailRow = "01" + l +
-                                       paymode + l +
-                                       productProvider + l +
-                                       valueDate + string.Concat(Enumerable.Repeat(l, 3)) +
-                                       penerima.NoRujukanCaraBayar + l +
-                                       penerima.NoPendaftaranPenerima?.Trim() + l +
-                                       penerima.Catatan + l +
-                                       "MYR" + l +
-                                       penerima.Amaun.ToString("####.00") + l +
-                                       "Y" + l +
-                                       "MYR" + l +
-                                       eft.AkBank!.NoAkaun?.Trim() + l +
-                                       penerima.NoAkaunBank?.Trim() + l +
-                                       penerima.KodM2E + l +
-                                       l +
-                                       "Y" + l +
-                                       penerima.NamaPenerima + string.Concat(Enumerable.Repeat(l, 5)) +
-                                       noPendaftaran + string.Concat(Enumerable.Repeat(l, 9)) +
-                                       kodBNMEFT + string.Concat(Enumerable.Repeat(l, 67)) +
-                                       penerima.NoRujukanCaraBayar + l +
-                                       "" + string.Concat(Enumerable.Repeat(l, 6)) +
-                                       "01" + l +
-                                       "" + string.Concat(Enumerable.Repeat(l, 225));
-
-                        txt.Add(detailRow);
-
-                        var adviseRow = "02" + l +
-                                        "PA" + l +
-                                        penerima.NoRujukanCaraBayar + l +
-                                        penerima.Emel + string.Concat(Enumerable.Repeat(l, 3)) +
-                                        penerima.AkPV?.Ringkasan + string.Concat(Enumerable.Repeat(l, 7)) +
-                                        penerima.Amaun.ToString("####.00") + string.Concat(Enumerable.Repeat(l, 27));
-
-                        txt.Add(adviseRow);
-
-                    }
-
+                    
                     return Json(new { result = "OK", record = txt });
                 }
                 else
@@ -663,6 +573,158 @@ namespace YIT.Akaun.Controllers._03Akaun
             catch (Exception ex)
             {
                 return Json(new { result = "Error", message = ex.Message });
+            }
+        }
+
+        private List<string> GenerateMaybank2ETxt(AkEFT eft)
+        {
+            string l = "|";
+            List<string> txt = new List<string>();
+            // batch header record
+            var header = "00|MYYIT|" + eft.NoRujukan?.Replace("/", "") + string.Concat(Enumerable.Repeat(l, 26));
+            // batch header record end
+            txt.Add(header);
+
+            if (eft.AkEFTPenerima != null && eft.AkEFTPenerima.Count > 0)
+            {
+                foreach (var penerima in eft.AkEFTPenerima)
+                {
+                    // detail record
+                    var kodBNMEFT = _unitOfWork.JBankRepo.GetById((int)penerima.JBankId!).KodBNMEFT;
+
+                    var paymode = "IG";
+
+                    if (kodBNMEFT != null && kodBNMEFT == "MBBEMYKL")
+                    {
+                        paymode = "IT";
+                    }
+
+                    var productProvider = "Domestic Payments (MY)";
+
+                    var valueDate = eft.TarikhBayar.ToString("ddMMyyyy");
+
+                    var noPendaftaran = "";
+                    switch (penerima.EnJenisId)
+                    {
+                        case EnJenisId.KPBaru:
+                            noPendaftaran = penerima.NoPendaftaranPenerima?.Trim() + string.Concat(Enumerable.Repeat(l, 3));
+                            break;
+                        case EnJenisId.KPLama:
+                            noPendaftaran = l + penerima.NoPendaftaranPenerima?.Trim() + string.Concat(Enumerable.Repeat(l, 2));
+                            break;
+                        case EnJenisId.KodPembekal:
+                            noPendaftaran = string.Concat(Enumerable.Repeat(l, 2)) + penerima.NoPendaftaranPenerima?.Trim() + l;
+                            break;
+                        case EnJenisId.NoTentera:
+                            noPendaftaran = string.Concat(Enumerable.Repeat(l, 3)) + penerima.NoPendaftaranPenerima?.Trim();
+                            break;
+
+                    }
+
+                    var maxCatatanLength = 55;
+                    if (penerima.Catatan?.Length > maxCatatanLength)
+                        penerima.Catatan = penerima.Catatan.Substring(0, maxCatatanLength);
+
+
+                    var maxNamaPenerimaLength = 40;
+
+                    if (penerima.NamaPenerima?.Length > maxNamaPenerimaLength)
+                        penerima.NamaPenerima = penerima.NamaPenerima.Substring(0, maxNamaPenerimaLength);
+
+                    var maxRingkasanLength = 55;
+
+                    if (penerima.AkPV?.Ringkasan?.Length > maxRingkasanLength)
+                        penerima.AkPV.Ringkasan = penerima.AkPV.Ringkasan.Substring(0, maxRingkasanLength);
+
+                    var detailRow = "01" + l +
+                                   paymode + l +
+                                   productProvider + l +
+                                   valueDate + string.Concat(Enumerable.Repeat(l, 3)) +
+                                   penerima.NoRujukanCaraBayar + l +
+                                   penerima.NoPendaftaranPenerima?.Trim() + l +
+                                   penerima.Catatan + l +
+                                   "MYR" + l +
+                                   penerima.Amaun.ToString("####.00") + l +
+                                   "Y" + l +
+                                   "MYR" + l +
+                                   eft.AkBank!.NoAkaun?.Trim() + l +
+                                   penerima.NoAkaunBank?.Trim() + l +
+                                   penerima.KodM2E + l +
+                                   l +
+                                   "Y" + l +
+                                   penerima.NamaPenerima + string.Concat(Enumerable.Repeat(l, 5)) +
+                                   noPendaftaran + string.Concat(Enumerable.Repeat(l, 9)) +
+                                   kodBNMEFT + string.Concat(Enumerable.Repeat(l, 67)) +
+                                   penerima.NoRujukanCaraBayar + l +
+                                   "" + string.Concat(Enumerable.Repeat(l, 6)) +
+                                   "01" + l +
+                                   "" + string.Concat(Enumerable.Repeat(l, 225));
+
+                    txt.Add(detailRow);
+
+                    var adviseRow = "02" + l +
+                                    "PA" + l +
+                                    penerima.NoRujukanCaraBayar + l +
+                                    penerima.Emel + string.Concat(Enumerable.Repeat(l, 3)) +
+                                    penerima.AkPV?.Ringkasan + string.Concat(Enumerable.Repeat(l, 7)) +
+                                    penerima.Amaun.ToString("####.00") + string.Concat(Enumerable.Repeat(l, 27));
+
+                    txt.Add(adviseRow);
+
+                    // update noRujukanCaraBayar, tarikhCaraBayar akPVPenerima
+                    var pvPenerima = _context.AkPVPenerima.FirstOrDefault(pp => pp.Bil == penerima.Bil && pp.AkPVId ==  penerima.AkPVId);
+
+                    if (pvPenerima != null)
+                    {
+                        pvPenerima.NoRujukanCaraBayar = penerima.NoRujukanCaraBayar;
+                        pvPenerima.TarikhCaraBayar = DateTime.Now;
+                        pvPenerima.EnStatusEFT = EnStatusProses.Pending;
+
+                        _context.AkPVPenerima.Update(pvPenerima);
+                    }
+
+                    penerima.TarikhKredit = DateTime.Now;
+                    penerima.EnStatusEFT = EnStatusProses.Pending;
+                    _context.AkEFTPenerima.Update(penerima);
+
+
+                }
+            }
+
+            eft.EnStatusEFT = EnStatusProses.Pending;
+            _context.AkEFT.Update(eft);
+            _context.SaveChanges();
+
+            return txt;
+        }
+
+        public JsonResult GetAllItemCartAkEFT()
+        {
+
+            try
+            {
+
+                List<AkEFTPenerima> penerimaList = _cart.AkEFTPenerima.ToList();
+
+                if (penerimaList != null && penerimaList.Count > 0)
+                {
+                    foreach (var item in penerimaList)
+                    {
+                        var pv = _unitOfWork.AkPVRepo.GetDetailsById(item.AkPVId);
+
+                        if (pv != null)
+                        {
+                            item.AkPV = pv;
+                        }
+                        
+                    }
+                    
+                }
+                return Json(new { result = "OK", table = penerimaList!.OrderBy(d => d.Bil) });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
             }
         }
     }

@@ -3,6 +3,8 @@
         function GenerateTxt(id) {
         var blob = "";
         var namaFail = "@Model.NamaFail";
+        var jumlah = $("#Jumlah");
+        var bilPenerima = $("#BilPenerima");
         $.ajax({
             type: "POST",
             //url: "/AkPV/JsonGetKod",
@@ -20,6 +22,58 @@
                     { type: "text/plain;charset=utf-8" });
 
                 saveAs(blob, namaFail);
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetAllItemCartAkEFT", "AkEFT")',
+                    dataType: "json",
+                    success: function (msg) {
+                        if (msg.result == 'OK') {
+                            //refresh updated table Baucer\
+                            $("table tbody#tbodyPenerima").empty();
+                            var sum = 0;
+                            var bil = 0;
+                            if (msg.table.length > 0) {
+                                for (var i = 0; i < msg.table.length; i++) {
+                                    var item1 = msg.table[i];
+                                    var enStatusProses = "Tertangguh";
+
+                                    var str = "<tr><td class='text-uppercase'>" + item1.bil +
+                                        "</td><td hidden  >" + item1.akPVId +
+                                        "</td><td class='text-uppercase'>" + item1.akPV.noRujukan +
+                                        "</td><td class='text-uppercase'>" + item1.noPendaftaranPenerima +
+                                        "</td><td class='text-uppercase'>" + item1.noAkaunBank +
+                                        "</td><td class='text-uppercase'>" + item1.kodM2E +
+                                        "</td><td class='text-uppercase'>" + item1.namaPenerima +
+                                        "</td><td class='text-right'>" + (item1.amaun).toFixed(2) +
+                                        "</td><td class='text-uppercase'>" + enStatusProses +
+                                        "</td><tr>";
+                                    $("table tbody#tbodyPenerima").append(str);
+                                    sum += item1.amaun;
+                                    bil++;
+
+                                    $("#JBankId").val(msg.jBankId).change();
+                                }
+                            }
+                            jumlah.val(sum.toFixed(2));
+                            bilPenerima.val(bil);
+
+                            $(".loading").prop('hidden', true);
+                            toastr.success("Janaan txt berjaya", "Berjaya");
+                            toastr.options.timeOut = 5000; // 5s
+                        }
+                        else {
+                            toastr.error(msg.message, "Ralat");
+                            toastr.options.timeOut = 5000; // 5s
+                            $(".loading").prop('hidden', true);
+                        }
+
+                    },
+                    error: function (req, status, error) {
+                        alert(error);
+                        $(".loading").prop('hidden', true);
+                    }
+                });
             },
             error: function (req, status, error) {
                 alert(error);

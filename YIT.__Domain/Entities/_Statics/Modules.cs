@@ -98,6 +98,9 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodAkJanaanProfil = "AK0014";
         public const string namaAkJanaanProfil = "Janaan Profil";
 
+        public const string kodAkEFTMaybank2E = "AK0015";
+        public const string namaAkEFTMaybank2E = "Janaan EFT Maybank2E";
+
         public const string kodAkTerima = "AK0015";
         public const string namaAkTerima = "Terimaan Resit Rasmi";
         //
