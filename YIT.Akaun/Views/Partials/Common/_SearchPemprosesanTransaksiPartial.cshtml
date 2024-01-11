@@ -3,7 +3,7 @@
         <label class="form-control-plaintext" for="searchselect">Carian : </label>
 
         <div class="form-actions no-color mb-2">
-            <form asp-action="Index" method="get">
+            <form asp-action="Index" method="post">
                 <div class="row g-3">
                     <div class="col-sm-9 mb-2">
                         <div class="row g-3">
@@ -12,6 +12,7 @@
                             </div>
                             <div class="col-6">
                                 <select class="form-control form-control-sm select2" type="text" name="dKonfigKelulusanId">
+                                    <option value="">- Pilih Pengguna -</option>
                                         @foreach (var item in ViewBag.DKonfigKelulusan)
                                         {
                                             <option value="@item.Id">@item.DPekerja?.NoGaji - @item.DPekerja?.Nama?.ToUpper()</option>

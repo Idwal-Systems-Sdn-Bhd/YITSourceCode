@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIT.__Domain", "YIT.__Domain\YIT.__Domain.csproj", "{D053A6F9-81FC-4E44-A377-6C4B36DEB53C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIT.__Domain", "YIT.__Domain\YIT.__Domain.csproj", "{D053A6F9-81FC-4E44-A377-6C4B36DEB53C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIT._DataAccess", "YIT._DataAccess\YIT._DataAccess.csproj", "{414390E4-2E10-4760-868F-69C4918DA48F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIT._DataAccess", "YIT._DataAccess\YIT._DataAccess.csproj", "{414390E4-2E10-4760-868F-69C4918DA48F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIT.Akaun", "YIT.Akaun\YIT.Akaun.csproj", "{5C3D50EE-D8EE-46BC-BCAE-3A0FBBCD4636}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIT.Akaun", "YIT.Akaun\YIT.Akaun.csproj", "{5C3D50EE-D8EE-46BC-BCAE-3A0FBBCD4636}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

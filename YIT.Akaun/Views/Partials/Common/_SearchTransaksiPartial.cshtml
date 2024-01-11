@@ -1,4 +1,8 @@
-﻿<div class="card mb-2">
+﻿@{
+    string date1 = ViewBag.searchDate1 ?? DateTime.Today.AddDays(-14).ToString("yyyy-MM-dd");
+    string date2 = ViewBag.searchDate2 ?? DateTime.Now.ToString("yyyy-MM-dd");
+}
+<div class="card mb-2">
     <div class="card-body ps-3 pb-2 ">
         <label class="form-control-plaintext" for="searchselect">Carian : </label>
 
@@ -24,10 +28,10 @@
                             <div class="col-6">
                                 <div class="row g-3">
                                     <div class="col-6">
-                                        <input class="form-control form-control-sm mb-2" type="date" name="searchDate1" value="@ViewBag.searchDate1" required/>
+                                        <input class="form-control form-control-sm mb-2" type="date" name="searchDate1" value="@date1" required />
                                     </div>
                                     <div class="col-6">
-                                        <input class="form-control form-control-sm" type="date" name="searchDate2" value="@ViewBag.searchDate2" required/>
+                                        <input class="form-control form-control-sm" type="date" name="searchDate2" value="@date2" required />
                                     </div>
                                 </div>
                                 

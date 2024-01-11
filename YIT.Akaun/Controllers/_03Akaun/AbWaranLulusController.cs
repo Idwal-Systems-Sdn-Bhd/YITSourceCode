@@ -14,10 +14,10 @@ using YIT.Akaun.Infrastructure;
 namespace YIT.Akaun.Controllers._03Akaun
 {
     [Authorize]
-    public class AbWaranSahController : Microsoft.AspNetCore.Mvc.Controller
+    public class AbWaranLulusController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = Modules.kodSahAbWaran;
-        public const string namamodul = Modules.namaSahAbWaran;
+        public const string modul = Modules.kodLulusAbWaran;
+        public const string namamodul = Modules.namaLulusAbWaran;
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
@@ -25,7 +25,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         private readonly UserServices _userServices;
         private readonly CartAbWaran _cart;
 
-        public AbWaranSahController(
+        public AbWaranLulusController(
             ApplicationDbContext context,
             _IUnitOfWork unitOfWork,
             UserManager<IdentityUser> userManager,
@@ -40,7 +40,6 @@ namespace YIT.Akaun.Controllers._03Akaun
             _userServices = userServices;
             _cart = cart;
         }
-
         public IActionResult Index(
             string searchString,
             string searchDate1,
@@ -65,22 +64,23 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (dKonfigKelulusanId != null)
             {
                 // cek is user and password valid or not
-                HttpContext.Session.SetInt32("DPengesahId", (int)dKonfigKelulusanId);
+                HttpContext.Session.SetInt32("DPelulusId", (int)dKonfigKelulusanId);
 
-                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId,password,EnJenisModulKelulusan.Waran,EnKategoriKelulusan.Pengesah) == false)
+                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password, EnJenisModulKelulusan.Waran, EnKategoriKelulusan.Pelulus) == false)
                 {
                     TempData[SD.Error] = "Katalaluan Tidak Sah";
                     return View();
                 }
                 else
                 {
-                    abWaran = _unitOfWork.AbWaranRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.None,(int)dKonfigKelulusanId,EnKategoriKelulusan.Pengesah, EnJenisModulKelulusan.Waran);
-                    
+
+                    abWaran = _unitOfWork.AbWaranRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.Semak, (int)dKonfigKelulusanId, EnKategoriKelulusan.Pelulus, EnJenisModulKelulusan.Waran);
+
                 }
             }
 
             return View(abWaran);
-            
+
         }
 
         public IActionResult Details(int? id)
@@ -96,7 +96,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
             EmptyCart();
-            ViewBag.DKonfigKelulusanId = HttpContext.Session.GetInt32("DPengesahId");
+            ViewBag.DKonfigKelulusanId = HttpContext.Session.GetInt32("DPelulusId");
             PopulateCartAbWaranFromDb(abWaran);
             return View(abWaran);
         }
@@ -116,7 +116,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
-        public async Task<IActionResult> Sah(int id,int dKonfigKelulusanId, string syscode)
+        public async Task<IActionResult> Lulus(int id, int dKonfigKelulusanId, string syscode)
         {
             var abWaran = _unitOfWork.AbWaranRepo.GetById((int)id);
 
@@ -126,11 +126,11 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (abWaran != null)
             {
 
-                _unitOfWork.AbWaranRepo.Sah(id, dKonfigKelulusanId, user?.UserName ?? "");
-                
-                _appLog.Insert("Posting", "Mengesah " + abWaran.NoRujukan ?? "" + "; pengesahId: " + dKonfigKelulusanId.ToString(), abWaran.NoRujukan ?? "", id, abWaran.Jumlah, pekerjaId, modul, syscode, namamodul, user);
+                _unitOfWork.AbWaranRepo.Lulus(id, dKonfigKelulusanId, user?.UserName ?? "");
+
+                _appLog.Insert("Posting", "Melulus " + abWaran.NoRujukan ?? "" + "; pelulusId: " + dKonfigKelulusanId.ToString(), abWaran.NoRujukan ?? "", id, abWaran.Jumlah, pekerjaId, modul, syscode, namamodul, user);
                 _context.SaveChanges();
-                TempData[SD.Success] = "Data berjaya disahkan..!";
+                TempData[SD.Success] = "Data berjaya diluluskan..!";
             }
             else
             {
@@ -204,7 +204,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.password = password;
             ViewBag.searchDate1 = searchDate1 ?? DateTime.Now.ToString("dd/MM/yyyy");
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
-            ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pengesah, EnJenisModulKelulusan.Waran);
+            ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pelulus, EnJenisModulKelulusan.Waran);
         }
 
     }

@@ -1,7 +1,7 @@
 ﻿@model AbWaran
 
 @{
-    ViewData["Title"] = "Pengesahan Waran - Papar";
+    ViewData["Title"] = "Semakan Waran - Papar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -19,10 +19,9 @@
         </div>
         <hr />
         <partial name="~/Views/AbWaran/__DetailsPartial.cshtml">
-            <hr />
 
             <div class="form-group">
-                <a asp-action="Sah" asp-route-id="@Model.Id" asp-route-syscode="SPPB" asp-route-dKonfigKelulusanId="@ViewBag.DKonfigKelulusanId" class="btn ac-primary btn-sm">Sah</a>
+                <a asp-action="Semak" asp-route-id="@Model.Id" asp-route-syscode="SPPB" asp-route-dKonfigKelulusanId="@ViewBag.DKonfigKelulusanId" class="btn ac-primary btn-sm">Semak</a>
                 <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
 
             </div>
@@ -39,7 +38,7 @@
                 <div class="form-group">
                     <label class="control-label">Tindakan</label>
                     <textarea name="tindakan" class="form-control text-uppercase form-control-sm" rows="2" required></textarea>
-                    <span class="text-danger">sila isi ruang ini untuk operasi hantar semula</span>
+                    <span class="text-danger">Sila isi ruang ini untuk operasi hantar semula</span>
                 </div>
             </div>
             <input type="submit" value="Hantar Semula" class="btn ac-danger btn-sm" />
