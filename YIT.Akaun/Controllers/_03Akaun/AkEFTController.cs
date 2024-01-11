@@ -353,11 +353,11 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-                if (_context.AkEFT.Any(eft => eft.EnStatusEFT != EnStatusProses.Success))
-                {
-                    TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
-                    return (RedirectToAction(nameof(Index)));
-                }
+                //if (akEFT.EnStatusEFT != EnStatusProses.None && akEFT.EnStatusEFT != EnStatusProses.Pending)
+                //{
+                //    TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
+                //    return (RedirectToAction(nameof(Index)));
+                //}
 
             EmptyCart();
             PopulateDropDownList();
@@ -390,12 +390,101 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                     akEFT.UserIdKemaskini = user?.UserName ?? "";
                     akEFT.TarKemaskini = DateTime.Now;
-                    akEFT.AkEFTPenerima = _cart.AkEFTPenerima.ToList();
+
+                    if (objAsal.AkEFTPenerima != null && objAsal.AkEFTPenerima.Count > 0)
+                    {
+                        foreach (var item in objAsal.AkEFTPenerima)
+                        {
+                            var model = _context.AkEFTPenerima.FirstOrDefault(b => b.Id == item.Id);
+                            if (model != null) _context.Remove(model);
+                        }
+                    }
 
                     _context.Entry(objAsal).State = EntityState.Detached;
 
                     akEFT.AkEFTPenerima = _cart.AkEFTPenerima?.ToList();
 
+                    if (akEFT.AkEFTPenerima != null)
+                    {
+                        int success = 0;
+                        int fail = 0;
+                        int mixedStatus = 0;
+
+                        foreach (var penerima in akEFT.AkEFTPenerima)
+                        {
+                            // find AkPVPenerima by Bil and AkPVId
+                            var akPVPenerima = _context.AkPVPenerima.FirstOrDefault(pp => pp.Bil == penerima.Bil && pp.AkPVId == penerima.AkPVId);
+
+                            switch (penerima.EnStatusEFT)
+                            {
+                                case EnStatusProses.Success:
+                                    success++;
+                                    
+                                    // AkPVPenerima : change status, isCekDitunaikan = true, tarikhCekDitunaikan = tarikhKredit
+                                    if (akPVPenerima != null)
+                                    {
+                                        akPVPenerima.EnStatusEFT = EnStatusProses.Success;
+                                        akPVPenerima.IsCekDitunaikan = true;
+                                        akPVPenerima.TarikhCekDitunaikan = penerima.TarikhKredit;
+                                    }
+                                    break;
+                                case EnStatusProses.Fail:
+                                    
+                                    // AkPVPenerima : change status, NoRujukanCaraBayar = null, TarikhCaraBayar = null
+                                    if (akPVPenerima != null)
+                                    {
+                                        akPVPenerima.EnStatusEFT = EnStatusProses.Fail;
+                                        akPVPenerima.NoRujukanCaraBayar = null;
+                                        akPVPenerima.TarikhCaraBayar = null;
+                                        akPVPenerima.IsCekDitunaikan = false;
+                                        akPVPenerima.TarikhCekDitunaikan = null;
+                                    }
+                                    fail++;
+                                    break;
+                                default:
+                                    mixedStatus++;
+                                    break;
+                            }
+
+                        }
+                        var status = EnStatusProses.Pending;
+                        if (success > 0)
+                        {
+                            status = EnStatusProses.Success;
+                            if (fail > 0)
+                            {
+                                status = EnStatusProses.Mixed;
+                            }
+                        }
+                        else
+                        {
+                            if (mixedStatus > 0)
+                            {
+                                status = EnStatusProses.Mixed;
+                            }
+                            status = EnStatusProses.Fail;
+                        }
+
+                        if (fail > 0)
+                        {
+                            status = EnStatusProses.Fail;
+                            if (success > 0)
+                            {
+                                status = EnStatusProses.Mixed;
+                            }
+                        }
+                        else
+                        {
+                            if (mixedStatus > 0)
+                            {
+                                status = EnStatusProses.Mixed;
+                            }
+                            status = EnStatusProses.Success;
+                        }
+
+                        akEFT.EnStatusEFT = status;
+                    }
+                    
                     _unitOfWork.AkEFTRepo.Update(akEFT);
 
                     if (jumlahAsal != akEFT.Jumlah)
@@ -442,6 +531,12 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             if (akEFT != null)
             {
+                // check if eft already generate or not
+                if (akEFT.EnStatusEFT != EnStatusProses.None)
+                {
+                    TempData[SD.Error] = "Data telah dijana";
+                    return RedirectToAction(nameof(Index));
+                }
                 akEFT.UserIdKemaskini = user?.UserName ?? "";
                 akEFT.TarKemaskini = DateTime.Now;
                 akEFT.DPekerjaKemaskiniId = pekerjaId;
@@ -454,7 +549,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
             else
             {
-                TempData[SD.Error] = "Data telah diluluskan";
+                TempData[SD.Error] = "Data tidak wujud";
             }
 
             return RedirectToAction(nameof(Index));
@@ -698,6 +793,88 @@ namespace YIT.Akaun.Controllers._03Akaun
             return txt;
         }
 
+        public async Task<IActionResult> UpdateBulkStatus(int id,string noRujukan,DateTime tarikhKredit,EnStatusProses enStatusEFT, string? sebabGagal, string syscode)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+
+                // select AkEFT by id
+                var akEFT = _unitOfWork.AkEFTRepo.GetDetailsById(id);
+                
+                if (akEFT != null && akEFT.AkEFTPenerima != null && akEFT.AkEFTPenerima.Count > 0)
+                {
+                    // insert user log
+                    akEFT.UserIdKemaskini = user?.UserName ?? "";
+                    akEFT.TarKemaskini = DateTime.Now;
+                    akEFT.DPekerjaKemaskiniId = pekerjaId;
+
+                    // foreach AkEFTPenerima,
+                    foreach (var penerima in akEFT.AkEFTPenerima)
+                    {
+
+                        // AkEFT :  change status
+                        akEFT.EnStatusEFT = enStatusEFT;
+                        // AkEFTPenerima :  change status
+                        penerima.EnStatusEFT = enStatusEFT;
+                        // if success
+                        if (enStatusEFT == EnStatusProses.Success)
+                        {
+                            // AkEFTPenerima : TarikhKredit = tarikhKredit
+                            penerima.TarikhKredit = tarikhKredit;
+                            penerima.SebabGagal = null;
+                            // find AkPVPenerima by Bil and AkPVId
+                            var akPVPenerima = _context.AkPVPenerima.FirstOrDefault(pp => pp.Bil == penerima.Bil && pp.AkPVId == penerima.AkPVId);
+                            // AkPVPenerima : change status, isCekDitunaikan = true, tarikhCekDitunaikan = tarikhKredit
+                            if (akPVPenerima != null)
+                            {
+                                akPVPenerima.EnStatusEFT = enStatusEFT;
+                                akPVPenerima.IsCekDitunaikan = true;
+                                akPVPenerima.TarikhCekDitunaikan = tarikhKredit;
+                            }
+                        }
+                        // endif
+                        // if fail
+                        else
+                        {
+                            // AKEFTPenerima : tarikhKredit = null
+                            penerima.TarikhKredit = null;
+                            // sebabGagal
+                            penerima.SebabGagal = sebabGagal;
+                            // find AkPVPenerima by Bil and AkPVId
+                            var akPVPenerima = _context.AkPVPenerima.FirstOrDefault(pp => pp.Bil == penerima.Bil && pp.AkPVId == penerima.AkPVId);
+                            // AkPVPenerima : change status, NoRujukanCaraBayar = null, TarikhCaraBayar = null
+                            if (akPVPenerima != null)
+                            {
+                                akPVPenerima.EnStatusEFT = enStatusEFT;
+                                akPVPenerima.NoRujukanCaraBayar = null;
+                                akPVPenerima.TarikhCaraBayar = null;
+                                akPVPenerima.IsCekDitunaikan = false;
+                                akPVPenerima.TarikhCekDitunaikan = null;
+                            }
+                            
+                        }
+                        // endif
+                        
+                    }
+                    // end foreach
+                    // save log
+                    _appLog.Insert("Ubah", akEFT.NoRujukan ?? $" - Ubah status secara umpuk {enStatusEFT.GetDisplayName()}", akEFT.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+
+                    // save 
+                    await _context.SaveChangesAsync();
+                }
+
+                TempData[SD.Success] = "Kemaskini status umpuk berjaya";
+            }
+            catch (Exception ex)
+            {
+                TempData[SD.Error] = ex;
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         public JsonResult GetAllItemCartAkEFT()
         {
 
@@ -727,5 +904,28 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return Json(new { result = "ERROR", message = ex.Message });
             }
         }
+
+        //save cart akEFTPenerima
+        public JsonResult SaveCartAkEFTPenerima(AkEFTPenerima akEFTPenerima)
+        {
+
+            try
+            {
+                var penerima = _cart.AkEFTPenerima.FirstOrDefault(ep => ep.Bil == akEFTPenerima.Bil && ep.AkPVId == akEFTPenerima.AkPVId);
+
+                if (penerima != null)
+                {
+                    _cart.UpdateItemPenerima(penerima.AkEFTId, penerima.AkPVId, akEFTPenerima.EnStatusEFT, akEFTPenerima.SebabGagal, akEFTPenerima.TarikhKredit, penerima.Bil, penerima.NoPendaftaranPenerima, penerima.NamaPenerima, penerima.Catatan, penerima.JCaraBayarId, penerima.JBankId, penerima.NoAkaunBank, penerima.Emel, penerima.KodM2E, penerima.NoRujukanCaraBayar, penerima.Amaun, penerima.EnJenisId);
+                }
+
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+        //save cart akEFTPenerima end
     }
 }

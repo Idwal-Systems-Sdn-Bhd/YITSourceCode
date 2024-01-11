@@ -168,4 +168,40 @@
         }
     }
     // remove tbl penerima end
+
+    //update tbl Baucer
+
+    function UpdateStatusEFT(button) {
+        var row = $(button).closest("TR");
+        var akEFTId = $("#Id").val();
+        var bil = $("TD", row).eq(0).html();
+        var akPVId = $("TD", row).eq(1).html();
+        var status = row.find("td:eq(8) select").val();
+        var tarikhKredit = row.find("td:eq(9) input").val();
+        var sebabGagal = row.find("td:eq(10) input").val();
+
+
+        var AkEFTPenerima = {
+            AkEFTId: akEFTId,
+            Bil: bil,
+            AkPVId: akPVId,
+            EnStatusEFT: status,
+            TarikhKredit: tarikhKredit,
+            SebabGagal: sebabGagal
+
+        }
+        $.ajax({
+            type: "POST",
+            //url: "/AkPOLaras/SaveCartAkPOLaras2",
+            url: '@Url.Action("SaveCartAkEFTPenerima", "AkEFT")',
+            data: AkEFTPenerima,
+            dataType: "json",
+            success: function (r) {
+                //insert notification here
+                toastr.success("Status Bil " + bil + " berjaya diubah.", "Berjaya");
+                toastr.options.timeOut = 2000; // 2s
+            }
+        });
+    };
+    //update tbl perihal end
 </script>

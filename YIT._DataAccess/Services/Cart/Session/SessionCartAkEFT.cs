@@ -21,15 +21,15 @@ namespace YIT._DataAccess.Services.Cart.Session
 
         private ISession? Session { get; set; }
 
-        public override void AddItemPenerima(int akEFTId, int akPVId, EnStatusProses enStatusEFT, string? sebabGagal, DateTime? tarikhKredit, int? bil, string? noPendaftaranPenerima, string? namaPenerima, string? catatan, int jCaraBayarId, int? jBankId, string? noakaunBank,string? emel, string? kodM2E, string? noCek, decimal amaun, EnJenisId enJenisId)
+        public override void AddItemPenerima(int akEFTId, int akPVId, EnStatusProses enStatusEFT, string? sebabGagal, DateTime? tarikhKredit, int? bil, string? noPendaftaranPenerima, string? namaPenerima, string? catatan, int jCaraBayarId, int? jBankId, string? noakaunBank,string? emel, string? kodM2E, string? noRujukanCaraBayar, decimal amaun, EnJenisId enJenisId)
         {
-            base.AddItemPenerima(akEFTId, akPVId, enStatusEFT, sebabGagal, tarikhKredit, bil, noPendaftaranPenerima, namaPenerima, catatan, jCaraBayarId, jBankId, noakaunBank, emel, kodM2E, noCek, amaun, enJenisId);
+            base.AddItemPenerima(akEFTId, akPVId, enStatusEFT, sebabGagal, tarikhKredit, bil, noPendaftaranPenerima, namaPenerima, catatan, jCaraBayarId, jBankId, noakaunBank, emel, kodM2E, noRujukanCaraBayar, amaun, enJenisId);
             Session?.SetJson("CartAkEFT", this);
         }
 
-        public override void UpdateItemPenerima(int akEFTId, int akPVId, EnStatusProses enStatusEFT, string? sebabGagal, DateTime? tarikhKredit, int? bil, string? noPendaftaranPenerima, string? namaPenerima, string? catatan, int jCaraBayarId, int? jBankId, string? noakaunBank, string? emel, string? kodM2E, string? noCek, decimal amaun, EnJenisId enJenisId)
+        public override void UpdateItemPenerima(int akEFTId, int akPVId, EnStatusProses enStatusEFT, string? sebabGagal, DateTime? tarikhKredit, int? bil, string? noPendaftaranPenerima, string? namaPenerima, string? catatan, int jCaraBayarId, int? jBankId, string? noakaunBank, string? emel, string? kodM2E, string? noRujukanCaraBayar, decimal amaun, EnJenisId enJenisId)
         {
-            base.UpdateItemPenerima(akEFTId, akPVId, enStatusEFT, sebabGagal, tarikhKredit, bil, noPendaftaranPenerima, namaPenerima, catatan, jCaraBayarId, jBankId, noakaunBank, emel, kodM2E, noCek, amaun, enJenisId);
+            base.UpdateItemPenerima(akEFTId, akPVId, enStatusEFT, sebabGagal, tarikhKredit, bil, noPendaftaranPenerima, namaPenerima, catatan, jCaraBayarId, jBankId, noakaunBank, emel, kodM2E, noRujukanCaraBayar, amaun, enJenisId);
             Session?.SetJson("CartAkEFT", this);
         }
 

@@ -80,7 +80,20 @@
                 {
                     foreach (var item in ViewBag.akEFTPenerima)
                     {
+                        var statusEFT = EnStatusProses.None.GetDisplayName();
 
+                        switch (item.EnStatusEFT)
+                        {
+                            case EnStatusProses.Pending:
+                                statusEFT = EnStatusProses.Pending.GetDisplayName();
+                                break;
+                            case EnStatusProses.Success:
+                                statusEFT = EnStatusProses.Success.GetDisplayName();
+                                break;
+                            case EnStatusProses.Fail:
+                                statusEFT = EnStatusProses.Fail.GetDisplayName();
+                                break;
+                        }
 
                         <tr>
                             <td>@item.Bil</td>
@@ -91,7 +104,7 @@
                             <td class="text-uppercase">@item.KodM2E</td>
                             <td class="text-uppercase">@item.NamaPenerima</td>
                             <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
-                            <td class="text-uppercase">@item.EnStatusEFT</td>
+                            <td class="text-uppercase">@statusEFT</td>
                         </tr>
                     }
 

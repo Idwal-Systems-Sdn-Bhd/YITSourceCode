@@ -21,9 +21,13 @@
         <partial name="__DetailsPartial.cshtml" />
 
         <div class="form-group">
+            @if (Model.EnStatusEFT != EnStatusProses.None)
+            {
+                <a onclick="GenerateTxt(@Model.Id);" class="btn ac-success btn-sm text-white">Jana Txt</a>
 
-            <a onclick="GenerateTxt(@Model.Id);" class="btn ac-success btn-sm text-white">Jana Txt</a>
+            }
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn ac-primary btn-sm">Ubah</a>
+
             <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
         </div>
 

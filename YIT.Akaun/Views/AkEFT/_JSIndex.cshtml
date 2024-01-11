@@ -66,4 +66,17 @@
             }
         });
     });
+
+    // bulk success
+    function ModalClickBulkStatus(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var id = $("TD", row).eq(6).html();
+        var noRujukan = $("TD", row).eq(1).html();
+        //alert(id);
+        //alert(noRujukan);
+        $(".moId").val(id);
+        $(".moNoRujukan").val(noRujukan.trim());
+    };
+
 </script>

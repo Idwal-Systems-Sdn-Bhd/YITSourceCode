@@ -621,7 +621,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                                 }
                             }
 
-                            int? bil = _cart.AkJanaanProfilPenerima.OrderByDescending(b => b.Bil).Max()?.Bil ?? 0;
+                            int? bil = _cart.AkJanaanProfilPenerima.Max(b => b.Bil) ?? 0;
 
                             bil += 1;
 

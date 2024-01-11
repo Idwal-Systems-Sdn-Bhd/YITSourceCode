@@ -38,7 +38,9 @@
                             <th class="jumlah">
                                 Jumlah RM
                             </th>
-
+                            <th class="statusEFT">
+                                Status
+                            </th>
                             <th width="5%"></th>
                         </tr>
                     </thead>
@@ -64,6 +66,10 @@
                                     @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")
                                 </td>
 
+                                <td hidden>@item.Id</td>
+                                <td class="text-uppercase text-end">
+                                    @item.EnStatusEFT.GetDisplayName()
+                                </td>
                                 <td width="5%" class="text-center">
                                     <div class="btn-group" role="group" aria-label="action">
                                         @if (item.FlHapus == 0)
@@ -72,6 +78,9 @@
                                                class="btn text-primary btn-sm bg-white" type="button"
                                                data-toggle="tooltip" data-placement="top"
                                                title="Ubah/Papar"><i class="fas fa-edit"></i></a>
+                                            <a data-toggle="modal" data-target="#modalBulkStatus" class="btn text-purple btn-sm bg-white" data-placement="top" title="Umpuk Status" onclick="ModalClickBulkStatus(this)">
+                                                <i class="fa-solid fa-cubes-stacked"></i>
+                                            </a>
                                             <a asp-action="Delete" asp-route-id="@item.Id"
                                                class="btn text-danger btn-sm bg-white" type="button"
                                                data-toggle="tooltip" data-placement="top"
@@ -98,3 +107,58 @@
 
     </div>
 </div>
+<!-- Modal Posting -->
+<div class="modal fade bd-example-modal-lg" id="modalBulkStatus" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-purple">Umpukan Status</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form asp-action="UpdateBulkStatus" asp-controller="AkEFT" class="needs-validation">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-body">
+
+                    <input hidden name="id" class="moId" />
+                    <input hidden name="syscode" value="SPPB" />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-form-label">No Rujukan</label>
+                                <input type="text" class="form-control form-control-sm moNoRujukan" name="noRujukan" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-form-label">Tarikh Kredit</label>
+                                <input type="datetime-local" value="@DateTime.Now.ToString("s")" class="form-control form-control-sm moTarikhKredit" name="tarikhKredit">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-form-label">Status</label>
+                                <select class="form-control form-control-sm" name="enStatusEFT">
+                                    <option value="2">BERJAYA</option>
+                                    <option value="3">GAGAL</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label">Sebab Gagal</label>
+                            <input type="text" class="form-control form-control-sm moSebabGagal" name="sebabGagal">
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn ac-danger" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn ac-success">Kemaskini</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Posting End -->

@@ -1,0 +1,190 @@
+﻿@model AkEFT
+
+@{
+    ViewData["Title"] = "Janaan EFT - Ubah";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<partial name="_JSCreate" />
+<div class="card box-shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-primary mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah</span>
+            </div>
+            <div class="col-4 ">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="syscode" value="SPPB" hidden />
+            <input asp-for="Id" hidden />
+            <input asp-for="AkBankId" hidden />
+            <input asp-for="JBankId" hidden />
+            <input asp-for="EnStatusEFT" hidden />
+            @*maklumat umum*@
+            <div class="row mb-2">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Produk" class="control-label"></label>
+                        <input class="form-control form-control-sm" asp-for="Produk" readonly />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="Tarikh" class="control-label"></label>
+                        <input asp-for="Tarikh" class="form-control form-control-sm" readonly />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="TarikhBayar" class="control-label"></label>
+                        <input asp-for="TarikhBayar" class="form-control form-control-sm" required />
+                        <span asp-validation-for="TarikhBayar" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label asp-for="AkBankId" class="control-label"></label>
+                        <input class="form-control form-control-sm" value="@Model.AkBank?.Kod - @Model.AkBank?.Perihal" readonly />
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="JBankId" class="control-label"></label>
+                <input class="form-control form-control-sm" value="@Model.JBank?.Kod - @Model.JBank?.Perihal" readonly />
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="NoRujukan" class="control-label"></label>
+                        <input asp-for="NoRujukan" class="form-control form-control-sm" readonly />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="NamaFail" class="control-label"></label>
+                        <input asp-for="NamaFail" class="form-control form-control-sm" readonly />
+                    </div>
+                </div>
+            </div>
+            @*end*@
+            <br />
+
+            @*table Penerima*@
+            <div class="card box-shadow mb-3">
+                <div class="card-header">
+                    <h6>Penerima</h6>
+                </div>
+                <div class="card-body">
+                    <table id="tblPenerima" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th width="5%">Bil</th>
+                                <th width="10%" hidden>No Baucer</th>
+                                <th width="5%" hidden>No Pend.</th>
+                                <th width="5%">No Akaun</th>
+                                <th width="5%" hidden>Kod M2E</th>
+                                <th width="35%">Penerima</th>
+                                <th width="5%">Amaun</th>
+                                <th width="5%">Status</th>
+                                <th width="10%">Tarikh Kredit</th>
+                                <th width="25%">Sebab Gagal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyPenerima">
+                            @if (ViewBag.akEFTPenerima != null)
+                            {
+                                foreach (var item in ViewBag.akEFTPenerima)
+                                {
+                                    <tr>
+                                        <td>@item.Bil</td>
+                                        <td hidden>@item.AkPVId</td>
+                                        <td hidden>@item.AkPV?.NoRujukan</td>
+                                        <td hidden>@item.NoPendaftaranPenerima</td>
+                                        <td>@item.NoAkaunBank</td>
+                                        <td class="text-uppercase" hidden>@item.KodM2E</td>
+                                        <td class="text-uppercase">@item.NamaPenerima</td>
+                                        <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                                        @if (item.EnStatusEFT == EnStatusProses.Pending)
+                                        {
+                                            <td class="text-uppercase">
+                                                <select class="form-control form-control-sm" name="FlStatus" style="height: auto;width: auto;">
+                                                    <option value="1" selected>@EnStatusProses.Pending.GetDisplayName()</option>
+                                                    <option value="2">@EnStatusProses.Success.GetDisplayName()</option>
+                                                    <option value="3">@EnStatusProses.Fail.GetDisplayName()</option>
+                                                </select>
+                                            </td>
+                                        }
+                                        else if (item.EnStatusEFT == EnStatusProses.Success)
+                                        {
+                                            <td class="text-uppercase">
+                                                <select class="form-control form-control-sm" name="FlStatus" style="height: auto;width: auto;">
+                                                    <option value="1">@EnStatusProses.Pending.GetDisplayName()</option>
+                                                    <option value="2" selected>@EnStatusProses.Success.GetDisplayName()</option>
+                                                    <option value="3">@EnStatusProses.Fail.GetDisplayName()</option>
+                                                </select>
+                                            </td>
+                                        }
+                                        else if (item.EnStatusEFT == EnStatusProses.Fail)
+                                        {
+                                            <td class="text-uppercase">
+                                                <select class="form-control form-control-sm" name="FlStatus" style="height: auto;width: auto;">
+                                                    <option value="1">@EnStatusProses.Pending.GetDisplayName()</option>
+                                                    <option value="2">@EnStatusProses.Success.GetDisplayName()</option>
+                                                    <option value="3" selected>@EnStatusProses.Fail.GetDisplayName()</option>
+                                                </select>
+                                            </td>
+                                        }
+                                        <td>
+                                            <input type="date" class="form-control form-control-sm" value="@item.TarikhKredit?.ToString("yyyy-MM-dd")" />
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm" value="@item.SebabGagal" />
+                                        </td>
+                                        <td>
+                                            <a class="btn text-primary btn-sm bg-white" id="btnUpdateStatusEFT" onclick="UpdateStatusEFT(this)" data-toggle="tooltip" data-placement="top"
+title="Simpan">
+                                                <i class="fa-solid fa-floppy-disk"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-2">
+                            <div class="form-group">
+                                <label asp-for="BilPenerima" class="control-label"></label>
+                                <input asp-for="BilPenerima" class="form-control form-control-sm" readonly />
+                            </div>
+                        </div>
+                        <div class="col-10">
+                            <div class="form-group">
+                                <label asp-for="Jumlah" class="control-label"></label>
+                                <input asp-for="Jumlah" class="form-control form-control-sm" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            @*table Penerima end*@
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Simpan" id="btnSave" class="btn ac-primary btn-sm" />
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -11,6 +11,8 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "Berjaya")]
         Success = 2,
         [Display(Name = "Gagal")]
-        Fail = 3
+        Fail = 3,
+        [Display(Name = "Campuran")]
+        Mixed = 4
     }
 }

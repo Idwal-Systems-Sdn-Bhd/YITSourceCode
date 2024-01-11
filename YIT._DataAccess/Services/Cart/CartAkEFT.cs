@@ -27,7 +27,7 @@ namespace YIT._DataAccess.Services.Cart
             string? noakaunBank,
             string? emel,
             string? kodM2E,
-            string? noCek,
+            string? noRujukanCaraBayar,
             decimal amaun,
             EnJenisId enJenisId
             )
@@ -52,7 +52,7 @@ namespace YIT._DataAccess.Services.Cart
                     NoAkaunBank = noakaunBank,
                     Emel = emel,
                     KodM2E = kodM2E,
-                    NoRujukanCaraBayar = noCek,
+                    NoRujukanCaraBayar = noRujukanCaraBayar,
                     Amaun = amaun,
                     EnJenisId = enJenisId
                 });
@@ -74,7 +74,7 @@ namespace YIT._DataAccess.Services.Cart
             string? noakaunBank,
             string? emel,
             string? kodM2E,
-            string? noCek,
+            string? noRujukanCaraBayar,
             decimal amaun,
             EnJenisId enJenisId
             )
@@ -101,7 +101,7 @@ namespace YIT._DataAccess.Services.Cart
                     NoAkaunBank = noakaunBank,
                     Emel = emel,
                     KodM2E = kodM2E,
-                    NoRujukanCaraBayar = noCek,
+                    NoRujukanCaraBayar = noRujukanCaraBayar,
                     Amaun = amaun,
                     EnJenisId = enJenisId
                 });
