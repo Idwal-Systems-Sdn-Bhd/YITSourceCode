@@ -500,7 +500,13 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .HasForeignKey(m => m.AkJurnalId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
-            
+            modelBuilder.Entity<AkJurnalPenerimaCekBatal>()
+                    .HasOne(m => m.AkPV)
+                    .WithMany(t => t.AkJurnalPenerimaCekBatal)
+                    .HasForeignKey(m => m.AkPVId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+
             //
             modelBuilder.Entity<AkCVObjek>()
                     .HasOne(m => m.AkCV)
