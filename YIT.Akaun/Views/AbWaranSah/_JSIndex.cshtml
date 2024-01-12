@@ -3,7 +3,7 @@
     $(document).ready(function () {
 
         var table = $('.table').DataTable({
-            "paging": true,
+            "paging": false,
             rowReorder: true,
             columnDefs: [
                 { orderable: true, className: 'reorder', targets: 1 },
@@ -11,17 +11,7 @@
                 { orderable: false, targets: '_all' }
             ],
             "order": [[1, "asc"]],
-            "scrollY": "50vh",
-            "scrollX": true,
-            "scrollCollapse": true,
-            dom: 'rtip',
-            "language": {
-                "info": "_TOTAL_ entri yang dipamerkan",
-                "infoEmpty": "Tiada data untuk dipamerkan",
-                "infoFiltered": " - ditapis daripada _MAX_ jumlah keseluruhan rekod"
-            },
-            "pagingType": "numbers",
-            "pageLength": 100
+            dom: 'lrt'
         });
 
 
@@ -65,5 +55,4 @@
             }
         });
     });
-                                   
 </script>

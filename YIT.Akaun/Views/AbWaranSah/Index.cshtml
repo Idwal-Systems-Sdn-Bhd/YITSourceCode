@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<AbWaran>
 
 @{
-    ViewData["Title"] = "Pengesahan Waran";
+    ViewData["Title"] = "Pengesahan Belanjawan Waran";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <partial name="_JSIndex" />
@@ -72,7 +72,7 @@
                                     @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")
                                 </td>
                                 <td>
-                                    @item.EnStatusBorang.GetDisplayName()
+                                    @item.EnStatusBorang
                                 </td>
 
                                 <td width="5%" class="text-center">

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT._DataAccess.Services.Cart
@@ -16,7 +17,7 @@ namespace YIT._DataAccess.Services.Cart
             int jKWPTJBahagianId,
             int akCartaId,
             decimal amaun,
-            string? tk
+            string? TK
             )
         {
             AbWaranObjek line = collectionObjek.FirstOrDefault(p => p.JKWPTJBahagianId == jKWPTJBahagianId && p.AkCartaId == akCartaId)!;
@@ -29,7 +30,7 @@ namespace YIT._DataAccess.Services.Cart
                     JKWPTJBahagianId = jKWPTJBahagianId,
                     AkCartaId = akCartaId,
                     Amaun = amaun,
-                    TK = tk
+                    TK = TK
                 });
             }
         }
@@ -40,7 +41,7 @@ namespace YIT._DataAccess.Services.Cart
 
         public virtual void ClearObjek() => collectionObjek.Clear();
 
-        public virtual IEnumerable<AbWaranObjek> AbWaranObjek => collectionObjek;
+        public virtual IEnumerable<AbWaranObjek> abWaranObjek => collectionObjek;
 
 
     }

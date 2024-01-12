@@ -4,34 +4,142 @@
     ViewData["Title"] = "Waran - Hapus";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <div class="card box-shadow">
     <div class="card-body">
-        <partial name="~/Views/Partials/Common/_TitleDeleteTransaksiPartial.cshtml" />
+        <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
 
         <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
-        <partial name="__DetailsPartial.cshtml" />
-
-        <form asp-action="Delete">
-            <div asp-validation-summary="ModelOnly"></div>
-            <input type="hidden" asp-for="Id" />
-            <input name="syscode" value="SPPB" hidden />
-            <div class="row mb-2">
-                <div class="form-group">
-                    <label class="control-label">Sebab Hapus</label>
-                    <input name="sebabHapus" class="form-control text-uppercase form-control-sm" required>
-                    <span class="text-danger">Sila isi ruang ini untuk meneruskan operasi</span>
+        <div class="form-row">
+            <div class="row">
+            <div class="form-group col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <label asp-for="EnJenisPeruntukan" class="control-label"></label>
+                        <div class="custom-control custom-radio">
+                                <input asp-for="EnJenisPeruntukan" type="radio" name="EnJenisPeruntukan" class="custom-control-input" value="@EnJenisPeruntukan.PeruntukanAsal" disabled>
+                            <label class="custom-control-label" for="EnJenisPeruntukan1">@EnJenisPeruntukan.PeruntukanAsal.GetDisplayName()</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                                <input asp-for="EnJenisPeruntukan" type="radio" name="EnJenisPeruntukan" class="custom-control-input" value="@EnJenisPeruntukan.PeruntukanTambahan" disabled>
+                            <label class="custom-control-label" for="EnJenisPeruntukan2">@EnJenisPeruntukan.PeruntukanTambahan.GetDisplayName()</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                                <input asp-for="EnJenisPeruntukan" type="radio" name="EnJenisPeruntukan" class="custom-control-input" value="@EnJenisPeruntukan.Viremen" disabled>
+                            <label class="custom-control-label" for="EnJenisPeruntukan3">@EnJenisPeruntukan.Viremen.GetDisplayName()</label>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="card mb-2" id="divJenisPindahan">
+                    <div class="card-body pb-1 pt-1">
+                        <div class="form-group mb-0 mt-1">
+                            <label class="control-label">Jenis Pindahan</label>
+                        </div>
+                        <div class="form-row col-sm ml-2">
+                            <div class="custom-control custom-radio col-md-6 ">
+                                    <input class="custom-control-input" type="radio" id="FlJenisPindahan0" asp-for="FlJenisPindahan" value="0" disabled>
+                                <label class="custom-control-label" for="FlJenisPindahan0">
+                                    Dalam Bahagian
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio col-md-6">
+                                    <input class="custom-control-input" type="radio" asp-for="FlJenisPindahan" id="FlJenisPindahan1" value="1" disabled>
+                                <label class="custom-control-label" for="FlJenisPindahan1">
+                                    Antara Bahagian
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div>
+            <div class="row">
+                <div class="form-group col-md-2">
+                    <label asp-for="Tahun" class="control-label"></label>
+                    <input asp-for="Tahun" class="form-control form-control-sm" />
+                    <span asp-validation-for="Tahun" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-2">
+                    <label asp-for="Tarikh" class="control-label"></label>
+                    <input asp-for="Tarikh" class="form-control form-control-sm text-uppercase" type="date" />
+                    <span asp-validation-for="Tarikh" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <div class="form-group">
+                        <label asp-for="JKWId" class="control-label"></label>
+                        <input value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" class="form-control form-control-sm" readonly />
+                    </div>
+
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="NoRujukan" class="control-label"></label>
+                    <input asp-for="NoRujukan" class="form-control form-control-sm text-uppercase" />
+                    <span asp-validation-for="NoRujukan" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label asp-for="Sebab" class="control-label"></label>
+                <textarea asp-for="Sebab" class="form-control form-control-sm text-uppercase" rows="2"></textarea>
+            </div>
+        </div>
+
+        @*table Objek*@
+        <div class="card box-shadow mb-3">
+            <div class="card-header">
+                <h6>Objek</h6>
+            </div>
+            <div class="card-body">
+                <table id="tblObjek" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:40%">Bahagian</th>
+                            <th style="width:40%">Kod</th>
+                            <th style="width:10%">Amaun RM</th>
+                            <th style="width:10%">TK</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyObjek">
+                        @if (ViewBag.abWaranObjek != null)
+                        {
+                            foreach (var item in ViewBag.abWaranObjek)
+                            {
+                                <tr>
+                                    <td class="text-uppercase">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal) </td>
+                                    <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal </td>
+                                    <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                                    <td class="editable-text">@item.TK </td>
+                                </tr>
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <div class="form-group">
+                    <label asp-for="Jumlah" class="control-label">Jumlah Objek RM</label>
+                    <input asp-for="Jumlah" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+        </div>
+        @*table Objek end*@
+        <hr />
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input name="syscode" value="SPPB" hidden />
             <input type="submit" value="Hapus" class="btn ac-danger btn-sm" />
-            <a asp-action="Index" 
-            asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
-            asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
-            asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")" 
-            class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
         </form>
     </div>
 </div>
+
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

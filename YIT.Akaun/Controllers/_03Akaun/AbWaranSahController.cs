@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
+using YIT.__Domain.Entities.Models._01Jadual;
+using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
@@ -40,7 +42,6 @@ namespace YIT.Akaun.Controllers._03Akaun
             _userServices = userServices;
             _cart = cart;
         }
-
         public IActionResult Index(
             string searchString,
             string searchDate1,
@@ -74,8 +75,9 @@ namespace YIT.Akaun.Controllers._03Akaun
                 }
                 else
                 {
+
                     abWaran = _unitOfWork.AbWaranRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.None,(int)dKonfigKelulusanId,EnKategoriKelulusan.Pengesah, EnJenisModulKelulusan.Waran);
-                    
+
                 }
             }
 
@@ -139,7 +141,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> HantarSemulaAsync(int id, string? tindakan, string syscode)
+        public async Task<IActionResult> HantarSemula(int id, string? tindakan, string syscode)
         {
             var abWaran = _unitOfWork.AbWaranRepo.GetById((int)id);
 
@@ -148,7 +150,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             if (abWaran != null)
             {
-                _unitOfWork.AbWaranRepo.HantarSemula(id, tindakan, user?.UserName ?? "");
+                _unitOfWork.AbWaranRepo.BatalSah(id, tindakan, user?.UserName ?? "");
 
                 _appLog.Insert("Ubah", "Hantar Semula " + abWaran.NoRujukan ?? "", abWaran.NoRujukan ?? "", id, abWaran.Jumlah, pekerjaId, modul, syscode, namamodul, user);
                 _context.SaveChanges();
@@ -180,15 +182,13 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         private void PopulateListViewFromCart()
         {
-            List<AbWaranObjek> objek = _cart.AbWaranObjek.ToList();
+            List<AbWaranObjek> objek = _cart.abWaranObjek.ToList();
 
             foreach (AbWaranObjek item in objek)
             {
-                var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
+                var jBahagian = _unitOfWork.JBahagianRepo.GetAllDetailsById(item.JKWPTJBahagian!.JBahagianId);
 
-                item.JKWPTJBahagian = jkwPtjBahagian;
-
-                item.JKWPTJBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jkwPtjBahagian.JKW?.Kod, jkwPtjBahagian.JPTJ?.Kod, jkwPtjBahagian.JBahagian?.Kod);
+                item.JKWPTJBahagian!.JBahagian = jBahagian;
 
                 var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 
