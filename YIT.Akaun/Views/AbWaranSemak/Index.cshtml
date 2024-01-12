@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<AbWaran>
 
     @{
-    ViewData["Title"] = "Pengesahan Waran";
+    ViewData["Title"] = "Semakan Waran";
     Layout = "~/Views/Shared/_Layout.cshtml";
     }
     <partial name="_JSIndex" />
@@ -80,7 +80,7 @@
                                     <a asp-action="Details" asp-route-id="@item.Id"
                                        class="btn text-primary btn-sm bg-white" type="button"
                                        data-toggle="tooltip" data-placement="top"
-                                       title="Sah/Papar"><i class="fas fa-edit"></i></a>
+                                       title="Semak/Papar"><i class="fas fa-edit"></i></a>
                                 </div>
                             </td>
                         </tr>
