@@ -9,12 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YIT.__Domain.Entities.Models._01Jadual;
+using System.ComponentModel.DataAnnotations;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
     public class AbWaran : GenericTransactionFields
     {
         public int Id { get; set; }
+        [MaxLength(4)]
+        [RegularExpression(@"^[\d+]*$", ErrorMessage = "Nombor sahaja dibenarkan")]
         public string? Tahun { get; set; }
         [DisplayName("No Rujukan")]
         public string? NoRujukan { get; set; }

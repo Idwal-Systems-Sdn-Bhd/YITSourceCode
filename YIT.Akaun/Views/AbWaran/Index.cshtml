@@ -13,12 +13,12 @@
     <div class="card card-body border main-page" hidden>
         <partial name="~/Views/Partials/Common/_TitleIndexPartial.cshtml" />
 
-        <partial name="~/Views/Partials/Common/_SearchJadualIndexPartial.cshtml" />
+        <partial name="~/Views/Partials/Common/_SearchTransaksiPartial.cshtml" />
 
         @if (Model != null && Model.Count() > 0)
         {
             <div class="table-responsive">
-                <table class="table table-hover compact" width="100%">
+                <table id="table" class="table table-hover compact" width="100%">
                     <caption>Rekod dipamerkan : @Model.Count()</caption>
                     <thead class="table-secondary">
                         <tr>
@@ -43,7 +43,13 @@
                             </th>
                             <th class="Status">
                                 @Html.DisplayNameFor(model => model.EnStatusBorang)
-                            </th> 
+                            </th>
+                            <th class="Tindakan">
+                                @Html.DisplayNameFor(model => model.Tindakan)
+                            </th>
+                            <th>
+                                Batal
+                            </th>
                             <th width="5%"></th>
                         </tr>
                     </thead>
@@ -66,14 +72,28 @@
                                     @item.EnJenisPeruntukan.GetDisplayName()
                                 </td>
                                 <td>
-                                    @BelanjawanFormatter.ConvertToKW(item.JKW?.Kod) - @item.JKW?.Perihal
+                                    @BelanjawanFormatter.ConvertToKW(item.JKW?.Kod)
                                 </td>
                                 <td>
                                     @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")
                                 </td>
                                 <td>
-                                    @item.EnStatusBorang
+                                    @item.EnStatusBorang.GetDisplayName()
                                 </td>
+                                <td>
+                                    @item.Tindakan
+                                </td>
+                                @if (item.FlBatal == 1)
+                                {
+                                    <td class="text-uppercase">
+                                        BATAL
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td class="text-uppercase">
+                                    </td>
+                                }
                                 <td width="5%" class="text-center">
                                     <div class="btn-group" role="group" aria-label="action">
                                         @if (item.FlHapus == 0)
@@ -82,10 +102,31 @@
                                                class="btn text-primary btn-sm bg-white" type="button"
                                                data-toggle="tooltip" data-placement="top"
                                                title="Ubah/Papar"><i class="fas fa-edit"></i></a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id"
-                                               class="btn text-danger btn-sm bg-white" type="button"
-                                               data-toggle="tooltip" data-placement="top"
-                                               title="Hapus"><i class="fas fa-trash"></i></a>
+                                            @if (item.EnStatusBorang == EnStatusBorang.None)
+                                            {
+                                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                                   class="btn text-danger btn-sm bg-white" type="button"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Hapus"><i class="fas fa-trash"></i></a>
+                                            }
+                                            else if (item.EnStatusBorang == EnStatusBorang.Lulus)
+                                            {
+                                                <a asp-action="BatalPos" asp-route-id="@item.Id"
+                                                   class="btn text-warning btn-sm bg-white" type="button"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Batal Pos"><i class="fas fa-angle-left"></i></a>
+                                                <a asp-action="BatalLulus" asp-route-id="@item.Id"
+                                                   class="btn text-danger btn-sm bg-white" type="button"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Batal Kelulusan"><i class="fas fa-history"></i></a>
+                                            }
+                                            else if (item.EnStatusBorang == EnStatusBorang.Kemaskini)
+                                            {
+                                                <a asp-action="PosSemula" asp-route-id="@item.Id" asp-route-syscode="SPPB"
+                                                   class="btn text-success btn-sm bg-white" type="button"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Pos Semula"><i class="fas fa-angle-right"></i></a>
+                                            }
                                         }
                                         else
                                         {

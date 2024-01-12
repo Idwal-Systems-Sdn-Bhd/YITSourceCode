@@ -4,12 +4,8 @@ using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YIT.__Domain.Entities._Enums;
+using System.Runtime.Intrinsics.X86;
 
 namespace YIT._DataAccess.Repositories.Implementations
 {
@@ -20,49 +16,6 @@ namespace YIT._DataAccess.Repositories.Implementations
         public AbWaranRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
-        }
-
-        public List<AbWaran> GetAllDetails()
-        {
-            return _context.AbWaran
-                .Include(a => a.DPengesah)
-                .Include(a => a.DPenyemak)
-                .Include(a => a.DPelulus)
-                .Include(a => a.AbWaranObjek)!
-                .ThenInclude(to => to.AkCarta)
-                .Include(a => a.AbWaranObjek)!
-                    .ThenInclude(a => a.JKWPTJBahagian)
-                        .ThenInclude(a => a!.JKW)
-                .Include(a => a.AbWaranObjek)!
-                    .ThenInclude(a => a.JKWPTJBahagian)
-                        .ThenInclude(a => a!.JPTJ)
-                .Include(a => a.AbWaranObjek)!
-                    .ThenInclude(a => a.JKWPTJBahagian)
-                        .ThenInclude(a => a!.JBahagian)
-                .Include(a => a.JKW)
-                .ToList();
-        }
-
-        public AbWaran GetAllDetailsById(int id)
-        {
-
-            return _context.AbWaran
-                .Include(a => a.DPengesah)
-                .Include(a => a.DPenyemak)
-                .Include(a => a.DPelulus)
-                .Include(a => a.AbWaranObjek)!
-                .ThenInclude(to => to.AkCarta)
-                .Include(a => a.AbWaranObjek)!
-                    .ThenInclude(a => a.JKWPTJBahagian)
-                        .ThenInclude(a => a!.JKW)
-                .Include(a => a.AbWaranObjek)!
-                    .ThenInclude(a => a.JKWPTJBahagian)
-                        .ThenInclude(a => a!.JPTJ)
-                .Include(a => a.AbWaranObjek)!
-                    .ThenInclude(a => a.JKWPTJBahagian)
-                        .ThenInclude(a => a!.JBahagian)
-                .Include(a => a.JKW)
-                .Where(a => a.Id == id).FirstOrDefault() ?? new AbWaran();
         }
 
         public AbWaran GetDetailsById(int id)
@@ -119,24 +72,16 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AbWaranObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JBahagian)
-                .ToList();
+                        .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
+                        .ToList();
 
             // searchstring filters
             if (searchString != null)
             {
-                abWaranList = abWaranList.Where(t =>
-                t.NoRujukan!.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-                || t.DPengesah!.DPekerja!.Nama!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                abWaranList = abWaranList.Where(t => t.NoRujukan!.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
             }
             // searchString filters end
-
-            // date filters
-            if (dateFrom != null && dateTo != null)
-            {
-                abWaranList = abWaranList.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99)).ToList();
-            }
-            // date filters end
 
             // status borang filters
             switch (enStatusBorang)
@@ -163,9 +108,6 @@ namespace YIT._DataAccess.Repositories.Implementations
             {
                 switch (orderBy)
                 {
-                    case "Nama":
-                        abWaranList = abWaranList.OrderBy(t => t.DPengesah!.DPekerja!.Nama).ToList();
-                        break;
                     case "Tarikh":
                         abWaranList = abWaranList.OrderBy(t => t.Tarikh).ToList(); break;
                     default:
@@ -187,9 +129,9 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var filterings = FilterByComparingJBahagianAbWaranObjekWithJBahagianDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModulKelulusan, abWaranList);
 
-            //var results = FilterByComparingJumlahAkPenilaianPerolehanWithMinAmountMaxAmountDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModulKelulusan, filterings);
+            var results = FilterByComparingJumlahAbWaranWithMinAmountMaxAmountDKonfigKelulusan(dPekerjaId, enKategoriKelulusan, enJenisModulKelulusan, filterings);
 
-            return filterings;
+            return results;
         }
 
         public List<AbWaran> FilterByComparingJBahagianAbWaranObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AbWaran> abWaranList)
@@ -232,7 +174,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                     {
                         var waranObjekBahagianList = new List<JBahagian>();
 
-                        // group akPPObjek by bahagian
+                        // group abWaranObjek by bahagian
                         if (abWaran.AbWaranObjek != null && abWaran.AbWaranObjek.Count > 0)
                         {
                             foreach (var item in abWaran.AbWaranObjek)
@@ -265,15 +207,89 @@ namespace YIT._DataAccess.Repositories.Implementations
             return results;
         }
 
+        public List<AbWaran> FilterByComparingJumlahAbWaranWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AbWaran> filterings)
+        {
+            //initialize new list akPP
+            List<AbWaran> results = new List<AbWaran>();
+
+            // get list of dKonfigKelulusan with same DPekerjaId, enKategoriKelulusan, enJenisModulKelulusan
+            var konfigKelulusanList = _context.DKonfigKelulusan.Include(kk => kk.DPekerja)
+                 .Include(kk => kk.JBahagian)
+                .Where(b => b.EnKategoriKelulusan == enKategoriKelulusan
+                && b.DPekerjaId == dPekerjaId
+                && b.EnJenisModulKelulusan == enJenisModulKelulusan).ToList();
+
+            if (filterings != null && filterings.Count > 0)
+            {
+                foreach (var filtering in filterings)
+                {
+                    if (konfigKelulusanList != null && konfigKelulusanList.Count > 0)
+                    {
+                        foreach (var konfigKelulusan in konfigKelulusanList)
+                        {
+                            if (konfigKelulusan.MinAmaun <= filtering.Jumlah && filtering.Jumlah <= konfigKelulusan.MaksAmaun)
+                            {
+                                results.Add(filtering);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return results.GroupBy(b => b.Id).Select(grp => grp.First()).ToList();
+        }
+
         public async Task<bool> IsSahAsync(int id)
         {
-            bool isSah = await _context.AbWaran.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Sah || t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus);
+            bool isSah = await _context.AbWaran.AnyAsync(t => t.Id == id && (t.EnStatusBorang == EnStatusBorang.Sah || t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus));
             if (isSah)
             {
                 return true;
             }
 
             return false;
+        }
+
+        public async Task<bool> IsSemakAsync(int id)
+        {
+            bool isSemak = await _context.AbWaran.AnyAsync(t => t.Id == id && (t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus));
+
+            if (isSemak)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> IsLulusAsync(int id)
+        {
+            bool isLulus = await _context.AbWaran.AnyAsync(t => t.Id == id && t.EnStatusBorang == EnStatusBorang.Lulus);
+            if (isLulus)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> IsPostedAsync(int id, string noRujukan)
+        {
+            bool isPosted = await _context.AbWaran.AnyAsync(t => t.Id == id && t.FlPosting == 1);
+            if (isPosted)
+            {
+                return true;
+            }
+
+            bool isExistInAbBukuVot = await _context.AbBukuVot.AnyAsync(b => b.NoRujukan == noRujukan);
+
+            if (isExistInAbBukuVot)
+            {
+                return true;
+            }
+
+            return false;
+
         }
 
         public void Sah(int id, int? pengesahId, string? userId)
@@ -295,7 +311,124 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public void BatalSah(int id, string? tindakan, string? userId)
+        public void Semak(int id, int penyemakId, string? userId)
+        {
+            var data = _context.AbWaran.FirstOrDefault(pp => pp.Id == id);
+            var penyemak = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == penyemakId);
+            if (data != null)
+            {
+                data.EnStatusBorang = EnStatusBorang.Semak;
+                data.DPenyemakId = penyemak!.Id;
+                data.TarikhSemak = DateTime.Now;
+
+                data.UserIdKemaskini = userId ?? "";
+                data.TarKemaskini = DateTime.Now;
+                data.Tindakan = "";
+
+                _context.Update(data);
+
+            }
+        }
+
+        public void Lulus(int id, int? pelulusId, string? userId)
+        {
+            var data = GetDetailsById(id);
+            var pelulus = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == pelulusId);
+            if (data != null)
+            {
+                if (data.EnStatusBorang != EnStatusBorang.Kemaskini)
+                {
+                    data.DPelulusId = pelulus!.Id;
+                    data.TarikhLulus = DateTime.Now;
+                }
+
+                data.EnStatusBorang = EnStatusBorang.Lulus;
+                data.FlPosting = 1;
+                data.DPekerjaPostingId = pelulusId;
+                data.TarikhPosting = DateTime.Now;
+
+                data.UserIdKemaskini = userId ?? "";
+                data.TarKemaskini = DateTime.Now;
+                data.Tindakan = "";
+
+                _context.Update(data);
+
+                PostingToAbBukuVot(data);
+
+            }
+        }
+
+        public async Task<bool> IsBatalAsync(int id)
+        {
+            bool isBatal = await _context.AbWaran.AnyAsync(t => t.Id == id && t.FlBatal == 1);
+            if (isBatal)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void Batal(int id, string? sebabBatal, string? userId)
+        {
+            var data = _context.AbWaran.FirstOrDefault(pp => pp.Id == id);
+
+            if (data != null)
+            {
+                data.EnStatusBorang = EnStatusBorang.Batal;
+                data.FlBatal = 1;
+                data.TarBatal = DateTime.Now;
+                data.SebabBatal = sebabBatal;
+
+                data.UserIdKemaskini = userId ?? "";
+                data.TarKemaskini = DateTime.Now;
+
+                _context.Update(data);
+            }
+        }
+
+        public void PostingToAbBukuVot(AbWaran abWaran)
+        {
+            List<AbBukuVot> abBukuVotList = new List<AbBukuVot>();
+
+            if (abWaran.AbWaranObjek != null && abWaran.AbWaranObjek.Count > 0)
+            {
+
+
+                foreach (var item in abWaran.AbWaranObjek)
+                {
+                    AbBukuVot abBukuVot = new AbBukuVot()
+                    {
+                        Tahun = abWaran.Tahun,
+                        JKWId = item.JKWPTJBahagian?.JKWId ?? abWaran.JKWId,
+                        JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
+                        JBahagianId = item.JKWPTJBahagian.JBahagianId,
+                        Tarikh = abWaran.Tarikh,
+                        DDaftarAwamId = null,
+                        VotId = item.AkCartaId,
+                        NoRujukan = abWaran.NoRujukan,
+                        Kredit = item.Amaun
+                    };
+
+                    abBukuVotList.Add(abBukuVot);
+                }
+            }
+
+            _context.AbBukuVot.AddRange(abBukuVotList);
+        }
+
+        public void RemovePostingFromAbBukuVot(AbWaran abWaran, string userId)
+        {
+            var abBukuVotList = _context.AbBukuVot.Where(b => b.NoRujukan == abWaran.NoRujukan).ToList();
+
+            if (abBukuVotList != null && abBukuVotList.Count > 0)
+            {
+                _context.RemoveRange(abBukuVotList);
+            }
+
+        }
+
+        public void HantarSemula(int id, string? tindakan, string? userId)
         {
             var data = _context.AbWaran.FirstOrDefault(pp => pp.Id == id);
 
@@ -305,53 +438,78 @@ namespace YIT._DataAccess.Repositories.Implementations
                 data.DPengesahId = null;
                 data.TarikhSah = null;
 
+                data.DPenyemakId = null;
+                data.TarikhSemak = null;
+
+                data.DPelulusId = null;
+                data.TarikhLulus = null;
+
+                data.DPekerjaPostingId = null;
+                data.TarikhPosting = null;
+
                 data.Tindakan = tindakan;
                 data.UserIdKemaskini = userId ?? "";
                 data.TarKemaskini = DateTime.Now;
 
+                data.FlPosting = 0;
+                data.TarikhPosting = null;
+
                 _context.Update(data);
+
             }
         }
 
-        //public void Semak(int id, int penyemakId, string? userId)
-        //{
-        //    var data = _context.AbWaran.FirstOrDefault(pp => pp.Id == id);
-        //    var penyemak = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == penyemakId);
-        //    if (data != null)
-        //    {
-        //        data.EnStatusBorang = EnStatusBorang.Semak;
-        //        data.DPenyemakId = penyemak!.Id;
-        //        data.TarikhSemak = DateTime.Now;
+        public void BatalLulus(int id, string? tindakan, string? userId)
+        {
+            var data = _context.AbWaran.FirstOrDefault(pp => pp.Id == id);
 
-        //        data.UserIdKemaskini = userId ?? "";
-        //        data.TarKemaskini = DateTime.Now;
-        //        data.Tindakan = "";
+            if (data != null)
+            {
+                HantarSemula(id, tindakan, userId);
 
-        //        _context.Update(data);
+                RemovePostingFromAbBukuVot(data, userId ?? "");
 
-        //    }
-        //}
+            }
 
-        //public void BatalSemak(int id, string? tindakan, string? userId)
-        //{
-        //    var data = _context.AbWaran.FirstOrDefault(pp => pp.Id == id);
+        }
 
-        //    if (data != null)
-        //    {
-        //        data.EnStatusBorang = EnStatusBorang.None;
-        //        data.DPengesahId = null;
-        //        data.TarikhSah = null;
+        public void BatalPos(int id, string? tindakan, string? userId)
+        {
+            var data = _context.AbWaran.FirstOrDefault(pp => pp.Id == id);
 
-        //        data.DPenyemakId = null;
-        //        data.TarikhSemak = null;
+            if (data != null)
+            {
+                data.EnStatusBorang = EnStatusBorang.Kemaskini;
+                data.Tindakan = tindakan;
 
-        //        data.Tindakan = tindakan;
-        //        data.UserIdKemaskini = userId ?? "";
-        //        data.TarKemaskini = DateTime.Now;
+                data.UserIdKemaskini = userId ?? "";
+                data.TarKemaskini = DateTime.Now;
 
-        //        _context.Update(data);
-        //    }
-        //}
+                data.FlPosting = 0;
+                data.TarikhPosting = null;
+
+                _context.Update(data);
+
+                RemovePostingFromAbBukuVot(data, userId ?? "");
+
+            }
+        }
+
+
+        public string GetMaxRefNo(string initNoRujukan, string tahun)
+        {
+            var max = _context.AbWaran.Where(pp => pp.Tahun == tahun).OrderByDescending(pp => pp.NoRujukan).ToList();
+
+            if (max != null)
+            {
+                var refNo = max.FirstOrDefault()?.NoRujukan?.Substring(8, 5);
+                return refNo ?? "";
+            }
+            else
+            {
+                return "";
+            }
+        }
 
     }
 }
