@@ -46,5 +46,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public ICollection<AkPVObjek>? AkPVObjek { get; set; }
         public ICollection<AkCVObjek>? AkCVObjek { get; set; }
         public ICollection<AkNotaDebitKreditDiterimaObjek>? AkNotaDebitKreditDiterimaObjek { get; set; }
+        public ICollection<AkJurnalObjek>? AkJurnalObjekDebit { get; set; }
+        public ICollection<AkJurnalObjek>? AkJurnalObjekKredit { get; set; }
+
     }
 }

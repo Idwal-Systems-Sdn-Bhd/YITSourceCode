@@ -11,8 +11,8 @@ namespace YIT.__Domain.Entities._Enums
     {
         [Display(Name = "RR")]
         RR = 1, // terimaan
-        [Display(Name = "DI")]
-        DI = 2, // invois dikeluarkan
+        [Display(Name = "ID")]
+        ID = 2, // invois dikeluarkan
         [Display(Name = "ND")]
         ND = 3, // nota debit 
         [Display(Name = "NK")]
@@ -34,9 +34,9 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "IN")]
         IN = 12, // Invois pembekal
         [Display(Name = "SW")]
-        SW = 13, // invois dikeluarkan (sewaan)
+        SW = 13, // invois dikeluarkan auto (sistem sewaan)
         [Display(Name = "SP")]
-        SP = 14, // invois dikeluarkan (pinjaman)
+        SP = 14, // invois dikeluarkan auto (sistem pinjaman)
         [Display(Name = "JU")]
         JU = 15, // pelarasan baucer jurnal
         [Display(Name = "WR")]
