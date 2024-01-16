@@ -235,8 +235,8 @@
                 $("#penerimaJumlah").val("0.00");
                 $("#objekAkCartaId option").prop('disabled', false);
                 $("#objekAkCartaId option:selected").prop('disabled', true);
-                $("#objekJBahagianId option").prop('disabled', false);
-                $("#objekJBahagianId option:selected").prop('disabled', true);
+                $("#objekJKWPTJBahagianId option").prop('disabled', false);
+                $("#objekJKWPTJBahagianId option:selected").prop('disabled', true);
                 $("#invoisAkBelianId option").prop('disabled', false);
                 $("#invoisAkBelianId option:selected").prop('disabled', true);
             },
@@ -511,7 +511,6 @@
         var jKWPTJBahagianId = $("#moObjekJKWPTJBahagianId").val();
         var akCartaId = $("#moObjekAkCartaId").val();
         var jCukaiId = $("#moObjekJCukaiId").val();
-        var jumlah = $("#Jumlah");
 
         var AkPVObjek = {
             AkPVId: akPVId,

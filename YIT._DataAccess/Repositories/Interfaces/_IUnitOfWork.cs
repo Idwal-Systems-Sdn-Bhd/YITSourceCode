@@ -39,7 +39,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IAkJanaanProfilRepository AkJanaanProfilRepo { get; }
         IAkEFTRepository AkEFTRepo { get; }
 
-
+        IAkJurnalRepository AkJurnalRepo { get; }
         int Save();
     }
 }

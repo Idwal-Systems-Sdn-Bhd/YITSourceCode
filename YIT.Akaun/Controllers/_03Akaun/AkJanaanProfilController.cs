@@ -620,10 +620,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                                     return Json(new { result = "ERROR", message = "Amaun melebihi had mengikut had maksimum cara bayar" });
                                 }
                             }
-
-                            int? bil = _cart.AkJanaanProfilPenerima.Max(b => b.Bil) ?? 0;
-
-                            bil += 1;
+                            int bil = 1;
+                            if (_cart.AkJanaanProfilPenerima.Any())
+                            {
+                                bil = _cart.AkJanaanProfilPenerima.Max(p => p.Bil) ?? 0;
+                                bil += 1;
+                            }
 
                             _cart.AddItemPenerima(akJanaanProfilPenerima.Id,
                                                   bil,

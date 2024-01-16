@@ -138,5 +138,10 @@ namespace YIT._DataAccess.Repositories.Implementations
             return amaun < sql?.Select(t => t.Baki + t.Kredit - t.Debit - t.Tanggungan).Sum();
         }
 
+        public async Task<bool> IsExistByJKWPTJBahagianAkCartaId(int jKWId, int ptjId, int jBahagianId, int votId)
+        {
+            bool IsExist = await _context.AbBukuVot.AnyAsync(bv => bv.JKWId == jKWId && bv.JPTJId == ptjId && bv.JBahagianId == jBahagianId && bv.VotId == votId); 
+            return IsExist;
+        }
     }
 }

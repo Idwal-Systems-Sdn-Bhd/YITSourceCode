@@ -101,7 +101,10 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodAkEFTMaybank2E = "AK0015";
         public const string namaAkEFTMaybank2E = "Janaan EFT Maybank2E";
 
-        public const string kodAkTerima = "AK0015";
+        public const string kodAkJurnal = "AK0016";
+        public const string namaAkJurnal = "Pelarasan Baucer Jurnal";
+
+        public const string kodAkTerima = "AK0017";
         public const string namaAkTerima = "Terimaan Resit Rasmi";
         //
 
@@ -136,7 +139,7 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodSahAkPO = "PP0010";
         public const string namaSahAkPO = "Pemprosesan Sah Pesanan Tempatan";
 
-        public const string kodSemaksAkPO = "PP0011";
+        public const string kodSemakAkPO = "PP0011";
         public const string namaSemakAkPO = "Pemprosesan Semak Pesanan Tempatan";
 
         public const string kodLulusAkPO = "PP0012";
@@ -145,7 +148,7 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodSahAkInden = "PP0013";
         public const string namaSahAkInden = "Pemprosesan Sah Inden Kerja";
 
-        public const string kodSemaksAkInden = "PP0014";
+        public const string kodSemakAkInden = "PP0014";
         public const string namaSemakAkInden = "Pemprosesan Semak Inden Kerja";
 
         public const string kodLulusAkInden = "PP0015";
@@ -154,7 +157,7 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodSahAkPelarasanPO = "PP0016";
         public const string namaSahAkPelarasanPO = "Pemprosesan Sah Pelarasan Pesanan Tempatan";
 
-        public const string kodSemaksAkPelarasanPO = "PP0017";
+        public const string kodSemakAkPelarasanPO = "PP0017";
         public const string namaSemakAkPelarasanPO = "Pemprosesan Semak Pelarasan Pesanan Tempatan";
 
         public const string kodLulusAkPelarasanPO = "PP0018";
@@ -163,7 +166,7 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodSahAkPelarasanInden = "PP0019";
         public const string namaSahAkPelarasanInden = "Pemprosesan Sah Pelarasan Inden Kerja";
 
-        public const string kodSemaksAkPelarasanInden = "PP0020";
+        public const string kodSemakAkPelarasanInden = "PP0020";
         public const string namaSemakAkPelarasanInden = "Pemprosesan Semak Pelarasan Inden Kerja";
 
         public const string kodLulusAkPelarasanInden = "PP0021";
@@ -174,6 +177,15 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodLulusAkPV = "PP0023";
         public const string namaLulusAkPV = "Pemprosesan Lulus Baucer Pembayaran";
+
+        public const string kodSahAkJurnal = "PP0024";
+        public const string namaSahAkJurnal = "Pemprosesan Sah Baucer Jurnal";
+
+        public const string kodSemakAkAkJurnal = "PP0025";
+        public const string namaSemakAkJurnal = "Pemprosesan Semak Baucer Jurnal";
+
+        public const string kodLulusAkJurnal = "PP0026";
+        public const string namaLulusAkJurnal = "Pemprosesan Lulus Baucer Jurnal";
         //
         // Laporan Akaun
         public const string kodLTerimaan = "LAK001";

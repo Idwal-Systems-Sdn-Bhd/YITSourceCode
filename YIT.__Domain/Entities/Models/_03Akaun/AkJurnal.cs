@@ -14,6 +14,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
     public class AkJurnal : GenericTransactionFields
     {
         public int Id { get; set; }
+        [DisplayName("Kump. Wang")]
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         [DisplayName("No Rujukan")]
@@ -31,7 +32,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("No Baucer")]
         public int? AkPVId { get; set; }
         public AkPV? AkPV { get; set; }
-        [DisplayName("Terlibat dengan Akaun Kena Bayar (AKB)?")]
+        [DisplayName("Terlibat dengan Akaun Kena Bayar (AKB)")]
         public bool IsAKB { get; set; }
         public ICollection<AkJurnalObjek>? AkJurnalObjek { get; set; }
         public ICollection<AkJurnalPenerimaCekBatal>? AkJurnalPenerimaCekBatal { get; set; }

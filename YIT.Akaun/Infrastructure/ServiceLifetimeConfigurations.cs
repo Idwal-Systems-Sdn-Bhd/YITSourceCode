@@ -33,6 +33,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddScoped(ss => SessionCartAkPV.GetCart(ss));
             services.AddScoped(ss => SessionCartAkJanaanProfil.GetCart(ss));
             services.AddScoped(ss => SessionCartAkEFT.GetCart(ss));
+            services.AddScoped(ss => SessionCartAkJurnal.GetCart(ss));
 
             return services;
         }

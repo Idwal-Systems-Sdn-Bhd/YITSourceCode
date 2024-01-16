@@ -1,0 +1,676 @@
+﻿<script type="text/javascript">
+    // bring the deopdown select2 in front of modal
+    $(document).ready(function () {
+        $('#moPenerimaCekBatalAkPVPenerimaId').select2({
+            dropdownParent: $('#moPenerimaCekBatal'),
+            theme: "bootstrap"
+        });
+
+        // Add an event listener to the first dropdown using jQuery
+        $('#JKWId').on('change', function () {
+            // Get the selected value from the first dropdown
+            var jKWId = $(this).val();
+            GetJKWPTJBahagianDebitKreditList(jKWId);
+        });
+
+        $('#penerimaCekBatalAkPVPenerimaId').on('change', function () {
+            var akPVPenerimaId = $(this).val();
+            if (akPVPenerimaId != null) {
+                GetAkPVPenerimaDetails(akPVPenerimaId);
+            }
+
+        });
+
+        $('#moPenerimaCekBatalAkPVPenerimaId').on('change', function () {
+            var akPVPenerimaId = $(this).val();
+            if (akPVPenerimaId != null) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetAkPVPenerima", "AkJurnal")',
+                    data: { Id: akPVPenerimaId },
+                    dataType: "json",
+                    success: function (msg) {
+                        if (msg.result === "OK") {
+                            // empty fields
+                            $("#moPenerimaCekBatalNamaPenerima").val(msg.akPVPenerima.namaPenerima);
+                            $("#moPenerimaCekBatalNoCek").val(msg.akPVPenerima.noRujukanCaraBayar);
+                            $("#moPenerimaCekBatalAmaun").val(msg.akPVPenerima.amaun);
+                        }
+                        else {
+                            toastr.error(msg.message);
+                        }
+
+                    }
+                })
+            }
+
+        });
+    });
+
+    function GetAkPVPenerimaDetails(akPVPenerimaId) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAkPVPenerima", "AkJurnal")',
+            data: { Id: akPVPenerimaId },
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result === "OK") {
+                    // empty fields
+                    $("#penerimaCekBatalNoCek").val(msg.akPVPenerima.noRujukanCaraBayar);
+                    $("#penerimaCekBatalAmaun").val(msg.akPVPenerima.amaun);
+                }
+                else {
+                    toastr.error(msg.message);
+                }
+            }
+        })
+    }
+    // on click jenisJurnal dropdown
+    $("body").on('change', "#EnJenisJurnal", function () {
+        EmptyCart();
+        $("#AkPVId").val("").change();
+        var enJenisJurnal = $('#EnJenisJurnal').val();
+        switch (enJenisJurnal) {
+            case "@EnJenisJurnal.Baucer.GetDisplayCode()":
+                $("#divAkPV").removeAttr('hidden');
+                $("#divPenerimaCekBatal").prop('hidden', true);
+                break;
+            case "@EnJenisJurnal.CekBatal.GetDisplayCode()":
+                $("#divAkPV").prop('hidden', true);
+                $("#divPenerimaCekBatal").removeAttr('hidden');
+                break;
+            default:
+                $("#divAkPV").prop('hidden', true);
+                $("#divPenerimaCekBatal").prop('hidden', true);
+                break;
+        }
+    });
+    //
+
+    // empty cart
+    function EmptyCart() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("EmptyCart","AkJurnal")',
+            datatype: "json",
+            success: function (msg) {
+                $("table tbody#tbodyObjek").empty();
+                $("table tbody#tbodyPenerimaCekBatal").empty();
+                $("#JumlahDebit").val("0.00");
+                $("#JumlahKredit").val("0.00");
+                $("#penerimaCekBatalJumlah").val("0.00");
+                $("#objekAkCartaDebitId option").prop('disabled', false);
+                $("#objekAkCartaDebitId option:selected").prop('disabled', true);
+                $("#objekJKWPTJBahagianDebitId option").prop('disabled', false);
+                $("#objekJKWPTJBahagianDebitId option:selected").prop('disabled', true);
+                $("#objekAkCartaKreditId option").prop('disabled', false);
+                $("#objekAkCartaKreditId option:selected").prop('disabled', true);
+                $("#objekJKWPTJBahagianKreditId option").prop('disabled', false);
+                $("#objekJKWPTJBahagianKreditId option:selected").prop('disabled', true);
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        })
+    }
+    // empty cart end
+
+    // Toastr initialization
+    toastr.options.timeOut = 2000;
+
+    // Autoload JKWPTJBahagianDebit and JKWPTJBahagianKredit list when KW is picked
+    function GetJKWPTJBahagianDebitKreditList(jKWId) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetJKWPTJBahagianList", "JKW")',
+            data: { JKWId: jKWId },
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result === "OK") {
+                    // Empty selection
+                    $(".jKWPTJBahagian-select").empty();
+
+                    // Append new options
+                    $.each(msg.list, function (index, item) {
+                        $('.jKWPTJBahagian-select').append($('<option>', {
+                            value: item.id,
+                            text: item.kod + " - " + item.jBahagian.perihal // Replace with the property to display
+                        }));
+                    });
+                    //var bahagianOptions = "<option value='0' disabled> -- Pilih Bahagian -- </option>";
+
+                    //for (var i = 0; i < msg.list.length; i++) {
+                    //    var item = msg.list[i];
+                    //    var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
+                    //    bahagianOptions += str;
+                    //}
+
+                    //$(".jKWPTJBahagian-select").append(bahagianOptions);
+                } else {
+                    toastr.error(msg.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Request Error:", error);
+                alert("Error occurred during the AJAX request. Please check the console for details.");
+            }
+        });
+    }
+
+    // populate tables in pages
+    function PopulateTablesFromCart() {
+        var jumlahDebit = $("#JumlahDebit");
+        var jumlahKredit = $("#JumlahKredit");
+        var penerimaCekBatalJumlah = $("#penerimaCekBatalJumlah");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAllItemCartAkJurnal", "AkJurnal")',
+            dataType: "json",
+            success: function (r) {
+
+                //refresh updated table objek
+                $("table tbody#tbodyObjek").empty();
+                var sum = 0;
+                if (r.objek.length > 0) {
+                    for (var i = 0; i < r.objek.length; i++) {
+                        var item1 = r.objek[i];
+                        var isDebitAbBukuVot = "TIDAK";
+                        var isKreditAbBukuVot = "TIDAK";
+                        if (item1.isDebitAbBukuVot == true) isDebitAbBukuVot = "YA";
+                        if (item1.isKreditAbBukuVot == true) isKreditAbBukuVot = "TIDAK";
+                        var str = "<tr><td hidden>" + item1.jkwptjBahagianDebitId +
+                            "</td><td class='text-uppercase'>" + item1.jkwptjBahagianDebit.kod + " - " + item1.jkwptjBahagianDebit.jBahagian.perihal + " (" + item1.jkwptjBahagianDebit.jptj.perihal + ") " +
+                            "</td><td hidden>" + item1.akCartaDebitId +
+                            "</td><td class='text-uppercase'>" + item1.akCartaDebit.kod + " - " + item1.akCartaDebit.perihal +
+                            "</td><td hidden>" + item1.jkwptjBahagianKreditId +
+                            "</td><td class='text-uppercase'>" + item1.jkwptjBahagianKredit.kod + " - " + item1.jkwptjBahagianKredit.jBahagian.perihal + " (" + item1.jkwptjBahagianKredit.jptj.perihal + ") " +
+                            "</td><td hidden>" + item1.akCartaKreditId +
+                            "</td><td class='text-uppercase'>" + item1.akCartaKredit.kod + " - " + item1.akCartaKredit.perihal +
+                            "</td><td class='text-end'>" + (item1.amaun).toFixed(2) +
+                            "</td><td class='text-uppercase'>" + isDebitAbBukuVot + " / " + isKreditAbBukuVot +
+                            "</td><td>" +
+                            "<button class='btn ac-primary btn-sm' type='button' data-toggle='modal' data-target='#moObjek' onclick='UpdateObjek(this)'><i class='fa fa-edit' ></i></button>" +
+                            "</td><td>" +
+                            "<button class='btn ac-danger btn-sm' type='button' onclick='RemoveObjek(this)'><i class='fas fa-trash' ></i></button>" +
+                            "</td><tr>";
+                        $("table tbody#tbodyObjek").append(str);
+                        sum += item1.amaun;
+                    }
+                }
+
+                jumlahDebit.val(sum.toFixed(2));
+                jumlahKredit.val(sum.toFixed(2));
+                // refresh updated table objek end
+
+                // refresh updated table penerima
+                $("table tbody#tbodyPenerimaCekBatal").empty();
+                var sum = 0;
+
+                for (var i = 0; i < r.penerimaCekBatal.length; i++) {
+                    var item1 = r.penerimaCekBatal[i];
+
+                    var str = "<tr><td class='text-end'>" + item1.bil +
+                        "</td><td hidden>" + item1.akPVId +
+                        "</td><td class='text-uppercase'>" + item1.akPV.noRujukan +
+                        "</td><td class='text-uppercase'>" + item1.namaPenerima +
+                        "</td><td class='text-uppercase'>" + item1.noCek +
+                        "</td><td class='text-end'>" + (item1.amaun).toFixed(2) +
+                        
+                        "</td><td>" +
+                        "<button class='btn ac-danger btn-sm' type='button' onclick='RemovePenerimaCekBatal(this)'><i class='fas fa-trash' ></i></button>" +
+                        "</td><tr>";
+                    $("table tbody#tbodyPenerimaCekBatal").append(str);
+                    sum += item1.amaun;
+                }
+                penerimaCekBatalJumlah.val(sum.toFixed(2));
+                // refresh updated table penerima end
+
+            }
+        });
+
+    }
+    // populate tables in pages end
+
+    //add tbl objek
+    $("body").on("click", "#btnAddObjek", function () {
+        //Reference the Name and Country TextBoxes.
+        var Id = $("#Id");
+        var akCartaDebitId = $("#objekAkCartaDebitId");
+        var jKWPTJBahagianDebitId = $("#objekJKWPTJBahagianDebitId");
+        var akCartaKreditId = $("#objekAkCartaKreditId");
+        var jKWPTJBahagianKreditId = $("#objekJKWPTJBahagianKreditId");
+        if ($("#objekAmaun").val() == 0.00) {
+            toastr.error("Amaun 0.00 tidak dibenarkan");
+        }
+        else {
+            if (jKWPTJBahagianDebitId.val() != null && akCartaDebitId.val() != null &&
+            jKWPTJBahagianKreditId.val() != null && akCartaKreditId.val() != null) {
+                GetJKWPTJBahagianAkCarta(Id.val(), jKWPTJBahagianDebitId.val(), akCartaDebitId.val(),
+                    jKWPTJBahagianKreditId.val(), akCartaKreditId.val());
+            } else {
+                toastr.error("Sila pilih bahagian / kod akaun");
+            }
+        }
+
+
+    });
+
+    function GetJKWPTJBahagianAkCarta(Id,
+        jKWPTJBahagianDebitId, akCartaDebitId,
+        jKWPTJBahagianKreditId, akCartaKreditId) {
+
+        // get debit jkwptjbahagian, akCarta
+        var ObjekDebit = {
+            JKWPTJBahagianId: jKWPTJBahagianDebitId,
+            AkCartaId: akCartaDebitId
+        }
+        //Send the JSON array to Controller using AJAX.
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetJKWPTJBahagianAkCarta", "JKW")',
+            data: ObjekDebit,
+            dataType: "json",
+            success: function (r) {
+                if (r.result == "Error") {
+                    toastr.error(r.message);
+                }
+                else {
+                    var ObjekKredit = {
+                        JKWPTJBahagianId: jKWPTJBahagianKreditId,
+                        AkCartaId: akCartaKreditId
+                    }
+                    //Send the JSON array to Controller using AJAX.
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetJKWPTJBahagianAkCarta", "JKW")',
+                        data: ObjekKredit,
+                        dataType: "json",
+                        success: function (r) {
+                            if (r.result == "Error") {
+                                toastr.error(r.message);
+                            }
+                            else {
+                                var objekAmaun = $("#objekAmaun");
+                                var isDebitAbBukuVot = $("#objekIsDebitAbBukuVot").val();
+                                var isKreditAbBukuVot = $("#objekIsKreditAbBukuVot").val();
+
+                                var AkJurnalObjek = {
+                                    AkJurnalId: Id,
+                                    JKWPTJBahagianDebitId: jKWPTJBahagianDebitId,
+                                    AkCartaDebitId: akCartaDebitId,
+                                    JKWPTJBahagianKreditId: jKWPTJBahagianKreditId,
+                                    AkCartaKreditId: akCartaKreditId,
+                                    Amaun: objekAmaun.val(),
+                                    IsDebitAbBukuVot: isDebitAbBukuVot,
+                                    IsKreditAbBukuVot: isKreditAbBukuVot
+                                }
+                                //Send the JSON array to Controller to Save into session (cart)
+                                $.ajax({
+                                    type: "POST",
+                                    url: '@Url.Action("SaveCartAkJurnalObjek", "AkJurnal")',
+                                    data: AkJurnalObjek,
+                                    dataType: "json",
+                                    success: function (msg) {
+                                        if (msg.result == "OK") {
+                                            PopulateTablesFromCart();
+
+                                            //Clear the TextBoxes.
+                                            $("#objekAkCartaDebitId").val("").trigger('change');
+                                            $("#objekJKWPTJBahagianDebitId").val("").trigger('change');
+                                            $("#objekAkCartaKreditId").val("").trigger('change');
+                                            $("#objekJKWPTJBahagianKreditId").val("").trigger('change');
+                                            objekAmaun.val("0.00");
+                                            $("#objekIsDebitAbBukuVot").val("false").change();
+                                            $("#objekIsKreditAbBukuVot").val("false").change();
+                                        }
+                                        else {
+                                            toastr.error(msg.message);
+                                            toastr.options.timeOut = 2000; // 2s
+                                        }
+
+                                    }
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("AJAX Request Error:", error);
+                            alert("Error occurred during the AJAX request. Please check the console for details.");
+                        }
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Request Error:", error);
+                alert("Error occurred during the AJAX request. Please check the console for details.");
+            }
+        });
+    }
+    //add tbl objek end
+
+    //remove tbl objek
+    function RemoveObjek(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var jKWPTJBahagianDebitId = $("TD", row).eq(0).html();
+        var namaBahagianDebit = $("TD", row).eq(1).html();
+        var akCartaDebitId = $("TD", row).eq(2).html();
+        var namaCartaDebit = $("TD", row).eq(3).html();
+        var jKWPTJBahagianKreditId = $("TD", row).eq(4).html();
+        var namaBahagianKredit = $("TD", row).eq(5).html();
+        var akCartaKreditId = $("TD", row).eq(6).html();
+        var namaCartaKredit = $("TD", row).eq(7).html();
+        var objekAmaun = $("TD", row).eq(8).html();
+        var objekJumlahDebit = $("#JumlahDebit");
+        var objekJumlahKredit = $("#JumlahKredit");
+        if (confirm("Hapus bahagian debit : " + namaBahagianDebit.trim() + ", Kod akaun debit : " + namaCartaDebit.trim() + ", bahagian kredit : " + namaBahagianKredit.trim() + ", Kod akaun kredit : " + namaCartaKredit.trim() + " ?")) {
+            //Get the reference of the Table.
+            var table = $("#tblObjek")[0];
+
+            //Sum value to Total text field
+            var sumDebit = 0;
+            sumDebit = parseFloat(objekJumlahDebit.val()) - parseFloat(objekAmaun);
+            objekJumlahDebit.val(sum.toFixed(2));
+
+            var sumKredit = 0;
+            sumKredit = parseFloat(objekJumlahKredit.val()) - parseFloat(objekAmaun);
+            objekJumlahKredit.val(sum.toFixed(2));
+
+            var AkJurnalObjek = {
+                JKWPTJBahagianDebitId: jKWPTJBahagianDebitId,
+                AkCartaDebitId: akCartaDebitId,
+                JKWPTJBahagianKreditId: jKWPTJBahagianKreditId,
+                AkCartaKreditId: akCartaKreditId
+            }
+            if (AkJurnalObjek != null) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RemoveCartAkJurnalObjek", "AkJurnal")',
+                    data: AkJurnalObjek,
+                    dataType: "json",
+                    success: function (r) {
+                        //Delete the Table row using it's Index.
+                        table.deleteRow(row[0].rowIndex);
+
+                    }
+                });
+            }
+
+        }
+    };
+    //remove tbl objek end
+
+    //update tbl objek
+    function UpdateObjek(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var jKWPTJBahagianDebitId = $("TD", row).eq(0).html();
+        var akCartaDebitId = $("TD", row).eq(2).html();
+        var jKWPTJBahagianKreditId = $("TD", row).eq(4).html();
+        var akCartaKreditId = $("TD", row).eq(6).html();
+
+        var AkJurnalObjek = {
+            JKWPTJBahagianDebitId: jKWPTJBahagianDebitId,
+            AkCartaDebitId: akCartaDebitId,
+            JKWPTJBahagianKreditId: jKWPTJBahagianKreditId,
+            AkCartaKreditId: akCartaKreditId
+        }
+        if (jKWPTJBahagianDebitId != null && akCartaDebitId != null &&
+            jKWPTJBahagianKreditId != null && akCartaKreditId != null) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAnItemFromCartAkJurnalObjek", "AkJurnal")',
+                data: AkJurnalObjek,
+                dataType: "json",
+                success: function (r) {
+                    //insert data in modal objek
+                    $("#moObjekId").val(r.record.id);
+                    $("#moObjekJKWPTJBahagianDebitId").val(r.record.jkwptjBahagianDebitId);
+                    $("#moObjekAkCartaDebitId").val(r.record.akCartaDebitId);
+                    $("#moObjekJKWPTJBahagianKreditId").val(r.record.jkwptjBahagianKreditId);
+                    $("#moObjekAkCartaKreditId").val(r.record.akCartaKreditId);
+                    $("#moObjekAmaun").val(r.record.amaun.toFixed(2));
+                    var isDebitAbBukuVot = (r.record.isDebitAbBukuVot).toString();
+                    var isKreditAbBukuVot = (r.record.isKreditAbBukuVot).toString();
+                    $("#moObjekIsDebitAbBukuVot").val(isDebitAbBukuVot).change();
+                    $("#moObjekIsKreditAbBukuVot").val(isKreditAbBukuVot).change();
+
+                    //show modal objek
+                    $("#moObjek").modal({ backdrop: 'static', keyboard: false });
+
+                }
+            });
+        }
+    };
+
+    function UpdateModalObjek() {
+        var akJurnalId = $("#Id").val();
+        var id = $("#moObjekId").val();
+        var amaun = $("#moObjekAmaun").val();
+        var jKWPTJBahagianDebitId = $("#moObjekJKWPTJBahagianDebitId").val();
+        var akCartaDebitId = $("#moObjekAkCartaDebitId").val();
+        var jKWPTJBahagianKreditId = $("#moObjekJKWPTJBahagianKreditId").val();
+        var akCartaKreditId = $("#moObjekAkCartaKreditId").val();
+        var isDebitAbBukuVot = $("#moObjekIsDebitAbBukuVot").val();
+        var isKreditAbBukuVot = $("#moObjekIsKreditAbBukuVot").val();
+
+        var AkJurnalObjek = {
+            AkJurnalId: akJurnalId,
+            Id: id,
+            JKWPTJBahagianDebitId: jKWPTJBahagianDebitId,
+            AkCartaDebitId: akCartaDebitId,
+            JKWPTJBahagianKreditId: jKWPTJBahagianKreditId,
+            AkCartaKreditId: akCartaKreditId,
+            Amaun: amaun,
+            IsDebitAbBukuVot: isDebitAbBukuVot,
+            IsKreditAbBukuVot: isKreditAbBukuVot
+        }
+        $.ajax({
+            type: "POST", 
+            url: '@Url.Action("SaveAnItemFromCartAkJurnalObjek", "AkJurnal")',
+            data: AkJurnalObjek,
+            dataType: "json",
+            success: function (r) {
+                //insert notification here
+                if (r.result === "OK") {
+                    PopulateTablesFromCart();
+                }
+                else {
+                    toastr.error(r.message);
+                }
+                
+            }
+        });
+    };
+    //update tbl objek end
+
+    // add tbl penerima cek batal
+    $("body").on("click", "#btnAddPenerimaCekBatal", function () {
+        //Reference the Name and Country TextBoxes.
+        var Id = $("#Id");
+        var akPVPenerimaId = $("#penerimaCekBatalAkPVPenerimaId");
+        if ($("#penerimaCekBatalAmaun").val() == 0.00) {
+            toastr.error("Amaun 0.00 tidak dibenarkan");
+        }
+        else {
+            if (akPVPenerimaId.val() != null) {
+                GetAkPVPenerima(Id.val(),akPVPenerimaId.val());
+            } else {
+                toastr.error("Sila pilih senarai penerima");
+            }
+        }
+
+
+    });
+
+    function GetAkPVPenerima(Id,akPVPenerimaId) {
+        var AkPVPenerima = {
+            Id: akPVPenerimaId
+        }
+        //Send the JSON array to Controller using AJAX.
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAkPVPenerima", "AkJurnal")',
+            data: AkPVPenerima,
+            dataType: "json",
+            success: function (r) {
+
+                var penerimaCekBatalAmaun = $("#penerimaCekBatalAmaun");
+
+                var AkJurnalPenerimaCekBatal = {
+                    AkJurnalId: Id,
+                    Bil: r.akPVPenerima.bil,
+                    AkPVId: r.akPVPenerima.akPVId,
+                    NamaPenerima: r.akPVPenerima.namaPenerima,
+                    NoCek: r.akPVPenerima.noRujukanCaraBayar,
+                    Amaun: penerimaCekBatalAmaun.val()
+                }
+                //Send the JSON array to Controller to Save into session (cart)
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SaveCartAkJurnalPenerimaCekBatal", "AkJurnal")',
+                    data: AkJurnalPenerimaCekBatal,
+                    dataType: "json",
+                    success: function (msg) {
+                        if (msg.result == "OK") {
+                            PopulateTablesFromCart();
+
+                            //Clear the TextBoxes.
+                            $("#penerimaCekBatalAkPVPenerimaId").val("").trigger('change');
+                            $("#penerimaCekBatalNoCek").val("");
+                            penerimaCekBatalAmaun.val("0.00");
+                        }
+                        else {
+                            toastr.error(msg.message);
+                        }
+
+                    }
+                });
+
+            }
+        });
+
+    }
+    // add tbl penerima cek batal end
+
+    // remove tbl penerima cek batal
+        function RemovePenerimaCekBatal(button) {
+            //Determine the reference of the Row using the Button.
+            var row = $(button).closest("TR");
+            var bil = $("TD", row).eq(0).html();
+            var akPVId = $("TD", row).eq(1).html();
+            var namaPenerima = $("TD", row).eq(3).html();
+            var penerimaCekBatalAmaun = $("TD", row).eq(5).html();
+            var penerimaCekBatalJumlah = $("#penerimaCekBatalJumlah");
+            if (confirm("Hapus penerima : " + namaPenerima + " ?")) {
+                //Get the reference of the Table.
+                var table = $("#tblPenerimaCekBatal")[0];
+
+                //Sum value to Total text field
+                var sum = 0;
+                sum = parseFloat(penerimaCekBatalJumlah.val()) - parseFloat(penerimaCekBatalAmaun);
+                penerimaCekBatalJumlah.val(sum.toFixed(2));
+
+                var AkJurnalPenerimaCekBatal = {
+                    Bil: bil,
+                    AkPVId: akPVId
+                }
+                if (AkJurnalPenerimaCekBatal != null) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("RemoveCartAkJurnalPenerimaCekBatal", "AkJurnal")',
+                        data: AkJurnalPenerimaCekBatal,
+                        dataType: "json",
+                        success: function (r) {
+                            //Delete the Table row using it's Index.
+                            table.deleteRow(row[0].rowIndex);
+
+                        }
+                    });
+                }
+
+            }
+        };
+    // remove tbl penerima cek batal end
+
+    // update tbl penerima cek batal
+    @*function UpdatePenerimaCekBatal(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var bil = $("TD", row).eq(0).html();
+        var akPVId = $("TD", row).eq(1).html();
+
+        var AkJurnalPenerimaCekBatal = {
+            Bil: bil,
+            AkPVId: akPVId
+        }
+        if (bil != null && akPVId != null) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAnItemFromCartAkJurnalPenerimaCekBatal", "AkJurnal")',
+                data: AkJurnalPenerimaCekBatal,
+                dataType: "json",
+                success: function (r) {
+                    //insert data in modal objek
+                    $("#moPenerimaCekBatalId").val(r.record.id);
+                    $("#moPenerimaCekBatalAkPVPenerimaId").val(r.akPVPenerima.id).change();
+                    $("#moPenerimaCekBatalNamaPenerima").val(r.record.namaPenerima);
+                    $("#moPenerimaCekBatalNoCek").val(r.record.noCek);
+                    $("#moPenerimaCekBatalAmaun").val(r.record.amaun.toFixed(2));
+
+                    //show modal objek
+                    $("#moPenerimaCekBatal").modal({ backdrop: 'static', keyboard: false });
+
+                }
+            });
+        }
+    };
+
+    function UpdateModalPenerimaCekBatal() {
+        var akJurnalId = $("#Id").val();
+        var id = $("#moPenerimaCekBatalId").val();
+        var akPVPenerimaId = $("#moPenerimaCekBatalAkPVPenerimaId").val();
+
+        var akPVPenerima = {
+            Id: akPVPenerimaId
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAkPVPenerima","AkJurnal")',
+            data: akPVPenerima,
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result === "OK") {
+                    var AkJurnalPenerimaCekBatal = {
+                        AkJurnalId: akJurnalId,
+                        Id: id,
+                        Bil: msg.akPVPenerima.bil,
+                        AkPVId: msg.akPVPenerima.akPVId,
+                        NamaPenerima: msg.akPVPenerima.namaPenerima,
+                        NoCek: msg.akPVPenerima.noRujukanCaraBayar,
+                        Amaun: msg.akPVPenerima.amaun
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("SaveAnItemFromCartAkJurnalPenerimaCekBatal", "AkJurnal")',
+                        data: AkJurnalPenerimaCekBatal,
+                        dataType: "json",
+                        success: function (r) {
+                            //insert notification here
+
+                            PopulateTablesFromCart();
+                        }
+                    });
+                } else {
+                    toastr.error(msg.message);
+                }
+            }, error: function (xhr, status, error) {
+                console.error("AJAX Request Error:", error);
+                alert("Error occurred during the AJAX request. Please check the console for details.");
+            }
+        });
+
+
+    };*@
+    // update tbl penerima cek batal end
+
+</script>

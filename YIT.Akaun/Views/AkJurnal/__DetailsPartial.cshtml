@@ -1,0 +1,163 @@
+﻿@model AkJurnal
+
+@{
+    decimal penerimaCekBatalJumlah = 0;
+}
+
+@*maklumat umum*@
+<div class="row mb-2">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="NoRujukan" class="control-label"></label>
+            <input asp-for="NoRujukan" class="form-control form-control-sm" readonly />
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="Tarikh" class="control-label"></label>
+            <input asp-for="Tarikh" class="form-control form-control-sm" readonly />
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="JKWId" class="control-label"></label>
+            <input value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" class="form-control form-control-sm" readonly />
+
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <label asp-for="EnJenisJurnal" class="control-label"></label>
+    <input value="@Model.EnJenisJurnal.GetDisplayName() " class="form-control form-control-sm text-uppercase" readonly />
+</div>
+@*div baucer*@
+<div class="form-group" id="divAkPV" @ViewBag.DivAkPV>
+    <label asp-for="AkPVId" class="control-label"></label>
+    <input class="form-control form-control-sm text-uppercase" value="@Model.AkPV?.Tarikh.ToString("dd/MM/yyyy") - @Model.AkPV?.NoRujukan" />
+</div>
+@*div end*@
+
+<div class="form-group">
+    <label asp-for="Ringkasan" class="control-label"></label>
+    <textarea asp-for="Ringkasan" class="form-control form-control-sm text-uppercase" readonly rows="2"></textarea>
+</div>
+
+<div class="form-group">
+    <div class="card mb-2">
+        <div class="card-body ps-3 pe-3 pt-2">
+
+            <label class="control-label">Maklumat Tambahan : </label>
+            <div class="custom-control custom-radio">
+                <input type="checkbox" data-val="true" asp-for="IsAKB" disabled>
+                <label asp-for="IsAKB" class="control-label"></label>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@*end*@
+<br />
+
+@*table Objek*@
+<div class="card box-shadow mb-3">
+    <div class="card-header">
+        <h6>Objek</h6>
+    </div>
+    <div class="card-body">
+        <table id="tblObjek" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width:23%">Bahagian Debit RM</th>
+                    <th style="width:23%">Kod Debit RM</th>
+                    <th style="width:23%">Bahagian Kredit RM</th>
+                    <th style="width:23%">Kod Kredit RM</th>
+                    <th style="width:10%">Amaun RM</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyObjek">
+                @if (ViewBag.akJurnalObjek != null)
+                {
+                    foreach (var item in ViewBag.akJurnalObjek)
+                    {
+                        <tr>
+                            <td hidden>@item.JKWPTJBahagianDebitId</td>
+                            <td class="text-uppercase">@item.JKWPTJBahagianDebit.Kod - @item.JKWPTJBahagianDebit.JBahagian?.Perihal (@item.JKWPTJBahagianDebit.JPTJ?.Perihal)</td>
+                            <td hidden>@item.AkCartaDebitId</td>
+                            <td class="text-uppercase">@item.AkCartaDebit?.Kod - @item.AkCartaDebit?.Perihal</td>
+                            <td hidden>@item.JKWPTJBahagianKreditId</td>
+                            <td class="text-uppercase">@item.JKWPTJBahagianKredit.Kod - @item.JKWPTJBahagianKredit.JBahagian?.Perihal (@item.JKWPTJBahagianKredit.JPTJ?.Perihal)</td>
+                            <td hidden>@item.AkCartaKreditId</td>
+                            <td class="text-uppercase">@item.AkCartaKredit?.Kod - @item.AkCartaKredit?.Perihal</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="control-label">Jumlah Debit RM</label>
+                    <input asp-for="JumlahDebit" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="control-label">Jumlah Kredit RM</label>
+                    <input asp-for="JumlahKredit" class="form-control form-control-sm" readonly />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@*table Objek end*@
+
+@*table Penerima Cek Batal*@
+<div class="card box-shadow mb-3" id="divPenerimaCekBatal" @ViewBag.DivPenerimaCekBatal>
+    <div class="card-header">
+        <h6>Penerima Cek Batal</h6>
+    </div>
+    <div class="card-body">
+        <table id="tblPenerimaCekBatal" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width:10%">Bil</th>
+                    <th style="width:10%">No Baucer</th>
+                    <th style="width:50%">Nama Penerima</th>
+                    <th style="width:10%">No Cek</th>
+                    <th style="width:20%">Amaun RM</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyPenerimaCekBatal">
+                @if (ViewBag.akJurnalPenerimaCekBatal != null)
+                {
+                    foreach (var item in ViewBag.akJurnalPenerimaCekBatal)
+                    {
+                        <tr>
+                            <td class="text-end">@item.Bil</td>
+                            <td hidden>@item.AkPVId</td>
+                            <td class="text-uppercase">@item.AkPV?.NoRujukan</td>
+                            <td class="text-uppercase">@item.NamaPenerima</td>
+                            <td class="text-uppercase">@item.NoCek</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                        </tr>
+                        penerimaCekBatalJumlah += item.Amaun;
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <div class="form-group">
+            <label name="penerimaCekBatalJumlah" class="control-label">Jumlah RM</label>
+            <input name="penerimaCekBatalJumlah" id="penerimaCekBatalJumlah" class="form-control form-control-sm" value="@penerimaCekBatalJumlah" readonly />
+        </div>
+    </div>
+</div>
+@*table PenerimaCekBatal end*@
+<hr />

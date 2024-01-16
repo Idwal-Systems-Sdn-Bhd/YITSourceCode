@@ -293,7 +293,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.Inden, EnKategoriKelulusan.Pelulus, jKWPtjBahagian.JBahagianId, akInden.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pelulus yang wujud untuk senarai kod bahagian berikut.";
-                        ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PN.GetDisplayName(), akInden.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
+                        ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.IK.GetDisplayName(), akInden.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
                         PopulateDropDownList(akInden.JKWId);
                         PopulateListViewFromCart();
                         return View(akInden);
