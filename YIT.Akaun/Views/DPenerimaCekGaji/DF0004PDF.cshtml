@@ -18,11 +18,14 @@
 <br />
 
 <div class="form-group">
+    <p style="background-color:#020202; font-size:18px; color:#FFFFFF; text-align:center"><strong>PENERIMA CEK GAJI</strong></p>
+</div>
+<div class="form-group">
     <table class="table table-borderless table-sm" cellpadding="0" cellspacing="0" width="100%">
         <tr>
             <td style="padding-top:20px; font-size:14px">Kod</td> <td style="padding-top:20px">:</td><td style="padding-top:20px; font-size:14px"><strong>@Model.Kod</strong></td>
             <td style="padding-top:20px; font-size:14px">KodM2E</td> <td style="padding-top:20px">:</td><td style="padding-top:20px; font-size:14px"><strong>@Model.DDaftarAwam?.KodM2E</strong></td>
-
+             <td style="padding-top:20px; font-size:14px">Cawangan</td> <td style="padding-top:20px">:</td><td style="padding-top:20px; font-size:14px"><strong>@Model.JCawangan?.Perihal</strong></td>
             </tr>
             <tr>
                 <td style="padding-top:20px; font-size:14px">Nama</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.DDaftarAwam?.Nama</strong></td>
@@ -41,7 +44,8 @@
              <td style="padding-top:20px; font-size:14px">Alamat</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.DDaftarAwam?.Alamat1</strong> <br/> <strong>@Model.DDaftarAwam?.Alamat2</strong><br/><strong>@Model.DDaftarAwam?.Alamat3</strong></td>
             </tr>
         <tr>
-             <td style="padding-top:20px; font-size:14px">Kod Bank</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@ViewBag.JBank?.KodBNMEFT</strong></td>
+            <td style="padding-top:20px; font-size:14px">Cara Bayar</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.JCaraBayar?.Perihal</strong></td>
+             <td style="padding-top:20px; font-size:14px">Kod Bank</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.DDaftarAwam?.JBank?.KodBNMEFT</strong></td>
               <td style="padding-top:20px; font-size:14px">No Akaun Bank</td> <td style="padding-top:20px">:</td><td class="text-uppercase" style="padding-top:20px; font-size:14px"><strong>@Model.DDaftarAwam?.NoAkaunBank</strong></td>
         </tr>
         <tr>

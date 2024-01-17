@@ -1,0 +1,104 @@
+﻿@model IEnumerable<DPenerimaCekGaji>
+
+@{
+    ViewData["Title"] = "Penerima Cek Gaji - Jana";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<partial name="_JSIndex" />
+<div class="card box-shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-dark mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Generate" class="text-secondary">Indeks</a> / Jana</span>
+            </div>
+            <div class="col-4">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+        </div>
+        <hr />
+        <p class="text-primary">Anda pasti untuk menjana maklumat berikut?</p>
+
+        @if (Model != null && Model.Count() > 0)
+        {
+            <div class="card box-shadow">
+                <div class="loading">
+                    <img class="loading-image" src="~/img/loading.gif" alt="Loading..." />
+                </div>
+                <div class="card card-body border main-page" hidden>
+                    <div class="table-responsive">
+                        <table class="table table-hover compact" width="100%" id="tableMain">
+                            <caption>Rekod dipamerkan : @Model.Count()</caption>
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th width="5%">Bil</th>
+                                    <th>
+                                        Kod
+                                    </th>
+                                    <th class="control-label">
+                                        Kod M2E
+                                    </th>
+                                    <th>
+                                        Nama
+                                    </th>
+                                    <th>
+                                        Surat Nama
+                                    </th>
+                                    <th>
+                                        Surat Jabatan
+                                    </th>
+                                    <th>
+                                        Rujukan Kami
+                                    </th>
+                                    <th>
+                                        Amaun Gaji
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    var tabletype = item.FlHapus == 1 ? "table-danger" : null;
+                                    <tr class="@tabletype text-uppercase">
+                                        <td></td>
+                                        <td>
+                                            @item.Kod
+                                        </td>
+                                        <td class="text-uppercase">
+                                            @item.DDaftarAwam?.KodM2E
+                                        </td>
+                                        <td class="text-uppercase">
+                                            @item.DDaftarAwam?.Nama
+                                        </td>
+                                        <td class="text-uppercase">
+                                            @item.SuratNama
+                                        </td>
+                                        <td class="text-uppercase">
+                                            @item.SuratJabatan
+                                        </td>
+                                        <td class="text-uppercase">
+                                            @item.RujukanKami
+                                        </td>
+                                        <td class="text-uppercase">
+                                            @item.AmaunGaji
+                                        </td>
+
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        <hr />
+        <div class="form-group">
+            <form asp-action="Generate">
+                <input type="submit" value="Jana" class="btn ac-primary btn-sm" />
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </form>
+        </div>
+    </div>
+</div>

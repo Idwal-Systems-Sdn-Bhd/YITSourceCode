@@ -37,6 +37,14 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public int? DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam { get; set; }
 
+        [DisplayName("Cara Bayar")]
+        public int JCaraBayarId { get; set; }
+        public JCaraBayar? JCaraBayar { get; set; }
+
+        [DisplayName("Cawangan")]
+        public int? JCawanganId { get; set; }
+        public JCawangan? JCawangan { get; set; }
+
 
 
 
