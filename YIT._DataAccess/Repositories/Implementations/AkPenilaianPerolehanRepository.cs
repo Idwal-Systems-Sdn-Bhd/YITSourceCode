@@ -323,7 +323,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public void Lulus(int id, int pelulusId, string? userId)
+        public void Lulus(int id, int? pelulusId, string? userId)
         {
             var data = _context.AkPenilaianPerolehan.FirstOrDefault(pp => pp.Id == id);
             var pelulus = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == pelulusId);
@@ -431,6 +431,51 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             HantarSemula(id, tindakan, userId);
 
+        }
+        public async Task<bool> IsPostedAsync(int id, string noRujukan)
+        {
+            bool isPosted = await _context.AkPenilaianPerolehan.AnyAsync(t => t.Id == id && t.FlPosting == 1);
+            if (isPosted)
+            {
+                return true;
+            }
+
+            bool isExistInAkPO = await _context.AkPO.AnyAsync(b => b.AkPenilaianPerolehanId == id);
+
+            if (isExistInAkPO)
+            {
+                return true;
+            }
+
+            bool isExistInAkInden = await _context.AkInden.AnyAsync(b => b.AkPenilaianPerolehanId == id);
+
+            if (isExistInAkInden)
+            {
+                return true;
+            }
+            return false;
+
+        }
+
+        public void BatalPos(int id, string? tindakan, string? userId)
+        {
+            var data = _context.AkPenilaianPerolehan.FirstOrDefault(pp => pp.Id == id);
+
+            if (data != null)
+            {
+                data.EnStatusBorang = EnStatusBorang.Kemaskini;
+                data.Tindakan = tindakan;
+
+                data.UserIdKemaskini = userId ?? "";
+                data.TarKemaskini = DateTime.Now;
+
+                data.FlPosting = 0;
+                data.TarikhPosting = null;
+
+                _context.Update(data);
+
+
+            }
         }
     }
 }

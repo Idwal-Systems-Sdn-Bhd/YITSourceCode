@@ -364,6 +364,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 _context.Update(data);
 
                 PostingToAkAkaun(data);
+                PostingToAbBukuVot(data);
             }
         }
         public void PostingToAkAkaun(AkJurnal akJurnal)

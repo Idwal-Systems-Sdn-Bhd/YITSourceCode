@@ -212,6 +212,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
             EmptyCart();
             PopulateCartAkJurnalFromDb(akJurnal);
+            ManipulateHiddenDiv(akJurnal.EnJenisJurnal);
             return View(akJurnal);
         }
 
@@ -273,6 +274,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
             EmptyCart();
             PopulateCartAkJurnalFromDb(akJurnal);
+            ManipulateHiddenDiv(akJurnal.EnJenisJurnal);
             return View(akJurnal);
         }
 

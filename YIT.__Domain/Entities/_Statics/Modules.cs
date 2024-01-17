@@ -181,7 +181,7 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodSahAkJurnal = "PP0024";
         public const string namaSahAkJurnal = "Pemprosesan Sah Baucer Jurnal";
 
-        public const string kodSemakAkAkJurnal = "PP0025";
+        public const string kodSemakAkJurnal = "PP0025";
         public const string namaSemakAkJurnal = "Pemprosesan Semak Baucer Jurnal";
 
         public const string kodLulusAkJurnal = "PP0026";
