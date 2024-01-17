@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DPenerimaCekGaji>
+﻿@model DPenerimaCekGajiViewModel
 
 @{
     ViewData["Title"] = "Penerima Cek Gaji";
@@ -7,9 +7,11 @@
 <partial name="_JSIndex" />
 
 <div class="card box-shadow">
+    <div class="loading">
+        <img class="loading-image" src="~/img/loading.gif" alt="Loading..." />
+    </div>
     <div class="card-body">
         <div class="row">
-
             <div class="row">
                 <div class="col-8">
                     <h5 class="text-uppercase mb-0">Senarai @ViewData["Title"]</h5>
@@ -34,99 +36,143 @@
         <partial name="~/Views/Partials/Common/_SearchJadualIndexPartial.cshtml" />
     </div>
 </div>
-@if (Model != null && Model.Count() > 0)
+@if (Model.DPenerimaCekGaji != null && Model.DPenerimaCekGaji.Count() > 0)
 {
-    <div class="card box-shadow">
-        <div class="loading">
-            <img class="loading-image" src="~/img/loading.gif" alt="Loading..." />
+    <div class="card card-body border main-page" hidden>
+        <div class="table-responsive">
+            <table class="table table-hover compact" width="100%" id="tableMain">
+                <caption>Rekod dipamerkan : @Model.DPenerimaCekGaji.Count()</caption>
+                <thead class="table-secondary">
+                    <tr>
+                        <th width="5%">Bil</th>
+                        <th>
+                            Kod
+                        </th>
+                        <th class="control-label">
+                            Kod M2E
+                        </th>
+                        <th>
+                            Nama
+                        </th>
+                        <th>
+                            Surat Nama
+                        </th>
+                        <th>
+                            Surat Jabatan
+                        </th>
+                        <th>
+                            Rujukan Kami
+                        </th>
+                        <th>
+                            Amaun Gaji
+                        </th>
+                        <th width="5%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DPenerimaCekGaji dPenerimaCekGaji in Model.DPenerimaCekGaji)
+                    {
+                        var tabletype = dPenerimaCekGaji.FlHapus == 1 ? "table-danger" : null;
+                        <tr class="@tabletype text-uppercase">
+                            <td></td>
+                            <td>
+                                @dPenerimaCekGaji.Kod
+                            </td>
+                            <td class="text-uppercase">
+                                @dPenerimaCekGaji.DDaftarAwam?.KodM2E
+                            </td>
+                            <td class="text-uppercase">
+                                @dPenerimaCekGaji.DDaftarAwam?.Nama
+                            </td>
+                            <td class="text-uppercase">
+                                @dPenerimaCekGaji.SuratNama
+                            </td>
+                            <td class="text-uppercase">
+                                @dPenerimaCekGaji.SuratJabatan
+                            </td>
+                            <td class="text-uppercase">
+                                @dPenerimaCekGaji.RujukanKami
+                            </td>
+                            <td class="text-uppercase">
+                                @dPenerimaCekGaji.AmaunGaji
+                            </td>
+
+                            <td width="5%" class="text-center">
+                                <div class="btn-group" role="group" aria-label="action">
+                                    @if (dPenerimaCekGaji.FlHapus == 0)
+                                    {
+                                        <a asp-action="PrintPenerimaCekGaji" asp-route-id="@dPenerimaCekGaji.Id"
+                                           class="btn text-primary btn-sm bg-white" type="button"
+                                           data-toggle="tooltip" target="_blank" data-placement="top"
+                                           title="Cetak"><i class="fas fa-print"></i></a>
+                                        <a asp-action="Details" asp-route-id="@dPenerimaCekGaji.Id"
+                                           class="btn text-primary btn-sm bg-white" type="button"
+                                           data-toggle="tooltip" data-placement="top"
+                                           title="Ubah/Papar"><i class="fas fa-edit"></i></a>
+                                        <a asp-action="Delete" asp-route-id="@dPenerimaCekGaji.Id"
+                                           class="btn text-danger btn-sm bg-white" type="button"
+                                           data-toggle="tooltip" data-placement="top"
+                                           title="Hapus"><i class="fas fa-trash"></i></a>
+                                    }
+                                    else
+                                    {
+                                        if (User.IsInRole("Supervisor") || User.IsInRole("SuperAdmin"))
+                                        {
+                                            <a asp-action="Rollback" asp-route-id="@dPenerimaCekGaji.Id" asp-route-syscode="SPPB" class="btn text-info btn-sm bg-white" type="button" data-toggle="tooltip" data-placement="top" title="Rollback">
+                                                <i class="fas fa-trash-restore"></i>
+                                            </a>
+
+                                        }
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
+    </div>
+    @if (Model.AkJanaanProfil != null && Model.AkJanaanProfil.Count() > 0)
+    {
         <div class="card card-body border main-page" hidden>
+            <h5 class="text-uppercase mb-0">Senarai Janaan Profil</h5>
             <div class="table-responsive">
-                <table class="table table-hover compact" width="100%">
-                    <caption>Rekod dipamerkan : @Model.Count()</caption>
+                <table class="table table-hover compact" width="100%" id="tableJanaanProfil">
+                    <caption>Rekod dipamerkan : @Model.AkJanaanProfil.Count()</caption>
                     <thead class="table-secondary">
                         <tr>
                             <th width="5%">Bil</th>
-                            <th>
-                                Kod
+                            <th class="kod" width="10%">
+                                No Janaan
                             </th>
-                            <th class="control-label">
-                                Kod M2E
+                            <th class="modul">
+                                Jenis Modul
                             </th>
-                            <th>
-                                Nama
+                            <th class="tarikh">
+                                Tarikh
                             </th>
-                            <th>
-                                Surat Nama
+                            <th class="jumlah">
+                                Jumlah RM
                             </th>
-                            <th>
-                                Surat Jabatan
-                            </th>
-                            <th>
-                                Rujukan Kami
-                            </th>
-                            <th>
-                                Amaun Gaji
-                            </th>
-                            <th width="5%"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @foreach (AkJanaanProfil akJanaanProfil in Model.AkJanaanProfil)
                         {
-                            var tabletype = item.FlHapus == 1 ? "table-danger" : null;
+                            var tabletype = akJanaanProfil.FlHapus == 1 ? "table-danger" : null;
                             <tr class="@tabletype text-uppercase">
                                 <td></td>
-                                <td>
-                                    @item.Kod
+                                <td class="text-uppercase">
+                                    @akJanaanProfil.NoRujukan
                                 </td>
                                 <td class="text-uppercase">
-                                    @item.DDaftarAwam?.KodM2E
+                                    @akJanaanProfil.EnJenisModulProfil.GetDisplayName()
                                 </td>
                                 <td class="text-uppercase">
-                                    @item.DDaftarAwam?.Nama
+                                    @akJanaanProfil.Tarikh.ToString("dd/MM/yyyy")
                                 </td>
                                 <td class="text-uppercase">
-                                    @item.SuratNama
-                                </td>
-                                <td class="text-uppercase">
-                                    @item.SuratJabatan
-                                </td>
-                                <td class="text-uppercase">
-                                    @item.RujukanKami
-                                </td>
-                                <td class="text-uppercase">
-                                    @item.AmaunGaji
-                                </td>
-
-                                <td width="5%" class="text-center">
-                                    <div class="btn-group" role="group" aria-label="action">
-                                        @if (item.FlHapus == 0)
-                                        {
-                                            <a asp-action="PrintPenerimaCekGaji" asp-route-id="@item.Id"
-                                               class="btn text-primary btn-sm bg-white" type="button"
-                                               data-toggle="tooltip" target="_blank" data-placement="top"
-                                               title="Cetak"><i class="fas fa-print"></i></a>
-                                            <a asp-action="Details" asp-route-id="@item.Id"
-                                               class="btn text-primary btn-sm bg-white" type="button"
-                                               data-toggle="tooltip" data-placement="top"
-                                               title="Ubah/Papar"><i class="fas fa-edit"></i></a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id"
-                                               class="btn text-danger btn-sm bg-white" type="button"
-                                               data-toggle="tooltip" data-placement="top"
-                                               title="Hapus"><i class="fas fa-trash"></i></a>
-                                        }
-                                        else
-                                        {
-                                            if (User.IsInRole("Supervisor") || User.IsInRole("SuperAdmin"))
-                                            {
-                                                <a asp-action="Rollback" asp-route-id="@item.Id" asp-route-syscode="SPPB" class="btn text-info btn-sm bg-white" type="button" data-toggle="tooltip" data-placement="top" title="Rollback">
-                                                    <i class="fas fa-trash-restore"></i>
-                                                </a>
-
-                                            }
-                                        }
-                                    </div>
+                                    @Convert.ToDecimal(akJanaanProfil.Jumlah).ToString("#,##0.00")
                                 </td>
                             </tr>
                         }
@@ -134,6 +180,6 @@
                 </table>
             </div>
         </div>
-    </div>
+    }
 }
 

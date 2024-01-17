@@ -36,6 +36,19 @@
                         <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.KodM2E" readonly />
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="JCawanganId" class="control-label"></label>
+                        <select asp-for="JCawanganId" class="form-control form-control-sm text-uppercase" required>
+                            <option value="">- SILA PILIH -</option>
+                            @foreach (var item in ViewBag.JCawangan)
+                            {
+                                <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                            }
+                        </select>
+                        <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
@@ -98,6 +111,19 @@
                 <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.Alamat3" readonly />
             </div>
             <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="JCaraBayarId" class="control-label"></label>
+                        <select asp-for="JCaraBayarId" class="form-control form-control-sm text-uppercase " required>
+                            <option value="">- SILA PILIH -</option>
+                            @foreach (var item in ViewBag.JCaraBayar)
+                            {
+                                <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                            }
+                        </select>
+                        <span asp-validation-for="JCaraBayarId" class="text-danger"></span>
+                    </div>
+                </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label class="control-label">Kod Bank</label>

@@ -24,14 +24,18 @@
                     <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.KodM2E" readonly />
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="JCawanganId" class="control-label"></label>
+                    <input class="form-control form-control-sm text-uppercase" value="@Model.JCawangan?.Perihal" readonly />
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
-                    <div class="form-group">
-                        <label asp-for="DDaftarAwamId" class="control-label"></label>
-                        <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.Id - @Model.DDaftarAwam?.Nama" readonly />
-                    </div>
+                    <label asp-for="DDaftarAwamId" class="control-label"></label>
+                    <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.Id - @Model.DDaftarAwam?.Nama" readonly />
                 </div>
             </div>
             <div class="col-md-4">
@@ -77,6 +81,12 @@
             <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.Alamat3" readonly />
         </div>
         <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="JCaraBayarId" class="control-label"></label>
+                    <input class="form-control form-control-sm text-uppercase" value="@Model.JCaraBayar?.Perihal " readonly />
+                </div>
+            </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <div class="form-group">

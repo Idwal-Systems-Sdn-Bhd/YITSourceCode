@@ -1,5 +1,10 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
+﻿using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,8 +19,10 @@ using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
+using YIT._DataAccess.Services;
 using YIT._DataAccess.Services.Math;
 using YIT.Akaun.Infrastructure;
+using YIT.Akaun.Models.ViewModels.Administrations;
 
 namespace YIT.Akaun.Controllers._02Daftar
 {
@@ -46,8 +53,23 @@ namespace YIT.Akaun.Controllers._02Daftar
         }
         public IActionResult Index()
         {
+            DPenerimaCekGajiViewModel dPenerimaCekGajiViewModel = new DPenerimaCekGajiViewModel();
+            dPenerimaCekGajiViewModel.DPenerimaCekGaji = GetDPenerimaCekGaji();
+            dPenerimaCekGajiViewModel.AkJanaanProfil = GetAkJanaanProfil();
             PopulateDropdownList();
-            return View(_unitOfWork.DPenerimaCekGajiRepo.GetAll());
+            return View(dPenerimaCekGajiViewModel);
+        }
+
+        private List<DPenerimaCekGaji> GetDPenerimaCekGaji()
+        {
+            List<DPenerimaCekGaji> dPenerimaCekGaji = _unitOfWork.DPenerimaCekGajiRepo.GetAllDetails();
+            return dPenerimaCekGaji;
+        }
+        private List<AkJanaanProfil> GetAkJanaanProfil()
+        {
+            List<AkJanaanProfil> akJanaanProfil = _context.AkJanaanProfil.Where(jp => jp.EnJenisModulProfil == EnJenisModulProfil.Gaji).OrderByDescending(jp => jp.NoRujukan).ToList();
+
+            return akJanaanProfil;
         }
 
         public IActionResult Details(int? id)
@@ -206,6 +228,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             if (jak == null)
             {
                 return NotFound();
+
             }
             PopulateDropdownList();
             return View(jak);
@@ -244,7 +267,6 @@ namespace YIT.Akaun.Controllers._02Daftar
             var obj = await _context.DPenerimaCekGaji.IgnoreQueryFilters()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            // Batal operation
 
             if (obj != null)
             {
@@ -276,6 +298,8 @@ namespace YIT.Akaun.Controllers._02Daftar
         public void PopulateDropdownList()
         {
             ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetails();
+            ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
+            ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
 
         }
         private string GenerateRunningNumber(string Kod)
@@ -325,14 +349,15 @@ namespace YIT.Akaun.Controllers._02Daftar
             DPenerimaCekGaji dPenerimaCekGaji = _unitOfWork.DPenerimaCekGajiRepo.GetAllDetailsById(id);
 
             var company = await _userServices.GetCompanyDetails();
-            //string customSwitches = "--page-offset 0 --footer-center [page] / [toPage] --footer-font-size 6";
+            PopulateDropdownList();
+            //string customSwitches = "--page-offset 0 --footer-center [page] / [toPage] --footer-font-size 6"; 
 
             return new ViewAsPdf(modul + EnJenisFail.PDF, dPenerimaCekGaji,
                 new ViewDataDictionary(ViewData) {
-                    { "NamaSyarikat", company.NamaSyarikat },
-                    { "AlamatSyarikat1", company.AlamatSyarikat1 },
-                    { "AlamatSyarikat2", company.AlamatSyarikat2 },
-                    { "AlamatSyarikat3", company.AlamatSyarikat3 }
+            { "NamaSyarikat", company.NamaSyarikat },
+            { "AlamatSyarikat1", company.AlamatSyarikat1 },
+            { "AlamatSyarikat2", company.AlamatSyarikat2 },
+            { "AlamatSyarikat3", company.AlamatSyarikat3 }
                 })
             {
                 PageMargins = { Left = 15, Bottom = 15, Right = 15, Top = 15 },
@@ -343,6 +368,98 @@ namespace YIT.Akaun.Controllers._02Daftar
             };
         }
 
+        public IActionResult Generate()
+        {
+
+            var dPenerimaCekGajiList = _unitOfWork.DPenerimaCekGajiRepo.GetAllDetails();
+            if (dPenerimaCekGajiList == null)
+            {
+                return NotFound();
+            }
+            return View(dPenerimaCekGajiList);
+        }
+
+        [HttpPost, ActionName("Generate")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GenerateDPenerimaCekGajiToAkJanaanProfilPenerima()
+        {
+            //cari senarai penerima cek gaji
+            //select * from DPenerimaCekGaji
+            var DPenerimaCekGajiList = _context.DPenerimaCekGaji.Include(penerimaCekGaji => penerimaCekGaji.DDaftarAwam).ToList();
+            var AkJanaanProfil = new AkJanaanProfil();
+
+            //Generate No. Rujukan
+            AkJanaanProfil.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.JP.GetDisplayName(), DateTime.Now.ToString("yyyy"));
+            //Jumlah
+            //  SELECT SUM(AmaunGaji)
+            //FROM DPenerimaCekGaji
+            //Buat loop tuk setiap satu
+            decimal jumlah = 0;
+            int bil = 1;
+            //
+            List<AkJanaanProfilPenerima> akJanaanProfilPenerimaList = new List<AkJanaanProfilPenerima>();
+            foreach (var dPenerimaCekGaji in DPenerimaCekGajiList)
+            {
+                jumlah += dPenerimaCekGaji.AmaunGaji;
+                var AkJanaanProfilPenerima = new AkJanaanProfilPenerima();
+                AkJanaanProfilPenerima.Bil = bil;
+                bil++;
+
+                AkJanaanProfilPenerima.EnKategoriDaftarAwam = EnKategoriDaftarAwam.Pembekal;
+                AkJanaanProfilPenerima.DPenerimaZakatId = null;
+                AkJanaanProfilPenerima.DDaftarAwamId = dPenerimaCekGaji.DDaftarAwamId;
+                AkJanaanProfilPenerima.DPekerjaId = null;
+                AkJanaanProfilPenerima.NoPendaftaranPenerima = dPenerimaCekGaji.DDaftarAwam?.NoPendaftaran;
+                AkJanaanProfilPenerima.NamaPenerima = dPenerimaCekGaji.DDaftarAwam?.Nama;
+                AkJanaanProfilPenerima.NoPendaftaranPemohon = dPenerimaCekGaji.DDaftarAwam?.NoPendaftaran;
+                AkJanaanProfilPenerima.Catatan = null;
+                AkJanaanProfilPenerima.JCaraBayarId = dPenerimaCekGaji.JCaraBayarId;
+                AkJanaanProfilPenerima.JBankId = dPenerimaCekGaji.DDaftarAwam?.JBankId;
+                AkJanaanProfilPenerima.NoAkaunBank = dPenerimaCekGaji.DDaftarAwam?.NoAkaunBank;
+                AkJanaanProfilPenerima.Alamat1 = dPenerimaCekGaji.DDaftarAwam?.Alamat1;
+                AkJanaanProfilPenerima.Alamat2 = dPenerimaCekGaji.DDaftarAwam?.Alamat2;
+                AkJanaanProfilPenerima.Alamat3 = dPenerimaCekGaji.DDaftarAwam?.Alamat3;
+                AkJanaanProfilPenerima.Emel = dPenerimaCekGaji.DDaftarAwam?.Emel;
+                AkJanaanProfilPenerima.KodM2E = dPenerimaCekGaji.DDaftarAwam?.KodM2E;
+                AkJanaanProfilPenerima.Amaun = dPenerimaCekGaji.AmaunGaji;
+                AkJanaanProfilPenerima.NoRujukanMohon = null;
+                AkJanaanProfilPenerima.AkRekupId = null;
+                AkJanaanProfilPenerima.EnJenisId = EnJenisId.KodPembekal;
+                akJanaanProfilPenerimaList.Add(AkJanaanProfilPenerima);
+            }
+
+            AkJanaanProfil.JCawanganId = 29;
+            AkJanaanProfil.Jumlah = jumlah;
+            AkJanaanProfil.Tarikh = DateTime.Now;
+            AkJanaanProfil.EnJenisModulProfil = EnJenisModulProfil.Gaji;
+            AkJanaanProfil.DPekerjaMasukId = null;
+            AkJanaanProfil.AkJanaanProfilPenerima = akJanaanProfilPenerimaList;
+            AkJanaanProfil.DPekerjaMasukId = null;
+            AkJanaanProfil.UserId = AkJanaanProfil.UserId;
+            AkJanaanProfil.TarMasuk = DateTime.Now;
+            AkJanaanProfil.DPekerjaKemaskiniId = null;
+            AkJanaanProfil.UserIdKemaskini = AkJanaanProfil.UserIdKemaskini;
+            AkJanaanProfil.TarKemaskini = DateTime.Now;
+            AkJanaanProfil.FlHapus = 0;
+            AkJanaanProfil.TarHapus = DateTime.Now;
+            AkJanaanProfil.SebabHapus = null;
+
+
+            _context.AkJanaanProfil.Add(AkJanaanProfil);
+            await _context.SaveChangesAsync();
+            TempData[SD.Success] = "Data berjaya dijana..!";
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        private string GenerateRunningNumber(string initNoRujukan, string tahun)
+        {
+            var maxRefNo = _unitOfWork.AkJanaanProfilRepo.GetMaxRefNo(initNoRujukan, tahun);
+
+            var prefix = initNoRujukan + "/" + tahun + "/";
+            return RunningNumberFormatter.GenerateRunningNumber(prefix, maxRefNo, "00000");
+        }
 
     }
 }
+
