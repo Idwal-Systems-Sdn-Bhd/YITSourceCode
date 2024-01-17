@@ -66,6 +66,21 @@ namespace YIT.Akaun.Controllers._03Akaun
             
             var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetResults(searchString,date1,date2,searchColumn, EnStatusBorang.Semua);
 
+            foreach( var item in akPP)
+            {
+                var akPO = _context.AkPO.FirstOrDefault(p => p.AkPenilaianPerolehanId == item.Id);
+                if (akPO != null ) item.AkPO = akPO;
+                var akInden = _context.AkInden.FirstOrDefault(p => p.AkPenilaianPerolehanId == item.Id);
+                if (akInden != null) item.AkInden = akInden;
+                var akPVInvois = _context.AkPVInvois.FirstOrDefault(i => i.AkBelian!.AkPO!.AkPenilaianPerolehanId == item.Id) ?? _context.AkPVInvois.FirstOrDefault(i => i.AkBelian!.AkInden!.AkPenilaianPerolehanId == item.Id);
+                if (akPVInvois != null)
+                {
+                    var akPV = _context.AkPV.FirstOrDefault(pv => pv.Id == akPVInvois.AkPVId);
+                    if (akPV != null) item.AkPV = akPV;
+                }
+                
+
+            }
             return View(akPP);
         }
 

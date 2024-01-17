@@ -57,6 +57,12 @@ namespace YIT.__Domain.Entities.Models._03Akaun
 
         public ICollection<AkPenilaianPerolehanObjek>? AkPenilaianPerolehanObjek { get; set; }
         public ICollection<AkPenilaianPerolehanPerihal>? AkPenilaianPerolehanPerihal { get; set; }
+        [NotMapped]
+        public AkPO? AkPO { get; set; }
+        [NotMapped]
+        public AkInden? AkInden { get; set; }
+        [NotMapped]
+        public AkPV? AkPV { get; set; }
 
     }
 }
