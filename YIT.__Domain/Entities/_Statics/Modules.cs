@@ -190,6 +190,9 @@ namespace YIT.__Domain.Entities._Statics
         // Laporan Akaun
         public const string kodLTerimaan = "LAK001";
         public const string namaLTerimaan = "Laporan Daftar Resit";
+
+        public const string kodPAkBukuTunai = "PAK001";
+        public const string namaPAkBukuTunai = "Penyata Buku Tunai";
         //
     }
 }

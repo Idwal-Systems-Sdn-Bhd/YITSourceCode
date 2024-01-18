@@ -621,6 +621,12 @@ namespace YIT._DataAccess.Data.DataConfigurations
                 .WithMany(t => t.AkEFTPenerima)
                 .HasForeignKey(m => m.JCaraBayarId)
                 .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<DPenerimaCekGaji>()
+                .HasOne(m => m.JCaraBayar)
+                .WithMany(t => t.DPenerimaCekGaji)
+                .HasForeignKey(m => m.JCaraBayarId)
+                .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
         }
     }
 }

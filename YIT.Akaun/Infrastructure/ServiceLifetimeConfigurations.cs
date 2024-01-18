@@ -18,6 +18,8 @@ namespace YIT.Akaun.Infrastructure
             services.AddTransient<IAkAkaunRepository<AkAkaun>, AkAkaunRepository>();
             services.AddTransient<IAbBukuVotRepository<AbBukuVot>, AbBukuVotRepository>();
 
+            services.AddTransient<IPenyataRepository, PenyataRepository>();
+
             services.AddTransient<_IUnitOfWork, _UnitOfWork>();
 
             services.AddScoped(ss => SessionCartJKW.GetCart(ss));

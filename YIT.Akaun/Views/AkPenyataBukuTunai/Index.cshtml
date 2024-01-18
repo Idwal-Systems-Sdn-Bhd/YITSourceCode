@@ -1,0 +1,366 @@
+﻿@model IEnumerable<_AkBukuTunai>
+
+@{
+    ViewData["Title"] = "Buku Tunai";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int bil = 0;
+    decimal jumBesarMasuk = 0;
+    decimal jumMasuk = 0;
+    decimal bakiBawaHadapan = 0;
+    decimal jumBesarKeluar = 0;
+    decimal jumKeluar = 0;
+    decimal bankMasuk = 0;
+    decimal bankKeluar = 0;
+}
+
+<partial name="_JSIndex" />
+<div class="card box-shadow">
+    <div class="card-body border">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref">Indeks</span>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+        <div class="card mb-2">
+            <div class="card-body pl-3 pb-2 ">
+                <label class="form-control-plaintext" for="searchselect">Carian : </label>
+                <div class="form-actions no-color mb-2">
+                    <form asp-action="Index" method="get" class="needs-validation" novalidate>
+                        <div class="form-actions no-color mb-3">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label class="form-control-label">Bank</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group mb-2 input-group-sm ">
+                                        <select class="form-control form-control-sm select2" name="AkBankId" asp-items="@ViewBag.AkBank" id="AkBankId" required></select>
+                                        <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="input-group mb-2 input-group-sm ">
+                                        <label class="form-control-label">Tarikh</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <div class="input-group-text">Dari</div>
+                                        <input class="form-control form-control-sm" type="date" name="TarDari1" value="@ViewData["DateFrom"]" id="tarikh1" required />
+                                        <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="input-group">
+                                        <div class="input-group-text">Hingga</div>
+                                        <input class="form-control form-control-sm" type="date" name="TarHingga1" value="@ViewData["DateTo"]" id="tarikh2" required />
+                                        <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="mb-3">
+                            <div class="text-center hidden-mobile">
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn ac-primary" disabled="disabled"><i class="fas fa-eye"></i></button>
+                                    <button class="btn ac-primary" style="color: white;" type="submit">Papar</button>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn ac-warning" disabled="disabled"><i class="fa-solid fa-xmark"></i></button>
+                                    <a class="btn ac-warning" asp-action="Index"> Batal Papar </a>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn ac-info" disabled="disabled"><i class="fas fa-print"></i></button>
+                                    <button class="btn ac-info" data-toggle="modal" data-target="#modalCetak" style="color: white;" type="button" data-placement="top" title="Cetak">Cetak</button>
+                                </div>
+
+                                @*<a class="text-right btn btn-info text-white" asp-action="PrintCarta">Cetak Carta</a>*@
+                            </div>
+                            <div class="text-center show-mobile">
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn text-primary" type="submit" data-toggle="tooltip" data-placement="top" title="Papar"><i class="fa fa-eye fa-2x"></i></button>
+                                    <a class="btn text-warning" asp-action="Index"><i class="fa-solid fa-xmark fa-2x"></i></a>
+                                    <button class="btn text-info" data-toggle="modal" data-target="#modalCetak" data-placement="top" type="button" title="Cetak"><i class="fas fa-print fa-2x"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        @if (Model.Count() > 0)
+        {
+            <div class="row overflow-auto" style="max-height:60vh;">
+                <div class="col-lg-6">
+
+                    <div class="table-responsive table-sm">
+                        <table class="table table-bordered table-hover display compact nowrap" width="100%" id="tblMasuk">
+
+                            <thead>
+                                <tr>
+                                    <th colspan="5" class="text-center table-dark text-uppercase">
+                                        Masuk
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Tarikh
+                                    </th>
+                                    <th>
+                                        Nama Akaun
+                                    </th>
+                                    <th>
+                                        Resit / JR
+                                    </th>
+                                    <th align="right">
+                                        Jumlah
+                                    </th>
+                                    <th align="right">
+                                        Bank
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyMasuk">
+                                @foreach (var item in Model)
+                                {
+                                    if (item.KeluarMasuk == 0)
+                                    {
+                                        bil++;
+                                        if (bil >= 1)
+                                        {
+                                            jumMasuk += item.AmaunMasuk;
+                                        }
+                                        else
+                                        {
+                                            jumBesarMasuk = item.AmaunMasuk;
+                                            bakiBawaHadapan = item.AmaunMasuk;
+                                        }
+                                        bankMasuk = item.JumlahMasuk;
+                                        <tr>
+                                            <td data-sort='YYYYMMDD'>
+                                                @item.TarikhMasuk?.ToString("dd/MM/yyyy")
+                                            </td>
+                                            <td>
+                                                @item.NamaAkaunMasuk
+                                            </td>
+                                            <td>
+                                                @item.NoRujukanMasuk
+                                            </td>
+                                            <td>
+                                                @Convert.ToDecimal(item.AmaunMasuk).ToString("#,##0.00")
+                                            </td>
+                                            <td>
+                                                @Convert.ToDecimal(jumMasuk).ToString("#,##0.00")
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class=" font-weight-bold">
+                                    <td colspan="3" class="text-right text-uppercase table-warning">Jumlah Pendapatan RM</td>
+                                    <td>@Convert.ToDecimal(jumMasuk).ToString("#,##0.00")</td>
+                                    <td>@Convert.ToDecimal(bankMasuk).ToString("#,##0.00")</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+
+                    <div class="table-responsive table-sm">
+                        <table class="table table-bordered table-hover display compact nowrap" width="100%" id="tblKeluar">
+
+                            <thead>
+                                <tr>
+                                    <th colspan="5" class="text-center table-dark text-uppercase">
+                                        Keluar
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Tarikh
+                                    </th>
+                                    <th>
+                                        Nama Akaun
+                                    </th>
+                                    <th>
+                                        Baucer / JR
+                                    </th>
+                                    <th align="right">
+                                        Jumlah
+                                    </th>
+                                    <th align="right">
+                                        Bank
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyKeluar">
+                                <tr>
+                                    <td class="text-white">
+                                        -
+                                    </td>
+                                    <td class="text-white">
+                                        -
+                                    </td>
+                                    <td class="text-white">
+                                        -
+                                    </td>
+                                    <td class="text-white">
+                                        -
+                                    </td>
+                                    <td class="text-white">
+                                        -
+                                    </td>
+                                </tr>
+                                @foreach (var item in Model)
+                                {
+                                    if (item.KeluarMasuk == 1)
+                                    {
+                                        jumKeluar += item.AmaunKeluar;
+                                        bakiBawaHadapan -= item.AmaunKeluar;
+                                        bankKeluar = item.JumlahKeluar;
+                                        <tr>
+                                            <td data-sort='YYYYMMDD'>
+                                                @item.TarikhKeluar?.ToString("dd/MM/yyyy")
+                                            </td>
+                                            <td>
+                                                @item.NamaAkaunKeluar
+                                            </td>
+                                            <td>
+                                                @item.NoRujukanKeluar
+                                            </td>
+                                            <td>
+                                                @Convert.ToDecimal(item.AmaunKeluar).ToString("#,##0.00")
+                                            </td>
+                                            <td>
+                                                @Convert.ToDecimal(jumKeluar).ToString("#,##0.00")
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class=" font-weight-bold">
+                                    <td colspan="3" class="text-right text-uppercase table-warning">Jumlah Perbelanjaan RM</td>
+                                    <td>@Convert.ToDecimal(jumKeluar).ToString("#,##0.00")</td>
+                                    <td>@Convert.ToDecimal(bankKeluar).ToString("#,##0.00")</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            jumBesarMasuk = jumBesarMasuk + jumMasuk;
+            bakiBawaHadapan = jumBesarMasuk - jumKeluar;
+            jumBesarKeluar = bakiBawaHadapan + jumKeluar;
+
+
+
+            <hr />
+            <form class="fw-bold">
+                <div class="row p-2">
+                    <div class="row">
+                        <div class="col-8">
+                            <label class="control-label">Jumlah Pendapatan RM (+)</label>
+                        </div>
+                        <div class="col-4" align="right">
+                            <label class="control-label">@Convert.ToDecimal(bankMasuk).ToString("#,##0.00")</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <label class="control-label">Jumlah Besar Pendapatan RM</label>
+                        </div>
+                        <div class="col-4" align="right">
+                            <label class="control-label" style=" border-top: 1px solid #b6b6b6; ">@Convert.ToDecimal(jumBesarMasuk).ToString("#,##0.00")</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <label class="control-label">Jumlah Perbelanjaan RM (-)</label>
+                        </div>
+                        <div class="col-4" align="right">
+                            <label class="control-label">@Convert.ToDecimal(bankKeluar).ToString("#,##0.00")</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <label class="control-label">Baki Bawa Hadapan RM</label>
+                        </div>
+                        <div class="col-4" align="right">
+                            <label class="control-label" style=" border-top: 1px solid #b6b6b6; border-bottom: 1px double #b6b6b6; ">@Convert.ToDecimal(bakiBawaHadapan).ToString("#,##0.00")</label>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        }
+    </div>
+</div>
+<!-- Modal Cetak -->
+<div class="modal fade bd-example-modal-lg" id="modalCetak" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-success">
+                <h5 class="modal-title">Cetak Buku Tunai</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form asp-action="PrintPDF" class="needs-validation">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="form-control-label">Bank</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="mb-2 input-group-sm ">
+                                <select class="form-control form-control-sm select2" name="AkBankId" asp-items="@ViewBag.AkBank" id="ddlBankPrint"></select>
+                                <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="input-group mb-2 input-group-sm ">
+                                <label class="form-control-label">Tarikh</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+
+                            <div class="input-group mb-2 input-group-sm ">
+                                <div class="input-group-text">Dari</div>
+                                <input class="form-control form-control-sm" type="date" name="TarDari1" value="@ViewData["DateFrom"]" id="tarikh1" />
+                                <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+
+                            <div class="input-group mb-2 input-group-sm ">
+                                <div class="input-group-text">Hingga</div>
+                                <input class="form-control form-control-sm" type="date" name="TarHingga1" value="@ViewData["DateTo"]" id="tarikh2" />
+                                <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn ac-danger btn-sm" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn ac-success btn-sm" formtarget="_blank">Cetak</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Cetak End -->

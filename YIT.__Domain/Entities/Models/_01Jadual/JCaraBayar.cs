@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using YIT.__Domain.Entities.Bases;
+using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT.__Domain.Entities.Models._01Jadual
@@ -19,6 +20,7 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public ICollection<AkPVPenerima>? AkPVPenerima { get; set; }
         public ICollection<AkJanaanProfilPenerima>? AkJanaanProfilPenerima { get; set; }
         public ICollection<AkEFTPenerima>? AkEFTPenerima { get; set; }
+        public ICollection<DPenerimaCekGaji>? DPenerimaCekGaji {  get; set; }
 
     }
 }

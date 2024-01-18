@@ -21,7 +21,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public List<JPTJ> GetAllDetails()
         {
-            return _context.JPTJ.Include(ptj => ptj.JKWPTJBahagian).ToList();
+            return _context.JPTJ.Include(ptj => ptj.JKWPTJBahagian).ThenInclude(ptj => ptj.JKW).ToList();
         }
 
         public JPTJ GetAllDetailsById(int id)
