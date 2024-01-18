@@ -22,7 +22,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         public DPenerimaCekGaji GetAllDetailsById(int id)
         {
             return _context.DPenerimaCekGaji
-                .Include(jak => jak.DDaftarAwam)
+                .Include(jak => jak.DDaftarAwam)  //tukar jak jd df(farhan)
                 .Include(jak => jak.JCaraBayar)
                 .Include(jak => jak.JCawangan)
 

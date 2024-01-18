@@ -21,7 +21,8 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input name="syscode" value="SPPB" hidden />
-
+            <!--tambah asp-for="Id"-->
+            <!--tambah asp-for="DDaftarAwamId"-->
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -54,7 +55,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="DDaftarAwamId" class="control-label"></label>
-                        <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase select2" required>
+                        <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase select2" required > <!--tukar jadi input readonly(farhan)-->
                             <option value="">- SILA PILIH -</option>
                             @foreach (var item in ViewBag.DDaftarAwam)
                             {
@@ -82,14 +83,14 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="SuratNama" class="control-label"></label>
-                        <input asp-for="SuratNama" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="SuratNama" class="form-control form-control-sm text-uppercase" required/>
                         <span asp-validation-for="SuratNama" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="SuratJabatan" class="control-label"></label>
-                        <input asp-for="SuratJabatan" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="SuratJabatan" class="form-control form-control-sm text-uppercase" required />
                         <span asp-validation-for="SuratJabatan" class="text-danger"></span>
                     </div>
                 </div>
@@ -99,7 +100,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="RujukanKami" class="control-label"></label>
-                        <input asp-for="RujukanKami" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="RujukanKami" class="form-control form-control-sm text-uppercase" required />
                         <span asp-validation-for="RujukanKami" class="text-danger"></span>
                     </div>
                 </div>

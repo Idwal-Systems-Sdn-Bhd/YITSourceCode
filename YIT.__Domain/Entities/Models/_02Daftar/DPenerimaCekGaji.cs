@@ -18,7 +18,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
 
         public string? Kod { get; set; }
 
-        [DisplayName("Amaun (RM)")]
+        [DisplayName("Amaun RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal AmaunGaji { get; set; }
 

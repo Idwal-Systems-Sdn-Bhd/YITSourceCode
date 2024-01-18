@@ -23,7 +23,7 @@
                 <div class="col-4 show-mobile">
                     <a class="float-end text-success " asp-action="Create"><i class="fa fa-plus fa-2x"></i></a>
                 </div>
-                <div class="col-12 hidden-mobile">
+                <div class="col-12 hidden-mobile"> <!--butang sblah tambah baru(farhan)-->
                     <a class="float-end btn ac-success" asp-action="Generate">Jana</a>
                 </div>
                 <div class="col-12 show-mobile">
@@ -64,7 +64,7 @@
                             Rujukan Kami
                         </th>
                         <th>
-                            Amaun Gaji
+                            Amaun Gaji RM
                         </th>
                         <th width="5%"></th>
                     </tr>
@@ -94,7 +94,7 @@
                                 @dPenerimaCekGaji.RujukanKami
                             </td>
                             <td class="text-uppercase">
-                                @dPenerimaCekGaji.AmaunGaji
+                                @dPenerimaCekGaji.AmaunGaji <!--buat dlm format #,###,##0.00(farhan)-->
                             </td>
 
                             <td width="5%" class="text-center">
