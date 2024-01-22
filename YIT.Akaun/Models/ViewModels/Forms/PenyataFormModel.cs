@@ -31,5 +31,8 @@ namespace YIT.Akaun.Models.ViewModels.Forms
         public int? ParasId { get; set; }
         [Display(Name = "Kod Akaun")]
         public int? AkCartaId { get; set; }
+        // 0 : pecah keluar masuk kod akaun
+        // 1 : gabung keluar masuk kod akaun
+        public int JenisAlirTunai { get; set; }
     }
 }

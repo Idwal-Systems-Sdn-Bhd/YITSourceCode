@@ -14,6 +14,10 @@ namespace YIT._DataAccess.Repositories.Interfaces
         Task<List<_AkBukuTunai>> GetListBukuTunaiBasedOnRangeDate(int akBankId, int? JKWId, int? JPTJId, DateTime? TarMula, DateTime? TarHingga);
 
         Task<List<_AkBukuTunai>> GetAkBukuTunai(int akBankId, int? JKWId, int? JPTJId, DateTime? TarMula, DateTime? TarHingga);
+        Task<List<_AkAlirTunai>> GetAkAlirTunai(int akBankId, int? JKWId, int? JPTJId, string Tahun, int jenisAlirTunai);
+        Task<_AkAlirTunai> GetCarryPreviousBalanceEachStartingMonth(int akBankId, int? JKWId, int? JPTJId, string Tahun);
+        Task<List<_AkAlirTunai>> GetListAlirTunaiMasukBasedOnYear(int akBankId, int? JKWId, int? JPTJId, string Tahun, int jenisAlirTunai);
+        Task<List<_AkAlirTunai>> GetListAlirTunaiKeluarBasedOnYear(int akBankId, int? JKWId, int? JPTJId, string Tahun, int jenisAlirTunai);
         // Penyata Buku Tunai END
     }
 }

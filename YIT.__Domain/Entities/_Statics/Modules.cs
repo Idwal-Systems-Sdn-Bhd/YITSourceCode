@@ -193,6 +193,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodPAkBukuTunai = "PAK001";
         public const string namaPAkBukuTunai = "Penyata Buku Tunai";
+
+        public const string kodPAkAlirTunai = "PAK002";
+        public const string namaPAkAlirTunai = "Penyata Alir Tunai";
         //
     }
 }

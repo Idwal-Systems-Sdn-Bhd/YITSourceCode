@@ -1,0 +1,921 @@
+﻿@model IEnumerable<_AkAlirTunai>
+
+@{
+    ViewData["Title"] = "Cetakan Alir Tunai Tunai";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    decimal jan = 0;
+    decimal feb = 0;
+    decimal mac = 0;
+    decimal apr = 0;
+    decimal mei = 0;
+    decimal jun = 0;
+    decimal jul = 0;
+    decimal ogo = 0;
+    decimal sep = 0;
+    decimal okt = 0;
+    decimal nov = 0;
+    decimal dis = 0;
+    decimal jum = 0;
+
+}
+<style>
+
+    .topic tr {
+        line-height: 0.5rem;
+    }
+
+    .center {
+        padding: 70px 0;
+        border: 3px solid green;
+        text-align: center;
+    }
+
+    .notbold {
+        font-weight: normal
+    }
+
+    .max-lines {
+        display: block; /* or inline-block */
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+        max-height: 5.8em;
+    }
+
+    .breakhere {
+        page-break-after: always
+    }
+
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-row-group
+    }
+
+    tr {
+        page-break-inside: avoid
+    }
+
+    .row {
+        display: -webkit-box; /* wkhtmltopdf uses this one */
+        display: flex;
+        -webkit-box-pack: center; /* wkhtmltopdf uses this one */
+        justify-content: center;
+    }
+
+        .row > div {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+
+            .row > div:last-child {
+                margin-right: 0;
+            }
+</style>
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
+    </div>
+</div>
+<br />
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN ALIR TUNAI BAGI TAHUN : @ViewData["Tahun"]
+                    <br />
+                    MENGIKUT KUMP. WANG : @ViewData["NamaKW"]
+                    <br />
+                    PTJ : @ViewData["NamaPTJ"]
+                    <br />
+                    BANK : @ViewData["NamaBank"]
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+
+<div class="row flex-row">
+    <div class="col-6">
+        <table class="table table-bordered table-sm topic">
+            @*baki awal*@
+            <tbody id="tbodyBakiAwal">
+                <tr>
+                    <th colspan="15" class="text-center table-dark text-uppercase">
+                        Baki Awal
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        No Akaun
+                    </th>
+                    <th>
+                        Nama Akaun
+                    </th>
+                    <th align="right">
+                        Jan
+                    </th>
+                    <th align="right">
+                        Feb
+                    </th>
+                    <th align="right">
+                        Mac
+                    </th>
+                    <th align="right">
+                        Apr
+                    </th>
+                    <th align="right">
+                        Mei
+                    </th>
+                    <th align="right">
+                        Jun
+                    </th>
+                    <th align="right">
+                        Jul
+                    </th>
+                    <th align="right">
+                        Ogo
+                    </th>
+                    <th align="right">
+                        Sep
+                    </th>
+                    <th align="right">
+                        Okt
+                    </th>
+                    <th align="right">
+                        Nov
+                    </th>
+                    <th align="right">
+                        Dis
+                    </th>
+                    <th align="right">
+                        Jumlah RM
+                    </th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    if (item.KeluarMasuk == 0)
+                    {
+                        jan += item.Jan;
+                        feb += item.Feb;
+                        mac += item.Mac;
+                        apr += item.Apr;
+                        mei += item.Mei;
+                        jun += item.Jun;
+                        jul += item.Jul;
+                        ogo += item.Ogo;
+                        sep += item.Sep;
+                        okt += item.Okt;
+                        nov += item.Nov;
+                        dis += item.Dis;
+                        jum += item.JumAkaun1;
+
+                        <tr>
+                            <td>
+                                @item.NoAkaun
+                            </td>
+                            <td>
+                                @item.NamaAkaun
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Jan).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Feb).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Mac).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Apr).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Mei).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Jun).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Jul).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Ogo).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Sep).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Okt).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Nov).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Dis).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.JumAkaun1).ToString("#,##0.00")
+                            </td>
+                        </tr>
+
+
+                    }
+                }
+                <tr class=" font-weight-bold">
+                    <td colspan="2" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                    <td>@Convert.ToDecimal(jan).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(feb).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(mac).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(apr).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(mei).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(jun).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(jul).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(ogo).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(sep).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(okt).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(nov).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(dis).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(jum).ToString("#,##0.00")</td>
+                </tr>
+            </tbody>
+            @*baki awal end*@
+            @*initialize variables*@
+            @{
+                jan = 0;
+                feb = 0;
+                mac = 0;
+                apr = 0;
+                mei = 0;
+                jun = 0;
+                jul = 0;
+                ogo = 0;
+                sep = 0;
+                okt = 0;
+                nov = 0;
+                dis = 0;
+                jum = 0;
+            }
+            @*initialize variables end*@
+            @*tunai masuk*@
+            @if (Model.Any(tbl => tbl.KeluarMasuk == 1))
+            {
+                <tbody id="tbodyMasuk">
+                    <tr>
+                        <th colspan="15" class="text-center table-dark text-uppercase">
+                            Tunai Masuk
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            No Akaun
+                        </th>
+                        <th>
+                            Nama Akaun
+                        </th>
+                        <th align="right">
+                            Jan
+                        </th>
+                        <th align="right">
+                            Feb
+                        </th>
+                        <th align="right">
+                            Mac
+                        </th>
+                        <th align="right">
+                            Apr
+                        </th>
+                        <th align="right">
+                            Mei
+                        </th>
+                        <th align="right">
+                            Jun
+                        </th>
+                        <th align="right">
+                            Jul
+                        </th>
+                        <th align="right">
+                            Ogo
+                        </th>
+                        <th align="right">
+                            Sep
+                        </th>
+                        <th align="right">
+                            Okt
+                        </th>
+                        <th align="right">
+                            Nov
+                        </th>
+                        <th align="right">
+                            Dis
+                        </th>
+                        <th align="right">
+                            Jumlah RM
+                        </th>
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        if (item.KeluarMasuk == 1)
+                        {
+                            jan += item.Jan;
+                            feb += item.Feb;
+                            mac += item.Mac;
+                            apr += item.Apr;
+                            mei += item.Mei;
+                            jun += item.Jun;
+                            jul += item.Jul;
+                            ogo += item.Ogo;
+                            sep += item.Sep;
+                            okt += item.Okt;
+                            nov += item.Nov;
+                            dis += item.Dis;
+                            jum += item.JumAkaun1;
+
+                            <tr>
+                                <td>
+                                    @item.NoAkaun
+                                </td>
+                                <td>
+                                    @item.NamaAkaun
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Jan).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Feb).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Mac).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Apr).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Mei).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Jun).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Jul).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Ogo).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Sep).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Okt).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Nov).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Dis).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.JumAkaun1).ToString("#,##0.00")
+                                </td>
+                            </tr>
+
+
+                        }
+                    }
+                    <tr class=" font-weight-bold">
+                        <td colspan="2" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                        <td>@Convert.ToDecimal(jan).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(feb).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(mac).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(apr).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(mei).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(jun).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(jul).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(ogo).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(sep).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(okt).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(nov).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(dis).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(jum).ToString("#,##0.00")</td>
+                    </tr>
+                </tbody>
+            }
+
+            @*tunai masuk end*@
+            @*//initialize variables*@
+            @{
+                jan = 0;
+                feb = 0;
+                mac = 0;
+                apr = 0;
+                mei = 0;
+                jun = 0;
+                jul = 0;
+                ogo = 0;
+                sep = 0;
+                okt = 0;
+                nov = 0;
+                dis = 0;
+                jum = 0;
+            }
+            @*//initialize variables end*@
+            @*tunai keluar*@
+            @if (Model.Any(tbl => tbl.KeluarMasuk == 2))
+            {
+                <tbody id="tbodyKeluar">
+                    <tr>
+                        <th colspan="15" class="text-center table-dark text-uppercase">
+                            Tunai Keluar
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            No Akaun
+                        </th>
+                        <th>
+                            Nama Akaun
+                        </th>
+                        <th align="right">
+                            Jan
+                        </th>
+                        <th align="right">
+                            Feb
+                        </th>
+                        <th align="right">
+                            Mac
+                        </th>
+                        <th align="right">
+                            Apr
+                        </th>
+                        <th align="right">
+                            Mei
+                        </th>
+                        <th align="right">
+                            Jun
+                        </th>
+                        <th align="right">
+                            Jul
+                        </th>
+                        <th align="right">
+                            Ogo
+                        </th>
+                        <th align="right">
+                            Sep
+                        </th>
+                        <th align="right">
+                            Okt
+                        </th>
+                        <th align="right">
+                            Nov
+                        </th>
+                        <th align="right">
+                            Dis
+                        </th>
+                        <th align="right">
+                            Jumlah RM
+                        </th>
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        if (item.KeluarMasuk == 2)
+                        {
+                            jan += item.Jan;
+                            feb += item.Feb;
+                            mac += item.Mac;
+                            apr += item.Apr;
+                            mei += item.Mei;
+                            jun += item.Jun;
+                            jul += item.Jul;
+                            ogo += item.Ogo;
+                            sep += item.Sep;
+                            okt += item.Okt;
+                            nov += item.Nov;
+                            dis += item.Dis;
+                            jum += item.JumAkaun1;
+
+                            <tr>
+                                <td>
+                                    @item.NoAkaun
+                                </td>
+                                <td>
+                                    @item.NamaAkaun
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Jan).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Feb).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Mac).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Apr).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Mei).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Jun).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Jul).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Ogo).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Sep).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Okt).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Nov).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Dis).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.JumAkaun1).ToString("#,##0.00")
+                                </td>
+                            </tr>
+
+
+                        }
+                    }
+                    <tr class=" font-weight-bold">
+                        <td colspan="2" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                        <td>@Convert.ToDecimal(jan).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(feb).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(mac).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(apr).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(mei).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(jun).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(jul).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(ogo).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(sep).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(okt).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(nov).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(dis).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(jum).ToString("#,##0.00")</td>
+                    </tr>
+                </tbody>
+            }
+
+            @*tunai keluar end*@
+            @*tunai gabung*@
+            @if (Model.Any(tbl => tbl.KeluarMasuk == 4))
+            {
+                <tbody id="tbodyGabung">
+                    <tr>
+                        <th colspan="15" class="text-center table-dark text-uppercase">
+                            Tunai
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            No Akaun
+                        </th>
+                        <th>
+                            Nama Akaun
+                        </th>
+                        <th align="right">
+                            Jan
+                        </th>
+                        <th align="right">
+                            Feb
+                        </th>
+                        <th align="right">
+                            Mac
+                        </th>
+                        <th align="right">
+                            Apr
+                        </th>
+                        <th align="right">
+                            Mei
+                        </th>
+                        <th align="right">
+                            Jun
+                        </th>
+                        <th align="right">
+                            Jul
+                        </th>
+                        <th align="right">
+                            Ogo
+                        </th>
+                        <th align="right">
+                            Sep
+                        </th>
+                        <th align="right">
+                            Okt
+                        </th>
+                        <th align="right">
+                            Nov
+                        </th>
+                        <th align="right">
+                            Dis
+                        </th>
+                        <th align="right">
+                            Jumlah RM
+                        </th>
+                    </tr>
+                    @foreach (var item in Model)
+                    {
+                        if (item.KeluarMasuk == 4)
+                        {
+                            jan += item.Jan;
+                            feb += item.Feb;
+                            mac += item.Mac;
+                            apr += item.Apr;
+                            mei += item.Mei;
+                            jun += item.Jun;
+                            jul += item.Jul;
+                            ogo += item.Ogo;
+                            sep += item.Sep;
+                            okt += item.Okt;
+                            nov += item.Nov;
+                            dis += item.Dis;
+                            jum += item.JumAkaun1;
+
+                            <tr>
+                                <td>
+                                    @item.NoAkaun
+                                </td>
+                                <td>
+                                    @item.NamaAkaun
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Jan).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Feb).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Mac).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Apr).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Mei).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Jun).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Jul).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Ogo).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Sep).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Okt).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Nov).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.Dis).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.JumAkaun1).ToString("#,##0.00")
+                                </td>
+                            </tr>
+
+
+                        }
+                    }
+                    <tr class=" font-weight-bold">
+                        <td colspan="2" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                        <td>@Convert.ToDecimal(jan).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(feb).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(mac).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(apr).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(mei).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(jun).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(jul).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(ogo).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(sep).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(okt).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(nov).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(dis).ToString("#,##0.00")</td>
+                        <td>@Convert.ToDecimal(jum).ToString("#,##0.00")</td>
+                    </tr>
+                </tbody>
+            }
+
+            @*tunai gabung end*@
+            @*//initialize variables*@
+            @{
+                jan = 0;
+                feb = 0;
+                mac = 0;
+                apr = 0;
+                mei = 0;
+                jun = 0;
+                jul = 0;
+                ogo = 0;
+                sep = 0;
+                okt = 0;
+                nov = 0;
+                dis = 0;
+                jum = 0;
+            }
+            @*//initialize variables end*@
+            @*baki akhir*@
+            <tbody id="tbodyBakiAkhir">
+                <tr>
+                    <th colspan="15" class="text-center table-dark text-uppercase">
+                        Baki Akhir
+                    </th>
+                </tr>
+                <tr>
+                    <th>
+                        No Akaun
+                    </th>
+                    <th>
+                        Nama Akaun
+                    </th>
+                    <th align="right">
+                        Jan
+                    </th>
+                    <th align="right">
+                        Feb
+                    </th>
+                    <th align="right">
+                        Mac
+                    </th>
+                    <th align="right">
+                        Apr
+                    </th>
+                    <th align="right">
+                        Mei
+                    </th>
+                    <th align="right">
+                        Jun
+                    </th>
+                    <th align="right">
+                        Jul
+                    </th>
+                    <th align="right">
+                        Ogo
+                    </th>
+                    <th align="right">
+                        Sep
+                    </th>
+                    <th align="right">
+                        Okt
+                    </th>
+                    <th align="right">
+                        Nov
+                    </th>
+                    <th align="right">
+                        Dis
+                    </th>
+                    <th align="right">
+                        Jumlah RM
+                    </th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    if (item.KeluarMasuk == 3)
+                    {
+                        jan += item.Jan;
+                        feb += item.Feb;
+                        mac += item.Mac;
+                        apr += item.Apr;
+                        mei += item.Mei;
+                        jun += item.Jun;
+                        jul += item.Jul;
+                        ogo += item.Ogo;
+                        sep += item.Sep;
+                        okt += item.Okt;
+                        nov += item.Nov;
+                        dis += item.Dis;
+                        jum += item.JumAkaun1;
+
+                        <tr>
+                            <td>
+                                @item.NoAkaun
+                            </td>
+                            <td>
+                                @item.NamaAkaun
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Jan).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Feb).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Mac).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Apr).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Mei).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Jun).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Jul).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Ogo).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Sep).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Okt).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Nov).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.Dis).ToString("#,##0.00")
+                            </td>
+                            <td>
+                                @Convert.ToDecimal(item.JumAkaun1).ToString("#,##0.00")
+                            </td>
+                        </tr>
+
+
+                    }
+                }
+                <tr class=" font-weight-bold">
+                    <td colspan="2" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                    <td>@Convert.ToDecimal(jan).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(feb).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(mac).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(apr).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(mei).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(jun).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(jul).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(ogo).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(sep).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(okt).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(nov).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(dis).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(jum).ToString("#,##0.00")</td>
+                </tr>
+            </tbody>
+            @*baki akhir end*@
+        </table>
+    </div>
+</div>
+
+<hr />
+<div class="table-responsive-sm">
+    <table class="table table-sm topic table-bordered">
+        <thead class="table-dark">
+
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center" width="33%">Disedia </td>
+                <td class="text-center" width="33%">Disemak </td>
+                <td class="text-center" width="33%">Diluluskan </td>
+            </tr>
+            <tr>
+                <td class="text-center" height="50px"></td>
+
+                <td class="text-center" height="50px"></td>
+                <td class="text-center" height="50px"></td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Tarikh: @DateTime.Now</td>
+                <td class="text-left">Tarikh:</td>
+                <td class="text-left">Tarikh:</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
