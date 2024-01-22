@@ -26,7 +26,7 @@ using YIT.Akaun.Models.ViewModels.Administrations;
 
 namespace YIT.Akaun.Controllers._02Daftar
 {
-    [Authorize(Roles = "SuperAdmin,Supervisor")]
+    [Authorize]
     public class DPenerimaCekGajiController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodDPenerimaCekGaji;
@@ -121,7 +121,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                     dPenerimaCekGaji.DPekerjaMasukId = pekerjaId;
 
                     _context.Add(dPenerimaCekGaji);
-                    _appLog.Insert("Tambah", dPenerimaCekGaji.Id + " - " + dPenerimaCekGaji.SuratJabatan, dPenerimaCekGaji.Kod, 0, 0, pekerjaId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Tambah", dPenerimaCekGaji.Id + " - " + dPenerimaCekGaji.DDaftarAwam?.Nama, dPenerimaCekGaji.Kod, 0, 0, pekerjaId, modul, syscode, namamodul, user);
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya ditambah..!";
                     return RedirectToAction(nameof(Index));
@@ -135,7 +135,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return View(dPenerimaCekGaji);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+        
         // GET: jCawangan/Edit/5
         public IActionResult Edit(int? id)
         {
@@ -153,7 +153,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return View(dPenerimaCekGaji);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, DPenerimaCekGaji dPenerimaCekGaji, string syscode)
@@ -169,21 +169,17 @@ namespace YIT.Akaun.Controllers._02Daftar
                 {
                     var user = await _userManager.GetUserAsync(User);
                     int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
-
+                    //tambah ddaftarawamid(farhan)
                     var objAsal = await _context.DPenerimaCekGaji.FirstOrDefaultAsync(x => x.Id == dPenerimaCekGaji.Id);
-                    var kodAsal = objAsal!.Id;
-                    var perihalAsal = objAsal.Id;
+                    var kodAsal = objAsal!.Id; 
+                    var perihalAsal = objAsal.Id; //var namadaftarawam(farhan)
                     dPenerimaCekGaji.UserId = objAsal.UserId;
                     dPenerimaCekGaji.TarMasuk = objAsal.TarMasuk;
                     dPenerimaCekGaji.DPekerjaMasukId = objAsal.DPekerjaMasukId;
 
                     _context.Entry(objAsal).State = EntityState.Detached;
 
-
-                    if (dPenerimaCekGaji.DDaftarAwamId == 0)
-                    {
-                        dPenerimaCekGaji.DDaftarAwamId = null;
-                    }
+       
 
 
 
@@ -225,7 +221,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             }
 
             var jak = _unitOfWork.DPenerimaCekGajiRepo.GetAllDetailsById((int)id);
-            if (jak == null)
+            if (jak == null)  //tukar jak jd df(farhan)
             {
                 return NotFound();
 
@@ -297,7 +293,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         }
         public void PopulateDropdownList()
         {
-            ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetails();
+            ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAll();
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
 
@@ -385,9 +381,9 @@ namespace YIT.Akaun.Controllers._02Daftar
         {
             //cari senarai penerima cek gaji
             //select * from DPenerimaCekGaji
-            var DPenerimaCekGajiList = _context.DPenerimaCekGaji.Include(penerimaCekGaji => penerimaCekGaji.DDaftarAwam).ToList();
-            var AkJanaanProfil = new AkJanaanProfil();
-
+            var DPenerimaCekGajiList = _unitOfWork.DPenerimaCekGajiRepo.GetAllDetails();   //tambah satu repo(farhan)
+            var AkJanaanProfil = new AkJanaanProfil(); //var huruf kecik(farhan)
+           
             //Generate No. Rujukan
             AkJanaanProfil.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.JP.GetDisplayName(), DateTime.Now.ToString("yyyy"));
             //Jumlah
@@ -428,17 +424,17 @@ namespace YIT.Akaun.Controllers._02Daftar
                 akJanaanProfilPenerimaList.Add(AkJanaanProfilPenerima);
             }
 
-            AkJanaanProfil.JCawanganId = 29;
+            AkJanaanProfil.JCawanganId = 29; //jangan hard code(farhan)
             AkJanaanProfil.Jumlah = jumlah;
             AkJanaanProfil.Tarikh = DateTime.Now;
             AkJanaanProfil.EnJenisModulProfil = EnJenisModulProfil.Gaji;
             AkJanaanProfil.DPekerjaMasukId = null;
             AkJanaanProfil.AkJanaanProfilPenerima = akJanaanProfilPenerimaList;
             AkJanaanProfil.DPekerjaMasukId = null;
-            AkJanaanProfil.UserId = AkJanaanProfil.UserId;
+            AkJanaanProfil.UserId = AkJanaanProfil.UserId; //get user id(farhan)
             AkJanaanProfil.TarMasuk = DateTime.Now;
             AkJanaanProfil.DPekerjaKemaskiniId = null;
-            AkJanaanProfil.UserIdKemaskini = AkJanaanProfil.UserIdKemaskini;
+            AkJanaanProfil.UserIdKemaskini = AkJanaanProfil.UserIdKemaskini; //get user id(farhan)
             AkJanaanProfil.TarKemaskini = DateTime.Now;
             AkJanaanProfil.FlHapus = 0;
             AkJanaanProfil.TarHapus = DateTime.Now;
@@ -452,7 +448,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         }
 
-        private string GenerateRunningNumber(string initNoRujukan, string tahun)
+        private string GenerateRunningNumber(string initNoRujukan, string tahun) //generate running number untuk janaan profil(farhan)
         {
             var maxRefNo = _unitOfWork.AkJanaanProfilRepo.GetMaxRefNo(initNoRujukan, tahun);
 
@@ -462,4 +458,4 @@ namespace YIT.Akaun.Controllers._02Daftar
 
     }
 }
-
+//org yg jana shj boleh delete...user id yg sama

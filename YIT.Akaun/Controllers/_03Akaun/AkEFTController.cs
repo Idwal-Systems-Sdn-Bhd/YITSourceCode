@@ -14,7 +14,7 @@ using YIT._DataAccess.Services;
 using YIT._DataAccess.Services.Cart;
 using YIT._DataAccess.Services.Math;
 using YIT.Akaun.Infrastructure;
-using YIT.Akaun.Models.ViewModels.TextFiles;
+
 
 namespace YIT.Akaun.Controllers._03Akaun
 {

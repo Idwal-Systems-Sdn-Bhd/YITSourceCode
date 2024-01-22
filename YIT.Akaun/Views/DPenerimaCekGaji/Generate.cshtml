@@ -59,7 +59,7 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    var tabletype = item.FlHapus == 1 ? "table-danger" : null;
+                                    var tabletype = item.FlHapus == 1 ? "table-danger" : null; <!--not include F1Hapus==1(farhan)-->
                                     <tr class="@tabletype text-uppercase">
                                         <td></td>
                                         <td>
