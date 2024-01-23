@@ -196,6 +196,12 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodPAkAlirTunai = "PAK002";
         public const string namaPAkAlirTunai = "Penyata Alir Tunai";
+
+        public const string kodPAkPerubahanEkuiti = "PAK003";
+        public const string namaPAkPerubahanEkuti = "Penyata Perubahan Ekuiti";
+
+        public const string kodPAkTimbangDuga = "PAK004";
+        public const string namaPAkTimbangDuga = "Penyata Timbang Duga";
         //
     }
 }

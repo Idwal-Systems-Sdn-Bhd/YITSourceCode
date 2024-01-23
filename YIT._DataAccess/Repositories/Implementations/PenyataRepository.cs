@@ -16,10 +16,10 @@ namespace YIT._DataAccess.Repositories.Implementations
 {
     public class PenyataRepository : IPenyataRepository
     {
-        public readonly ApplicationDbContext context;
+        public readonly ApplicationDbContext _context;
         public PenyataRepository(ApplicationDbContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
         // Buku Tunai
@@ -57,12 +57,12 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             if (TarMula != null)
             {
-                var akBank = await context.AkBank.Include(b => b.AkCarta).FirstOrDefaultAsync(b => b.Id == akBankId);
+                var akBank = await _context.AkBank.Include(b => b.AkCarta).FirstOrDefaultAsync(b => b.Id == akBankId);
 
                 if (akBank != null)
                 {
 
-                    List<AkAkaun> akAkaun = await context.AkAkaun.Where(b => b.AkCarta1Id == akBank.AkCartaId && b.Tarikh < TarMula).ToListAsync();
+                    List<AkAkaun> akAkaun = await _context.AkAkaun.Where(b => b.AkCarta1Id == akBank.AkCartaId && b.Tarikh < TarMula).ToListAsync();
 
                     if (JKWId != null)
                     {
@@ -93,12 +93,12 @@ namespace YIT._DataAccess.Repositories.Implementations
             if (TarMula != null && TarHingga != null)
             {
                 // search CartaId from AkBankId
-                var akBank = await context.AkBank.Where(b => b.Id == akBankId).FirstOrDefaultAsync();
+                var akBank = await _context.AkBank.Where(b => b.Id == akBankId).FirstOrDefaultAsync();
 
                 if (akBank != null)
                 {
                     // PV
-                    List<AkAkaun> bukuTunaiPV = await context.AkAkaun
+                    List<AkAkaun> bukuTunaiPV = await _context.AkAkaun
                     .Include(b => b.AkCarta2)
                     .Where(b => b.NoRujukan!.Contains(EnInitNoRujukan.PV.GetDisplayName())
                     && b.Tarikh >= TarMula && b.Tarikh <= TarHingga
@@ -137,7 +137,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                     }
                     // PV end
                     // Terima
-                    List<AkAkaun> bukuTunaiResit = await context.AkAkaun
+                    List<AkAkaun> bukuTunaiResit = await _context.AkAkaun
                         .Include(b => b.AkCarta2)
                         .Where(b => b.NoRujukan!.Contains(EnInitNoRujukan.RR.GetDisplayName())
                         && b.Tarikh >= TarMula && b.Tarikh <= TarHingga
@@ -176,7 +176,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                     // Terima end
                     // Jurnal1
                     // refer AkBank, if debit = masuk, if kredit = keluar
-                    List<AkAkaun> bukuTunaiJurnal = await context.AkAkaun
+                    List<AkAkaun> bukuTunaiJurnal = await _context.AkAkaun
                         .Include(b => b.AkCarta2)
                         .Where(b => b.NoRujukan!.Contains(EnInitNoRujukan.JU.GetDisplayName())
                         && b.Tarikh >= TarMula && b.Tarikh <= TarHingga
@@ -320,14 +320,14 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             List<_AkAlirTunai> bakiAwal = new List<_AkAlirTunai>();
 
-            var akBank = await context.AkBank.Where(b => b.Id == akBankId).FirstOrDefaultAsync();
+            var akBank = await _context.AkBank.Where(b => b.Id == akBankId).FirstOrDefaultAsync();
 
             DateTime untilDate = new DateTime(int.Parse(Tahun), 12, 31, 23, 59, 59);
 
             List<AkAkaun> akAkaunList = new List<AkAkaun>();
             if (akBank != null)
             {
-                akAkaunList = context.AkAkaun.Include(b => b.AkCarta1)
+                akAkaunList = _context.AkAkaun.Include(b => b.AkCarta1)
                 .Where(b => b.AkCarta1Id == akBank.AkCartaId
                 && b.Tarikh < untilDate
                 && b.Debit != 0).ToList();
@@ -570,7 +570,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 // Masuk END
 
                 // Keluar
-                List<AkAkaun> akAkaunK = context.AkAkaun.Include(b => b.AkCarta1)
+                List<AkAkaun> akAkaunK = _context.AkAkaun.Include(b => b.AkCarta1)
                     .Where(b => b.AkCarta1Id == akBank.AkCartaId
                     && b.Tarikh < untilDate
                     && b.Kredit != 0).ToList();
@@ -824,12 +824,12 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             List<_AkAlirTunai> tunaiMasuk = new List<_AkAlirTunai>();
 
-            var akBank = await context.AkBank.Where(b => b.Id == akBankId).FirstOrDefaultAsync();
+            var akBank = await _context.AkBank.Where(b => b.Id == akBankId).FirstOrDefaultAsync();
 
             List<AkAkaun> akAkaunList = new List<AkAkaun>();
             if (akBank != null)
             {
-                akAkaunList = context.AkAkaun.Include(b => b.AkCarta2)
+                akAkaunList = _context.AkAkaun.Include(b => b.AkCarta2)
                 .Where(b => b.AkCarta1Id == akBank.AkCartaId
                 && b.Tarikh.Year == int.Parse(Tahun)
                 && b.Debit != 0).ToList();
@@ -972,13 +972,13 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             List<_AkAlirTunai> tunaiKeluar = new List<_AkAlirTunai>();
 
-            var akBank = await context.AkBank.Where(b => b.Id == akBankId).FirstOrDefaultAsync();
+            var akBank = await _context.AkBank.Where(b => b.Id == akBankId).FirstOrDefaultAsync();
 
             List<AkAkaun> akAkaunList = new List<AkAkaun>();
 
             if (akBank != null)
             {
-                akAkaunList = context.AkAkaun.Include(b => b.AkCarta2)
+                akAkaunList = _context.AkAkaun.Include(b => b.AkCarta2)
                 .Where(b => b.AkCarta1Id == akBank.AkCartaId
                 && b.Tarikh.Year == int.Parse(Tahun)
                 && b.Kredit != 0).ToList();
@@ -1148,5 +1148,96 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
 
         // Alir Tunai end
+
+        // Timbang Duga
+        public async Task<List<_AkTimbangDuga>> GetAkTimbangDuga(int? JKWId, int? JPTJId, DateTime? tarHingga, EnParas enParas)
+        {
+            List<_AkTimbangDuga> timbangDuga = new List<_AkTimbangDuga>();
+
+            List<_AkTimbangDuga> akAkaun = await _context.AkAkaun
+                .Where(b => b.Tarikh <= tarHingga && b.JKWId == JKWId).Select( ak => new _AkTimbangDuga
+                {
+                    KodAkaun = ak.AkCarta1!.Kod,
+                    NamaAkaun = ak.AkCarta1!.Perihal,
+                    JKWId = ak.JKWId,
+                    JPTJId = ak.JPTJId,
+                    Debit = ak.Debit,
+                    Kredit = ak.Kredit,
+                    Jenis = ak.AkCarta1!.EnJenis.GetDisplayName()
+                }).ToListAsync();
+
+            if (JPTJId != null)
+            {
+                akAkaun = akAkaun.Where(b => b.JPTJId == JPTJId).ToList();
+            }
+
+            akAkaun.ForEach(a =>
+            {
+                var kodAkaun = a.KodAkaun;
+                var namaAkaun = a.NamaAkaun;
+                var akCarta = new AkCarta();
+                switch (enParas)
+                {
+                    case EnParas.Paras1:
+                        akCarta = _context.AkCarta.FirstOrDefault(c => c.Kod!.Substring(0, 2) == kodAkaun!.Substring(0, 2) && c.EnParas == enParas);
+                        if (akCarta != null)
+                        {
+                            kodAkaun = akCarta.Kod;
+                            namaAkaun = akCarta.Perihal;
+                        }
+                        break;
+                    case EnParas.Paras2:
+                        akCarta = _context.AkCarta.FirstOrDefault(c => c.Kod!.Substring(0, 3) == kodAkaun!.Substring(0, 3) && c.EnParas == enParas);
+                        if (akCarta != null)
+                        {
+                            kodAkaun = akCarta.Kod;
+                            namaAkaun = akCarta.Perihal;
+                        }
+                        break;
+                    case EnParas.Paras3:
+                        akCarta = _context.AkCarta.FirstOrDefault(c => c.Kod!.Substring(0, 4) == kodAkaun!.Substring(0, 4) && c.EnParas == enParas);
+                        if (akCarta != null)
+                        {
+                            kodAkaun = akCarta.Kod;
+                            namaAkaun = akCarta.Perihal;
+                        }
+                        break;
+                }
+                if (a.Debit != 0)
+                {
+                    timbangDuga.Add(new _AkTimbangDuga()
+                    {
+                        KodAkaun = kodAkaun,
+                        NamaAkaun = namaAkaun,
+                        DebitKredit = "D - DEBIT",
+                        Jenis = a.Jenis,
+                        Debit = a.Debit
+                    });
+                }
+                if (a.Kredit != 0)
+                {
+                    timbangDuga.Add(new _AkTimbangDuga()
+                    {
+                        KodAkaun = kodAkaun,
+                        NamaAkaun = namaAkaun,
+                        DebitKredit = "K - KREDIT",
+                        Jenis = a.Jenis,
+                        Kredit = a.Kredit
+                    });
+                }
+            });
+
+            return timbangDuga.GroupBy(b => new { b.KodAkaun, b.NamaAkaun })
+                        .Select(l => new _AkTimbangDuga
+                        {
+                            KodAkaun = l.First().KodAkaun,
+                            NamaAkaun = l.First().NamaAkaun,
+                            DebitKredit = l.First().DebitKredit,
+                            Jenis = l.First().Jenis,
+                            Debit = l.Sum(b => b.Debit - b.Kredit),
+                            Kredit = l.Sum(b => b.Kredit - b.Debit)
+                        }).OrderBy(b => b.KodAkaun).ToList();
+        }
+        // Timbang Duga End
     }
 }

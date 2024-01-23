@@ -1,0 +1,216 @@
+﻿@model IEnumerable<_AkTimbangDuga>
+
+@{
+    ViewData["Title"] = "Cetakan Timbang Duga";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    decimal jumDebit = 0;
+    decimal jumKredit = 0;
+
+}
+<style>
+
+    .topic tr {
+        line-height: 0.5rem;
+    }
+
+    .center {
+        padding: 70px 0;
+        border: 3px solid green;
+        text-align: center;
+    }
+
+    .notbold {
+        font-weight: normal
+    }
+
+    .max-lines {
+        display: block; /* or inline-block */
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+        max-height: 5.8em;
+    }
+
+    .breakhere {
+        page-break-after: always
+    }
+
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-row-group
+    }
+
+    tr {
+        page-break-inside: avoid
+    }
+
+    .row {
+        display: -webkit-box; /* wkhtmltopdf uses this one */
+        display: flex;
+        -webkit-box-pack: center; /* wkhtmltopdf uses this one */
+        justify-content: center;
+    }
+
+        .row > div {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+
+            .row > div:last-child {
+                margin-right: 0;
+            }
+</style>
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
+    </div>
+</div>
+<br />
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN TIMBANG DUGA HINGGA TARIKH : @ViewData["TarHingga"]
+                    <br />
+                    MENGIKUT KUMP. WANG : @ViewData["NamaKW"]
+                    <br />
+                    PTJ : @ViewData["NamaPTJ"]
+                    <br />
+                    PARAS : @ViewData["Paras"]
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+
+<div class="row flex-row">
+    <div class="col-12">
+        <table class="table table-bordered table-sm topic">
+            <thead>
+                <tr>
+                    <th>
+                        No Akaun
+                    </th>
+                    <th>
+                        Nama Akaun
+                    </th>
+                    <th>
+                        Dr / Kr
+                    </th>
+                    <th>
+                        Jenis
+                    </th>
+                    <th align="right">
+                        Baki Debit RM
+                    </th>
+                    <th align="right">
+                        Baki Kredit RM
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tbodyTimbangDuga">
+
+
+                @foreach (var item in Model)
+                {
+                    if (item.Debit > 0) jumDebit += item.Debit;
+                    if (item.Kredit > 0) jumKredit += item.Kredit;
+                    <tr>
+                        <td>
+                            @item.KodAkaun
+                        </td>
+                        <td>
+                            @item.NamaAkaun
+                        </td>
+                        <td>
+                            @item.DebitKredit
+                        </td>
+                        <td>
+                            @item.Jenis
+                        </td>
+                        @if (item.Debit > 0)
+                        {
+                            <td>
+                                @Convert.ToDecimal(item.Debit).ToString("#,##0.00")
+                            </td>
+
+                        }
+                        else
+                        {
+                            <td>0.00</td>
+                        }
+                        @if (item.Kredit > 0)
+                        {
+                            <td>@Convert.ToDecimal(item.Kredit).ToString("#,##0.00")</td>
+                        }
+                        else
+                        {
+                            <td>0.00</td>
+                        }
+                    </tr>
+
+                }
+
+            </tbody>
+            <tfoot>
+                <tr class=" font-weight-bold">
+                    <td colspan="4" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                    <td>@Convert.ToDecimal(jumDebit).ToString("#,##0.00")</td>
+                    <td>@Convert.ToDecimal(jumKredit).ToString("#,##0.00")</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+
+<hr />
+<div class="table-responsive-sm">
+    <table class="table table-sm topic table-bordered">
+        <thead class="table-dark">
+
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center" width="33%">Disedia </td>
+                <td class="text-center" width="33%">Disemak </td>
+                <td class="text-center" width="33%">Diluluskan </td>
+            </tr>
+            <tr>
+                <td class="text-center" height="50px"></td>
+
+                <td class="text-center" height="50px"></td>
+                <td class="text-center" height="50px"></td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Tarikh: @DateTime.Now</td>
+                <td class="text-left">Tarikh:</td>
+                <td class="text-left">Tarikh:</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

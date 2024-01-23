@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using YIT.__Domain.Entities._Enums;
 
 namespace YIT.Akaun.Models.ViewModels.Forms
 {
@@ -28,7 +29,7 @@ namespace YIT.Akaun.Models.ViewModels.Forms
         [Display(Name = "Bank")]
         public int? AkBankId { get; set; }
         [Display(Name = "Paras")]
-        public int? ParasId { get; set; }
+        public EnParas EnParas { get; set; }
         [Display(Name = "Kod Akaun")]
         public int? AkCartaId { get; set; }
         // 0 : pecah keluar masuk kod akaun

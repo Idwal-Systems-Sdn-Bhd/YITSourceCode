@@ -5,22 +5,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
+using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
+using YIT._DataAccess.Services;
 using YIT._DataAccess.Services.Math;
 using YIT.Akaun.Infrastructure;
+using YIT.Akaun.Microservices;
+using YIT.Akaun.Models.ViewModels.Common;
 using YIT.Akaun.Models.ViewModels.Forms;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
     [Authorize]
-    public class AkPenyataBukuTunaiController : Microsoft.AspNetCore.Mvc.Controller
+    public class AkPenyataTimbangDugaController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = Modules.kodPAkBukuTunai;
-        public const string namamodul = Modules.namaPAkBukuTunai;
+        public const string modul = Modules.kodPAkTimbangDuga;
+        public const string namamodul = Modules.namaPAkTimbangDuga;
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
@@ -28,7 +32,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         private readonly IPenyataRepository _penyata;
         private readonly _IUnitOfWork _unitOfWork;
 
-        public AkPenyataBukuTunaiController(ApplicationDbContext context,
+        public AkPenyataTimbangDugaController(ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
             UserServices userService,
             IPenyataRepository penyata,
@@ -43,56 +47,27 @@ namespace YIT.Akaun.Controllers._03Akaun
         public async Task<IActionResult> Index(PenyataFormModel form)
         {
 
-            var bukuTunai = new List<_AkBukuTunai>();
+            var timbangDuga = new List<_AkTimbangDuga>();
 
-            if (form.TarDari1 ==  null && form.TarHingga1 == null)
+            if (form.TarHingga1 == null)
             {
-                form.TarDari1 = new DateTime(DateTime.Now.Year,1,1);
                 form.TarHingga1 = DateTime.Now;
             }
 
-            PopulateSelectList(form.AkBankId,form.JKWId,form.JPTJId, form.TarDari1, form.TarHingga1);
+            PopulateSelectList(form.JKWId, form.JPTJId, form.TarHingga1, form.EnParas);
 
-            if (form.AkBankId != null)
+            if (form.EnParas != 0)
             {
-
-                bukuTunai = await _penyata.GetAkBukuTunai((int)form.AkBankId!, form.JKWId, form.JPTJId, form.TarDari1, form.TarHingga1?.AddHours(23.99));
+                timbangDuga = await _penyata.GetAkTimbangDuga(form.JKWId, form.JPTJId, form.TarHingga1?.AddHours(23.99), form.EnParas);
             }
+            
 
-            return View(bukuTunai);
+            return View(timbangDuga);
         }
 
-        private void PopulateSelectList(int? akBankId,int? JKWId, int? JPTJId, DateTime? tarDari1, DateTime? tarHingga1)
+        private void PopulateSelectList(int? JKWId, int? JPTJId, DateTime? tarHingga1,EnParas enParas)
         {
-            // populate list bank 
-            List<AkBank> akBankList = _unitOfWork.AkBankRepo.GetAllDetails();
-
-            var bankSelect = new List<SelectListItem>();
-
-            if (akBankList != null)
-            {
-                foreach (var item in akBankList)
-                {
-                    bankSelect.Add(new SelectListItem()
-                    {
-                        Text = item.NoAkaun + " (" + item.AkCarta?.Kod + " - " + item.AkCarta?.Perihal + ")",
-                        Value = item.Id.ToString()
-                    });
-                }
-                ViewBag.AkBank = new SelectList(bankSelect, "Value", "Text", akBankId);
-            }
-            else
-            {
-                bankSelect.Add(new SelectListItem()
-                {
-                    Text = "-- Tiada Bank Berdaftar --",
-                    Value = ""
-                });
-
-                ViewBag.AkBank = new SelectList(bankSelect, "Value", "Text", null);
-            }
-            // populate list bank end
-
+            
             // populate list JKW 
             List<JKW> jKWList = _unitOfWork.JKWRepo.GetAllDetails();
 
@@ -100,12 +75,6 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             if (jKWList != null)
             {
-                jkwSelect.Add(new SelectListItem()
-                {
-                    Text = "-- SEMUA KW --",
-                    Value = ""
-                });
-
                 foreach (var item in jKWList)
                 {
                     jkwSelect.Add(new SelectListItem()
@@ -173,35 +142,51 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
             // populate list JPTJ end
 
-            // populate tarikhDari and tarikhHingga
-            if (tarDari1 != null)
+            // populate paras
+            List<ListItemViewModel> parasList = EnumHelper<EnParas>.GetList();
+            var parasSelect = new List<SelectListItem>();
+
+            foreach (var item in parasList)
             {
-                ViewData["DateFrom"] = tarDari1?.ToString("yyyy-MM-dd");
+                parasSelect.Add(new SelectListItem()
+                {
+                    Text = item.perihal,
+                    Value = item.id.ToString()
+                });
+
+            }
+            ViewBag.EnParas = new SelectList(parasSelect, "Value", "Text", enParas.GetDisplayCode());
+            // populate paras end
+
+            // populate  tarikhHingga
+            if (tarHingga1 != null)
+            {
                 ViewData["DateTo"] = tarHingga1?.ToString("yyyy-MM-dd");
             }
         }
 
         public async Task<IActionResult> PrintPDF(PenyataFormModel form)
         {
-            var bukuTunai = new List<_AkBukuTunai>();
+            var timbangDuga = new List<_AkTimbangDuga>();
 
-            if (form.AkBankId != 0)
+            if (form.EnParas != 0)
             {
 
-                bukuTunai = await _penyata.GetAkBukuTunai((int)form.AkBankId!, form.JKWId, form.JPTJId, form.TarDari1, form.TarHingga1?.AddHours(23.99));
+                timbangDuga = await _penyata.GetAkTimbangDuga(form.JKWId, form.JPTJId, form.TarHingga1?.AddHours(23.99), form.EnParas);
 
-                var bank = await _context.AkBank
-                    .Include(b => b.AkCarta)
-                    .FirstOrDefaultAsync(b => b.Id == form.AkBankId);
+                var jkw = await _context.JKW.FirstOrDefaultAsync(b => b.Id == form.JKWId);
+
+                var jptj = await _context.JPTJ.FirstOrDefaultAsync(ptj => ptj.Id == form.JPTJId);
 
                 var company = await _userService.GetCompanyDetails();
 
-                return new ViewAsPdf("BukuTunaiPDF", bukuTunai,
+                return new ViewAsPdf("TimbangDugaPDF", timbangDuga,
                     new ViewDataDictionary(ViewData)
                     {
-                        { "TarDari", form.TarDari1?.ToString("dd/MM/yyyy hh:mm:ss tt") },
+                        { "NamaKW", BelanjawanFormatter.ConvertToKW(jkw?.Kod) + " - " + jkw?.Perihal },
+                        { "NamaPTJ", BelanjawanFormatter.ConvertToPTJ(jkw?.Kod,jptj?.Kod) + " - " + jptj?.Perihal },
+                        { "Paras", form.EnParas.GetDisplayName().ToUpper() },
                         { "TarHingga", form.TarHingga1?.AddHours(23.99).ToString("dd/MM/yyyy hh:mm:ss tt") },
-                        { "NamaBank", bank?.NoAkaun + " (" + bank?.AkCarta?.Kod + " - " + bank?.AkCarta?.Perihal +") "},
                         { "NamaSyarikat", company.NamaSyarikat },
                         { "AlamatSyarikat1", company.AlamatSyarikat1 },
                         { "AlamatSyarikat2", company.AlamatSyarikat2 },
@@ -214,23 +199,15 @@ namespace YIT.Akaun.Controllers._03Akaun
                         " --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
                     PageSize = Rotativa.AspNetCore.Options.Size.A4,
                 };
-
             }
             else
             {
+                TempData[SD.Error] = "Sila pilih paras";
 
-                var date1 = DateTime.Now.Year.ToString() + "-01-01";
-                var date2 = DateTime.Now.ToString("yyyy-MM-dd");
-                ViewData["DateFrom"] = date1;
-                ViewData["DateTo"] = date2;
+                PopulateSelectList(form.JKWId, form.JPTJId, form.TarHingga1, form.EnParas);
 
-                PopulateSelectList(form.AkBankId, form.JKWId, form.JPTJId, form.TarDari1, form.TarHingga1);
-
-                TempData[SD.Error] = "Akaun Bank Tidak Wujud.";
-
-                return View(bukuTunai);
+                return View(timbangDuga);
             }
-
         }
     }
 }
