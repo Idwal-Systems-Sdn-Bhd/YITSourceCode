@@ -1,0 +1,35 @@
+﻿
+<script>
+
+    $(document).ready(function () {
+
+        var tbl = $('#tblUntungRugi').DataTable({
+            "paging": false,
+            rowReorder: false,
+            order: [[3, 'desc']],
+            columnDefs: [
+                { orderable: false, targets: '_all' }
+
+            ],
+            "scrollY": "40vh",
+            "scrollX": true,
+            "scrollCollapse": true,
+            "paging": false,
+            dom: 'lrt'
+        });
+
+        tbl.draw();
+
+        // bring the dropdown select2 in front of modal
+        $('#moJKWId').select2({
+            dropdownParent: $('#modalCetak'),
+            theme: "bootstrap"
+        });
+
+        $('#moJPTJId').select2({
+            dropdownParent: $('#modalCetak'),
+            theme: "bootstrap"
+        });
+//
+    });
+</script>

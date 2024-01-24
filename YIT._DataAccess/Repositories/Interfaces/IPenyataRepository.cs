@@ -20,6 +20,8 @@ namespace YIT._DataAccess.Repositories.Interfaces
         Task<List<_AkAlirTunai>> GetListAlirTunaiMasukBasedOnYear(int akBankId, int? JKWId, int? JPTJId, string Tahun, int jenisAlirTunai);
         Task<List<_AkAlirTunai>> GetListAlirTunaiKeluarBasedOnYear(int akBankId, int? JKWId, int? JPTJId, string Tahun, int jenisAlirTunai);
         Task<List<_AkTimbangDuga>> GetAkTimbangDuga(int? JKWId, int? JPTJId, DateTime? tarHingga, EnParas enParas);
+        Task<List<_AkUntungRugi>> GetAkUntungRugi(int? JKWId, int? JPTJId, DateTime? tarDari, DateTime? tarHingga);
+        Task<List<_AkKunciKiraKira>> GetAkKunciKiraKira(int? JKWId, int? JPTJId, DateTime? tarHingga);
         // Penyata Buku Tunai END
     }
 }

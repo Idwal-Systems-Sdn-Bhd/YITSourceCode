@@ -1238,6 +1238,462 @@ namespace YIT._DataAccess.Repositories.Implementations
                             Kredit = l.Sum(b => b.Kredit - b.Debit)
                         }).OrderBy(b => b.KodAkaun).ToList();
         }
-        // Timbang Duga End
+        // Timbang Duga end
+
+        // Untung Rugi
+        public async Task<List<_AkUntungRugi>> GetAkUntungRugi(int? JKWId, int? JPTJId, DateTime? tarDari, DateTime? tarHingga)
+        {
+            List<_AkUntungRugi> untungRugi = new List<_AkUntungRugi>();
+            List<AkAkaun> akAkaun = new List<AkAkaun>();
+
+            if (tarDari != null && tarHingga != null && JKWId != null)
+            {
+                akAkaun = await _context.AkAkaun
+                .Include(b => b.AkCarta1)
+                .Where(b => b.Tarikh >= tarDari.Value && b.Tarikh <= tarHingga.Value.AddHours(23.99) && b.JKWId == JKWId && (b.AkCarta1!.EnJenis == EnJenisCarta.Belanja || b.AkCarta1!.EnJenis == EnJenisCarta.Hasil)).ToListAsync();
+            }
+
+            if (JPTJId != null)
+            {
+                akAkaun = akAkaun.Where(b => b.JPTJId == JPTJId).ToList();
+            }
+
+            foreach (var a in akAkaun)
+            {
+                if (a.AkCarta1 != null)
+                {
+                    // pendapatan
+                    if (a.AkCarta1.EnJenis == EnJenisCarta.Hasil)
+                    {
+                        untungRugi.Add(new _AkUntungRugi()
+                        {
+                            Jenis = "H",
+                            KodAkaun = a.AkCarta1.Kod,
+                            NamaAkaun = a.AkCarta1.Perihal,
+                            Amaun = a.Kredit - a.Debit,
+                        });
+
+                    }
+                    // belanja
+                    else if (a.AkCarta1.EnJenis == EnJenisCarta.Belanja)
+                    {
+                        untungRugi.Add(new _AkUntungRugi()
+                        {
+                            Jenis = "B",
+                            KodAkaun = a.AkCarta1.Kod,
+                            NamaAkaun = a.AkCarta1.Perihal,
+                            Amaun = a.Debit - a.Kredit,
+                        });
+
+                    }
+                }
+
+            }
+
+            return untungRugi.GroupBy(b => new { b.Jenis, b.KodAkaun })
+                .Select(l => new _AkUntungRugi
+                {
+                    KodAkaun = l.First().KodAkaun,
+                    NamaAkaun = l.First().NamaAkaun,
+                    Jenis = l.First().Jenis,
+                    Amaun = l.Sum(b => b.Amaun)
+                }).OrderByDescending(b => b.Jenis).ThenBy(b => b.KodAkaun).ToList();
+        }
+        // Untung Rugi end
+
+        // Kunci Kira Kira
+        public async Task<List<_AkKunciKiraKira>> GetAkKunciKiraKira(int? JKWId, int? JPTJId, DateTime? tarHingga)
+        {
+            List<_AkKunciKiraKira> kunciKiraKira = new List<_AkKunciKiraKira>();
+
+            string kodLebihanKuranganSemasaHasil = "E13102";
+            string namaLebihanKuranganSemasaHasil = "LEBIHAN ATAU KURANGAN (SEMASA) HASIL";
+            string kodLebihanKuranganSemasaBelanja = "E13103";
+            string namaLebihanKuranganSemasaBelanja = "LEBIHAN ATAU KURANGAN (SEMASA) PERBELANJAAN";
+
+            List<AkCarta> akCarta = await _context.AkCarta.OrderByDescending(a => a.EnParas).ToListAsync();
+
+            int order = 0;
+
+            if (akCarta != null && akCarta.Count > 0)
+            {
+                
+                foreach (var carta in akCarta)
+                {
+                    List<AkAkaun> akAkaun = new List<AkAkaun>();
+                    
+                    // insert paras 4 
+                    if (carta.EnParas == EnParas.Paras4)
+                    {
+                        if (JKWId != null && tarHingga != null)
+                        {
+                            akAkaun = await _context.AkAkaun
+                                .Where(b => b.Tarikh <= tarHingga.Value.AddHours(23.99)
+                                && b.JKWId == JKWId && b.AkCarta1Id == carta.Id)
+                                .ToListAsync();
+                        }
+
+                        if (JPTJId != null)
+                        {
+                            akAkaun = akAkaun.Where(b => b.JPTJId == JPTJId).ToList();
+                        }
+
+                        if (akAkaun != null && akAkaun.Count > 0)
+                        {
+                            foreach (var akaun in akAkaun)
+                            {
+                                switch (carta.EnJenis)
+                                {
+                                    case EnJenisCarta.Aset:
+                                        order = 1;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Debit - akaun.Kredit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Liabiliti:
+                                        order = 2;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Belanja:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = EnJenisCarta.Ekuiti.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = kodLebihanKuranganSemasaBelanja,
+                                            NamaAkaun = namaLebihanKuranganSemasaBelanja,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Hasil:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = EnJenisCarta.Ekuiti.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = kodLebihanKuranganSemasaHasil,
+                                            NamaAkaun = namaLebihanKuranganSemasaHasil,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Ekuiti:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    // insert paras 4 end
+
+                    // insert paras 3
+                    else if (carta.EnParas == EnParas.Paras3)
+                    {
+                        if (JKWId != null && tarHingga != null)
+                        {
+                            akAkaun = await _context.AkAkaun
+                                .Where(b => b.Tarikh <= tarHingga.Value.AddHours(23.99)
+                                && b.JKWId == JKWId && b.AkCarta1!.Kod!.Substring(0,4) == carta.Kod!.Substring(0,4))
+                                .ToListAsync();
+                        }
+
+                        if (JPTJId != null)
+                        {
+                            akAkaun = akAkaun.Where(b => b.JPTJId == JPTJId).ToList();
+                        }
+
+                        if (akAkaun != null && akAkaun.Count > 0)
+                        {
+                            foreach (var akaun in akAkaun)
+                            {
+                                switch (carta.EnJenis)
+                                {
+                                    case EnJenisCarta.Aset:
+                                        order = 1;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Debit - akaun.Kredit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Belanja:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = EnJenisCarta.Ekuiti.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = kodLebihanKuranganSemasaBelanja.Substring(0,4) + "00",
+                                            NamaAkaun = namaLebihanKuranganSemasaBelanja,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Hasil:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = EnJenisCarta.Ekuiti.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = kodLebihanKuranganSemasaHasil.Substring(0,4) + "00",
+                                            NamaAkaun = namaLebihanKuranganSemasaHasil,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Liabiliti:
+                                        order = 2;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Ekuiti:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                }
+                            }
+                        }
+                         
+                    }
+                    // insert paras 3 end
+                    
+                    // insert paras 2
+                    else if (carta.EnParas == EnParas.Paras2)
+                    {
+                        if (JKWId != null && tarHingga != null)
+                        {
+                            akAkaun = await _context.AkAkaun
+                                .Where(b => b.Tarikh <= tarHingga.Value.AddHours(23.99)
+                                && b.JKWId == JKWId && b.AkCarta1!.Kod!.Substring(0, 3) == carta.Kod!.Substring(0, 3))
+                                .ToListAsync();
+                        }
+
+                        if (JPTJId != null)
+                        {
+                            akAkaun = akAkaun.Where(b => b.JPTJId == JPTJId).ToList();
+                        }
+
+                        if (akAkaun != null && akAkaun.Count > 0)
+                        {
+                            foreach (var akaun in akAkaun)
+                            {
+                                switch (carta.EnJenis)
+                                {
+                                    case EnJenisCarta.Aset:
+                                        order = 1;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Debit - akaun.Kredit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Belanja:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = EnJenisCarta.Ekuiti.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = kodLebihanKuranganSemasaBelanja.Substring(0, 3) + "000",
+                                            NamaAkaun = namaLebihanKuranganSemasaBelanja,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Hasil:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = EnJenisCarta.Ekuiti.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = kodLebihanKuranganSemasaHasil.Substring(0, 3) + "000",
+                                            NamaAkaun = namaLebihanKuranganSemasaHasil,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Liabiliti:
+                                        order = 2;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Ekuiti:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                }
+                            }
+                        }
+                                
+                    }
+                    // insert paras 2 end
+
+                    // insert paras 1
+                    else if (carta.EnParas == EnParas.Paras1)
+                    {
+                        if (JKWId != null && tarHingga != null)
+                        {
+                            akAkaun = await _context.AkAkaun
+                                .Where(b => b.Tarikh <= tarHingga.Value.AddHours(23.99)
+                                && b.JKWId == JKWId && b.AkCarta1!.Kod!.Substring(0, 2) == carta.Kod!.Substring(0, 2))
+                                .ToListAsync();
+                        }
+
+                        if (JPTJId != null)
+                        {
+                            akAkaun = akAkaun.Where(b => b.JPTJId == JPTJId).ToList();
+                        }
+
+                        if (akAkaun != null && akAkaun.Count > 0)
+                        {
+                            foreach (var akaun in akAkaun)
+                            {
+                                switch (carta.EnJenis)
+                                {
+                                    case EnJenisCarta.Aset:
+                                        order = 1;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Debit - akaun.Kredit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Liabiliti:
+                                        order = 2;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Belanja:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = EnJenisCarta.Ekuiti.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = kodLebihanKuranganSemasaBelanja.Substring(0, 2) + "0000",
+                                            NamaAkaun = namaLebihanKuranganSemasaBelanja,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Hasil:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = EnJenisCarta.Ekuiti.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = kodLebihanKuranganSemasaHasil.Substring(0, 2) + "0000",
+                                            NamaAkaun = namaLebihanKuranganSemasaHasil,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                    case EnJenisCarta.Ekuiti:
+                                        order = 3;
+                                        kunciKiraKira.Add(new _AkKunciKiraKira
+                                        {
+                                            Jenis = carta.EnJenis.GetDisplayName(),
+                                            Order = order,
+                                            Paras = carta.EnParas.GetDisplayName(),
+                                            KodAkaun = carta.Kod,
+                                            NamaAkaun = carta.Perihal,
+                                            Amaun = akaun.Kredit - akaun.Debit
+                                        });
+                                        break;
+                                }
+                            }
+                        }
+                                
+                    }
+                    // insert paras 1 end
+
+                }
+
+            }
+
+
+            return kunciKiraKira.GroupBy(b => new { b.Jenis, b.Paras, b.KodAkaun })
+                .Select(l => new _AkKunciKiraKira
+                {
+                    Order = l.First().Order,
+                    Jenis = l.First().Jenis,
+                    Paras = l.First().Paras,
+                    KodAkaun = l.First().KodAkaun,
+                    NamaAkaun = l.First().NamaAkaun,
+                    Amaun = l.Sum(b => b.Amaun)
+                }).OrderBy(b => b.Order).ThenBy(b => b.KodAkaun).ThenByDescending(b => b.Paras).ToList();
+        }
+        // Kunci Kira Kira end
     }
 }

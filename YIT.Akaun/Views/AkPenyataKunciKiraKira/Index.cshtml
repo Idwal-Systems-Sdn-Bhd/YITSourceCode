@@ -1,0 +1,348 @@
+﻿@model dynamic;
+
+@{
+    ViewData["Title"] = "Kunci Kira-Kira";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    decimal JumAset = 0;
+    decimal liabiliti = 0;
+    decimal asetBersih = 0;
+    decimal ekuiti = 0;
+    string key = "";
+
+    string date = ViewData["DateTo"]?.ToString() ?? DateTime.Now.ToString("yyyy-MM-dd");
+
+    string dateTo = date.Substring(8, 2) + "/" + date.Substring(5, 2) + "/" + date.Substring(0, 4);
+}
+
+<div class="card box-shadow">
+    <div class="card-body border">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref">Indeks</span>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+        <div class="card mb-2">
+            <div class="card-body pl-3 pb-2 ">
+                <label class="form-control-plaintext" for="searchselect">Carian : </label>
+                <div class="form-actions no-color mb-2">
+                    <form asp-action="Index" method="get" class="needs-validation" novalidate>
+                        <div class="form-actions no-color mb-3">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label class="form-control-label">Kump. Wang</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group mb-2 input-group-sm ">
+                                        <select class="form-control form-control-sm select2" name="JKWId" asp-items="@ViewBag.JKW"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <label class="form-control-label">PTJ</label>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="mb-2 input-group-sm ">
+                                        <select class="form-control form-control-sm select2" name="JPTJId" asp-items="@ViewBag.JPTJ"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="input-group mb-2 input-group-sm ">
+                                        <label class="form-control-label">Tarikh</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="input-group">
+                                        <div class="input-group-text">Hingga</div>
+                                        <input class="form-control form-control-sm" type="date" name="TarHingga1" value="@ViewData["DateTo"]" id="tarikh2" required />
+                                        <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="mb-3">
+                            <div class="text-center hidden-mobile">
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn ac-primary" disabled="disabled"><i class="fas fa-eye"></i></button>
+                                    <button class="btn ac-primary" style="color: white;" type="submit">Papar</button>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn ac-warning" disabled="disabled"><i class="fa-solid fa-xmark"></i></button>
+                                    <a class="btn ac-warning" asp-action="Index"> Batal Papar </a>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn ac-info" disabled="disabled"><i class="fas fa-print"></i></button>
+                                    <button class="btn ac-info" data-toggle="modal" data-target="#modalCetak" style="color: white;" type="button" data-placement="top" title="Cetak">Cetak</button>
+                                </div>
+
+                                @*<a class="text-end btn btn-info text-white" asp-action="PrintCarta">Cetak Carta</a>*@
+                            </div>
+                            <div class="text-center show-mobile">
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn text-primary" type="submit" data-toggle="tooltip" data-placement="top" title="Papar"><i class="fa fa-eye fa-2x"></i></button>
+                                    <a class="btn text-warning" asp-action="Index"><i class="fa-solid fa-xmark fa-2x"></i></a>
+                                    <button class="btn text-info" data-toggle="modal" data-target="#modalCetak" data-placement="top" type="button" title="Cetak"><i class="fas fa-print fa-2x"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        @if (Model.KunciKirakira.Count > 0)
+        {
+            <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="table-responsive table-sm overflow-auto" style="max-height:70vh;">
+                        <table class="table table-bordered table-hover display compact nowrap" width="100%" id="tblKunciKirakira">
+                            <thead>
+                                <tr>
+                                    <th colspan="6" class="text-center table-dark text-uppercase">
+                                        KUNCI KIRA-KIRA PADA TARIKH : @dateTo
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th colspan="4" class="text-center">Kod Akaun</th>
+                                    <th rowspan="2" class="text-center">
+                                        Nama Akaun
+                                    </th>
+                                    <th class="text-center" rowspan="2">
+                                        Baki RM
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        Paras 1
+                                    </th>
+                                    <th>
+                                        Paras 2
+                                    </th>
+                                    <th>
+                                        Paras 3
+                                    </th>
+                                    <th>
+                                        Paras 4
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyKunciKirakira">
+
+                                @foreach (var group in Model.KunciKirakiraGrouped)
+                                {
+                                    switch (group.Key)
+                                    {
+                                        case 1:
+                                            key = "ASET";
+                                            break;
+                                        case 2:
+                                            key = "LIABILITI";
+                                            break;
+                                        case 3:
+                                            key = "EKUITI";
+                                            break;
+                                    }
+                                    <tr>
+                                        <td colspan="6" class="text-uppercase ac-secondary fw-bold text-white">@key</td>
+                                    </tr>
+                                    @foreach (var item in group)
+                                    {
+
+                                        var tabletype = item.Paras == EnParas.Paras1.GetDisplayName() ? "table-light1" :
+                                                        item.Paras == EnParas.Paras2.GetDisplayName() ? "table-light2" :
+                                                        item.Paras == EnParas.Paras3.GetDisplayName() ? "table-light3" : null;
+
+                                        
+                                        <tr class="@tabletype">
+                                            @switch (item.Paras)
+                                            {
+                                                case "Paras 1":
+                                                    switch (item.Jenis)
+                                                    {
+                                                        case "Aset":
+                                                            JumAset += item.Amaun;
+                                                            asetBersih += item.Amaun;
+                                                            break;
+                                                        case "Liabiliti":
+                                                            liabiliti += item.Amaun;
+                                                            asetBersih -= item.Amaun;
+                                                            break;
+                                                        case "Ekuiti":
+                                                            ekuiti += item.Amaun;
+                                                            break;
+                                                    }
+                                                    <td>
+                                                        @item.KodAkaun
+                                                    </td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        @item.NamaAkaun
+                                                    </td>
+                                                    <td class="text-end">
+                                                        @Convert.ToDecimal(item.Amaun).ToString("#,##0.00")
+                                                    </td>
+                                                    break;
+                                                case "Paras 2":
+                                                    <td></td>
+                                                    <td>
+                                                        @item.KodAkaun
+                                                    </td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        @item.NamaAkaun
+                                                    </td>
+                                                    <td class="text-end">
+                                                        @Convert.ToDecimal(item.Amaun).ToString("#,##0.00")
+                                                    </td>
+                                                    break;
+                                                case "Paras 3":
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        @item.KodAkaun
+                                                    </td>
+                                                    <td></td>
+                                                    <td>
+                                                        @item.NamaAkaun
+                                                    </td>
+                                                    <td class="text-end">
+                                                        @Convert.ToDecimal(item.Amaun).ToString("#,##0.00")
+                                                    </td>
+                                                    break;
+                                                case "Paras 4":
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>
+                                                        @item.KodAkaun
+                                                    </td>
+                                                    <td>
+                                                        @item.NamaAkaun
+                                                    </td>
+                                                    <td class="text-end">
+                                                        @Convert.ToDecimal(item.Amaun).ToString("#,##0.00")
+                                                    </td>
+                                                    break;
+                                            }
+                                        </tr>
+
+
+
+                                    }
+
+                                    @switch (group.Key)
+                                    {
+                                        case 1:
+                                            <tr class="fw-bold">
+                                                <td colspan="5" class="text-end text-uppercase table-warning">Jumlah Aset RM</td>
+                                                <td>@Convert.ToDecimal(JumAset).ToString("#,##0.00")</td>
+                                            </tr>
+
+                                            break;
+                                        case 2:
+                                            <tr class=" fw-bold">
+                                                <td colspan="5" class="text-end text-uppercase table-warning">Jumlah Liabiliti RM</td>
+                                                <td>@Convert.ToDecimal(liabiliti).ToString("#,##0.00")</td>
+                                            </tr>
+                                            <tr class=" fw-bold">
+                                                <td colspan="5" class="text-end text-uppercase table-warning">Jumlah Aset Bersih RM</td>
+                                                <td>@Convert.ToDecimal(asetBersih).ToString("#,##0.00")</td>
+                                            </tr>
+                                            break;
+                                        case 3:
+                                            <tr class=" fw-bold">
+                                                <td colspan="5" class="text-end text-uppercase table-warning">Jumlah Ekuiti RM</td>
+                                                <td>@Convert.ToDecimal(ekuiti).ToString("#,##0.00")</td>
+                                            </tr>
+                                            break;
+                                    }
+
+
+                                }
+
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <hr />
+
+
+        }
+    </div>
+</div>
+<!-- Modal Cetak -->
+<div class="modal fade bd-example-modal-lg" id="modalCetak" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-success">
+                <h5 class="modal-title">Cetak @ViewData["Title"]</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form asp-action="PrintPDF" class="needs-validation">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label class="form-control-label">Kump. Wang</label>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="input-group mb-2 input-group-sm ">
+                                <select class="form-control form-control-sm select2" name="JKWId" asp-items="@ViewBag.JKW"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label class="form-control-label">PTJ</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="mb-2 input-group-sm ">
+                                <select class="form-control form-control-sm select2" name="JPTJId" asp-items="@ViewBag.JPTJ"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="input-group mb-2 input-group-sm ">
+                                <label class="form-control-label">Tarikh</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+
+                            <div class="input-group">
+                                <div class="input-group-text">Hingga</div>
+                                <input class="form-control form-control-sm" type="date" name="TarHingga1" value="@ViewData["DateTo"]" id="tarikh2" required />
+                                <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn ac-danger btn-sm" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn ac-success btn-sm" formtarget="_blank">Cetak</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Cetak End -->

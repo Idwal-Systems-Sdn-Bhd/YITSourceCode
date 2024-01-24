@@ -71,9 +71,9 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            var tabletype = item.EnParas == EnParas.Paras1 ? "table-purple" :
-                            item.EnParas == EnParas.Paras2 ? "table-warning" :
-                            item.EnParas == EnParas.Paras3 ? "table-info" : null;
+                            var tabletype = item.EnParas == EnParas.Paras1 ? "table-light1" :
+                            item.EnParas == EnParas.Paras2 ? "table-light2" :
+                            item.EnParas == EnParas.Paras3 ? "table-light3" : null;
                             <tr class="@tabletype">
                                 <td align="center"></td>
                                 <td class="text-uppercase">

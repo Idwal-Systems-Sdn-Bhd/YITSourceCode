@@ -599,6 +599,78 @@ body {
         background-color: #DFC8FF;
     }
 
+.table-light1,
+.table-light1 > th,
+.table-light1 > td {
+    background-color: #b2b2b2;
+}
+
+    .table-light1 th,
+    .table-light1 td,
+    .table-light1 thead th,
+    .table-light1 tbody + tbody {
+        border-color: #C7A5F7;
+    }
+
+.table-hover .table-light1:hover {
+    background-color: #818181;
+    color:aliceblue;
+}
+
+    .table-hover .table-light1:hover > td,
+    .table-hover .table-light1:hover > th {
+        background-color: #818181;
+        color: aliceblue;
+    }
+
+.table-light2,
+.table-light2 > th,
+.table-light2 > td {
+    background-color: #c8c8c8;
+}
+
+    .table-light2 th,
+    .table-light2 td,
+    .table-light2 thead th,
+    .table-light2 tbody + tbody {
+        border-color: #c8c8c8;
+    }
+
+.table-hover .table-light2:hover {
+    background-color: #818181;
+    color: aliceblue;
+}
+
+    .table-hover .table-light2:hover > td,
+    .table-hover .table-light2:hover > th {
+        background-color: #818181;
+        color: aliceblue;
+    }
+
+.table-light3,
+.table-light3 > th,
+.table-light3 > td {
+    background-color: #d7d7d7;
+}
+
+    .table-light3 th,
+    .table-light3 td,
+    .table-light3 thead th,
+    .table-light3 tbody + tbody {
+        border-color: #d7d7d7;
+    }
+
+.table-hover .table-light3:hover {
+    background-color: #818181;
+    color: aliceblue;
+}
+
+    .table-hover .table-light3:hover > td,
+    .table-hover .table-light3:hover > th {
+        background-color: #818181;
+        color: aliceblue;
+    }
+
 /*AK CODE*/
 .text-purple {
     color: #a54ea8 !important;
