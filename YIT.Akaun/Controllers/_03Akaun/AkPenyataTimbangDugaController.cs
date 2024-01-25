@@ -194,7 +194,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     })
                 {
                     PageMargins = { Left = 15, Bottom = 15, Right = 15, Top = 15 },
-                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                     CustomSwitches = "--footer-center \"[page]/[toPage]\"" +
                         " --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
                     PageSize = Rotativa.AspNetCore.Options.Size.A4,

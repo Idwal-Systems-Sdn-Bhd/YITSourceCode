@@ -45,7 +45,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         }
         public IActionResult Index()
         {
-            return View(_unitOfWork.AkCartaRepo.GetAll());
+            return View(_unitOfWork.AkCartaRepo.GetAll().OrderBy(c => c.Kod));
         }
 
         public IActionResult Details(int? id)
