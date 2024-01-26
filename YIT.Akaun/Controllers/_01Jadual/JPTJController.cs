@@ -13,8 +13,8 @@ namespace YIT.Akaun.Controllers._01Jadual
     [Authorize]
     public class JPTJController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "JD002";
-        public const string namamodul = "Jadual PTJ";
+        public const string modul = Modules.kodJPTJ;
+        public const string namamodul = Modules.namaJPTJ;
 
         private readonly _IUnitOfWork _unitOfWork;
         private readonly ApplicationDbContext _context;

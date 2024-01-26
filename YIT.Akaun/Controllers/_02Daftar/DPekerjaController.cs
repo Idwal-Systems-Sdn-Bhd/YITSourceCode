@@ -18,8 +18,8 @@ namespace YIT.Akaun.Controllers._02Daftar
     [Authorize]
     public class DPekerjaController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "DF001";
-        public const string namamodul = "Daftar Anggota";
+        public const string modul = Modules.kodDPekerja;
+        public const string namamodul = Modules.namaDPekerja;
 
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;

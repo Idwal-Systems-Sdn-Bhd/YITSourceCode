@@ -13,8 +13,8 @@ namespace YIT.Akaun.Controllers._01Jadual
     [Authorize]
     public class JAgamaController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "JD006";
-        public const string namamodul = "Jadual Agama";
+        public const string modul = Modules.kodJAgama;
+        public const string namamodul = Modules.namaJAgama;
 
         private readonly _IUnitOfWork _unitOfWork;
         private readonly ApplicationDbContext _context;

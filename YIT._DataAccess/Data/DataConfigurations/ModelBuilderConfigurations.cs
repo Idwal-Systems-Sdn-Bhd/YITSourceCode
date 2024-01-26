@@ -27,6 +27,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<JCawangan>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<JCukai>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<JElaunPotongan>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<JKonfigPerubahanEkuiti>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             //
 
             // Daftar

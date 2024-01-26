@@ -2,6 +2,8 @@
     <a class="nav-link collapsed text-truncate
     @Html.ActiveClass("AkPenyataBukuTunai")
        @Html.ActiveClass("AkPenyataAlirTunai")
+       @Html.ActiveClass("JKonfigPerubahanEkuiti")
+       @Html.ActiveClass("AkPenyataPerubahanEkuiti")
        @Html.ActiveClass("AkPenyataTimbangDuga")
        @Html.ActiveClass("AkPenyataUntungRugi")
        @Html.ActiveClass("AkPenyataKunciKiraKira")" href="#submenuPenyata" data-toggle="collapse" data-target="#submenuPenyata"><img src="~/img/svg/penyata-kewangan.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Penyata</span></a>
@@ -9,6 +11,26 @@
         <ul class="flex-column ps-2 nav">
             <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkPenyataBukuTunai")" asp-area="" asp-controller="AkPenyataBukuTunai" asp-action="Index"><span>Buku Tunai</span></a></li>
             <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkPenyataAlirTunai")" asp-area="" asp-controller="AkPenyataAlirTunai" asp-action="Index"><span>Alir Tunai</span></a></li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom text-truncate collapsed py-1 ms-3
+                 @Html.ActiveClass("JKonfigPerubahanEkuiti")
+                 @Html.ActiveClass("AkPenyataPerubahanEkuiti")
+                " href="#submenuPenyatasub1" data-toggle="collapse" data-target="#submenuPenyatasub1"><span>Perubahan Ekuiti</span></a>
+                <div class="collapse" id="submenuPenyatasub1" aria-expanded="false">
+                    <ul class="flex-column nav ps-4">
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("JKonfigPerubahanEkuiti")" asp-area="" asp-controller="JKonfigPerubahanEkuiti" asp-action="Index">
+                                Jadual Konfigurasi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkPenyataPerubahanEkuiti")" asp-area="" asp-controller="AkPenyataPerubahanEkuiti" asp-action="Index">
+                                Laporan
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkPenyataTimbangDuga")" asp-area="" asp-controller="AkPenyataTimbangDuga" asp-action="Index"><span>Timbang Duga</span></a></li>
             <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkPenyataUntungRugi")" asp-area="" asp-controller="AkPenyataUntungRugi" asp-action="Index"><span>Untung Rugi</span></a></li>
             <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkPenyataKunciKiraKira")" asp-area="" asp-controller="AkPenyataKunciKiraKira" asp-action="Index"><span>Kunci Kira - Kira</span></a></li>

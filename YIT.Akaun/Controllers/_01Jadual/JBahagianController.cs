@@ -13,8 +13,8 @@ namespace YIT.Akaun.Controllers._01Jadual
     [Authorize]
     public class JBahagianController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "JD003";
-        public const string namamodul = "Jadual Bahagian";
+        public const string modul = Modules.kodJBahagian;
+        public const string namamodul = Modules.namaJBahagian;
 
         private readonly _IUnitOfWork _unitOfWork;
         private readonly ApplicationDbContext _context;

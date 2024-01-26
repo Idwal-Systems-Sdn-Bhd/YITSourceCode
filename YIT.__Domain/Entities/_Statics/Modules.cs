@@ -40,6 +40,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodJCawangan = "JD0009";
         public const string namaJCawangan = "Jadual Cawangan";
+
+        public const string kodJKonfigPerubahanEkuiti = "JD0010";
+        public const string namaJKonfigPerubahanEkuiti = "Jadual Konfigurasi Perubahan Ekuiti";
         //
 
         // Daftar 

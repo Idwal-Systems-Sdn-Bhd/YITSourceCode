@@ -13,8 +13,8 @@ namespace YIT.Akaun.Controllers._01Jadual
     [Authorize(Roles = "SuperAdmin,Supervisor")]
     public class JCaraBayarController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "JD005";
-        public const string namamodul = "Jadual Cara Bayar";
+        public const string modul = Modules.kodJCaraBayar;
+        public const string namamodul = Modules.namaJCaraBayar;
 
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;

@@ -37,6 +37,7 @@ namespace YIT._DataAccess.Data
         public DbSet<JCawangan> JCawangan { get; set; }
         public DbSet<JCukai> JCukai { get; set; }
         public DbSet<JElaunPotongan> JElaunPotongan { get; set; }
+        public DbSet<JKonfigPerubahanEkuiti> JKonfigPerubahanEkuiti { get; set; }
         //
 
         // 02Daftar

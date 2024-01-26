@@ -1,0 +1,74 @@
+﻿@model JKonfigPerubahanEkuiti
+
+@{
+    ViewData["Title"] = "Konfigurasi Perubahan Ekuiti - Papar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card box-shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-dark mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / Papar</span>
+            </div>
+            <div class="col-4">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.JKWId)
+            </dt>
+            <dd class="col-sm-10">
+                @BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Tahun)
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Tahun
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BakiAwal)
+            </dt>
+            <dd class="col-sm-10">
+                @Convert.ToDecimal(Model.BakiAwal).ToString("#,##0.00")
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Pelarasan)
+            </dt>
+            <dd class="col-sm-10">
+                @Convert.ToDecimal(Model.Pelarasan).ToString("#,##0.00")
+            </dd>
+            <dt class="col-sm-2">
+                Baki Dinyatakan RM
+            </dt>
+            <dd class="col-sm-10 fw-bold">
+                @Convert.ToDecimal(Model.BakiAwal + Model.Pelarasan).ToString("#,##0.00")
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LebihanBersih)
+            </dt>
+            <dd class="col-sm-10">
+                @Convert.ToDecimal(Model.LebihanBersih).ToString("#,##0.00")
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BakiAkhir)
+            </dt>
+            <dd class="col-sm-10 fw-bold">
+                @Convert.ToDecimal(Model.BakiAkhir).ToString("#,##0.00")
+            </dd>
+        </dl>
+
+        <hr />
+        <div class="form-group">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn ac-primary btn-sm">Ubah</a>
+            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+        </div>
+
+    </div>
+</div>

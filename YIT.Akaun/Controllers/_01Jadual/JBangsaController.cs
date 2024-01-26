@@ -14,8 +14,8 @@ namespace YIT.Akaun.Controllers._01Jadual
     [Authorize]
     public class JBangsaController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "JD007";
-        public const string namamodul = "Jadual Bangsa";
+        public const string modul = Modules.kodJBangsa;
+        public const string namamodul = Modules.namaJBangsa;
 
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;

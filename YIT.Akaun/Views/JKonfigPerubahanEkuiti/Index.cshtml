@@ -1,0 +1,111 @@
+﻿@model IEnumerable<JKonfigPerubahanEkuiti>
+
+@{
+    ViewData["Title"] = "Jadual Konfigurasi Perubahan Ekuiti";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="_JSIndex" />
+
+<div class="card box-shadow">
+    <div class="loading">
+        <img class="loading-image" src="~/img/loading.gif" alt="Loading..." />
+    </div>
+    <div class="card card-body border main-page" hidden>
+        <partial name="~/Views/Partials/Common/_TitleIndexPartial.cshtml" />
+
+        <partial name="~/Views/Partials/Common/_SearchJadualIndexPartial.cshtml" />
+
+        @if (Model != null && Model.Count() > 0)
+        {
+            <div class="table-responsive">
+                <table class="table table-hover compact" width="100%">
+                    <caption>Rekod dipamerkan : @Model.Count()</caption>
+                    <thead class="table-secondary">
+                        <tr>
+                            <th width="5%">Bil</th>
+                            <th class="jkw">
+                                @Html.DisplayNameFor(model => model.JKWId)
+                            </th>
+                            <th class="tahun">
+                                @Html.DisplayNameFor(model => model.Tahun)
+                            </th>
+                            <th class="bakiAwal">
+                                @Html.DisplayNameFor(model => model.BakiAwal)
+                            </th>
+                            <th class="pelarasan">
+                                @Html.DisplayNameFor(model => model.Pelarasan)
+                            </th>
+                            <th class="pelarasan">
+                                Baki Dinyatakan RM
+                            </th>
+                            <th class="lebihanBersih">
+                                @Html.DisplayNameFor(model => model.LebihanBersih)
+                            </th>
+                            <th class="bakiAkhir">
+                                @Html.DisplayNameFor(model => model.BakiAkhir)
+                            </th>
+                            <th width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            decimal bakiDinyatakan = item.BakiAwal + item.Pelarasan;
+                            var tabletype = item.FlHapus == 1 ? "table-danger" : null;
+                            <tr class="@tabletype text-uppercase">
+                                <td></td>
+                                <td>
+                                    @BelanjawanFormatter.ConvertToKW(item.JKW?.Kod)
+                                </td>
+                                <td>
+                                    @item.Tahun
+                                </td>
+                                <td class="text-end">
+                                    @Convert.ToDecimal(item.BakiAwal).ToString("#,##0.00")
+                                </td>
+                                <td class="text-end">
+                                    @Convert.ToDecimal(item.Pelarasan).ToString("#,##0.00")
+                                </td>
+                                <td class="text-end fw-bold">
+                                    @Convert.ToDecimal(bakiDinyatakan).ToString("#,##0.00")
+                                </td>
+                                <td class="text-end">
+                                    @Convert.ToDecimal(item.LebihanBersih).ToString("#,##0.00")
+                                </td>
+                                <td class="text-end fw-bold">
+                                    @Convert.ToDecimal(item.BakiAkhir).ToString("#,##0.00")
+                                </td>
+                                <td width="5%" class="text-center">
+                                    <div class="btn-group" role="group" aria-label="action">
+                                        @if (item.FlHapus == 0)
+                                        {
+                                            <a asp-action="Details" asp-route-id="@item.Id"
+                                               class="btn text-primary btn-sm bg-white" type="button"
+                                               data-toggle="tooltip" data-placement="top"
+                                               title="Ubah/Papar"><i class="fas fa-edit"></i></a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id"
+                                               class="btn text-danger btn-sm bg-white" type="button"
+                                               data-toggle="tooltip" data-placement="top"
+                                               title="Hapus"><i class="fas fa-trash"></i></a>
+                                        }
+                                        else
+                                        {
+                                            if (User.IsInRole("Supervisor") || User.IsInRole("SuperAdmin"))
+                                            {
+                                                <a asp-action="Rollback" asp-route-id="@item.Id" asp-route-syscode="SPPB" class="btn text-info btn-sm bg-white" type="button" data-toggle="tooltip" data-placement="top" title="Rollback">
+                                                    <i class="fas fa-trash-restore"></i>
+                                                </a>
+
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </div>
+</div>

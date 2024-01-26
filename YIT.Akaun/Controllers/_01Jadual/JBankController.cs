@@ -13,8 +13,8 @@ namespace YIT.Akaun.Controllers._01Jadual
     [Authorize]
     public class JBankController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "JD004";
-        public const string namamodul = "Jadual Bank";
+        public const string modul = Modules.kodJBank;
+        public const string namamodul = Modules.namaJBank;
 
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;

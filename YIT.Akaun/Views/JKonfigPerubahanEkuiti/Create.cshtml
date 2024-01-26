@@ -1,0 +1,73 @@
+﻿@model JKonfigPerubahanEkuiti
+
+@{
+    ViewData["Title"] = "Konfigurasi Perubahan Ekuiti - Tambah";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="_JSCreate" />
+
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleCreatePartial.cshtml" />
+
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="syscode" value="SPPB" hidden />
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label asp-for="JKWId" class="control-label"></label>
+                        <select asp-for="JKWId" class="form-control form-control-sm text-uppercase select2" required>
+                            @foreach (var item in ViewBag.JKW)
+                            {
+                                <option value="@item.Id">@BelanjawanFormatter.ConvertToKW(item.Kod) - @item.Perihal</option>
+                            }
+                        </select>
+                        <span asp-validation-for="JKWId" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="Tahun" class="control-label"></label>
+                        <input asp-for="Tahun" class="form-control form-control-sm" maxlength="4" required />
+                        <span asp-validation-for="Tahun" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="BakiAwal" class="control-label"></label>
+                <input asp-for="BakiAwal" class="form-control form-control-sm" value="0" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Pelarasan" class="control-label"></label>
+                <input asp-for="Pelarasan" class="form-control form-control-sm" value="0" />
+            </div>
+            <hr />
+            <div class="form-group">
+                <label class="control-label">Baki Dinyatakan</label>
+                <input id="BakiDinyatakan" class="form-control form-control-sm" value="0" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="LebihanBersih" class="control-label"></label>
+                <input asp-for="LebihanBersih" class="form-control form-control-sm " value="0" />
+            </div>
+            <div class="form-group">
+                <label asp-for="BakiAkhir" class="control-label"></label>
+                <input asp-for="BakiAkhir" class="form-control form-control-sm" value="0" readonly />
+            </div>
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Simpan" class="btn ac-primary btn-sm" />
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

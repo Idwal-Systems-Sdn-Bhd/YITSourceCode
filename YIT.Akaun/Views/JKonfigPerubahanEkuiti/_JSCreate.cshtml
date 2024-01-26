@@ -1,0 +1,55 @@
+﻿<script type="text/javascript">
+    // Toastr initialization
+    toastr.options.timeOut = 2000;
+
+    // auto calculate baki dinyatakan based on baki awal and pelarasan
+    $("body").on('change', "#BakiAwal, #Pelarasan", function () {
+        var sum = 0;
+        var bakiAwal = $("#BakiAwal").val();
+        var pelarasan = $("#Pelarasan").val();
+
+        sum = parseFloat(bakiAwal) + parseFloat(pelarasan);
+        $("#BakiDinyatakan").val(sum.toFixed(2));
+    });
+
+    // auto calculate baki akhir based on baki dinyatakan and lebihan bersih
+    $("body").on('change', "#BakiAwal, #Pelarasan, #LebihanBersih", function () {
+        var sum = 0;
+        var bakiAwal = $("#BakiAwal").val();
+        var pelarasan = $("#Pelarasan").val();
+        var lebihanBersih = $("#LebihanBersih").val();
+
+        sum = parseFloat(bakiAwal) + parseFloat(pelarasan) + parseFloat(lebihanBersih);
+        $("#BakiAkhir").val(sum.toFixed(2));
+    });
+
+    // auto get baki awal based on baki akhir and tahun semasa - 1
+    $("body").on('change', "#Tahun, #JKWId", function () {
+        var tahun = $("#Tahun").val();
+        var jkwId = $("#JKWId").val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetBakiAwalFromPreviousYear", "JKonfigPerubahanEkuiti")',
+            data: { tahun: tahun, JKWId: jkwId },
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result == "OK") {
+                    $("#BakiAwal").val(msg.bakiAwal.toFixed(2));
+                    if (!msg.bakiAwal == 0) {
+                        $("#BakiAwal").prop("readonly", true);
+                    }
+                    else {
+                        $("#BakiAwal").prop("readonly", false);
+                    }
+                    
+                }
+                else {
+                    toastr.error(msg.message);
+                }
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    });
+</script>

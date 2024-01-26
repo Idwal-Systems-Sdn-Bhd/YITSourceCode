@@ -13,8 +13,8 @@ namespace YIT.Akaun.Controllers._01Jadual
     [Authorize]
     public class JNegeriController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "JD005";
-        public const string namamodul = "Jadual Negeri";
+        public const string modul = Modules.kodJNegeri;
+        public const string namamodul = Modules.namaJNegeri;
 
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
