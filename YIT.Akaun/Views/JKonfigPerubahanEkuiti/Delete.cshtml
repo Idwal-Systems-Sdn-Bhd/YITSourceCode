@@ -11,6 +11,12 @@
         <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
         <dl class="row">
             <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.EnLajurJadual)
+            </dt>
+            <dd class="col-sm-10">
+                @Model.EnLajurJadual.GetDisplayName()
+            </dd>
+            <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.JKWId)
             </dt>
             <dd class="col-sm-10">
@@ -22,37 +28,37 @@
             <dd class="col-sm-10">
                 @Model.Tahun
             </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.BakiAwal)
+            @*<dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.KodBakiAwalList)
             </dt>
             <dd class="col-sm-10">
-                @Convert.ToDecimal(Model.BakiAwal).ToString("#,##0.00")
+                Kod Terlibat :
+                @foreach (var s in ViewBag.SelectedKodBakiAwalList)
+                {
+                    <span class="badge ac-secondary">@s</span>
+                }
             </dd>
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Pelarasan)
+                @Html.DisplayNameFor(model => model.KodPelarasanList)
             </dt>
             <dd class="col-sm-10">
-                @Convert.ToDecimal(Model.Pelarasan).ToString("#,##0.00")
+                Kod Terlibat :
+                @foreach (var s in ViewBag.SelectedKodPelarasanList)
+                {
+                    <span class="badge ac-secondary">@s</span>
+                }
             </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.KodLebihanList)
+            </dt>
+            <dd class="col-sm-10">
+                Kod Terlibat :
+                @foreach (var s in ViewBag.SelectedKodLebihanList)
+                {
+                    <span class="badge ac-secondary">@s</span>
+                }
+            </dd>*@
 
-            <dt class="col-sm-2">
-                Baki Dinyatakan RM
-            </dt>
-            <dd class="col-sm-10 fw-bold">
-                @Convert.ToDecimal(Model.BakiAwal + Model.Pelarasan).ToString("#,##0.00")
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.LebihanBersih)
-            </dt>
-            <dd class="col-sm-10">
-                @Convert.ToDecimal(Model.LebihanBersih).ToString("#,##0.00")
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.BakiAkhir)
-            </dt>
-            <dd class="col-sm-10 fw-bold">
-                @Convert.ToDecimal(Model.BakiAkhir).ToString("#,##0.00")
-            </dd>
         </dl>
         <hr />
         <form asp-action="Delete">

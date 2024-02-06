@@ -26,23 +26,11 @@
                             <th class="jkw">
                                 @Html.DisplayNameFor(model => model.JKWId)
                             </th>
+                            <th class="jenis">
+                                @Html.DisplayNameFor(model => model.EnLajurJadual)
+                            </th>
                             <th class="tahun">
                                 @Html.DisplayNameFor(model => model.Tahun)
-                            </th>
-                            <th class="bakiAwal">
-                                @Html.DisplayNameFor(model => model.BakiAwal)
-                            </th>
-                            <th class="pelarasan">
-                                @Html.DisplayNameFor(model => model.Pelarasan)
-                            </th>
-                            <th class="pelarasan">
-                                Baki Dinyatakan RM
-                            </th>
-                            <th class="lebihanBersih">
-                                @Html.DisplayNameFor(model => model.LebihanBersih)
-                            </th>
-                            <th class="bakiAkhir">
-                                @Html.DisplayNameFor(model => model.BakiAkhir)
                             </th>
                             <th width="5%"></th>
                         </tr>
@@ -50,7 +38,7 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            decimal bakiDinyatakan = item.BakiAwal + item.Pelarasan;
+                           
                             var tabletype = item.FlHapus == 1 ? "table-danger" : null;
                             <tr class="@tabletype text-uppercase">
                                 <td></td>
@@ -58,23 +46,12 @@
                                     @BelanjawanFormatter.ConvertToKW(item.JKW?.Kod)
                                 </td>
                                 <td>
+                                    @item.EnLajurJadual.GetDisplayName()
+                                </td>
+                                <td>
                                     @item.Tahun
                                 </td>
-                                <td class="text-end">
-                                    @Convert.ToDecimal(item.BakiAwal).ToString("#,##0.00")
-                                </td>
-                                <td class="text-end">
-                                    @Convert.ToDecimal(item.Pelarasan).ToString("#,##0.00")
-                                </td>
-                                <td class="text-end fw-bold">
-                                    @Convert.ToDecimal(bakiDinyatakan).ToString("#,##0.00")
-                                </td>
-                                <td class="text-end">
-                                    @Convert.ToDecimal(item.LebihanBersih).ToString("#,##0.00")
-                                </td>
-                                <td class="text-end fw-bold">
-                                    @Convert.ToDecimal(item.BakiAkhir).ToString("#,##0.00")
-                                </td>
+
                                 <td width="5%" class="text-center">
                                     <div class="btn-group" role="group" aria-label="action">
                                         @if (item.FlHapus == 0)

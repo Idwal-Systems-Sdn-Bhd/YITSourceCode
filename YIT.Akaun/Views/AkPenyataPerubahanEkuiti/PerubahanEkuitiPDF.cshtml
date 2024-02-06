@@ -1,0 +1,308 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "Cetakan Perubahan Ekuiti";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    var PEKW = Model.PerubahanEkuitiKW;
+    var PERizab = Model.PerubahanEkuitiRizab;
+    var PEAnak = Model.PerubahanEkuitiAnakSyarikat;
+    var PEKBK = Model.PerubahanEkuitiKepentinganBukanKawalan;
+    decimal JumlahBakiAwalTahunSebelum = PEKW.BakiAwalTahunSebelum + PERizab.BakiAwalTahunSebelum + PEAnak.BakiAwalTahunSebelum + PEKBK.BakiAwalTahunSebelum;
+    decimal JumlahPelarasanTahunSebelum = PEKW.PelarasanTahunSebelum + PERizab.PelarasanTahunSebelum + PEAnak.PelarasanTahunSebelum + PEKBK.PelarasanTahunSebelum;
+    decimal JumlahLebihanTahunSebelum = PEKW.LebihanTahunSebelum + PERizab.LebihanTahunSebelum + PEAnak.PelarasanTahunSebelum + PEKBK.PelarasanTahunSebelum;
+
+    decimal JumlahBakiAwalTahunIni = PEKW.BakiAwalTahunIni + PERizab.BakiAwalTahunIni + PEAnak.BakiAwalTahunIni + PEKBK.BakiAwalTahunIni;
+    decimal JumlahPelarasanTahunIni = PEKW.PelarasanTahunIni + PERizab.PelarasanTahunIni + PEAnak.PelarasanTahunIni + PEKBK.PelarasanTahunIni;
+    decimal JumlahLebihanTahunIni = PEKW.LebihanTahunIni + PERizab.LebihanTahunIni + PEAnak.LebihanTahunIni + PEKBK.LebihanTahunIni;
+    decimal JumlahBakiAkhirTahunIni = PEKW.BakiAkhirTahunIni + PERizab.BakiAkhirTahunIni + PEAnak.BakiAkhirTahunIni + PEKBK.BakiAkhirTahunIni;
+
+}
+<style>
+
+    .topic tr {
+        line-height: 0.5rem;
+    }
+
+    .center {
+        padding: 70px 0;
+        border: 3px solid green;
+        text-align: center;
+    }
+
+    .notbold {
+        font-weight: normal
+    }
+
+    .max-lines {
+        display: block; /* or inline-block */
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+        max-height: 5.8em;
+    }
+
+    .breakhere {
+        page-break-after: always
+    }
+
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-row-group
+    }
+
+    tr {
+        page-break-inside: avoid
+    }
+
+    .row {
+        display: -webkit-box; /* wkhtmltopdf uses this one */
+        display: flex;
+        -webkit-box-pack: center; /* wkhtmltopdf uses this one */
+        justify-content: center;
+    }
+
+        .row > div {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+
+            .row > div:last-child {
+                margin-right: 0;
+            }
+</style>
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
+    </div>
+</div>
+<br />
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN PENYATA PERUBAHAN EKUITI BAGI TAHUN BERAKHIR 31 DISEMBER @ViewData["Tahun"]
+                    <br />
+                    MENGIKUT KUMP. WANG : @ViewData["NamaKW"]
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+
+<div class="row flex-row">
+    <div class="col-12">
+        <table class="table table-borderless table-sm topic">
+            <thead>
+                <tr>
+                    <th class="text-uppercase"></th>
+                    <th class="text-center">@PEKW.Perihal</th>
+                    <th class="text-center">@PERizab.Perihal</th>
+                    <th class="text-center">@PEAnak.Perihal</th>
+                    <th class="text-center">@PEKBK.Perihal</th>
+                    <th class="text-center">Jumlah</th>
+                </tr>
+                <tr class="text-right">
+                    <th class="text-uppercase">NOTA</th>
+                    <th class="text-center">RM</th>
+                    <th class="text-center">RM</th>
+                    <th class="text-center">RM</th>
+                    <th class="text-center">RM</th>
+                    <th class="text-center">RM</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Baki Pada 1 Januari @PEKW?.TahunSebelum</td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEKW?.BakiAwalTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PERizab?.BakiAwalTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEAnak?.BakiAwalTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEKBK?.BakiAwalTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(JumlahBakiAwalTahunSebelum).ToString("#,##0.00")
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Pelarasan Tahun Lepas
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEKW?.PelarasanTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PERizab?.PelarasanTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEAnak?.PelarasanTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEKBK?.PelarasanTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(JumlahPelarasanTahunSebelum).ToString("#,##0.00")
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Lebihan Bagi Tahun @PEKW?.TahunSebelum
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEKW?.LebihanTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PERizab?.LebihanTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEAnak?.LebihanTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEKBK?.LebihanTahunSebelum).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(JumlahLebihanTahunSebelum).ToString("#,##0.00")
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Baki Pada 31 Disember @PEKW?.TahunSebelum
+                    </td>
+                    <td class="text-right border-top font-weight-bold">
+                        @Convert.ToDecimal(PEKW?.BakiAwalTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right border-top font-weight-bold">
+                        @Convert.ToDecimal(PERizab?.BakiAwalTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right border-top font-weight-bold">
+                        @Convert.ToDecimal(PEAnak?.BakiAwalTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right border-top font-weight-bold">
+                        @Convert.ToDecimal(PEKBK?.BakiAwalTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right border-top font-weight-bold">
+                        @Convert.ToDecimal(JumlahBakiAwalTahunIni).ToString("#,##0.00")
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        Pelarasan Tahun Lepas
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEKW?.PelarasanTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PERizab?.PelarasanTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEAnak?.PelarasanTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEKBK?.PelarasanTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(JumlahPelarasanTahunIni).ToString("#,##0.00")
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Lebihan Bagi Tahun @PEKW?.TahunIni
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEKW?.LebihanTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PERizab?.LebihanTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEAnak?.LebihanTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(PEKBK?.LebihanTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(JumlahLebihanTahunIni).ToString("#,##0.00")
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Baki pada 31 Disember @PEKW?.TahunIni
+                    </td>
+                    <td class="text-right border-top border-bottom font-weight-bold">
+                        @Convert.ToDecimal(PEKW?.BakiAkhirTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right border-top border-bottom font-weight-bold">
+                        @Convert.ToDecimal(PERizab?.BakiAkhirTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right border-top border-bottom font-weight-bold">
+                        @Convert.ToDecimal(PEAnak?.BakiAkhirTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right border-top border-bottom font-weight-bold">
+                        @Convert.ToDecimal(PEKBK?.BakiAkhirTahunIni).ToString("#,##0.00")
+                    </td>
+                    <td class="text-right border-top border-bottom font-weight-bold">
+                        @Convert.ToDecimal(JumlahBakiAkhirTahunIni).ToString("#,##0.00")
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<hr />
+<div class="table-responsive-sm">
+    <table class="table table-sm topic table-bordered">
+        <thead class="table-dark">
+
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center" width="33%">Disedia </td>
+                <td class="text-center" width="33%">Disemak </td>
+                <td class="text-center" width="33%">Diluluskan </td>
+            </tr>
+            <tr>
+                <td class="text-center" height="50px"></td>
+
+                <td class="text-center" height="50px"></td>
+                <td class="text-center" height="50px"></td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Tarikh: @DateTime.Now</td>
+                <td class="text-left">Tarikh:</td>
+                <td class="text-left">Tarikh:</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

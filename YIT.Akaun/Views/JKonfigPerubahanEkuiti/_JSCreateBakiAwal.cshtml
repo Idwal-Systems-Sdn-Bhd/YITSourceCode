@@ -1,0 +1,169 @@
+﻿<script type="text/javascript">
+    // operasi tambah baki awal
+    // on click radio button bakiAwalTambahIsPukal
+    $("body").on('change', "#bakiAwalTambahIsPukal", function () {
+        ClearBakiAwalTambah();
+        switch ($(this).val()) {
+            case "false":
+                $('#divBakiAwalTambahPukal').prop('hidden', true);
+                break;
+            case "true":
+                $('#divBakiAwalTambahPukal').removeAttr('hidden');
+                break;
+        }
+    });
+    //
+
+    function ClearBakiAwalTambah() {
+        $('#bakiAwalTambahEnJenisCartaList').val(null).trigger('change');
+        $('#bakiAwalTambahKodList').val(null).trigger('change');
+        $('#bakiAwalTambahIsKecuali').val("false").change();
+    }
+
+    function DisableBakiAwalTambah() {
+        $('.bakiAwalTambahIsPukal').prop('disabled', true);
+        $('#bakiAwalTambahEnJenisCartaList').prop('disabled', true);
+        $('#bakiAwalTambahKodList').prop('disabled', true);
+        $('.bakiAwalTambahIsKecuali').prop('disabled', true);
+    }
+
+    function EnableBakiAwalTambah() {
+        $('.bakiAwalTambahIsPukal').prop('disabled', false);
+        $('#bakiAwalTambahEnJenisCartaList').prop('disabled', false);
+        $('#bakiAwalTambahKodList').prop('disabled', false);
+        $('.bakiAwalTambahIsKecuali').prop('disabled', false);
+    }
+
+    function GetTambahKodBakiAwalDetails() {
+        var enBaris = "@EnBarisPerubahanEkuiti.BakiAwal.GetDisplayCode()";
+        var isPukal = $('input[name="bakiAwalTambahIsPukal"]:checked').val();
+        var enJenisCartaList = $('#bakiAwalTambahEnJenisCartaList').val().join(",");
+        var kodList = $('#bakiAwalTambahKodList').val().join(",");
+        var isKecuali = $('input[name="bakiAwalTambahIsKecuali"]:checked').val();
+        var enJenisOperasi = "@EnJenisOperasi.Tambah.GetDisplayCode()";
+        var Baris = {
+            EnBaris: enBaris,
+            IsPukal: isPukal,
+            EnJenisCartaList: enJenisCartaList,
+            IsKecuali: isKecuali,
+            KodList: kodList,
+            EnJenisOperasi: enJenisOperasi
+        }
+        return Baris;
+    }
+    function LockTambahKodBakiAwal() {
+        var Baris = GetTambahKodBakiAwalDetails();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveBaris","JKonfigPerubahanEkuiti")',
+            data: Baris,
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result === "OK") {
+                    $('#bakiAwalTambah').val(msg.record);
+                } else {
+                    toastr.error(msg.message);
+                }
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+
+        $('#divBukaBakiAwalTambah').removeAttr('hidden');
+        $('#divKunciBakiAwalTambah').prop('hidden', true);
+        DisableBakiAwalTambah();
+    }
+
+    function UnlockTambahKodBakiAwal() {
+        $('#divBukaBakiAwalTambah').prop('hidden', true);
+        $('#divKunciBakiAwalTambah').removeAttr('hidden');
+        EnableBakiAwalTambah();
+    }
+    // operasi tambah baki awal end
+
+    // operasi tolak baki awal
+    // on click radio button bakiAwalTolakIsPukal
+    $("body").on('change', "#bakiAwalTolakIsPukal", function () {
+        ClearBakiAwalTolak();
+        switch ($(this).val()) {
+            case "false":
+                $('#divBakiAwalTolakPukal').prop('hidden', true);
+                break;
+            case "true":
+                $('#divBakiAwalTolakPukal').removeAttr('hidden');
+                break;
+        }
+    });
+    //
+
+    function ClearBakiAwalTolak() {
+        $('#bakiAwalTolakEnJenisCartaList').val(null).trigger('change');
+        $('#bakiAwalTolakKodList').val(null).trigger('change');
+        $('#bakiAwalTolakIsKecuali').val("false").change();
+    }
+
+    function DisableBakiAwalTolak() {
+        $('.bakiAwalTolakIsPukal').prop('disabled', true);
+        $('#bakiAwalTolakEnJenisCartaList').prop('disabled', true);
+        $('#bakiAwalTolakKodList').prop('disabled', true);
+        $('.bakiAwalTolakIsKecuali').prop('disabled', true);
+    }
+
+    function EnableBakiAwalTolak() {
+        $('.bakiAwalTolakIsPukal').prop('disabled', false);
+        $('#bakiAwalTolakEnJenisCartaList').prop('disabled', false);
+        $('#bakiAwalTolakKodList').prop('disabled', false);
+        $('.bakiAwalTolakIsKecuali').prop('disabled', false);
+    }
+
+    function GetTolakKodBakiAwalDetails() {
+        var enBaris = "@EnBarisPerubahanEkuiti.BakiAwal.GetDisplayCode()";
+        var isPukal = $('input[name="bakiAwalTolakIsPukal"]:checked').val();
+        var enJenisCartaList = $('#bakiAwalTolakEnJenisCartaList').val().join(",");
+        var kodList = $('#bakiAwalTolakKodList').val().join(",");
+        var isKecuali = $('input[name="bakiAwalTolakIsKecuali"]:checked').val();
+        var enJenisOperasi = "@EnJenisOperasi.Tolak.GetDisplayCode()";
+        var Baris = {
+            EnBaris: enBaris,
+            IsPukal: isPukal,
+            EnJenisCartaList: enJenisCartaList,
+            IsKecuali: isKecuali,
+            KodList: kodList,
+            EnJenisOperasi: enJenisOperasi
+        }
+        return Baris;
+    }
+    function LockTolakKodBakiAwal() {
+        var Baris = GetTolakKodBakiAwalDetails();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveBaris","JKonfigPerubahanEkuiti")',
+            data: Baris,
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result === "OK") {
+                    $('#bakiAwalTolak').val(msg.record);
+                } else {
+                    toastr.error(msg.message);
+                }
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+
+        $('#divBukaBakiAwalTolak').removeAttr('hidden');
+        $('#divKunciBakiAwalTolak').prop('hidden', true);
+        DisableBakiAwalTolak();
+    }
+
+    function UnlockTolakKodBakiAwal() {
+        $('#divBukaBakiAwalTolak').prop('hidden', true);
+        $('#divKunciBakiAwalTolak').removeAttr('hidden');
+        EnableBakiAwalTolak();
+    }
+    // operasi tambah baki awal end
+
+    
+</script>

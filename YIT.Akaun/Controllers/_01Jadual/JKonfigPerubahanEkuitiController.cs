@@ -2,11 +2,17 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
 using YIT.__Domain.Entities.Models._01Jadual;
+using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
+using YIT._DataAccess.Services;
+using YIT._DataAccess.Services.Cart;
+using YIT._DataAccess.Services.Math;
+using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
@@ -19,18 +25,21 @@ namespace YIT.Akaun.Controllers._01Jadual
         private readonly ApplicationDbContext _context;
         private readonly _AppLogIRepository<AppLog, int> _appLog;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly CartJKonfigPerubahanEkuiti _cart;
 
         public JKonfigPerubahanEkuitiController(
             _IUnitOfWork unitOfWork,
             ApplicationDbContext context,
             _AppLogIRepository<AppLog, int> appLog,
-            UserManager<IdentityUser> userManager
+            UserManager<IdentityUser> userManager,
+            CartJKonfigPerubahanEkuiti cart
             )
         {
             _unitOfWork = unitOfWork;
             _context = context;
             _appLog = appLog;
             _userManager = userManager;
+            _cart = cart;
         }
 
         public IActionResult Index()
@@ -55,27 +64,58 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(konfigPerubahanEkuiti);
         }
 
+
         // GET: KonfigPerubahanEkuiti/Create
         public IActionResult Create()
         {
+            EmptyCart();
             PopulateDropdownList();
             return View();
         }
 
+        // jsonResult
+        public JsonResult EmptyCart()
+        {
+            try
+            {
+                _cart.ClearBaris();
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+
         public void PopulateDropdownList()
         {
             ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
+            var jenisEkuiti = EnumHelper<EnJenisLajurJadualPerubahanEkuiti>.GetList();
+
+            ViewBag.EnLajurJadual = jenisEkuiti;
+
+            var jenisCarta = EnumHelper<EnJenisCarta>.GetList();
+
+            ViewBag.EnJenisCartaList = jenisCarta;
+
+            ViewBag.KodList = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
         }
 
         // POST: KonfigPerubahanEkuiti/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(JKonfigPerubahanEkuiti konfigPerubahanEkuiti, string syscode)
+        public async Task<IActionResult> Create(JKonfigPerubahanEkuiti konfigPerubahanEkuiti, 
+            string syscode)
         {
-            if (konfigPerubahanEkuiti.Tahun != null && TahunJKWKonfigPerubahanEkuitiExists(konfigPerubahanEkuiti.Tahun, konfigPerubahanEkuiti.JKWId) == false)
+            if (konfigPerubahanEkuiti.Tahun != null && TahunEnJenisEkuitiKonfigPerubahanEkuitiExists(konfigPerubahanEkuiti.Tahun, konfigPerubahanEkuiti.EnLajurJadual) == false)
             {
                 if (ModelState.IsValid)
                 {
+
+                    konfigPerubahanEkuiti.JKonfigPerubahanEkuitiBaris = _cart.JKonfigPerubahanEkuitiBaris?.ToList();
+
                     var user = await _userManager.GetUserAsync(User);
                     int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
@@ -83,11 +123,9 @@ namespace YIT.Akaun.Controllers._01Jadual
 
                     konfigPerubahanEkuiti.TarMasuk = DateTime.Now;
                     konfigPerubahanEkuiti.DPekerjaMasukId = pekerjaId;
-
-                    var jkw = _unitOfWork.JKWRepo.GetById(konfigPerubahanEkuiti.JKWId);
-
+                    
                     _context.Add(konfigPerubahanEkuiti);
-                    _appLog.Insert("Tambah", jkw.Kod + " - " + konfigPerubahanEkuiti.Tahun, jkw.Kod ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Tambah", konfigPerubahanEkuiti.EnLajurJadual.GetDisplayName() + " - " + konfigPerubahanEkuiti.Tahun, konfigPerubahanEkuiti.EnLajurJadual.GetDisplayName() ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya ditambah..!";
                     return RedirectToAction(nameof(Index));
@@ -118,9 +156,47 @@ namespace YIT.Akaun.Controllers._01Jadual
                 return NotFound();
             }
             PopulateDropdownList();
+            EmptyCart();
+            PopulateCartJKonfigPerubahanEkuitiFromDb(konfigPerubahanEkuiti);
             return View(konfigPerubahanEkuiti);
         }
 
+        private void PopulateCartJKonfigPerubahanEkuitiFromDb(JKonfigPerubahanEkuiti konfigPerubahanEkuiti)
+        {
+            if (konfigPerubahanEkuiti.JKonfigPerubahanEkuitiBaris != null)
+            {
+                foreach (var item in konfigPerubahanEkuiti.JKonfigPerubahanEkuitiBaris)
+                {
+                    _cart.AddItemBaris(konfigPerubahanEkuiti.Id, item.EnBaris, item.EnJenisOperasi, item.IsPukal, item.EnJenisCartaList, item.IsKecuali, item.KodList, item.SetKodList);
+                }
+            }
+            PopulateListViewFromCart();
+        }
+
+        private void PopulateListViewFromCart()
+        {
+            List<JKonfigPerubahanEkuitiBaris> baris = _cart.JKonfigPerubahanEkuitiBaris.ToList();
+
+            string barisBefore = "";
+
+            foreach (var item in baris.OrderBy(b => b.EnBaris).ThenBy(b => b.EnJenisOperasi))
+            {
+                
+                    string barisSentences = item.EnBaris.GetDisplayName();
+                    if (barisSentences == barisBefore)
+                    {
+                        barisSentences = "";
+                    }
+                    string sentence = _unitOfWork.JKonfigPerubahanEkuitiRepo.FormulaInSentence(item.EnJenisOperasi, item.EnJenisCartaList, item.IsKecuali, item.KodList);
+
+                    item.BarisDescription = barisSentences;
+                    item.FormulaDescription = sentence;
+
+                    barisBefore = item.EnBaris.GetDisplayName();
+            }
+
+            ViewBag.jKonfigPerubahanEkuitiBaris = baris.OrderBy(b => b.EnBaris).ThenBy(b => b.EnJenisOperasi);
+        }
         // POST: KonfigPerubahanEkuiti/Edit/5
         [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
@@ -139,16 +215,27 @@ namespace YIT.Akaun.Controllers._01Jadual
                     var user = await _userManager.GetUserAsync(User);
                     int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-                    var objAsal = await _context.JKonfigPerubahanEkuiti.FirstOrDefaultAsync(x => x.Id == konfigPerubahanEkuiti.Id);
+                    var objAsal = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetAllDetailsById(konfigPerubahanEkuiti.Id);
                     var tahunAsal = objAsal?.Tahun;
                     if (objAsal != null)
                     {
                         konfigPerubahanEkuiti.UserId = objAsal.UserId;
                         konfigPerubahanEkuiti.TarMasuk = objAsal.TarMasuk;
                         konfigPerubahanEkuiti.DPekerjaMasukId = objAsal.DPekerjaMasukId;
+                        
+                        if (objAsal.JKonfigPerubahanEkuitiBaris != null && objAsal.JKonfigPerubahanEkuitiBaris.Count > 0)
+                        {
+                            foreach (var item in objAsal.JKonfigPerubahanEkuitiBaris)
+                            {
+                                var model = _context.JKonfigPerubahanEkuitiBaris.FirstOrDefault(b => b.Id == item.Id);
+                                if (model != null) _context.Remove(model);
+                            }
+                        }
+
                         _context.Entry(objAsal).State = EntityState.Detached;
                     }
 
+                    konfigPerubahanEkuiti.JKonfigPerubahanEkuitiBaris = _cart.JKonfigPerubahanEkuitiBaris?.ToList();
                     konfigPerubahanEkuiti.UserIdKemaskini = user?.UserName ?? "";
 
                     konfigPerubahanEkuiti.TarKemaskini = DateTime.Now;
@@ -191,7 +278,6 @@ namespace YIT.Akaun.Controllers._01Jadual
             {
                 return NotFound();
             }
-
             return View(konfigPerubahanEkuiti);
         }
 
@@ -210,9 +296,9 @@ namespace YIT.Akaun.Controllers._01Jadual
                 konfigPerubahanEkuiti.UserIdKemaskini = user?.UserName ?? "";
                 konfigPerubahanEkuiti.TarKemaskini = DateTime.Now;
                 konfigPerubahanEkuiti.DPekerjaKemaskiniId = pekerjaId;
-                var jkw = _unitOfWork.JKWRepo.GetById(konfigPerubahanEkuiti.JKWId);
+
                 _context.JKonfigPerubahanEkuiti.Remove(konfigPerubahanEkuiti);
-                _appLog.Insert("Hapus", jkw.Kod + " - " + konfigPerubahanEkuiti.Tahun, jkw?.Kod ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+                _appLog.Insert("Hapus", konfigPerubahanEkuiti.EnLajurJadual.GetDisplayName() + " - " + konfigPerubahanEkuiti.Tahun, konfigPerubahanEkuiti.EnLajurJadual.GetDisplayName(), id, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya dihapuskan..!";
             }
@@ -238,10 +324,9 @@ namespace YIT.Akaun.Controllers._01Jadual
                 obj.DPekerjaKemaskiniId = pekerjaId;
 
                 _context.JKonfigPerubahanEkuiti.Update(obj);
-                var jkw = _unitOfWork.JKWRepo.GetById(obj.JKWId);
 
                 // Batal operation end
-                _appLog.Insert("Rollback", jkw.Kod + " - " + obj.Tahun, jkw.Kod ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
+                _appLog.Insert("Rollback", obj.EnLajurJadual.GetDisplayName() + " - " + obj.Tahun, obj.EnLajurJadual.GetDisplayName(), id, 0, pekerjaId, modul, syscode, namamodul, user);
 
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya dikembalikan..!";
@@ -254,30 +339,139 @@ namespace YIT.Akaun.Controllers._01Jadual
             return _unitOfWork.JKonfigPerubahanEkuitiRepo.IsExist(b => b.Id == id);
         }
 
-        private bool TahunJKWKonfigPerubahanEkuitiExists(string tahun, int JKWId)
+        private bool TahunEnJenisEkuitiKonfigPerubahanEkuitiExists(string tahun, EnJenisLajurJadualPerubahanEkuiti enJenisEkuiti)
         {
-            return _unitOfWork.JKonfigPerubahanEkuitiRepo.IsExist(e => e.Tahun == tahun && e.JKWId == JKWId);
+            return _unitOfWork.JKonfigPerubahanEkuitiRepo.IsExist(e => e.Tahun == tahun && e.EnLajurJadual == enJenisEkuiti);
         }
 
-        public JsonResult GetBakiAwalFromPreviousYear(string? tahun, int? JKWId)
+        public JsonResult SaveBaris(JKonfigPerubahanEkuitiBaris baris)
         {
             try
             {
-                string tahunLepas = (int.Parse(tahun ?? DateTime.Now.ToString("yyyy")) - 1).ToString();
-                var konfigPerubahanEkuitiTahunLepas = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetAllDetailsByTahunAndJKW(tahunLepas,JKWId);
-                decimal bakiAwal = 0;
-                if (konfigPerubahanEkuitiTahunLepas != null)
+                if (baris != null)
                 {
-                    bakiAwal = konfigPerubahanEkuitiTahunLepas.BakiAkhir;
+                    var barisCart = _cart.JKonfigPerubahanEkuitiBaris.FirstOrDefault(b => b.EnBaris == baris.EnBaris && b.EnJenisOperasi == baris.EnJenisOperasi);
 
+                    if (barisCart != null)
+                    {
+                        _cart.RemoveItemBaris(baris.EnBaris, baris.EnJenisOperasi);
+                    }
+
+                    baris.SetKodList = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetSetOfCartaList(baris.EnBaris, baris.EnJenisOperasi, baris.IsPukal, baris.EnJenisCartaList, baris.IsKecuali, baris.KodList);
+
+                    _cart.AddItemBaris(0, baris.EnBaris, baris.EnJenisOperasi, baris.IsPukal, baris.EnJenisCartaList, baris.IsKecuali, baris.KodList, baris.SetKodList);
                 }
-
-                return Json(new { result = "OK", bakiAwal });
-            }
-            catch (Exception ex)
+                return Json(new { result = "OK", record = EnBarisPerubahanEkuiti.BakiAwal });
+            } catch (Exception ex)
             {
                 return Json(new { result = "Error", message = ex.Message });
             }
         }
+        public JsonResult GetItemsBasedOnYear(string? tahun, EnJenisLajurJadualPerubahanEkuiti? enJenisEkuiti)
+        {
+            try
+            {
+                var result = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetAllDetailsByTahunOrJenisEkuiti(tahun, enJenisEkuiti);
+
+                if (result.Id == 0)
+                {
+                    result = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetAllDetailsByTahunOrJenisEkuiti((int.Parse(tahun ?? DateTime.Now.Year.ToString()) - 1).ToString(), enJenisEkuiti);
+                    if (result.Id == 0)
+                    {
+                        result = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetAllDetailsByTahunOrJenisEkuiti(tahun, null);
+                        if ( result.Id == 0)
+                        {
+                            result = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetAllDetailsByTahunOrJenisEkuiti((int.Parse(tahun ?? DateTime.Now.Year.ToString()) - 1).ToString(), null);
+                        }
+                    }
+                }
+
+                if(result != null)
+                {
+                    PopulateCartJKonfigPerubahanEkuitiFromDb(result);
+                }
+
+                return Json(new { result = "OK", record = result });
+
+            } catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+            
+
+            
+        }
+
+        public JsonResult GetAllItemCartJKonfigPerubahanEkuiti()
+        {
+
+            try
+            {
+                List<JKonfigPerubahanEkuitiBaris> baris = _cart.JKonfigPerubahanEkuitiBaris.ToList();
+
+                string barisBefore = "";
+
+                foreach (var item in baris.OrderBy(b => b.EnBaris).ThenBy(b => b.EnJenisOperasi))
+                {
+
+                    string barisSentences = item.EnBaris.GetDisplayName();
+                    if (barisSentences == barisBefore)
+                    {
+                        barisSentences = "";
+                    }
+                    string sentence = _unitOfWork.JKonfigPerubahanEkuitiRepo.FormulaInSentence(item.EnJenisOperasi, item.EnJenisCartaList, item.IsKecuali, item.KodList);
+
+                    item.BarisDescription = barisSentences;
+                    item.FormulaDescription = sentence;
+
+                    barisBefore = item.EnBaris.GetDisplayName();
+                }
+
+                return Json(new { result = "OK", baris = baris.OrderBy(d => d.EnBaris).ThenBy(d => d.EnJenisOperasi) });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        public JsonResult GetAnItemFromCartJKonfigPerubahanEkuitiBaris(JKonfigPerubahanEkuitiBaris baris)
+        {
+
+            try
+            {
+                JKonfigPerubahanEkuitiBaris data = _cart.JKonfigPerubahanEkuitiBaris.FirstOrDefault(x => x.EnBaris == baris.EnBaris && x.EnJenisOperasi == baris.EnJenisOperasi) ?? new JKonfigPerubahanEkuitiBaris();
+
+                return Json(new { result = "OK", record = data });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+
+        public JsonResult SaveAnItemFromCartJKonfigPerubahanEkuitiBaris(JKonfigPerubahanEkuitiBaris baris)
+        {
+            try
+            {
+                var data = _cart.JKonfigPerubahanEkuitiBaris.FirstOrDefault(x => x.EnBaris == baris.EnBaris && x.EnJenisOperasi == baris.EnJenisOperasi);
+
+                if (data != null)
+                {
+                    _cart.RemoveItemBaris(baris.EnBaris, baris.EnJenisOperasi);
+
+                    baris.SetKodList = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetSetOfCartaList(baris.EnBaris, baris.EnJenisOperasi, baris.IsPukal, baris.EnJenisCartaList, baris.IsKecuali, baris.KodList);
+
+                    _cart.AddItemBaris(baris.JKonfigPerubahanEkuitiId,baris.EnBaris,baris.EnJenisOperasi, baris.IsPukal, baris.EnJenisCartaList,baris.IsKecuali,baris.KodList, baris.SetKodList);
+                }
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
     }
 }

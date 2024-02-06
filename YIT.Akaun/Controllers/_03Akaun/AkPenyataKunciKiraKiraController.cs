@@ -148,13 +148,14 @@ namespace YIT.Akaun.Controllers._03Akaun
         {
             var kunciKiraKira = new List<_AkKunciKiraKira>();
 
+            dynamic dyModel = new ExpandoObject();
+
             PopulateSelectList(form.JKWId, form.JBahagianId, form.TarHingga1);
 
             if (form.JKWId.HasValue && form.TarHingga1.HasValue)
             {
                 kunciKiraKira = await _penyata.GetAkKunciKiraKira(form.JKWId, form.JPTJId, form.TarHingga1);
 
-                dynamic dyModel = new ExpandoObject();
                 dyModel.KunciKirakira = kunciKiraKira;
                 dyModel.KunciKirakiraGrouped = kunciKiraKira.GroupBy(b => b.Order);
 
@@ -190,7 +191,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 TempData[SD.Error] = "Kump. Wang Tidak Wujud.";
 
-                return View(kunciKiraKira);
+                return View(dyModel);
             }
         }
     }

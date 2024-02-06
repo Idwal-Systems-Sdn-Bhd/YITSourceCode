@@ -30,6 +30,7 @@ namespace YIT.__Domain.Entities._Statics
         // initial Company Details
         public const string CompSystemCode = "SPMB";
         public const string CompName = "Yayasan Islam Terengganu";
+        public const string CompInitial = "YIT";
         public const string CompRegNo = "000586846208";
         public const string CompAddress1 = "Tingkat 9,10 & 11";
         public const string CompAddress2 = "Menara Yayasan Islam Terengganu";

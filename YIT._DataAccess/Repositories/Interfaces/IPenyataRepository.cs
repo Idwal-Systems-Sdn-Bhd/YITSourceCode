@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YIT.__Domain.Entities._Enums;
+﻿using YIT.__Domain.Entities._Enums;
+using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT._DataAccess.Repositories.Interfaces
@@ -22,6 +18,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         Task<List<_AkTimbangDuga>> GetAkTimbangDuga(int? JKWId, int? JPTJId, DateTime? tarHingga, EnParas enParas);
         Task<List<_AkUntungRugi>> GetAkUntungRugi(int? JKWId, int? JPTJId, DateTime? tarDari, DateTime? tarHingga);
         Task<List<_AkKunciKiraKira>> GetAkKunciKiraKira(int? JKWId, int? JPTJId, DateTime? tarHingga);
+        Task<_AkPerubahanEkuiti> GetAkPerubahanEkuiti(EnJenisLajurJadualPerubahanEkuiti enJenisEkuiti, int? JKWId, string? Tahun);
         // Penyata Buku Tunai END
     }
 }

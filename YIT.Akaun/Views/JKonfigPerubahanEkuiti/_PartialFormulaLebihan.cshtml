@@ -1,0 +1,147 @@
+﻿<div class="form-group">
+    <label class="control-label">3. Lebihan Bagi Tahun</label>
+</div>
+
+<div class="row">
+    <input id="lebihan" value="@EnBarisPerubahanEkuiti.Lebihan.GetDisplayCode()" hidden />
+    <div class="col-lg-6">
+        <!--Tambah kod lebihan-->
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <h5 class="btn btn-block ac-primary fw-bold">Operasi Tambah</h5>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Kaedah Pemilihan</label>
+                    <div class="form-check">
+                        <input class="form-check-input lebihanTambahIsPukal" type="radio" id="lebihanTambahIsPukal" name="lebihanTambahIsPukal" value="false" checked>
+                        <label class="form-check-label" for="lebihanTambahIsPukal">
+                            Satu - persatu
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input lebihanTambahIsPukal" type="radio" id="lebihanTambahIsPukal" name="lebihanTambahIsPukal" value="true">
+                        <label class="form-check-label" for="lebihanTambahIsPukal">
+                            Pukal
+                        </label>
+                    </div>
+
+                </div>
+
+                <div id="divLebihanTambahPukal" hidden>
+                    <div class="form-group">
+                        <label>Jenis Kod</label>
+                        <select id="lebihanTambahEnJenisCartaList" class="form-control form-control-sm select2" multiple="multiple">
+                            @foreach (var s in ViewBag.EnJenisCartaList)
+                            {
+                                <option value="@s.id">@s.perihal </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Ada Pengecualian?</label>
+                        <div class="form-check">
+                            <input class="form-check-input lebihanTambahIsKecuali" type="radio" id="lebihanTambahIsKecuali" name="lebihanTambahIsKecuali" value="false" checked>
+                            <label class="form-check-label" for="lebihanTambahIsKecuali">
+                                Tidak
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input lebihanTambahIsKecuali" type="radio" id="lebihanTambahIsKecuali" name="lebihanTambahIsKecuali" value="true">
+                            <label class="form-check-label" for="lebihanTambahIsKecuali">
+                                Ya
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Pilih Kod Akaun</label>
+                    <select id="lebihanTambahKodList" class="form-control form-control-sm select2" multiple="multiple">
+                        @foreach (var s in ViewBag.KodList)
+                        {
+                            <option value="@s.Id">@s.Kod -  @s.Perihal </option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group" id="divKunciLebihanTambah">
+                    <button type="button" class="btn ac-success btn-sm" onclick="LockTambahKodLebihan()">Kunci Formula</button>
+                </div>
+                <div class="form-group" id="divBukaLebihanTambah" hidden>
+                    <button type="button" class="btn ac-secondary btn-sm" onclick="UnlockTambahKodLebihan()">Buka Semula</button>
+                </div>
+            </div>
+        </div>
+        <!--Tambah kod lebihan end-->
+    </div>
+    <div class="col-lg-6">
+        <!--Tolak kod lebihan-->
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <h5 class="btn btn-block ac-danger fw-bold">Operasi Tolak</h5>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Kaedah Pemilihan</label>
+                    <div class="form-check">
+                        <input class="form-check-input lebihanTolakIsPukal" type="radio" id="lebihanTolakIsPukal" name="lebihanTolakIsPukal" value="false" checked>
+                        <label class="form-check-label" for="lebihanTolakIsPukal">
+                            Satu - persatu
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input lebihanTolakIsPukal" type="radio" id="lebihanTolakIsPukal" name="lebihanTolakIsPukal" value="true">
+                        <label class="form-check-label" for="lebihanTolakIsPukal">
+                            Pukal
+                        </label>
+                    </div>
+
+                </div>
+
+                <div id="divLebihanTolakPukal" hidden>
+                    <div class="form-group">
+                        <label>Jenis Kod</label>
+                        <select id="lebihanTolakEnJenisCartaList" class="form-control form-control-sm select2" multiple="multiple">
+                            @foreach (var s in ViewBag.EnJenisCartaList)
+                            {
+                                <option value="@s.id">@s.perihal </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Ada Pengecualian?</label>
+                        <div class="form-check">
+                            <input class="form-check-input lebihanTolakIsKecuali" type="radio" id="lebihanTolakIsKecuali" name="lebihanTolakIsKecuali" value="false" checked>
+                            <label class="form-check-label" for="lebihanTolakIsKecuali">
+                                Tidak
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input lebihanTolakIsKecuali" type="radio" id="lebihanTolakIsKecuali" name="lebihanTolakIsKecuali" value="true">
+                            <label class="form-check-label" for="lebihanTolakIsKecuali">
+                                Ya
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Pilih Kod Akaun</label>
+                    <select id="lebihanTolakKodList" class="form-control form-control-sm select2" multiple="multiple">
+                        @foreach (var s in ViewBag.KodList)
+                        {
+                            <option value="@s.Id">@s.Kod -  @s.Perihal </option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group" id="divKunciLebihanTolak">
+                    <button type="button" class="btn ac-success btn-sm" onclick="LockTolakKodLebihan()">Kunci Formula</button>
+                </div>
+                <div class="form-group" id="divBukaLebihanTolak" hidden>
+                    <button type="button" class="btn ac-secondary btn-sm" onclick="UnlockTolakKodLebihan()">Buka Semula</button>
+                </div>
+                <!--Tolak kod lebihan end-->
+            </div>
+        </div>
+    </div>
+</div>

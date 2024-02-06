@@ -1,0 +1,202 @@
+﻿<script type="text/javascript">
+    // operasi tambah lebihan
+    // on click radio button lebihanTambahIsPukal
+    $("body").on('change', "#lebihanTambahIsPukal", function () {
+        ClearLebihanTambah();
+        switch ($(this).val()) {
+            case "false":
+                $('#divLebihanTambahPukal').prop('hidden', true);
+                break;
+            case "true":
+                $('#divLebihanTambahPukal').removeAttr('hidden');
+                break;
+        }
+    });
+    //
+
+    function ClearLebihanTambah() {
+        $('#lebihanTambahEnJenisCartaList').val(null).trigger('change');
+        $('#lebihanTambahKodList').val(null).trigger('change');
+        $('#lebihanTambahIsKecuali').val("false").change();
+    }
+
+    function DisableLebihanTambah() {
+        $('.lebihanTambahIsPukal').prop('disabled', true);
+        $('#lebihanTambahEnJenisCartaList').prop('disabled', true);
+        $('#lebihanTambahKodList').prop('disabled', true);
+        $('.lebihanTambahIsKecuali').prop('disabled', true);
+    }
+
+    function EnableLebihanTambah() {
+        $('.lebihanTambahIsPukal').prop('disabled', false);
+        $('#lebihanTambahEnJenisCartaList').prop('disabled', false);
+        $('#lebihanTambahKodList').prop('disabled', false);
+        $('.lebihanTambahIsKecuali').prop('disabled', false);
+    }
+
+    function GetTambahKodLebihanDetails() {
+        var enBaris = "@EnBarisPerubahanEkuiti.Lebihan.GetDisplayCode()";
+        var isPukal = $('input[name="lebihanTambahIsPukal"]:checked').val();
+        var enJenisCartaList = $('#lebihanTambahEnJenisCartaList').val().join(",");
+        var kodList = $('#lebihanTambahKodList').val().join(",");
+        var isKecuali = $('input[name="lebihanTambahIsKecuali"]:checked').val();
+        var enJenisOperasi = "@EnJenisOperasi.Tambah.GetDisplayCode()";
+        var Baris = {
+            EnBaris: enBaris,
+            IsPukal: isPukal,
+            EnJenisCartaList: enJenisCartaList,
+            IsKecuali: isKecuali,
+            KodList: kodList,
+            EnJenisOperasi: enJenisOperasi
+        }
+        return Baris;
+    }
+    function LockTambahKodLebihan() {
+        var Baris = GetTambahKodLebihanDetails();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveBaris","JKonfigPerubahanEkuiti")',
+            data: Baris,
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result === "OK") {
+                    $('#lebihanTambah').val(msg.record);
+                } else {
+                    toastr.error(msg.message);
+                }
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+
+        $('#divBukaLebihanTambah').removeAttr('hidden');
+        $('#divKunciLebihanTambah').prop('hidden', true);
+        DisableLebihanTambah();
+    }
+
+    function UnlockTambahKodLebihan() {
+        $('#divBukaLebihanTambah').prop('hidden', true);
+        $('#divKunciLebihanTambah').removeAttr('hidden');
+        EnableLebihanTambah();
+    }
+    // operasi tambah lebihan end
+
+    // operasi tolak lebihan
+    // on click radio button lebihanTolakIsPukal
+    $("body").on('change', "#lebihanTolakIsPukal", function () {
+        ClearLebihanTolak();
+        switch ($(this).val()) {
+            case "false":
+                $('#divLebihanTolakPukal').prop('hidden', true);
+                break;
+            case "true":
+                $('#divLebihanTolakPukal').removeAttr('hidden');
+                break;
+        }
+    });
+    //
+
+    function ClearLebihanTolak() {
+        $('#lebihanTolakEnJenisCartaList').val(null).trigger('change');
+        $('#lebihanTolakKodList').val(null).trigger('change');
+        $('#lebihanTolakIsKecuali').val("false").change();
+    }
+
+    function DisableLebihanTolak() {
+        $('.lebihanTolakIsPukal').prop('disabled', true);
+        $('#lebihanTolakEnJenisCartaList').prop('disabled', true);
+        $('#lebihanTolakKodList').prop('disabled', true);
+        $('.lebihanTolakIsKecuali').prop('disabled', true);
+    }
+
+    function EnableLebihanTolak() {
+        $('.lebihanTolakIsPukal').prop('disabled', false);
+        $('#lebihanTolakEnJenisCartaList').prop('disabled', false);
+        $('#lebihanTolakKodList').prop('disabled', false);
+        $('.lebihanTolakIsKecuali').prop('disabled', false);
+    }
+
+    function GetTolakKodLebihanDetails() {
+        var enBaris = "@EnBarisPerubahanEkuiti.Lebihan.GetDisplayCode()";
+        var isPukal = $('input[name="lebihanTolakIsPukal"]:checked').val();
+        var enJenisCartaList = $('#lebihanTolakEnJenisCartaList').val().join(",");
+        var kodList = $('#lebihanTolakKodList').val().join(",");
+        var isKecuali = $('input[name="lebihanTolakIsKecuali"]:checked').val();
+        var enJenisOperasi = "@EnJenisOperasi.Tolak.GetDisplayCode()";
+        var Baris = {
+            EnBaris: enBaris,
+            IsPukal: isPukal,
+            EnJenisCartaList: enJenisCartaList,
+            IsKecuali: isKecuali,
+            KodList: kodList,
+            EnJenisOperasi: enJenisOperasi
+        }
+        return Baris;
+    }
+    function LockTolakKodLebihan() {
+        var Baris = GetTolakKodLebihanDetails();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveBaris","JKonfigPerubahanEkuiti")',
+            data: Baris,
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result === "OK") {
+                    $('#lebihanTolak').val(msg.record);
+                } else {
+                    toastr.error(msg.message);
+                }
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+
+        $('#divBukaLebihanTolak').removeAttr('hidden');
+        $('#divKunciLebihanTolak').prop('hidden', true);
+        DisableLebihanTolak();
+    }
+
+    function UnlockTolakKodLebihan() {
+        $('#divBukaLebihanTolak').prop('hidden', true);
+        $('#divKunciLebihanTolak').removeAttr('hidden');
+        EnableLebihanTolak();
+    }
+    // operasi tambah lebihan end
+
+    // auto get lebihan based on baki akhir and tahun semasa - 1
+    $("body").on('change', "#Tahun, #EnJenisEkuiti", function () {
+        var tahun = $("#Tahun").val();
+        var jenisEkuiti = $("#EnJenisEkuiti").val();
+
+        @*$.ajax({
+            type: "POST",
+            url: '@Url.Action("GetItemsBasedOnYear", "JKonfigPerubahanEkuiti")',
+            data: { tahun: tahun, enJenisEkuiti: jenisEkuiti },
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result == "OK") {
+                    if (msg.record != null) {
+                        var array = JSON.parse("[" + msg.record.kodLebihanList + "]");
+                        $('#SelectedKodLebihanList').val(array).trigger('change');
+
+                        array = JSON.parse("[" + msg.record.kodPelarasanList + "]");
+                        $('#SelectedKodPelarasanList').val(array).trigger('change');
+
+                        array = JSON.parse("[" + msg.record.kodLebihanList + "]");
+                        $('#SelectedKodLebihanList').val(array).trigger('change');
+
+                    }
+
+                }
+                else {
+                    toastr.error(msg.message);
+                }
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });*@
+    });
+</script>

@@ -1,0 +1,147 @@
+﻿<div class="form-group">
+    <label class="control-label">1. Baki Pada 1 Januari</label>
+</div>
+
+<div class="row">
+    <input id="bakiAwal" value="@EnBarisPerubahanEkuiti.BakiAwal.GetDisplayCode()" hidden />
+    <div class="col-lg-6">
+        <!--Tambah kod baki awal-->
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <h5 class="btn btn-block ac-primary fw-bold">Operasi Tambah</h5>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Kaedah Pemilihan</label>
+                    <div class="form-check">
+                        <input class="form-check-input bakiAwalTambahIsPukal" type="radio" id="bakiAwalTambahIsPukal" name="bakiAwalTambahIsPukal" value="false" checked>
+                        <label class="form-check-label" for="bakiAwalTambahIsPukal">
+                            Satu - persatu
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input bakiAwalTambahIsPukal" type="radio" id="bakiAwalTambahIsPukal" name="bakiAwalTambahIsPukal" value="true">
+                        <label class="form-check-label" for="bakiAwalTambahIsPukal">
+                            Pukal
+                        </label>
+                    </div>
+
+                </div>
+
+                <div id="divBakiAwalTambahPukal" hidden>
+                    <div class="form-group">
+                        <label>Jenis Kod</label>
+                        <select id="bakiAwalTambahEnJenisCartaList" class="form-control form-control-sm select2" multiple="multiple">
+                            @foreach (var s in ViewBag.EnJenisCartaList)
+                            {
+                                <option value="@s.id">@s.perihal </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Ada Pengecualian?</label>
+                        <div class="form-check">
+                            <input class="form-check-input bakiAwalTambahIsKecuali" type="radio" id="bakiAwalTambahIsKecuali" name="bakiAwalTambahIsKecuali" value="false" checked>
+                            <label class="form-check-label" for="bakiAwalTambahIsKecuali">
+                                Tidak
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input bakiAwalTambahIsKecuali" type="radio" id="bakiAwalTambahIsKecuali" name="bakiAwalTambahIsKecuali" value="true">
+                            <label class="form-check-label" for="bakiAwalTambahIsKecuali">
+                                Ya
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Pilih Kod Akaun</label>
+                    <select id="bakiAwalTambahKodList" class="form-control form-control-sm select2" multiple="multiple">
+                        @foreach (var s in ViewBag.KodList)
+                        {
+                            <option value="@s.Id">@s.Kod -  @s.Perihal </option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group" id="divKunciBakiAwalTambah">
+                    <button type="button" class="btn ac-success btn-sm" onclick="LockTambahKodBakiAwal()">Kunci Formula</button>
+                </div>
+                <div class="form-group" id="divBukaBakiAwalTambah" hidden>
+                    <button type="button" class="btn ac-secondary btn-sm" onclick="UnlockTambahKodBakiAwal()">Buka Semula</button>
+                </div>
+            </div>
+        </div>
+        <!--Tambah kod baki awal end-->
+    </div>
+    <div class="col-lg-6">
+        <!--Tolak kod baki awal-->
+        <div class="card">
+            <div class="card-body">
+                <div class="form-group">
+                    <h5 class="btn btn-block ac-danger fw-bold">Operasi Tolak</h5>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Kaedah Pemilihan</label>
+                    <div class="form-check">
+                        <input class="form-check-input bakiAwalTolakIsPukal" type="radio" id="bakiAwalTolakIsPukal" name="bakiAwalTolakIsPukal" value="false" checked>
+                        <label class="form-check-label" for="bakiAwalTolakIsPukal">
+                            Satu - persatu
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input bakiAwalTolakIsPukal" type="radio" id="bakiAwalTolakIsPukal" name="bakiAwalTolakIsPukal" value="true">
+                        <label class="form-check-label" for="bakiAwalTolakIsPukal">
+                            Pukal
+                        </label>
+                    </div>
+
+                </div>
+
+                <div id="divBakiAwalTolakPukal" hidden>
+                    <div class="form-group">
+                        <label>Jenis Kod</label>
+                        <select id="bakiAwalTolakEnJenisCartaList" class="form-control form-control-sm select2" multiple="multiple">
+                            @foreach (var s in ViewBag.EnJenisCartaList)
+                            {
+                                <option value="@s.id">@s.perihal </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Ada Pengecualian?</label>
+                        <div class="form-check">
+                            <input class="form-check-input bakiAwalTolakIsKecuali" type="radio" id="bakiAwalTolakIsKecuali" name="bakiAwalTolakIsKecuali" value="false" checked>
+                            <label class="form-check-label" for="bakiAwalTolakIsKecuali">
+                                Tidak
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input bakiAwalTolakIsKecuali" type="radio" id="bakiAwalTolakIsKecuali" name="bakiAwalTolakIsKecuali" value="true">
+                            <label class="form-check-label" for="bakiAwalTolakIsKecuali">
+                                Ya
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Pilih Kod Akaun</label>
+                    <select id="bakiAwalTolakKodList" class="form-control form-control-sm select2" multiple="multiple">
+                        @foreach (var s in ViewBag.KodList)
+                        {
+                            <option value="@s.Id">@s.Kod -  @s.Perihal </option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group" id="divKunciBakiAwalTolak">
+                    <button type="button" class="btn ac-success btn-sm" onclick="LockTolakKodBakiAwal()">Kunci Formula</button>
+                </div>
+                <div class="form-group" id="divBukaBakiAwalTolak" hidden>
+                    <button type="button" class="btn ac-secondary btn-sm" onclick="UnlockTolakKodBakiAwal()">Buka Semula</button>
+                </div>
+                <!--Tolak kod baki awal end-->
+            </div>
+        </div>
+    </div>
+</div>

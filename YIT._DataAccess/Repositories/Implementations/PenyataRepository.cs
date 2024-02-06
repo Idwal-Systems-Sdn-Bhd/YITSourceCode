@@ -1,16 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YIT.__Domain.Entities._Enums;
-using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
 using YIT._DataAccess.Services;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace YIT._DataAccess.Repositories.Implementations
 {
@@ -1149,6 +1142,100 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         // Alir Tunai end
 
+        // Perubahan Ekuiti
+        public async Task<_AkPerubahanEkuiti> GetAkPerubahanEkuiti(EnJenisLajurJadualPerubahanEkuiti enJenisEkuiti, int? JKWId, string? Tahun)
+        {
+            _AkPerubahanEkuiti perubahanEkuitiList = new _AkPerubahanEkuiti();
+
+            if (Tahun != null)
+            {
+
+                perubahanEkuitiList.TahunSebelum = (int.Parse(Tahun) - 1).ToString();
+                perubahanEkuitiList.TahunIni = Tahun;
+                switch (enJenisEkuiti)
+                {
+                    case EnJenisLajurJadualPerubahanEkuiti.KumpWang:
+                        if (JKWId != null)
+                        {
+                            var kw = await _context.JKW.FirstOrDefaultAsync(kw => kw.Id == JKWId);
+                            perubahanEkuitiList.Perihal = kw?.Perihal;
+                        }
+                        break;
+                    default:
+                        perubahanEkuitiList.Perihal = enJenisEkuiti.GetDisplayName();
+                        break;
+                }
+                // get baki awal tahun sebelum
+                perubahanEkuitiList.BakiAwalTahunSebelum = await GetDecimalRowEquityBasedOnYear(enJenisEkuiti, perubahanEkuitiList.TahunSebelum);
+                // get pelarasan tahun sebelum
+                perubahanEkuitiList.PelarasanTahunSebelum = await GetDecimalRowEquityBasedOnYear(enJenisEkuiti, perubahanEkuitiList.TahunSebelum);
+                // get lebihan tahun sebelum
+                perubahanEkuitiList.LebihanTahunSebelum = await GetDecimalRowEquityBasedOnYear(enJenisEkuiti, perubahanEkuitiList.TahunSebelum);
+                // get baki awal tahun ini
+                perubahanEkuitiList.BakiAwalTahunIni = perubahanEkuitiList.BakiAwalTahunSebelum + perubahanEkuitiList.PelarasanTahunSebelum + perubahanEkuitiList.LebihanTahunSebelum;
+
+                // get pelarasan tahun ini
+                perubahanEkuitiList.PelarasanTahunIni = await GetDecimalRowEquityBasedOnYear(enJenisEkuiti, perubahanEkuitiList.TahunIni);
+                // get lebihan tahun ini
+                perubahanEkuitiList.LebihanTahunIni = await GetDecimalRowEquityBasedOnYear(enJenisEkuiti, perubahanEkuitiList.TahunIni);
+                // get baki akhir tahun ini
+                perubahanEkuitiList.BakiAkhirTahunIni = perubahanEkuitiList.BakiAwalTahunIni + perubahanEkuitiList.PelarasanTahunIni + perubahanEkuitiList.LebihanTahunIni;
+
+
+            }
+            return perubahanEkuitiList;
+
+        }
+
+        public async Task<decimal> GetDecimalRowEquityBasedOnYear(EnJenisLajurJadualPerubahanEkuiti enJenisEkuiti, string? Tahun)
+        {
+            decimal balance = 0;
+
+            var konfigPerubahanEkuiti = await _context.JKonfigPerubahanEkuiti
+                .Include(kpe => kpe.JKonfigPerubahanEkuitiBaris)
+                .FirstOrDefaultAsync(kpe => kpe.Tahun == Tahun && kpe.EnLajurJadual == enJenisEkuiti);
+
+            if (konfigPerubahanEkuiti != null && konfigPerubahanEkuiti.JKonfigPerubahanEkuitiBaris != null && konfigPerubahanEkuiti.JKonfigPerubahanEkuitiBaris.Count > 0)
+            {
+                foreach (var baris in konfigPerubahanEkuiti.JKonfigPerubahanEkuitiBaris)
+                {
+                    List<string> arrKodList = baris.SetKodList?.Split(',').ToList() ?? new List<string>();
+
+                    foreach (var item in arrKodList)
+                    {
+                        if (!string.IsNullOrEmpty(item))
+                        {
+                            var akAkaunList = await _context.AkAkaun
+                .Include(a => a.AkCarta1)
+                .Where(a => (a.AkCarta1Id == int.Parse(item)) && a.Tarikh.Year < int.Parse(Tahun!))
+                .ToListAsync();
+                            if (akAkaunList.Count > 0)
+                            {
+                                balance += CalculateBalance(akAkaunList, baris.EnJenisOperasi);
+                            }
+                        }
+                    }
+                        
+                }
+            }
+
+            return balance;
+        }
+
+        private decimal CalculateBalance(List<AkAkaun> akAkaunList, EnJenisOperasi enJenisOperasi)
+        {
+            decimal localBalance = 0;
+
+            foreach (var akaun in akAkaunList)
+            {
+                decimal debitKreditDifference = akaun.AkCarta1!.DebitKredit == "D" ? akaun.Debit - akaun.Kredit : akaun.Kredit - akaun.Debit;
+
+                localBalance += enJenisOperasi == EnJenisOperasi.Tambah ? debitKreditDifference : -debitKreditDifference;
+            }
+
+            return localBalance;
+        }
+        // Perubahan Ekuiti end
         // Timbang Duga
         public async Task<List<_AkTimbangDuga>> GetAkTimbangDuga(int? JKWId, int? JPTJId, DateTime? tarHingga, EnParas enParas)
         {
@@ -1695,5 +1782,6 @@ namespace YIT._DataAccess.Repositories.Implementations
                 }).OrderBy(b => b.Order).ThenBy(b => b.KodAkaun).ThenByDescending(b => b.Paras).ToList();
         }
         // Kunci Kira Kira end
+
     }
 }

@@ -1,47 +1,46 @@
-﻿<script type="text/javascript">
+﻿<partial name="_JSCreateBakiAwal.cshtml" />
+<partial name="_JSCreatePelarasan.cshtml" />
+<partial name="_JSCreateLebihan.cshtml" />
+<script type="text/javascript">
     // Toastr initialization
     toastr.options.timeOut = 2000;
 
-    // auto calculate baki dinyatakan based on baki awal and pelarasan
-    $("body").on('change', "#BakiAwal, #Pelarasan", function () {
-        var sum = 0;
-        var bakiAwal = $("#BakiAwal").val();
-        var pelarasan = $("#Pelarasan").val();
+    $(document).ready(function () {
+        $('#barisEnJenisCartaList').select2({
+            dropdownParent: $('#moBaris'),
+            theme: "bootstrap"
+        });
 
-        sum = parseFloat(bakiAwal) + parseFloat(pelarasan);
-        $("#BakiDinyatakan").val(sum.toFixed(2));
-    });
+        $('#barisKodList').select2({
+            dropdownParent: $('#moBaris'),
+            theme: "bootstrap"
+        });
+    })
 
-    // auto calculate baki akhir based on baki dinyatakan and lebihan bersih
-    $("body").on('change', "#BakiAwal, #Pelarasan, #LebihanBersih", function () {
-        var sum = 0;
-        var bakiAwal = $("#BakiAwal").val();
-        var pelarasan = $("#Pelarasan").val();
-        var lebihanBersih = $("#LebihanBersih").val();
-
-        sum = parseFloat(bakiAwal) + parseFloat(pelarasan) + parseFloat(lebihanBersih);
-        $("#BakiAkhir").val(sum.toFixed(2));
-    });
-
-    // auto get baki awal based on baki akhir and tahun semasa - 1
-    $("body").on('change', "#Tahun, #JKWId", function () {
+     // auto get baki awal based on baki akhir and tahun semasa - 1
+    $("body").on('change', "#Tahun, #EnLajurJadual", function () {
         var tahun = $("#Tahun").val();
-        var jkwId = $("#JKWId").val();
+        var lajurJadual = $("#EnLajurJadual").val();
+
+        EmptyCart();
+        ResetAllFields();
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetBakiAwalFromPreviousYear", "JKonfigPerubahanEkuiti")',
-            data: { tahun: tahun, JKWId: jkwId },
+            url: '@Url.Action("GetItemsBasedOnYear", "JKonfigPerubahanEkuiti")',
+            data: { tahun: tahun, EnLajurJadual: lajurJadual },
             dataType: "json",
             success: function (msg) {
                 if (msg.result == "OK") {
-                    $("#BakiAwal").val(msg.bakiAwal.toFixed(2));
-                    if (!msg.bakiAwal == 0) {
-                        $("#BakiAwal").prop("readonly", true);
+                    if (msg.record.id != 0) {
+                        PopulateTablesFromCart();
+                        $('#divUbahSediaAdaFormula').removeAttr('hidden');
+                        $('#divTambahBaruFormula').prop('hidden', true);
                     }
                     else {
-                        $("#BakiAwal").prop("readonly", false);
+                        $('#divUbahSediaAdaFormula').prop('hidden', true);
+                        $('#divTambahBaruFormula').prop('hidden',false);
                     }
-                    
+
                 }
                 else {
                     toastr.error(msg.message);
@@ -52,4 +51,218 @@
             }
         });
     });
+
+    function ResetAllFields() {
+        //$("[id$='IsPukal']").val("false").change();
+
+        ClearBakiAwalTambah();
+        ClearBakiAwalTolak();
+        ClearLebihanTambah();
+        ClearLebihanTolak();
+        ClearPelarasanTambah();
+        ClearPelarasanTolak();
+    };
+
+    // on click radio button barisIsPukal
+    $("body").on('change', "#barisIsPukal", function () {
+            ClearFormula();
+            switch ($(this).val()) {
+                case "false":
+                    $('#divBarisPukal').prop('hidden', true);
+                    break;
+                case "true":
+                    $('#divBarisPukal').removeAttr('hidden');
+                    break;
+            }
+        });
+    //
+
+    function ClearFormula() {
+        $('#barisEnJenisCartaList').val(null).trigger('change');
+        $('#barisKodList').val(null).trigger('change');
+        $("input[name=barisIsKecuali][value='false']").prop('checked', true);
+        $('#divBarisPukal').prop('hidden', true);
+    }
+
+    //empty cart
+    function EmptyCart() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("EmptyCart", "JKonfigPerubahanEkuiti")',
+            dataType: "json",
+            success: function (msg) {
+                $("table tbody#tbodyBaris").empty();
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    };
+    //empty cart end
+
+    // populate tables in pages
+    function PopulateTablesFromCart() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAllItemCartJKonfigPerubahanEkuiti", "JKonfigPerubahanEkuiti")',
+            dataType: "json",
+            success: function (r) {
+
+                //refresh updated table baris
+                $("table tbody#tbodyBaris").empty();
+                if (r.baris.length > 0) {
+                    for (var i = 0; i < r.baris.length; i++) {
+                        var item1 = r.baris[i];
+
+
+                        var str = "<tr><td hidden>" + item1.enBaris +
+                            "</td><td hidden>" + item1.enJenisOperasi +
+                            "</td><td width='20%' class='fw-bold'><label>" + item1.barisDescription +
+                            "</label></td><td width='70%'><label>" + item1.formulaDescription +
+                            "</label></td><td width='5%'>" +
+                            "<button class='btn ac-primary btn-sm' type='button' data-toggle='modal' data-target='#moBaris' onclick='UpdateBaris(this)'><i class='fa fa-edit' ></i></button>" +
+                            "</td><td width='5%'>" +
+                            "<button class='btn ac-danger btn-sm' type='button' onclick='RemoveBaris(this)'><i class='fas fa-trash' ></i></button>" +
+                            "</td><tr>";
+                        $("table tbody#tbodyBaris").append(str);
+                    }
+                }
+                // refresh updated table baris end
+
+
+            }
+        });
+
+    }
+    // populate tables in pages end
+
+    //remove tbl baris
+    function RemoveBaris(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var enBaris = $("TD", row).eq(0).html();
+        var enOperasi = $("TD", row).eq(1).html();
+        var barisDescription = $("TD", row).eq(2).html();
+        if (confirm("Hapus formula ?")) {
+            //Get the reference of the Table.
+            var table = $("#tblBaris")[0];
+
+            var JKonfigPerubahanEkuitiBaris = {
+                EnBaris: enBaris,
+                EnJenisOperasi: enOperasi,
+            }
+            if (JKonfigPerubahanEkuitiBaris != null) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("SaveAnItemFromCartJKonfigPerubahanEkuitiBaris", "JKonfigPerubahanEkuiti")',
+                    data: JKonfigPerubahanEkuitiBaris,
+                    dataType: "json",
+                    success: function (r) {
+                        PopulateTablesFromCart();
+                    }
+                });
+            }
+
+        }
+    };
+    //remove tbl baris end
+
+    //update tbl baris
+    function UpdateBaris(button) {
+        ClearFormula();
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var enBaris = $("TD", row).eq(0).html().trim();
+        var enOperasi = $("TD", row).eq(1).html().trim();
+
+        var JKonfigPerubahanEkuitiBaris = {
+            EnBaris: enBaris,
+            EnJenisOperasi: enOperasi
+        }
+        if (enBaris != null && enOperasi != null) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAnItemFromCartJKonfigPerubahanEkuitiBaris", "JKonfigPerubahanEkuiti")',
+                data: JKonfigPerubahanEkuitiBaris,
+                dataType: "json",
+                success: function (r) {
+                    //insert data in modal baris
+                    if (r.record.enJenisOperasi == "@EnJenisOperasi.Tambah.GetDisplayCode()") {
+                        $("#moTitle").text("Operasi Tambah");
+                    }
+                    else {
+                        $("#moTitle").text("Operasi Tolak");
+                    }
+
+                    $("#moBarisId").val(r.record.id);
+                    $('#moEnBaris').val(r.record.enBaris);
+                    $('#moEnJenisOperasi').val(r.record.enJenisOperasi);
+                    if (r.record.isPukal == true) {
+                        $("input[name=barisIsPukal][value=" + r.record.isPukal + "]").prop('checked', true);
+                        $('#divBarisPukal').removeAttr('hidden');
+                    }
+                    else {
+                        $("input[name=barisIsPukal][value=" + r.record.isPukal + "]").prop('checked', true);
+                        $('#divBarisPukal').prop('hidden',true);
+
+                    }
+
+                    if (r.record.enJenisCartaList != null) {
+                        var arr = r.record.enJenisCartaList.split(",");
+                        $('#barisEnJenisCartaList').val(arr).trigger('change');
+                        if (r.record.isKecuali == true) {
+                            $("input[name=barisIsKecuali][value=" + r.record.isKecuali + "]").prop('checked', true);
+                        }
+                        else {
+                            $("input[name=barisIsKecuali][value=" + r.record.isKecuali + "]").prop('checked', true);
+
+                        }
+                        if (r.record.kodList != null) {
+                            arr = r.record.kodList.split(",");
+                            $('#barisKodList').val(arr).trigger('change');
+                        }
+
+                    }
+
+                    //show modal baris
+                    $("#moBaris").modal({ backdrop: 'static', keyboard: false });
+
+                }
+            });
+        }
+    };
+
+    function UpdateModalBaris() {
+        var jKonfigPerubahanEkuitiId = $("#Id").val();
+        var id = $("#moBarisId").val();
+        var enBaris = $('#moEnBaris').val();
+        var enJenisOperasi = $('#moEnJenisOperasi').val();
+        var isPukal = $('input[name="barisIsPukal"]:checked').val();
+        var enJenisCartaList = $('#barisEnJenisCartaList').val().join(",");
+        var kodList = $('#barisKodList').val().join(",");
+        var isKecuali = $('input[name="barisIsKecuali"]:checked').val();
+
+        var JKonfigPerubahanEkuitiBaris = {
+            JKonfigPerubahanEkuitiId: jKonfigPerubahanEkuitiId,
+            Id: id,
+            EnBaris: enBaris,
+            EnJenisOperasi: enJenisOperasi,
+            IsPukal: isPukal,
+            EnJenisCartaList: enJenisCartaList,
+            IsKecuali: isKecuali,
+            KodList: kodList,
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveAnItemFromCartJKonfigPerubahanEkuitiBaris", "JKonfigPerubahanEkuiti")',
+            data: JKonfigPerubahanEkuitiBaris,
+            dataType: "json",
+            success: function (r) {
+                //insert notification here
+
+                PopulateTablesFromCart();
+            }
+        });
+    };
+    //update tbl baris end
 </script>
