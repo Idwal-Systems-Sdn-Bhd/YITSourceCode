@@ -1,22 +1,52 @@
 ﻿<script type="text/javascript">
     var columnSearchVar;
     $(document).ready(function () {
+        var scrollY;
 
-        var table = $('.table').DataTable({
-            "paging": false,
+        var table = $('#table').DataTable({
+            "paging": true,
             rowReorder: true,
             columnDefs: [
                 { orderable: true, className: 'reorder', targets: 1 },
                 { orderable: true, className: 'reorder', targets: 2 },
+                { orderable: true, className: 'reorder', targets: 3 },
+                { orderable: true, className: 'reorder', targets: 4 },
+                { orderable: true, className: 'reorder', targets: 5 },
+                { orderable: true, className: 'reorder', targets: 6 },
                 { orderable: false, targets: '_all' }
             ],
             "order": [[1, "asc"]],
+            "pagingType": "numbers",
+            "pageLength": 100,
             "scrollY": "50vh",
             "scrollX": true,
             "scrollCollapse": true,
-            dom: 'rt'
+            "scroller": true,
+            "stateSave": true,
+            "stateDuration": -1,
+            "stateSaveParams": function (settings, data) {
+                var scrollPosition = $('#table_wrapper .dataTables_scrollBody').scrollTop();
+                console.log('Saving scroll position: ', scrollPosition);
+                data.scrollY = scrollPosition;
+            },
+            "stateLoadParams": function (settings, data) {
+                scrollY = data.scrollY;
+            },
+            initComplete: function () {
+                $('#table_wrapper .dataTables_scrollBody').scrollTop(scrollY);
+            },
+            dom: 'rtip',
+            "language": {
+                "info": "_TOTAL_ entri yang dipamerkan",
+                "infoEmpty": "Tiada data untuk dipamerkan",
+                "infoFiltered": " - ditapis daripada _MAX_ jumlah keseluruhan rekod"
+            },
+            
         });
 
+        $("#table_wrapper .dataTables_scrollBody").scroll(function () {
+            table.state.save();
+        });
 
         $('#columnSearch').change(function () {
             columnSearchVar = $(this).val();
@@ -43,6 +73,7 @@
                 cell.innerHTML = i + 1;
             });
         }).draw();
+    //}).draw(false);
 
         $('#myInput').on('keyup', function () {
             if (!columnSearchVar) {

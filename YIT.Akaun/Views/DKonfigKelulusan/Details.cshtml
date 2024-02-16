@@ -14,7 +14,9 @@
                 <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / Papar</span>
             </div>
             <div class="col-4">
-                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+                <a asp-action="Index"
+                   asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
             </div>
 
         </div>
@@ -26,13 +28,13 @@
             <div class="col-md-6">      
                 <div class="form-group">
                     <label asp-for="EnKategoriKelulusan" class="control-label"></label>
-                    <input asp-for="EnKategoriKelulusan" class="form-control form-control-sm text-uppercase" value="@Model.EnKategoriKelulusan.GetDisplayName()" readonly />
+                    <input asp-for="EnKategoriKelulusan" class="form-control form-control-sm text-uppercase" value="@Model.EnKategoriKelulusan" readonly />
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label asp-for="EnJenisModulKelulusan" class="control-label"></label>
-                    <input asp-for="EnJenisModulKelulusan" class="form-control form-control-sm text-uppercase" value="@Model.EnJenisModulKelulusan.GetDisplayName()" readonly />
+                    <input asp-for="EnJenisModulKelulusan" class="form-control form-control-sm text-uppercase" value="@Model.EnJenisModulKelulusan" readonly />
                 </div>
             </div>
         </div>
@@ -66,7 +68,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label asp-for="MaksAmaun" class="control-label text-white"></label>
-                    <input asp-for="MaksAmaun" class="form-control form-control-sm text-uppercase" readonly />
+                    <input asp-for="MaksAmaun" class="form-control form-control-sm" readonly />
                 </div>
             </div>
         </div>
@@ -74,7 +76,9 @@
 
         <div class="form-group">
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn ac-primary btn-sm">Ubah</a>
-            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            <a asp-action="Index"
+               asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+               class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
         </div>
 
     </div>

@@ -13,7 +13,9 @@
                 <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / Papar</span>
             </div>
             <div class="col-4">
-                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+                <a asp-action="Index"
+                   asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                   class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
             </div>
 
         </div>
@@ -51,7 +53,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="Poskod" class="control-label"></label>
-                    <input asp-for="Poskod" class="form-control form-control-sm text-uppercase" readonly/>
+                    <input asp-for="Poskod" class="form-control form-control-sm" readonly/>
                 </div>
             </div>
             <div class="col-md-4">
@@ -74,10 +76,17 @@
                     <input class="form-control form-control-sm text-uppercase" value="@Model.JBank?.Kod - @Model.JBank?.Perihal" readonly />
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="NoAkaunBank" class="control-label"></label>
-                    <input asp-for="NoAkaunBank" class="form-control form-control-sm text-uppercase" readonly/>
+                    <input asp-for="NoAkaunBank" class="form-control form-control-sm" readonly/>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label asp-for="KodM2E" class="control-label"></label>
+                    <input asp-for="KodM2E" class="form-control form-control-sm text-uppercase" />
+                    <span asp-validation-for="KodM2E" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -85,7 +94,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="Telefon1" class="control-label"></label>
-                    <input asp-for="Telefon1" class="form-control form-control-sm text-uppercase" readonly/>
+                    <input asp-for="Telefon1" class="form-control form-control-sm" readonly/>
                 </div>
             </div>
             <div class="col-md-4">
@@ -99,7 +108,9 @@
 
         <div class="form-group">
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn ac-primary btn-sm">Ubah</a>
-            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            <a asp-action="Index"
+               asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+               class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
         </div>
 
     </div>

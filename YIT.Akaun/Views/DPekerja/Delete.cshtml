@@ -6,7 +6,7 @@
 }
 <div class="card box-shadow">
     <div class="card-body">
-        <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
+        <partial name="~/Views/Partials/Common/_TitleDeleteDaftarPartial.cshtml" />
 
         <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
         <div class="row">
@@ -50,7 +50,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="Poskod" class="control-label"></label>
-                    <input asp-for="Poskod" class="form-control form-control-sm text-uppercase" readonly />
+                    <input asp-for="Poskod" class="form-control form-control-sm" readonly />
                 </div>
             </div>
             <div class="col-md-4">
@@ -76,7 +76,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="NoAkaunBank" class="control-label"></label>
-                    <input asp-for="NoAkaunBank" class="form-control form-control-sm text-uppercase" />
+                    <input asp-for="NoAkaunBank" class="form-control form-control-sm" />
                     <span asp-validation-for="NoAkaunBank" class="text-danger"></span>
                 </div>
             </div>
@@ -85,19 +85,19 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="TelefonBimbit" class="control-label"></label>
-                    <input asp-for="TelefonBimbit" class="form-control form-control-sm text-uppercase" />
+                    <input asp-for="TelefonBimbit" class="form-control form-control-sm" />
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="TelefonRumah" class="control-label"></label>
-                    <input asp-for="TelefonRumah" class="form-control form-control-sm text-uppercase" />
+                    <input asp-for="TelefonRumah" class="form-control form-control-sm" />
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label asp-for="Emel" class="control-label"></label>
-                    <input asp-for="Emel" class="form-control form-control-sm" type="email" />
+                    <input asp-for="Emel" class="form-control form-control-sm text-uppercase" type="email" />
                 </div>
             </div>
         </div>
@@ -107,7 +107,9 @@
             <input type="hidden" asp-for="Id" />
             <input name="syscode" value="SPPB" hidden />
             <input type="submit" value="Hapus" class="btn ac-danger btn-sm" />
-            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            <a asp-action="Index"
+               asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+               class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
         </form>
     </div>
 </div>

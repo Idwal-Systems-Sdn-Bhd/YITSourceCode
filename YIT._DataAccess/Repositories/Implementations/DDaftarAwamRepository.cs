@@ -58,8 +58,6 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .FirstOrDefault(df => df.Id == id) ?? new DDaftarAwam();
         }
 
-        
-
         public string GetMaxRefNo(string initial)
         {
             var max = _context.DDaftarAwam.Where(df => df.Kod!.Substring(0,1) == initial.Substring(0,1)).OrderByDescending(df => df.Kod).ToList();
@@ -75,6 +73,50 @@ namespace YIT._DataAccess.Repositories.Implementations
                 return "";
             }
             
+        }
+        public List<DDaftarAwam> GetResults(string? searchString, string? orderBy)
+        {
+            if (searchString == null && orderBy == null)
+            {
+                return new List<DDaftarAwam>();
+            }
+
+            var dDAList = _context.DDaftarAwam
+                .IgnoreQueryFilters()
+                .Include(df => df.JBank)
+                .Include(df => df.JNegeri)
+                .ToList();
+
+            // searchstring filters
+            if (searchString != null)
+            {
+                dDAList = dDAList.Where(t =>
+                t.Kod!.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.Nama!.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.JBank!.Perihal!.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.Alamat1!.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.NoAkaunBank!.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.KodM2E!.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.EnKategoriDaftarAwam!.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+            }
+            // searchString filters end
+
+            // order by filters
+            if (orderBy != null)
+            {
+                switch (orderBy)
+                {
+                    default:
+                        dDAList = dDAList.OrderBy(t => t.Kod).ToList();
+                        break;
+                }
+
+            }
+            // order by filters end
+
+            return dDAList;
         }
     }
 }
