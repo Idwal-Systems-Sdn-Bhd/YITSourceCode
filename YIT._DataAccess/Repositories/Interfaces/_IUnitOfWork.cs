@@ -40,6 +40,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IAkEFTRepository AkEFTRepo { get; }
         IAkJurnalRepository AkJurnalRepo { get; }
         IJKonfigPerubahanEkuitiRepository JKonfigPerubahanEkuitiRepo { get; }
+        IJKonfigPenyataRepository JKonfigPenyataRepo { get; }
         int Save();
     }
 }

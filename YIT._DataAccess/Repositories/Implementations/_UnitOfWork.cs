@@ -57,6 +57,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             AkJurnalRepo = new AkJurnalRepository(_context);
             JKonfigPerubahanEkuitiRepo = new JKonfigPerubahanEkuitiRepository(_context);
+            JKonfigPenyataRepo = new JKonfigPenyataRepository(_context);
         }
 
         public IJKWRepository JKWRepo { get; private set; }
@@ -117,6 +118,8 @@ namespace YIT._DataAccess.Repositories.Implementations
         public IAkJurnalRepository AkJurnalRepo { get; }
 
         public IJKonfigPerubahanEkuitiRepository JKonfigPerubahanEkuitiRepo { get; }
+
+        public IJKonfigPenyataRepository JKonfigPenyataRepo { get; }
 
         public void Dispose()
         {

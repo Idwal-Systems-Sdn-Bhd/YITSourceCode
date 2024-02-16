@@ -59,40 +59,6 @@ namespace YIT._DataAccess.Repositories.Implementations
             return result ?? new JKonfigPerubahanEkuiti();
         }
 
-        public string GetSetOfCartaList(EnBarisPerubahanEkuiti enBaris, EnJenisOperasi enOperasi, bool isPukal, string? enJenisCartaList, bool isKecuali, string? kodList)
-        {
-            List<string> setKodList = new List<string>();
-
-            List<string> arrKodList = kodList?.Split(',').ToList() ?? new List<string>();
-
-            if (isPukal)
-            {
-                List<string> arrJenisCartaList = enJenisCartaList?.Split(',').ToList() ?? new List<string>();
-                foreach (var jenisCarta in arrJenisCartaList)
-                {
-                    
-                    var akCartaList = GetCartaListByJenisCarta((EnJenisCarta)int.Parse(jenisCarta), isKecuali, arrKodList);
-                    setKodList = akCartaList;
-                }
-            }
-            else
-            {
-                setKodList = arrKodList;
-            }
-
-            return string.Join(',',setKodList);
-        }
-
-        private List<string> GetCartaListByJenisCarta(EnJenisCarta jenisCartaId, bool isKecuali, List<string>? arrKodList)
-        {
-            var cartaList = _context.AkCarta
-                .Where(a => a.EnJenis.Equals(jenisCartaId) && (!isKecuali || !arrKodList!.Contains(a.Id.ToString())))
-                .Select(c => c.Id.ToString())
-                .ToList();
-
-            return cartaList ?? new List<string>();
-        }
-
         public string FormulaInSentence(EnJenisOperasi jenisOperasi, string? jenisCarta, bool isKecuali, string? kodList)
         {
             string? txtexcept = "";

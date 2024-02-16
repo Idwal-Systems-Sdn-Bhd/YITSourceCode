@@ -28,6 +28,8 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<JCukai>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<JElaunPotongan>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<JKonfigPerubahanEkuiti>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<JKonfigPenyata>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+
             //
 
             // Daftar
@@ -633,6 +635,18 @@ namespace YIT._DataAccess.Data.DataConfigurations
                 .HasOne(m => m.JKonfigPerubahanEkuiti)
                 .WithMany(t => t.JKonfigPerubahanEkuitiBaris)
                 .HasForeignKey(m => m.JKonfigPerubahanEkuitiId)
+                .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<JKonfigPenyataBarisFormula>()
+                .HasOne(m => m.JKonfigPenyataBaris)
+                .WithMany(t => t.JKonfigPenyataBarisFormula)
+                .HasForeignKey(m => m.JKonfigPenyataBarisId)
+                .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<JKonfigPenyataBaris>()
+                .HasOne(m => m.JKonfigPenyata)
+                .WithMany(t => t.JKonfigPenyataBaris)
+                .HasForeignKey(m => m.JKonfigPenyataId)
                 .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
         }
     }

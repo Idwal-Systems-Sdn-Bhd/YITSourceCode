@@ -2,6 +2,7 @@
     <a class="nav-link collapsed text-truncate
     @Html.ActiveClass("AkPenyataBukuTunai")
        @Html.ActiveClass("AkPenyataAlirTunai")
+       @Html.ActiveClass("AkPenyataAlirTunaiAudit")
        @Html.ActiveClass("JKonfigPerubahanEkuiti")
        @Html.ActiveClass("AkPenyataPerubahanEkuiti")
        @Html.ActiveClass("AkPenyataTimbangDuga")
@@ -10,13 +11,38 @@
     <div class="collapse" id="submenuPenyata" aria-expanded="false">
         <ul class="flex-column ps-2 nav">
             <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkPenyataBukuTunai")" asp-area="" asp-controller="AkPenyataBukuTunai" asp-action="Index"><span>Buku Tunai</span></a></li>
-            <li class="nav-item"><a class="nav-link border-bottom py-1 ms-3 @Html.ActiveSideBarClass("AkPenyataAlirTunai")" asp-area="" asp-controller="AkPenyataAlirTunai" asp-action="Index"><span>Alir Tunai</span></a></li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom text-truncate collapsed py-1 ms-3
+                  @Html.ActiveClass("JKonfigPenyata")
+                  @Html.ActiveClass("AkPenyataAlirTunaiAudit")
+                  @Html.ActiveClass("AkPenyataAlirTunai")
+                 " href="#submenuPenyatasub1" data-toggle="collapse" data-target="#submenuPenyatasub1"><span>Alir Tunai</span></a>
+                <div class="collapse" id="submenuPenyatasub1" aria-expanded="false">
+                    <ul class="flex-column nav ps-4">
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("JKonfigPenyata")" asp-area="" asp-controller="JKonfigPenyata" asp-action="Index">
+                                Jadual Konfigurasi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkPenyataAlirTunaiAudit")" asp-area="" asp-controller="AkPenyataAlirTunaiAudit" asp-action="Index">
+                                Laporan Alir Tunai (Audit)
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkPenyataAlirTunai")" asp-area="" asp-controller="AkPenyataAlirTunai" asp-action="Index">
+                                Laporan Alir Tunai Bulanan
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             <li class="nav-item">
                 <a class="nav-link border-bottom text-truncate collapsed py-1 ms-3
                  @Html.ActiveClass("JKonfigPerubahanEkuiti")
                  @Html.ActiveClass("AkPenyataPerubahanEkuiti")
-                " href="#submenuPenyatasub1" data-toggle="collapse" data-target="#submenuPenyatasub1"><span>Perubahan Ekuiti</span></a>
-                <div class="collapse" id="submenuPenyatasub1" aria-expanded="false">
+                " href="#submenuPenyatasub2" data-toggle="collapse" data-target="#submenuPenyatasub2"><span>Perubahan Ekuiti</span></a>
+                <div class="collapse" id="submenuPenyatasub2" aria-expanded="false">
                     <ul class="flex-column nav ps-4">
                         <li class="nav-item">
                             <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("JKonfigPerubahanEkuiti")" asp-area="" asp-controller="JKonfigPerubahanEkuiti" asp-action="Index">

@@ -39,6 +39,9 @@ namespace YIT._DataAccess.Data
         public DbSet<JElaunPotongan> JElaunPotongan { get; set; }
         public DbSet<JKonfigPerubahanEkuiti> JKonfigPerubahanEkuiti { get; set; }
         public DbSet<JKonfigPerubahanEkuitiBaris> JKonfigPerubahanEkuitiBaris { get; set; }
+        public DbSet<JKonfigPenyata> JKonfigPenyata { get; set; }
+        public DbSet<JKonfigPenyataBaris> JKonfigPenyataBaris { get; set; }
+        public DbSet<JKonfigPenyataBarisFormula> JKonfigPenyataBarisFormula { get; set; }
         //
 
         // 02Daftar

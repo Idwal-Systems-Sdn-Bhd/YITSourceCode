@@ -43,6 +43,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodJKonfigPerubahanEkuiti = "JD0010";
         public const string namaJKonfigPerubahanEkuiti = "Jadual Konfigurasi Perubahan Ekuiti";
+
+        public const string kodJKonfigPenyata = "JD0011";
+        public const string namaJKonfigPenyata = "Jadual Konfigurasi Penyata";
         //
 
         // Daftar 

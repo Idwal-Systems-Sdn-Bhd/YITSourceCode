@@ -1,0 +1,91 @@
+﻿@model JKonfigPenyata
+
+@{
+    ViewData["Title"] = "Konfigurasi Penyata - Hapus";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
+
+        <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Tahun)
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Tahun
+            </dd>
+            <dt class="col-sm-12 pb-2">
+                Paparan laporan adalah seperti berikut :
+            </dt>
+        </dl>
+        <div class="card">
+            <div class="card-body">
+                <div class="container">
+                    <dl class="row">
+                        <dt class="col-8 mb-3">
+                            Tajuk
+                        </dt>
+                        <dt class="col-4 text-center">
+                            @Model.Tahun RM
+                        </dt>
+                        @if (Model.JKonfigPenyataBaris != null && Model.JKonfigPenyataBaris.Any())
+                        {
+                            foreach (var item in Model.JKonfigPenyataBaris.OrderBy(b => b.Susunan))
+                            {
+                                var bold = "";
+                                var uppercase = "";
+                                var border = "";
+                                var formula = "";
+
+                                if (item.EnKategoriTajuk == EnKategoriTajuk.TajukUtama)
+                                {
+                                    bold = "fw-bold";
+                                    uppercase = "text-uppercase";
+                                }
+
+                                switch (item.EnKategoriJumlah)
+                                {
+                                    case EnKategoriJumlah.Amaun:
+
+                                        break;
+                                    case EnKategoriJumlah.JumlahKecil:
+                                        border = "border-top";
+                                        break;
+                                    case EnKategoriJumlah.JumlahBesar:
+                                        border = "border-top border-bottom";
+                                        break;
+                                    case EnKategoriJumlah.JumlahKeseluruhan:
+                                        border = "border-top border-bottom";
+                                        bold = "fw-bold";
+                                        uppercase = "text-uppercase";
+                                        break;
+
+                                }
+
+                                if (item.IsFormula) formula = "[formula]";
+                                <dd class="col-8 @bold @uppercase">
+                                    @item.Perihal
+                                </dd>
+                                <dd class="col-4 text-end @bold @uppercase @border ">
+                                    @formula
+                                </dd>
+
+
+                            }
+                        }
+                    </dl>
+                </div>
+
+            </div>
+        </div>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input name="syscode" value="SPPB" hidden />
+            <input type="submit" value="Hapus" class="btn ac-danger btn-sm" />
+            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+        </form>
+    </div>
+</div>
