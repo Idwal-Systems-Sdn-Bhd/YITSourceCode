@@ -2,7 +2,7 @@
     <a class="nav-link collapsed text-truncate
     @Html.ActiveClass("AkPenyataBukuTunai")
        @Html.ActiveClass("AkPenyataAlirTunai")
-       @Html.ActiveClass("AkPenyataAlirTunaiAudit")
+       @Html.ActiveClass("AkPenyata")
        @Html.ActiveClass("JKonfigPerubahanEkuiti")
        @Html.ActiveClass("AkPenyataPerubahanEkuiti")
        @Html.ActiveClass("AkPenyataTimbangDuga")
@@ -14,7 +14,7 @@
             <li class="nav-item">
                 <a class="nav-link border-bottom text-truncate collapsed py-1 ms-3
                   @Html.ActiveClass("JKonfigPenyata")
-                  @Html.ActiveClass("AkPenyataAlirTunaiAudit")
+                  @Html.ActiveClass("AkPenyata")
                   @Html.ActiveClass("AkPenyataAlirTunai")
                  " href="#submenuPenyatasub1" data-toggle="collapse" data-target="#submenuPenyatasub1"><span>Alir Tunai</span></a>
                 <div class="collapse" id="submenuPenyatasub1" aria-expanded="false">
@@ -25,7 +25,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkPenyataAlirTunaiAudit")" asp-area="" asp-controller="AkPenyataAlirTunaiAudit" asp-action="Index">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkPenyata")" asp-area="" asp-controller="AkPenyata" asp-action="Index">
                                 Laporan Alir Tunai (Audit)
                             </a>
                         </li>

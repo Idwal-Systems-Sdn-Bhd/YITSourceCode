@@ -1,0 +1,224 @@
+﻿@model IEnumerable<_AkPenyataAlirTunai>
+
+@{
+    ViewData["Title"] = "Penyata Alir Tunai (Tahunan)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<partial name="_JSIndex" />
+
+<div class="card box-shadow">
+    <div class="card-body border">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref">Indeks</span>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+        <div class="card mb-2">
+            <div class="card-body pl-3 pb-2 ">
+                <label class="form-control-plaintext" for="searchselect">Carian : </label>
+                <div class="form-actions no-color mb-2">
+                    <form asp-action="Index" method="get" class="needs-validation" novalidate>
+                        <div class="form-actions no-color mb-3">
+
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="input-group mb-2 input-group-sm ">
+                                        <label class="form-control-label">Tahun</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="input-group mb-2 input-group-sm ">
+                                        <input class="form-control form-control-sm" type="text" name="Tahun1" value="@ViewData["Tahun1"]" required />
+                                        <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="input-group mb-2 input-group-sm ">
+                                        <label class="form-control-label">Tahun</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+
+                                    <div class="input-group mb-2 input-group-sm ">
+                                        <input class="form-control form-control-sm" type="text" name="Tahun2" value="@ViewData["Tahun2"]" required />
+                                        <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <hr />
+                        <div class="mb-3">
+                            <div class="text-center hidden-mobile">
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn ac-primary" disabled="disabled"><i class="fas fa-eye"></i></button>
+                                    <button class="btn ac-primary" style="color: white;" type="submit">Papar</button>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn ac-warning" disabled="disabled"><i class="fa-solid fa-xmark"></i></button>
+                                    <a class="btn ac-warning" asp-action="Index"> Batal Papar </a>
+                                </div>
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn ac-info" disabled="disabled"><i class="fas fa-print"></i></button>
+                                    <button class="btn ac-info" data-toggle="modal" data-target="#modalCetak" style="color: white;" type="button" data-placement="top" title="Cetak">Cetak</button>
+                                </div>
+
+                            </div>
+                            <div class="text-center show-mobile">
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn text-primary" type="submit" data-toggle="tooltip" data-placement="top" title="Papar"><i class="fa fa-eye fa-2x"></i></button>
+                                    <a class="btn text-warning" asp-action="Index"><i class="fa-solid fa-xmark fa-2x"></i></a>
+                                    <button class="btn text-info" data-toggle="modal" data-target="#modalCetak" data-placement="top" type="button" title="Cetak"><i class="fas fa-print fa-2x"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        @if (Model != null && Model.Any())
+        {
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="table-responsive table-sm overflow-auto" style="max-height:70vh;">
+                        <table class="table table-borderless table-hover display compact nowrap" width="100%" id="tblPenyata">
+                            <thead>
+                                <tr>
+                                    <th colspan="6" class="text-center table-dark text-uppercase">
+                                        PENYATA Alir Tunai Bagi Tahun @ViewData["Tahun1"] Dan Tahun @ViewData["Tahun2"]
+                                    </th>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="table-responsive table-sm overflow-auto" style="max-height:70vh;">
+                            <table class="table table-borderless table-hover display compact nowrap" width="100%" id="tblPenyataNota">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Nota</th>
+                                        <th>@ViewData["Tahun1"] RM</th>
+                                        <th>@ViewData["Tahun2"] RM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var bold = "";
+                                        var uppercase = "";
+                                        var border = "";
+
+                                        if (item.EnKategoriTajuk == EnKategoriTajuk.TajukUtama)
+                                        {
+                                            bold = "fw-bold";
+                                            uppercase = "text-uppercase";
+                                        }
+
+                                        switch (item.EnKategoriJumlah)
+                                        {
+                                            case EnKategoriJumlah.Amaun:
+
+                                                break;
+                                            case EnKategoriJumlah.JumlahKecil:
+                                                border = "border-top";
+                                                break;
+                                            case EnKategoriJumlah.JumlahBesar:
+                                                border = "border-top border-bottom";
+                                                break;
+                                            case EnKategoriJumlah.JumlahKeseluruhan:
+                                                border = "border-top border-bottom";
+                                                bold = "fw-bold";
+                                                uppercase = "text-uppercase";
+                                                break;
+
+                                        }
+                                        <tr>
+                                            <td class="@bold @uppercase ">@item.Perihal</td>
+                                            <td></td>
+                                            @if (item.EnKategoriTajuk == EnKategoriTajuk.Perihalan)
+                                            {
+                                                <td class="@bold @uppercase @border  text-end">@Convert.ToDecimal(item.Amaun1).ToString("#,##0.00")</td>
+                                                <td class="@bold @uppercase @border  text-end">@Convert.ToDecimal(item.Amaun2).ToString("#,##0.00")</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                                <td></td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<!-- Modal Cetak -->
+<div class="modal fade bd-example-modal-lg" id="modalCetak" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-success">
+                <h5 class="modal-title">Cetak Perubahan Ekuiti</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form asp-action="PrintPDF" class="needs-validation">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="input-group mb-2 input-group-sm ">
+                                <label class="form-control-label">Tahun</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+
+                            <div class="input-group mb-2 input-group-sm ">
+                                <input class="form-control form-control-sm" type="text" name="Tahun1" value="@ViewData["Tahun1"]" />
+                                <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="input-group mb-2 input-group-sm ">
+                                <label class="form-control-label">Tahun</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+
+                            <div class="input-group mb-2 input-group-sm ">
+                                <input class="form-control form-control-sm" type="text" name="Tahun1" value="@ViewData["Tahun2"]" />
+                                <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn ac-danger btn-sm" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn ac-success btn-sm" formtarget="_blank">Cetak</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Cetak End -->

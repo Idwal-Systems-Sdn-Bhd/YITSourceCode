@@ -200,20 +200,24 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodPAkBukuTunai = "PAK001";
         public const string namaPAkBukuTunai = "Penyata Buku Tunai";
 
-        public const string kodPAkAlirTunai = "PAK002";
-        public const string namaPAkAlirTunai = "Penyata Alir Tunai";
+        public const string kodPAkAlirTunaiBulanan = "PAK002";
+        public const string namaPAkAlirTunaiBulanan = "Penyata Alir Tunai Bulanan";
 
-        public const string kodPAkPerubahanEkuiti = "PAK003";
+        public const string kodPAkAlirTunaiTahunan = "PAK003";
+        public const string namaPAkAlirTunaiTahunan = "Penyata Alir Tunai";
+
+        public const string kodPAkPerubahanEkuiti = "PAK004";
         public const string namaPAkPerubahanEkuti = "Penyata Perubahan Ekuiti";
 
-        public const string kodPAkTimbangDuga = "PAK004";
+        public const string kodPAkTimbangDuga = "PAK005";
         public const string namaPAkTimbangDuga = "Penyata Timbang Duga";
 
-        public const string kodPAkUntungRugi = "PAK005";
+        public const string kodPAkUntungRugi = "PAK006";
         public const string namaPAkUntungRugi = "Penyata Untung Rugi";
 
-        public const string kodPAkKunciKiraKira = "PAK006";
+        public const string kodPAkKunciKiraKira = "PAK007";
         public const string namaPAkKunciKiraKira = "Penyata Kunci Kira - Kira";
+
         //
     }
 }

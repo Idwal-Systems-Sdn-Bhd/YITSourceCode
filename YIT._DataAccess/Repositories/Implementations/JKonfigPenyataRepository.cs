@@ -24,7 +24,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         public JKonfigPenyata GetAllDetailsById(int id)
         {
             var result = _context.JKonfigPenyata.Include(kp => kp.JKonfigPenyataBaris)!.ThenInclude(b => b.JKonfigPenyataBarisFormula)
-                .FirstOrDefault();
+                .FirstOrDefault(p => p.Id == id);
 
             return result ?? new JKonfigPenyata();
         }
