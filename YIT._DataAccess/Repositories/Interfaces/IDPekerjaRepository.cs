@@ -12,5 +12,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public List<DPekerja> GetAllDetails();
         public string GetMaxRefNo();
         public DPekerja GetAllDetailsById(int id);
+        public List<DPekerja> GetResults(string? searchString, string? orderBy);
     }
 }

@@ -13,12 +13,12 @@
     <div class="card card-body border main-page" hidden>
         <partial name="~/Views/Partials/Common/_TitleIndexPartial.cshtml" />
 
-        <partial name="~/Views/Partials/Common/_SearchJadualIndexPartial.cshtml" />
-
+        <partial name="~/Views/Partials/Common/_SearchDaftarPartial.cshtml" />
+        S
         @if (Model != null && Model.Count() > 0)
         {
             <div class="table-responsive">
-                <table class="table table-hover compact" width="100%">
+                <table id="table" class="table table-hover compact" width="100%">
                     <caption>Rekod dipamerkan : @Model.Count()</caption>
                     <thead class="table-secondary">
                         <tr>

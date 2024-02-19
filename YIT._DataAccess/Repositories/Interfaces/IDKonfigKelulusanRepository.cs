@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
+using YIT._DataAccess.Repositories.Implementations;
 
 namespace YIT._DataAccess.Repositories.Interfaces
 {
@@ -16,5 +17,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public bool IsPersonAvailable(EnJenisModulKelulusan enJenisModulKelulusan, EnKategoriKelulusan enKategoriKelulusan, int jBahagianId, decimal jumlah);
         public List<DKonfigKelulusan> GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan);
         public bool IsValidUser(int dPekerjaId, string password, EnJenisModulKelulusan enJenisModulKelulusan, EnKategoriKelulusan enKategoriKelulusan);
+        public List<DKonfigKelulusanViewModel> GetResults(string? searchString, string? orderBy);
+
     }
 }
