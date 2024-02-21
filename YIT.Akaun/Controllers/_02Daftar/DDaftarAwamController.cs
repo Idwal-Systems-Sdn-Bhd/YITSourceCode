@@ -64,7 +64,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             }
             else
             {
-                searchString = HttpContext.Session.GetString("searchString");
+                searchString = HttpContext.Session.GetString("searchString") ?? "";
                 ViewBag.searchString = searchString;
             }
         }
@@ -99,14 +99,14 @@ namespace YIT.Akaun.Controllers._02Daftar
                     daftarAwam.Kod = GenerateRunningNumber(daftarAwam.Nama);
 
                     var user = await _userManager.GetUserAsync(User);
-                    int? daftarAwamId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+                    int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
                     daftarAwam.UserId = user?.UserName ?? "";
 
                     daftarAwam.TarMasuk = DateTime.Now;
-                    daftarAwam.DPekerjaMasukId = daftarAwamId;
+                    daftarAwam.DPekerjaMasukId = pekerjaId;
 
                     _context.Add(daftarAwam);
-                    _appLog.Insert("Tambah", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam.Kod, 0, 0, daftarAwamId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Tambah", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam.Kod, 0, 0, pekerjaId, modul, syscode, namamodul, user);
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya ditambah..!";
                     return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
@@ -171,7 +171,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                     daftarAwam.Kod = GenerateRunningNumber(daftarAwam.Nama);
 
                     var user = await _userManager.GetUserAsync(User);
-                    int? daftarAwamId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+                    int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
                     var objAsal = await _context.DDaftarAwam.FirstOrDefaultAsync(x => x.Id == daftarAwam.Id);
                     if (objAsal != null)
@@ -187,13 +187,13 @@ namespace YIT.Akaun.Controllers._02Daftar
                         daftarAwam.UserIdKemaskini = user?.UserName ?? "";
 
                         daftarAwam.TarKemaskini = DateTime.Now;
-                        daftarAwam.DPekerjaKemaskiniId = daftarAwamId;
+                        daftarAwam.DPekerjaKemaskiniId = pekerjaId;
 
                     }
 
                     _unitOfWork.DDaftarAwamRepo.Update(daftarAwam);
 
-                    _appLog.Insert("Ubah", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam?.Kod ?? "", id, 0, daftarAwamId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Ubah", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam?.Kod ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
 
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya diubah..!";
@@ -237,7 +237,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
-            var daftarAwam = _unitOfWork.DDaftarAwamRepo.GetById((int)id);
+            var daftarAwam = _unitOfWork.DDaftarAwamRepo.GetById(id);
 
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;

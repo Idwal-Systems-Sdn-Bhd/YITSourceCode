@@ -7,5 +7,7 @@
         public DPanjar? DPanjar { get; set; }
         public int DPekerjaId { get; set; }
         public DPekerja? DPekerja { get; set; }
+        public DateTime JangkaMasaDari { get; set; }
+        public DateTime? JangkaMasaHingga { get; set; }
     }
 }

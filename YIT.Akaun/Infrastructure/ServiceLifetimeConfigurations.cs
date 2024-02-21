@@ -19,6 +19,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddTransient<IAbBukuVotRepository<AbBukuVot>, AbBukuVotRepository>();
 
             services.AddTransient<IPenyataRepository, PenyataRepository>();
+            services.AddTransient<IAkPanjarLejarRepository, AkPanjarLejarRepository>();
 
             services.AddTransient<_IUnitOfWork, _UnitOfWork>();
 
@@ -38,6 +39,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddScoped(ss => SessionCartAkJurnal.GetCart(ss));
             services.AddScoped(ss => SessionCartJKonfigPerubahanEkuiti.GetCart(ss));
             services.AddScoped(ss => SessionCartJKonfigPenyata.GetCart(ss));
+            services.AddScoped(ss => SessionCartDPanjar.GetCart(ss));
 
             return services;
         }

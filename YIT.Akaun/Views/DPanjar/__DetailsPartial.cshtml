@@ -1,0 +1,102 @@
+﻿@model DPanjar
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="JCawanganId" class="control-label"></label>
+            <input class="form-control form-control-sm" value="@Model.JCawangan?.Kod - @Model.JCawangan?.Perihal " readonly />
+        </div>
+        <div class="form-group">
+            <label asp-for="AkCartaId" class="control-label"></label>
+            <input class="form-control form-control-sm" value="@Model.AkCarta?.Kod - @Model.AkCarta?.Perihal " readonly />
+        </div>
+        <div class="form-group">
+            <label asp-for="Catatan" class="control-label"></label>
+            <textarea asp-for="Catatan" class="form-control form-control-sm text-uppercase" rows="2" readonly></textarea>
+        </div>
+    </div>
+    <div class="col-md-6">
+        @*table Pemeganga*@
+        <div class="card box-shadow mb-3">
+            <div class="card-header">
+                <h6>Pemegang Panjar</h6>
+            </div>
+            <div class="card-body">
+                <table id="tblPemegang" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:10%">Kod</th>
+                            <th style="width:40%">Nama</th>
+                            <th style="width:30%">Jawatan</th>
+                            <th style="width:10%">Mula</th>
+                            <th style="width:10%">Hingga</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyPemegang">
+                        @if (ViewBag.dPanjarPemegang != null)
+                        {
+                            foreach (var item in ViewBag.dPanjarPemegang)
+                            {
+                                <tr>
+                                    <td hidden>@item.Id</td>
+                                    <td class="text-uppercase">@item.DPekerja?.NoGaji</td>
+                                    <td class="text-uppercase">@item.DPekerja?.Nama</td>
+                                    <td class="text-uppercase">@item.DPekerja?.Jawatan</td>
+                                    <td class="text-uppercase">@item.JangkaMasaDari.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-uppercase">@item.JangkaMasaHingga?.ToString("dd/MM/yyyy")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @*table Pemegang end*@
+    </div>
+</div>
+<div class="row">
+    <div>
+        @*table Pemeganga*@
+        <div class="card box-shadow mb-3">
+            <div class="card-header">
+                <h6>Pemegang Panjar</h6>
+            </div>
+            <div class="card-body">
+                <table id="tblPemegang" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:10%">Tarikh</th>
+                            <th style="width:35%">Kod Akaun</th>
+                            <th style="width:15%">No Rujukan</th>
+                            <th style="width:10%">Debit RM</th>
+                            <th style="width:10%">Kredit RM</th>
+                            <th style="width:10%">Baki RM</th>
+                            <th style="width:10%">No Rekup</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyPemegang">
+                        @if (ViewBag.akPanjarLejar != null)
+                        {
+                            foreach (var item in ViewBag.akPanjarLejar)
+                            {
+                                
+
+                                <tr>
+                                    <td hidden>@item.Id</td>
+                                    <td class="text-uppercase">@item.Tarikh?.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
+                                    <td class="text-uppercase">@item.NoRujukan</td>
+                                    <td class="text-uppercase">@item.JangkaMasaHingga?.ToString("dd/MM/yyyy")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @*table Pemegang end*@
+    </div>
+</div>
+<hr />

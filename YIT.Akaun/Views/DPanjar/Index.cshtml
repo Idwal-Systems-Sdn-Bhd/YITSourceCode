@@ -1,7 +1,7 @@
-﻿@model IEnumerable<DPekerja>
+﻿@model IEnumerable<DPanjar>
 
 @{
-    ViewData["Title"] = "Anggota";
+    ViewData["Title"] = "Daftar Panjar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <partial name="_JSIndex" />
@@ -14,6 +14,7 @@
         <partial name="~/Views/Partials/Common/_TitleIndexPartial.cshtml" />
 
         <partial name="~/Views/Partials/Common/_SearchDaftarPartial.cshtml" />
+
         @if (Model != null && Model.Count() > 0)
         {
             <div class="table-responsive">
@@ -23,22 +24,13 @@
                         <tr>
                             <th width="5%">Bil</th>
                             <th class="kod" width="5%">
-                                @Html.DisplayNameFor(model => model.NoGaji)
-                            </th>
-                            <th class="perihal">
-                                @Html.DisplayNameFor(model => model.NoKp)
+                                Kod Cawangan
                             </th>
                             <th class="nama">
-                                @Html.DisplayNameFor(model => model.Nama)
+                                Nama Cawangan
                             </th>
                             <th>
-                                Alamat
-                            </th>
-                            <th>
-                                Negeri
-                            </th>
-                            <th>
-                                Bank
+                                Catatan
                             </th>
                             <th width="5%"></th>
                         </tr>
@@ -50,22 +42,13 @@
                             <tr class="@tabletype text-uppercase">
                                 <td></td>
                                 <td>
-                                    @item.NoGaji
-                                </td>
-                                <td>
-                                    @item.NoKp
+                                    @item.JCawangan?.Kod
                                 </td>
                                 <td class="text-uppercase">
-                                    @item.Nama
+                                    @item.JCawangan?.Perihal
                                 </td>
                                 <td class="text-uppercase">
-                                    @item.Alamat1
-                                </td>
-                                <td class="text-uppercase">
-                                    @item.JNegeri?.Perihal
-                                </td>
-                                <td class="text-uppercase">
-                                    @item.JBank?.Perihal
+                                    @item.Catatan
                                 </td>
                                 <td width="5%" class="text-center">
                                     <div class="btn-group" role="group" aria-label="action">

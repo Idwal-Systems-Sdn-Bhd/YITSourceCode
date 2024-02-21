@@ -50,6 +50,8 @@ namespace YIT._DataAccess.Data
         public DbSet<DDaftarAwam> DDaftarAwam { get; set; }
         public DbSet<DKonfigKelulusan> DKonfigKelulusan { get; set; }
         public DbSet<DPenerimaCekGaji> DPenerimaCekGaji { get; set; }
+        public DbSet<DPanjar> DPanjar { get; set; }
+        public DbSet<DPanjarPemegang> DPanjarPemegang { get; set; }
         //
 
         // 03Kewangan 
