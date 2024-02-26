@@ -20,9 +20,9 @@ namespace YIT._DataAccess.Services.Cart.Session
         private ISession? Session { get; set; }
 
         // DPanjarPemegang
-        public override void AddItemPemegang(int dPanjarId, int dPekerjaId, DateTime jangkaMasaDari, DateTime? jangkaMasaHingga)
+        public override void AddItemPemegang(int dPanjarId, int dPekerjaId, DateTime jangkaMasaDari, DateTime? jangkaMasaHingga, bool isAktif)
         {
-            base.AddItemPemegang(dPanjarId, dPekerjaId, jangkaMasaDari, jangkaMasaHingga);
+            base.AddItemPemegang(dPanjarId, dPekerjaId, jangkaMasaDari, jangkaMasaHingga, isAktif);
             Session?.SetJson("CartDPanjar", this);
         }
 

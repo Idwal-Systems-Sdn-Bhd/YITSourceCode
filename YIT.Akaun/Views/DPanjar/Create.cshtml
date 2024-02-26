@@ -12,6 +12,7 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input name="syscode" value="SPPB" hidden />
+            <input asp-for="Kod" value="@ViewBag.Kod" hidden />
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -51,9 +52,10 @@
                                     <tr>
                                         <th style="width:10%">Kod</th>
                                         <th style="width:40%">Nama</th>
-                                        <th style="width:30%">Jawatan</th>
+                                        <th style="width:25%">Jawatan</th>
                                         <th style="width:10%">Mula</th>
                                         <th style="width:10%">Hingga</th>
+                                        <th style="width:5%">Aktif</th>
                                         <th></th>
                                         <th></th>
                                     </tr>
@@ -73,6 +75,12 @@
                                         </td>
                                         <td><input class="form-control form-control-sm text-uppercase" type="date" id="pemegangJangkaMasaDari"></td>
                                         <td><input class="form-control form-control-sm text-uppercase" type="date" id="pemegangJangkaMasaHingga"></td>
+                                        <td>
+                                            <select class="form-control form-control-sm text-uppercase" id="pemegangIsAktif">
+                                                <option value="true" selected>Ya</option>
+                                                <option value="false">Tidak</option>
+                                            </select>
+                                        </td>
                                         <td><button class="btn btn-success btn-sm" type="button" id="btnAddPemegang"><i class="fas fa-plus"></i></button></td>
                                         <td></td>
                                     </tr>
@@ -83,7 +91,7 @@
                     @*table Pemegang end*@
                 </div>
             </div>
-            
+
 
             <hr />
             <div class="form-group">
@@ -97,6 +105,67 @@
     </div>
 </div>
 
+<!-- Modal Pemegang -->
+<div class="modal fade bd-example-modal-lg" id="moPemegang" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pemegang</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input id="moPemegangId" hidden />
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="col-form-label">Anggota</label>
+                                <select class="form-control form-control-sm text-uppercase" id="moPemegangDPekerjaId" disabled>
+                                    @foreach (var s in ViewBag.DPekerja)
+                                    {
+                                        <option value="@s.Id">@s.NoGaji - @s.Nama</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-form-label">Aktif</label>
+                                <select class="form-control form-control-sm" id="moPemegangIsAktif">
+                                    <option value="true" selected>YA</option>
+                                    <option value="false">TIDAK</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                   
+                   
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Jangka Masa Dari</label>
+                                <input type="date" class="form-control form-control-sm" id="moPemegangJangkaMasaDari">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Hingga</label>
+                                <input type="date" class="form-control form-control-sm" id="moPemegangJangkaMasaHingga">
+                            </div>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn ac-success btn-sm" data-dismiss="modal" onclick="UpdateModalPemegang()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Pemegang End -->
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

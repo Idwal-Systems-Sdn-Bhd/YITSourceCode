@@ -27,9 +27,10 @@
                         <tr>
                             <th style="width:10%">Kod</th>
                             <th style="width:40%">Nama</th>
-                            <th style="width:30%">Jawatan</th>
+                            <th style="width:25%">Jawatan</th>
                             <th style="width:10%">Mula</th>
                             <th style="width:10%">Hingga</th>
+                            <th style="width:5%">Aktif</th>
                         </tr>
                     </thead>
                     <tbody id="tbodyPemegang">
@@ -37,6 +38,13 @@
                         {
                             foreach (var item in ViewBag.dPanjarPemegang)
                             {
+                                var aktif = "YA";
+
+                                if (item.IsAktif == false)
+                                {
+                                    aktif = "TIDAK";
+                                }
+
                                 <tr>
                                     <td hidden>@item.Id</td>
                                     <td class="text-uppercase">@item.DPekerja?.NoGaji</td>
@@ -44,6 +52,7 @@
                                     <td class="text-uppercase">@item.DPekerja?.Jawatan</td>
                                     <td class="text-uppercase">@item.JangkaMasaDari.ToString("dd/MM/yyyy")</td>
                                     <td class="text-uppercase">@item.JangkaMasaHingga?.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-uppercase">@aktif </td>
                                 </tr>
                             }
                         }

@@ -73,5 +73,10 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ThenInclude(pp => pp.DPekerja)
                 .FirstOrDefault(p => p.Id == id) ?? new DPanjar();
         }
+
+        public string GetMaxRefNo()
+        {
+            return _context.DPanjar.Max(p => p.Kod) ?? "0";
+        }
     }
 }

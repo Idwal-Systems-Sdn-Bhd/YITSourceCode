@@ -6,6 +6,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
     {
         List<DPanjar> GetAllDetails();
         DPanjar GetAllDetailsById(int id);
+        string GetMaxRefNo();
         List<DPanjar> GetResults(string? searchString, string? orderBy);
     }
 }

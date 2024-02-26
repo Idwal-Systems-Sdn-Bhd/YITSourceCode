@@ -11,6 +11,7 @@ using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Implementations;
 using YIT._DataAccess.Repositories.Interfaces;
 using YIT._DataAccess.Services.Cart;
+using YIT._DataAccess.Services.Math;
 using YIT.Akaun.Models.ViewModels;
 
 namespace YIT.Akaun.Controllers._02Daftar
@@ -80,8 +81,15 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         public IActionResult Create()
         {
+            ViewBag.Kod = GenerateRunningNumber();
             PopulateDropDownList();
             return View();
+        }
+
+        private dynamic GenerateRunningNumber()
+        {
+            var maxRefNo = _unitOfWork.DPanjarRepo.GetMaxRefNo();
+            return RunningNumberFormatter.GenerateRunningNumber("", maxRefNo, "00");
         }
 
         private void PopulateDropDownList()
@@ -101,10 +109,11 @@ namespace YIT.Akaun.Controllers._02Daftar
             }
             else
             {
-                if (panjar.JCawanganId != 0 && CawanganPanjarExists(panjar.JCawanganId) == false)
+                if (panjar.JCawanganId != 0)
                 {
                     if (ModelState.IsValid)
                     {
+                        panjar.Kod = GenerateRunningNumber();
                         var user = await _userManager.GetUserAsync(User);
                         int? pekerjaId = _context.ApplicationUsers.FirstOrDefault(p => p.Id == user!.Id)!.DPekerjaId;
                         panjar.UserId = user?.UserName ?? "";
@@ -167,7 +176,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             {
                 foreach (var item in panjar.DPanjarPemegang)
                 {
-                    _cart.AddItemPemegang(item.DPanjarId, item.DPekerjaId, item.JangkaMasaDari, item.JangkaMasaHingga);
+                    _cart.AddItemPemegang(item.DPanjarId, item.DPekerjaId, item.JangkaMasaDari, item.JangkaMasaHingga, item.IsAktif);
                 }
             }
             PopulateListViewFromCart(panjar);
@@ -372,6 +381,49 @@ namespace YIT.Akaun.Controllers._02Daftar
             }
         }
 
+        public JsonResult GetAnItemFromCartDPanjarPemegang(DPanjarPemegang dPanjarPemegang)
+        {
+
+            try
+            {
+                DPanjarPemegang data = _cart.DPanjarPemegang.FirstOrDefault(x => x.DPekerjaId == dPanjarPemegang.DPekerjaId) ?? new DPanjarPemegang();
+
+                return Json(new { result = "OK", record = data });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        public JsonResult SaveAnItemFromCartDPanjarPemegang(DPanjarPemegang dPanjarPemegang)
+        {
+
+            try
+            {
+
+                var data = _cart.DPanjarPemegang.FirstOrDefault(x => x.DPekerjaId == dPanjarPemegang.DPekerjaId);
+
+                var user = _userManager.GetUserName(User);
+
+                if (data != null)
+                {
+                    _cart.RemoveItemPemegang(dPanjarPemegang.DPekerjaId);
+
+                    if (dPanjarPemegang.IsAktif == false) dPanjarPemegang.JangkaMasaHingga = DateTime.Now;
+
+                    _cart.AddItemPemegang(dPanjarPemegang.DPanjarId, dPanjarPemegang.DPekerjaId, dPanjarPemegang.JangkaMasaDari, dPanjarPemegang.JangkaMasaHingga, dPanjarPemegang.IsAktif);
+
+                }
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
         public JsonResult GetAllItemCartDPanjar()
         {
             try
@@ -414,7 +466,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             {
                 if (dPanjarPemegang != null)
                 {
-                    _cart.AddItemPemegang(dPanjarPemegang.DPanjarId, dPanjarPemegang.DPekerjaId, dPanjarPemegang.JangkaMasaDari, dPanjarPemegang.JangkaMasaHingga);
+                    _cart.AddItemPemegang(dPanjarPemegang.DPanjarId, dPanjarPemegang.DPekerjaId, dPanjarPemegang.JangkaMasaDari, dPanjarPemegang.JangkaMasaHingga, dPanjarPemegang.IsAktif);
 
                     return Json(new { result = "OK" });
                 }

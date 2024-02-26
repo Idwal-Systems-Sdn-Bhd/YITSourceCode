@@ -59,7 +59,10 @@ namespace YIT.__Domain.Entities._Statics
         public const string namaDKonfigKelulusan = "Daftar Konfigurasi Kelulusan";
 
         public const string kodDPenerimaCekGaji = "DF0004";
-        public const string namaDPenerimaCekGaji = "Penerima Cek Gaji";
+        public const string namaDPenerimaCekGaji = "Daftar Penerima Cek Gaji";
+
+        public const string kodDPanjar = "DF0005";
+        public const string namaDPanjar = "Daftar Pemegang Panjar";
 
         // Akaun
         public const string kodAkCarta = "AK0001";

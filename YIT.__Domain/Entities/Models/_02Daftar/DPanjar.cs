@@ -8,6 +8,7 @@ namespace YIT.__Domain.Entities.Models._02Daftar
     public class DPanjar : GenericFields
     {
         public int Id { get; set; }
+        public string? Kod { get; set; }
         [Display(Name = "Cawangan")]
         public int JCawanganId { get; set; }
         public JCawangan? JCawangan { get; set; }

@@ -16,7 +16,8 @@ namespace YIT._DataAccess.Services.Cart
             int dPanjarId,
             int dPekerjaId,
             DateTime jangkaMasaDari,
-            DateTime? jangkaMasaHingga)
+            DateTime? jangkaMasaHingga,
+            bool isAktif)
         {
             DPanjarPemegang line = collectionPemegang.FirstOrDefault(p => p.DPekerjaId == dPekerjaId)!;
 
@@ -27,7 +28,8 @@ namespace YIT._DataAccess.Services.Cart
                     DPanjarId = dPanjarId,
                     DPekerjaId = dPekerjaId,
                     JangkaMasaDari = jangkaMasaDari,
-                    JangkaMasaHingga = jangkaMasaHingga
+                    JangkaMasaHingga = jangkaMasaHingga,
+                    IsAktif = isAktif
                 });
             }
         }
