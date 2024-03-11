@@ -53,6 +53,13 @@ namespace YIT.Akaun.Controllers._03Akaun
             string searchColumn
             )
         {
+
+            if (searchString == null && (searchDate1 == null && searchDate2 == null))
+            {
+                HttpContext.Session.Clear();
+                return View();
+            }
+
             DateTime? date1 = null;
             DateTime? date2 = null;
 
@@ -62,10 +69,39 @@ namespace YIT.Akaun.Controllers._03Akaun
                 date2 = DateTime.Parse(searchDate2);
             }
 
-            PopulateFormFields(searchString,searchDate1,searchDate2 );
+            SaveFormFields(searchString,searchDate1,searchDate2 );
             var akTerima = _unitOfWork.AkTerimaRepo.GetResults(searchString, date1, date2, searchColumn);
 
             return View(akTerima);
+        }
+
+        private void SaveFormFields(string searchString, string searchDate1, string searchDate2)
+        {
+            PopulateFormFields(searchString, searchDate1, searchDate2);
+
+            if (searchString != null)
+            {
+                HttpContext.Session.SetString("searchString", searchString);
+            }
+            else
+            {
+                searchString = HttpContext.Session.GetString("searchString");
+                ViewBag.searchString = searchString;
+            }
+
+            if (searchDate1 != null && searchDate2 != null)
+            {
+                HttpContext.Session.SetString("searchDate1", searchDate1);
+                HttpContext.Session.SetString("searchDate2", searchDate2);
+            }
+            else
+            {
+                searchDate1 = HttpContext.Session.GetString("searchDate1");
+                searchDate2 = HttpContext.Session.GetString("searchDate2");
+
+                ViewBag.searchDate1 = searchDate1;
+                ViewBag.searchDate2 = searchDate2;
+            }
         }
 
         public IActionResult Details(int? id)
@@ -132,7 +168,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     _appLog.Insert("Tambah", akTerima.NoRujukan ?? "", akTerima.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya ditambah..!";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
 
                 }
             
@@ -247,7 +283,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
             }
 
             PopulateDropDownList();
@@ -284,7 +320,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             if (await _unitOfWork.AkTerimaRepo.IsPostedAsync((int)id, akTerima.NoRujukan) == true)
                             {
                                 TempData[SD.Error] = "Data sudah posting.";
-                                return RedirectToAction(nameof(Index));
+                                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                             }
 
                             // posting start here
@@ -315,7 +351,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 }
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public async Task<IActionResult> UnPosting(int? id, string syscode)
@@ -347,7 +383,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             if (await _unitOfWork.AkTerimaRepo.IsPostedAsync((int)id, akTerima.NoRujukan) == false)
                             {
                                 TempData[SD.Error] = "Data belum diposting.";
-                                return RedirectToAction(nameof(Index));
+                                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                             }
 
                             // posting start here
@@ -375,7 +411,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 }
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         [HttpPost, ActionName("Delete")]
@@ -399,7 +435,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Success] = "Data berjaya dihapuskan..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public async Task<IActionResult> RollBack(int id, string syscode)
@@ -428,7 +464,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Success] = "Data berjaya dikembalikan..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         // functions and services

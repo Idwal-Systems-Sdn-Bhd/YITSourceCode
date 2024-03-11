@@ -52,6 +52,13 @@ namespace YIT.Akaun.Controllers._03Akaun
           string searchDate2,
           string searchColumn)
         {
+
+            if (searchString == null && (searchDate1 == null && searchDate2 == null))
+            {
+                HttpContext.Session.Clear();
+                return View();
+            }
+
             DateTime? date1 = null;
             DateTime? date2 = null;
 
@@ -61,11 +68,40 @@ namespace YIT.Akaun.Controllers._03Akaun
                 date2 = DateTime.Parse(searchDate2);
             }
 
-            PopulateFormFields(searchString, searchDate1, searchDate2);
+            SaveFormFields(searchString, searchDate1, searchDate2);
 
             var akEFT = _unitOfWork.AkEFTRepo.GetResults(searchString, date1, date2, searchColumn);
 
             return View(akEFT);
+        }
+
+        private void SaveFormFields(string searchString, string searchDate1, string searchDate2)
+        {
+            PopulateFormFields(searchString, searchDate1, searchDate2);
+
+            if (searchString != null)
+            {
+                HttpContext.Session.SetString("searchString", searchString);
+            }
+            else
+            {
+                searchString = HttpContext.Session.GetString("searchString");
+                ViewBag.searchString = searchString;
+            }
+
+            if (searchDate1 != null && searchDate2 != null)
+            {
+                HttpContext.Session.SetString("searchDate1", searchDate1);
+                HttpContext.Session.SetString("searchDate2", searchDate2);
+            }
+            else
+            {
+                searchDate1 = HttpContext.Session.GetString("searchDate1");
+                searchDate2 = HttpContext.Session.GetString("searchDate2");
+
+                ViewBag.searchDate1 = searchDate1;
+                ViewBag.searchDate2 = searchDate2;
+            }
         }
 
         private void PopulateFormFields(string searchString, string searchDate1, string searchDate2)
@@ -332,7 +368,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 _appLog.Insert("Tambah", akEFT.NoRujukan ?? "", akEFT.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya ditambah..!";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
             }
             ViewBag.NoRujukan = EnInitNoRujukan.EF.GetDisplayName() + "/" + GetNamaFail(akEFT.Tarikh, akEFT.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"), akEFT.Tarikh.ToString("MM") ?? DateTime.Now.ToString("MM"));
             PopulateDropDownList();
@@ -512,7 +548,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
             }
 
             PopulateDropDownList();
@@ -535,7 +571,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 if (akEFT.EnStatusEFT != EnStatusProses.None)
                 {
                     TempData[SD.Error] = "Data telah dijana";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
                 akEFT.UserIdKemaskini = user?.UserName ?? "";
                 akEFT.TarKemaskini = DateTime.Now;
@@ -552,7 +588,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Data tidak wujud";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public async Task<IActionResult> RollBack(int id, string syscode)
@@ -581,7 +617,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Success] = "Data berjaya dikembalikan..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         private bool AkEFTExist(int id)
@@ -872,7 +908,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 TempData[SD.Error] = ex;
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public JsonResult GetAllItemCartAkEFT()
