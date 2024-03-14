@@ -8,10 +8,18 @@
         <div class="row">
             <div class="col-8">
                 <h5 class="text-uppercase text-dark mb-0">@ViewData["Title"]</h5>
-                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / Papar</span>
+                <span class="ac-ref"><a asp-action="Index"
+                    asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                    asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
+                    asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
+                    class="text-secondary">Indeks</a> / Papar</span>
             </div>
             <div class="col-4">
-                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+                <a asp-action="Index"
+                   asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                   asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
+                   asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
+                   class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
             </div>
 
         </div>
@@ -25,7 +33,11 @@
                     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn ac-primary btn-sm">Ubah</a>
                 }
 
-                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+                <a asp-action="Index"
+                   asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                   asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
+                   asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
+                   class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
             </div>
 
     </div>
