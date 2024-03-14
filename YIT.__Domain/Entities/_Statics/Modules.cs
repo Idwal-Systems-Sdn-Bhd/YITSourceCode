@@ -211,6 +211,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodPAkKunciKiraKira = "PAK006";
         public const string namaPAkKunciKiraKira = "Penyata Kunci Kira - Kira";
+
+        public const string kodLCekYangBerkaitan = "LAK002";
+        public const string namaLCekYangBerkaitan = "Laporan Cek Yang Berkaitan";
         //
     }
 }

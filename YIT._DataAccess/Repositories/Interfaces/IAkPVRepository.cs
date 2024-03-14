@@ -35,5 +35,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public void BatalLulus(int id, string? tindakan, string? userId);
         public void BatalPos(int id, string? tindakan, string? userId);
         public bool HaveAkJanaanProfil(int akJanaanProfilId);
+        Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar(string? tarikhDari, string? tarikhHingga);
     }
 }
