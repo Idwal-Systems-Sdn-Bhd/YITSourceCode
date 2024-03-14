@@ -26,6 +26,16 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label asp-for="JKWPTJBahagianId" class="control-label"></label>
+                        <select asp-for="JKWPTJBahagianId" class="form-control form-control-sm text-uppercase" required>
+                            <option value="">- SILA PILIH -</option>
+                            @foreach (var s in ViewBag.JKWPTJBahagian)
+                            {
+                                <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label asp-for="AkCartaId" class="control-label"></label>
                         <select asp-for="AkCartaId" class="form-control form-control-sm text-uppercase" required>
                             <option value="">- SILA PILIH -</option>

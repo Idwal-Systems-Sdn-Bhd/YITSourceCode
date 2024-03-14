@@ -21,14 +21,30 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ThenInclude(p => p!.JCawangan)
                 .ToList();
         }
+
+        public List<AkRekup> GetAllFilteredBy(bool isLinked)
+        {
+            return _context.AkRekup.Include(r => r.DPanjar).Where(r => r.IsLinked == isLinked).ToList();
+        }
+
         public AkRekup GetDetailsById(int id)
         {
             return _context.AkRekup
                 .Include(r => r.DPanjar)
                     .ThenInclude(p => p!.JCawangan)
+                .Include(r => r.DPanjar)
+                    .ThenInclude(p => p!.DPanjarPemegang)!
+                        .ThenInclude(pp => pp.DPekerja)
                 .FirstOrDefault(r => r.Id == id) ?? new AkRekup();
         }
 
+        public AkRekup GetDetailsByBakiAwalAndDPanjarId(string noRujukan, int dPanjarId, bool isLinked)
+        {
+            return _context.AkRekup
+                .Include(r => r.DPanjar)
+                    .ThenInclude(p => p!.JCawangan)
+                .FirstOrDefault(r => r.NoRujukan == noRujukan && r.DPanjarId == dPanjarId && r.IsLinked == isLinked) ?? new AkRekup();
+        }
 
     }
 }

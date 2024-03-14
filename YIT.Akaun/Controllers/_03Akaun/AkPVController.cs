@@ -687,6 +687,8 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             ViewBag.EnJenisId = jenisId;
 
+            ViewBag.AkRekup = _unitOfWork.AkRekupRepo.GetAllFilteredBy(false);
+            ViewBag.DPanjar = _unitOfWork.DPanjarRepo.GetAllDetails();
             //ViewBag.SuGajiBulanan = _context.SuGajiBulanan.ToList();
         }
 
@@ -1524,6 +1526,101 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? dPekerja.NoAkaunBank;
                             akPVPenerima.EnJenisId = dPekerja.EnJenisId;
                             break;
+                        case EnKategoriDaftarAwam.LainLain:
+                            // rekupan / baki awal
+                            if (akPVPenerima.AkRekupId != null)
+                            {
+                                var akRekup = _unitOfWork.AkRekupRepo.GetDetailsById((int)akPVPenerima.AkRekupId);
+
+                                if (akRekup != null && akRekup.DPanjar != null && akRekup.DPanjar.DPanjarPemegang != null && akRekup.DPanjar.DPanjarPemegang.Count() > 0)
+                                {
+                                    // find active pemegang panjar
+                                    foreach (var pemegang in akRekup.DPanjar.DPanjarPemegang)
+                                    {
+                                        if (pemegang.DPekerja != null)
+                                        {
+                                            if (pemegang.IsAktif)
+                                            {
+                                                akPVPenerima.NamaPenerima = akPVPenerima.NamaPenerima ?? pemegang.DPekerja.Nama;
+                                                akPVPenerima.NoPendaftaranPenerima = akPVPenerima.NoPendaftaranPenerima ?? pemegang.DPekerja.NoKp;
+                                                akPVPenerima.NoPendaftaranPemohon = akPVPenerima.NoPendaftaranPemohon ?? pemegang.DPekerja.NoKp;
+                                                akPVPenerima.Alamat1 = akPVPenerima.Alamat1 ?? pemegang.DPekerja.Alamat1;
+                                                akPVPenerima.Alamat2 = akPVPenerima.Alamat2 ?? pemegang.DPekerja.Alamat2;
+                                                akPVPenerima.Alamat3 = akPVPenerima.Alamat3 ?? pemegang.DPekerja.Alamat3;
+                                                akPVPenerima.JBankId = akPVPenerima.JBankId ?? pemegang.DPekerja.JBankId;
+                                                akPVPenerima.Emel = akPVPenerima.Emel ?? pemegang.DPekerja.Emel;
+                                                akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? pemegang.DPekerja.KodM2E;
+                                                akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? pemegang.DPekerja.NoAkaunBank;
+                                                akPVPenerima.EnJenisId = pemegang.DPekerja.EnJenisId;
+                                                akPVPenerima.DPanjarId = akRekup.DPanjarId;
+                                                akPVPenerima.Amaun = akRekup.Jumlah;
+
+                                            }
+                                            else
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        
+                                    }
+
+                                    var objek = new AkPVObjek()
+                                    {
+                                        AkCartaId = akRekup.DPanjar.AkCartaId,
+                                        JKWPTJBahagianId = (int)akRekup.DPanjar.JKWPTJBahagianId!,
+                                        Amaun = akRekup.Jumlah
+
+                                    };
+                                    // insert if empty, update if available
+                                    if (_cart.AkPVObjek.Any(o => o.AkCartaId == akRekup.DPanjar.AkCartaId && o.JKWPTJBahagianId == akRekup.DPanjar.JKWPTJBahagianId))
+                                    {
+                                        SaveAnItemFromCartAkPVObjek(objek);
+                                    }
+                                    else
+                                    {
+                                        SaveCartAkPVObjek(objek);
+                                    }
+                                }
+                                
+                            }
+                            // tambah / kurangkan had limit pemegang
+                            else
+                            {
+                                if (akPVPenerima.DPanjarId != null)
+                                {
+                                    var dPanjar = _unitOfWork.DPanjarRepo.GetAllDetailsById((int)akPVPenerima.DPanjarId);
+                                    if (dPanjar != null && dPanjar.DPanjarPemegang != null && dPanjar.DPanjarPemegang.Count() > 0)
+                                    {
+                                        // find active pemegang panjar
+                                        foreach (var pemegang in dPanjar.DPanjarPemegang)
+                                        {
+                                            if (pemegang.DPekerja != null)
+                                            {
+                                                if (pemegang.IsAktif)
+                                                {
+                                                    akPVPenerima.NamaPenerima = akPVPenerima.NamaPenerima ?? pemegang.DPekerja.Nama;
+                                                    akPVPenerima.NoPendaftaranPenerima = akPVPenerima.NoPendaftaranPenerima ?? pemegang.DPekerja.NoKp;
+                                                    akPVPenerima.NoPendaftaranPemohon = akPVPenerima.NoPendaftaranPemohon ?? pemegang.DPekerja.NoKp;
+                                                    akPVPenerima.Alamat1 = akPVPenerima.Alamat1 ?? pemegang.DPekerja.Alamat1;
+                                                    akPVPenerima.Alamat2 = akPVPenerima.Alamat2 ?? pemegang.DPekerja.Alamat2;
+                                                    akPVPenerima.Alamat3 = akPVPenerima.Alamat3 ?? pemegang.DPekerja.Alamat3;
+                                                    akPVPenerima.JBankId = akPVPenerima.JBankId ?? pemegang.DPekerja.JBankId;
+                                                    akPVPenerima.Emel = akPVPenerima.Emel ?? pemegang.DPekerja.Emel;
+                                                    akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? pemegang.DPekerja.KodM2E;
+                                                    akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? pemegang.DPekerja.NoAkaunBank;
+                                                    akPVPenerima.EnJenisId = pemegang.DPekerja.EnJenisId;
+                                                }
+                                                else
+                                                {
+                                                    continue;
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                            break;
                     }
                     if (akPVPenerima.JCaraBayarId != 0)
                     {
@@ -1640,6 +1737,97 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? dPekerja.KodM2E;
                             akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? dPekerja.NoAkaunBank;
                             akPVPenerima.EnJenisId = dPekerja.EnJenisId;
+                            break;
+                        case EnKategoriDaftarAwam.LainLain:
+                            if (akPVPenerima.AkRekupId != null)
+                            {
+                                var akRekup = _unitOfWork.AkRekupRepo.GetDetailsById((int)akPVPenerima.AkRekupId);
+
+                                if (akRekup != null && akRekup.DPanjar != null && akRekup.DPanjar.DPanjarPemegang != null && akRekup.DPanjar.DPanjarPemegang.Count() > 0)
+                                {
+                                    // find active pemegang panjar
+                                    foreach (var pemegang in akRekup.DPanjar.DPanjarPemegang)
+                                    {
+                                        if (pemegang.DPekerja != null)
+                                        {
+                                            if (pemegang.IsAktif)
+                                            {
+                                                akPVPenerima.NamaPenerima = akPVPenerima.NamaPenerima ?? pemegang.DPekerja.Nama;
+                                                akPVPenerima.NoPendaftaranPenerima = akPVPenerima.NoPendaftaranPenerima ?? pemegang.DPekerja.NoKp;
+                                                akPVPenerima.NoPendaftaranPemohon = akPVPenerima.NoPendaftaranPemohon ?? pemegang.DPekerja.NoKp;
+                                                akPVPenerima.Alamat1 = akPVPenerima.Alamat1 ?? pemegang.DPekerja.Alamat1;
+                                                akPVPenerima.Alamat2 = akPVPenerima.Alamat2 ?? pemegang.DPekerja.Alamat2;
+                                                akPVPenerima.Alamat3 = akPVPenerima.Alamat3 ?? pemegang.DPekerja.Alamat3;
+                                                akPVPenerima.JBankId = akPVPenerima.JBankId ?? pemegang.DPekerja.JBankId;
+                                                akPVPenerima.Emel = akPVPenerima.Emel ?? pemegang.DPekerja.Emel;
+                                                akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? pemegang.DPekerja.KodM2E;
+                                                akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? pemegang.DPekerja.NoAkaunBank;
+                                                akPVPenerima.EnJenisId = pemegang.DPekerja.EnJenisId;
+                                                akPVPenerima.DPanjarId = akRekup.DPanjarId;
+                                            }
+                                            else
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                    }
+                                    var objek = new AkPVObjek()
+                                    {
+                                        AkCartaId = akRekup.DPanjar.AkCartaId,
+                                        JKWPTJBahagianId = (int)akRekup.DPanjar.JKWPTJBahagianId!,
+                                        Amaun = akRekup.Jumlah
+
+                                    };
+                                    // insert if empty, update if available
+                                    if (_cart.AkPVObjek.Any(o => o.AkCartaId == akRekup.DPanjar.AkCartaId && o.JKWPTJBahagianId == akRekup.DPanjar.JKWPTJBahagianId))
+                                    {
+                                        SaveAnItemFromCartAkPVObjek(objek);
+                                    }
+                                    else
+                                    {
+                                        SaveCartAkPVObjek(objek);
+                                    }
+                                }
+
+                            }
+                            // tambah / kurangkan had limit pemegang
+                            else
+                            {
+                                if (akPVPenerima.DPanjarId != null)
+                                {
+                                    var dPanjar = _unitOfWork.DPanjarRepo.GetAllDetailsById((int)akPVPenerima.DPanjarId);
+                                    if (dPanjar != null && dPanjar.DPanjarPemegang != null && dPanjar.DPanjarPemegang.Count() > 0)
+                                    {
+                                        // find active pemegang panjar
+                                        foreach (var pemegang in dPanjar.DPanjarPemegang)
+                                        {
+                                            if (pemegang.DPekerja != null)
+                                            {
+                                                if (pemegang.IsAktif)
+                                                {
+                                                    akPVPenerima.NamaPenerima = akPVPenerima.NamaPenerima ?? pemegang.DPekerja.Nama;
+                                                    akPVPenerima.NoPendaftaranPenerima = akPVPenerima.NoPendaftaranPenerima ?? pemegang.DPekerja.NoKp;
+                                                    akPVPenerima.NoPendaftaranPemohon = akPVPenerima.NoPendaftaranPemohon ?? pemegang.DPekerja.NoKp;
+                                                    akPVPenerima.Alamat1 = akPVPenerima.Alamat1 ?? pemegang.DPekerja.Alamat1;
+                                                    akPVPenerima.Alamat2 = akPVPenerima.Alamat2 ?? pemegang.DPekerja.Alamat2;
+                                                    akPVPenerima.Alamat3 = akPVPenerima.Alamat3 ?? pemegang.DPekerja.Alamat3;
+                                                    akPVPenerima.JBankId = akPVPenerima.JBankId ?? pemegang.DPekerja.JBankId;
+                                                    akPVPenerima.Emel = akPVPenerima.Emel ?? pemegang.DPekerja.Emel;
+                                                    akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? pemegang.DPekerja.KodM2E;
+                                                    akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? pemegang.DPekerja.NoAkaunBank;
+                                                    akPVPenerima.EnJenisId = pemegang.DPekerja.EnJenisId;
+                                                }
+                                                else
+                                                {
+                                                    continue;
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
                             break;
                     }
                     if (akPVPenerima.JCaraBayarId != 0)

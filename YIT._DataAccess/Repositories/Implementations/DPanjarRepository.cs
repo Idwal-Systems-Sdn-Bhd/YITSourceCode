@@ -27,6 +27,12 @@ namespace YIT._DataAccess.Repositories.Implementations
                 result = _context.DPanjar
                     .IgnoreQueryFilters()
                     .Include(p => p.JCawangan)
+                    .Include(p => p.JKWPTJBahagian)
+                        .ThenInclude(p => p!.JKW)
+                    .Include(p => p.JKWPTJBahagian)
+                        .ThenInclude(p => p!.JPTJ)
+                    .Include(p => p.JKWPTJBahagian)
+                        .ThenInclude(p => p!.JBahagian)
                     .Include(p => p.AkCarta)
                     .Include(p => p.DPanjarPemegang)!
                         .ThenInclude(pp => pp.DPekerja)
@@ -58,6 +64,12 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             return _context.DPanjar
                 .Include(p => p.JCawangan)
+                .Include(p => p.JKWPTJBahagian)
+                        .ThenInclude(p => p!.JKW)
+                    .Include(p => p.JKWPTJBahagian)
+                        .ThenInclude(p => p!.JPTJ)
+                    .Include(p => p.JKWPTJBahagian)
+                        .ThenInclude(p => p!.JBahagian)
                 .Include(p => p.AkCarta)
                 .Include(p => p.DPanjarPemegang)!
                     .ThenInclude(pp => pp.DPekerja)
@@ -68,6 +80,12 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             return _context.DPanjar
                 .Include(p => p.JCawangan)
+                .Include(p => p.JKWPTJBahagian)
+                        .ThenInclude(p => p!.JKW)
+                    .Include(p => p.JKWPTJBahagian)
+                        .ThenInclude(p => p!.JPTJ)
+                    .Include(p => p.JKWPTJBahagian)
+                        .ThenInclude(p => p!.JBahagian)
                 .Include(p => p.AkCarta)
                 .Include(p => p.DPanjarPemegang)!
                     .ThenInclude(pp => pp.DPekerja)

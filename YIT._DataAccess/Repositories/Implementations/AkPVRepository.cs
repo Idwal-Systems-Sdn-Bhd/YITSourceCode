@@ -73,6 +73,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                 RemovePostingFromAbBukuVot(data);
                 RemovePostingFromAkAkaun(data);
+                RemovePostingFromAkPanjarLejar(data);
 
 
             }
@@ -489,6 +490,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                 PostingToAbBukuVot(data);
 
                 PostingToAkAkaun(data);
+
+                PostingToAkPanjarLejar(data);
             }
         }
 
@@ -642,6 +645,72 @@ namespace YIT._DataAccess.Repositories.Implementations
            
         }
 
+        public void PostingToAkPanjarLejar(AkPV akPV)
+        {
+            List<AkPanjarLejar> akPanjarLejarList = new List<AkPanjarLejar>();
+
+            if (akPV.EnJenisBayaran == EnJenisBayaran.Panjar)
+            {
+                if (akPV.AkPVPenerima != null && akPV.AkPVPenerima.Count > 0)
+                {
+                    foreach (var penerima in akPV.AkPVPenerima)
+                    {
+                        if (penerima.EnKategoriDaftarAwam == EnKategoriDaftarAwam.LainLain && penerima.AkRekupId != null)
+                        {
+                            // update panjar lejar
+                            var rekup = _context.AkRekup
+                                .Include(r => r.DPanjar)
+                                    .ThenInclude(p => p!.DPanjarPemegang)!
+                                        .ThenInclude(pp => pp.DPekerja)
+                                .FirstOrDefault(r => r.Id == penerima.AkRekupId);
+                            if (rekup != null && rekup.DPanjar != null && rekup.DPanjar.DPanjarPemegang != null)
+                            {
+
+                                var LejarPanjarList = _context.AkPanjarLejar.Where(r => r.DPanjarId == rekup.DPanjarId).ToList();
+
+                                decimal totalRekup = 0;
+
+                                if (LejarPanjarList != null && LejarPanjarList.Count > 0)
+                                {
+                                    foreach (var item in LejarPanjarList)
+                                    {
+                                        totalRekup += item.Debit - item.Kredit;
+                                    }
+                                }
+                                else
+                                {
+                                    totalRekup = rekup.Jumlah;
+                                }
+
+                                AkPanjarLejar akPanjarLejar = new AkPanjarLejar()
+                                {
+                                    JKWPTJBahagianId = (int)rekup.DPanjar.JKWPTJBahagianId!,
+                                    DPanjarId = rekup.DPanjarId,
+                                    AkCVId = null,
+                                    AkPVId = akPV.Id,
+                                    AkJurnalId = null,
+                                    Tarikh = akPV.Tarikh,
+                                    AkCartaId = rekup.DPanjar.AkCartaId,
+                                    Debit = rekup.Jumlah < 0 ? 0 : rekup.Jumlah,
+                                    Kredit = rekup.Jumlah < 0 ? -rekup.Jumlah : 0,
+                                    AkRekupId = rekup.Id,
+                                    NoRujukan = rekup.NoRujukan,
+                                    Baki = totalRekup,
+                                    IsPaid = true
+                                };
+
+                                _context.AkPanjarLejar.Add(akPanjarLejar);
+                            }
+
+
+                            // update panjar lejar end
+                        }
+                    }
+                }
+            }
+
+        }
+
         public void RemovePostingFromAkAkaun(AkPV akPV)
         {
             var akAkaunList = _context.AkAkaun.Where(b => b.NoRujukan == akPV.NoRujukan).ToList();
@@ -659,6 +728,43 @@ namespace YIT._DataAccess.Repositories.Implementations
             {
                 _context.RemoveRange(abBukuVotList);
             }
+        }
+
+        public void RemovePostingFromAkPanjarLejar(AkPV akPV)
+        {
+
+            if (akPV.EnJenisBayaran == EnJenisBayaran.Panjar)
+            {
+                if (akPV.AkPVPenerima != null && akPV.AkPVPenerima.Count > 0)
+                {
+                    foreach (var penerima in akPV.AkPVPenerima)
+                    {
+                        if (penerima.EnKategoriDaftarAwam == EnKategoriDaftarAwam.LainLain && penerima.AkRekupId != null)
+                        {
+                            // update panjar lejar
+                            var rekup = _context.AkRekup
+                                .Include(r => r.DPanjar)
+                                    .ThenInclude(p => p!.DPanjarPemegang)!
+                                        .ThenInclude(pp => pp.DPekerja)
+                                .FirstOrDefault(r => r.Id == penerima.AkRekupId);
+                            if (rekup != null && rekup.DPanjar != null && rekup.DPanjar.DPanjarPemegang != null)
+                            {
+
+                                var LejarPanjarList = _context.AkPanjarLejar.Where(r => r.DPanjarId == rekup.DPanjarId && r.NoRujukan == rekup.NoRujukan).ToList();
+
+                                if (LejarPanjarList != null && LejarPanjarList.Count > 0)
+                                {
+                                    _context.RemoveRange(LejarPanjarList);
+                                }
+                            }
+
+
+                            // update panjar lejar end
+                        }
+                    }
+                }
+            }
+
         }
 
         public void Sah(int id, int? pengesahId, string? userId)

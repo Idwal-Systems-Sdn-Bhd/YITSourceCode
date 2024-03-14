@@ -45,9 +45,9 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .OrderBy(b => b.AkRekup!.NoRujukan).ThenBy(b => b.Tarikh)
                     .ToList();
 
-                if (panjarLejar != null)
+                if (panjarLejarRekup != null && panjarLejarRekup.Count() > 0)
                 {
-                    foreach (var item in panjarLejar)
+                    foreach (var item in panjarLejarRekup)
                     {
                         var noRujukan = "";
 
@@ -78,7 +78,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .OrderBy(b => b.Tarikh)
                     .ToList();
 
-                if (panjarLejarBelumRekup != null)
+                if (panjarLejarBelumRekup != null && panjarLejarBelumRekup.Count() > 0)
                 {
                     foreach (var item in panjarLejarBelumRekup)
                     {

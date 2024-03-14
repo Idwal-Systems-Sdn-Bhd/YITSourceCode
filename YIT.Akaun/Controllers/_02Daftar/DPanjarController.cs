@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -94,6 +95,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         private void PopulateDropDownList()
         {
+            ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAll();
@@ -122,9 +124,8 @@ namespace YIT.Akaun.Controllers._02Daftar
                         panjar.DPekerjaMasukId = pekerjaId;
 
                         panjar.DPanjarPemegang = _cart.DPanjarPemegang?.ToList();
-
                         _context.Add(panjar);
-                        
+
                         _appLog.Insert("Tambah", "Panjar bagi cawangan " + panjar.JCawangan?.Kod + " - " + panjar.JCawangan?.Perihal, panjar.JCawangan?.Kod ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
 
                         await _context.SaveChangesAsync();
@@ -143,6 +144,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                     TempData[SD.Error] = "Cawangan ini telah wujud..!";
                 }
             }
+            PopulateListViewFromCart(panjar);
             PopulateDropDownList();
             return View(panjar);
         }
@@ -228,7 +230,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, DPanjar panjar, string syscode)
+        public async Task<IActionResult> Edit(int id, DPanjar panjar, decimal bakiDiTangan, string syscode)
         {
             if (id != panjar.Id)
             {
@@ -246,6 +248,30 @@ namespace YIT.Akaun.Controllers._02Daftar
 
                     if (objAsal != null)
                     {
+                        // if no transaction exist for this dPanjarId
+                        if (!_unitOfWork.AkRekupRepo.IsExist(r => r.DPanjarId == id))
+                        {
+
+                            panjar.HadJumlah = bakiDiTangan;
+
+                            _unitOfWork.AkRekupRepo.Add(new AkRekup { DPanjarId = id, NoRujukan = "BAKI AWAL", Jumlah = bakiDiTangan });
+
+                        }
+                        else
+                        {
+                            // if baki awal already exist, update new baki awal
+                            if (_unitOfWork.AkRekupRepo.IsExist(r => r.NoRujukan == "BAKI AWAL" && r.DPanjarId == id))
+                            {
+                                panjar.HadJumlah = bakiDiTangan;
+
+                                var akRekup = _unitOfWork.AkRekupRepo.GetDetailsByBakiAwalAndDPanjarId("BAKI AWAL", id, false);
+
+                                akRekup.Jumlah = bakiDiTangan;
+
+                                _unitOfWork.AkRekupRepo.Update(akRekup);
+                            }
+                        }
+
                         panjar.JCawanganId = objAsal.JCawanganId;
                         panjar.UserId = objAsal.UserId;
                         panjar.TarMasuk = objAsal.TarMasuk;

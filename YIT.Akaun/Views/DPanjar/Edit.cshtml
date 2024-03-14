@@ -24,11 +24,16 @@
             <input type="hidden" asp-for="Id" />
             <input name="syscode" value="SPPB" hidden />
             <input asp-for="JCawanganId" hidden />
+            <input asp-for="JKWPTJBahagianId" hidden />
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="JCawanganId" class="control-label"></label>
                         <input class="form-control form-control-sm" value="@Model.JCawangan?.Kod - @Model.JCawangan?.Perihal " readonly />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="JKWPTJBahagianId" class="control-label"></label>
+                        <input class="form-control form-control-sm" value="@Model.JKWPTJBahagian?.Kod - @Model.JKWPTJBahagian?.JBahagian?.Perihal (@Model.JKWPTJBahagian?.JPTJ?.Perihal)" readonly />
                     </div>
                     <div class="form-group">
                         <label asp-for="AkCartaId" class="control-label"></label>
@@ -43,6 +48,16 @@
                     <div class="form-group">
                         <label asp-for="Catatan" class="control-label"></label>
                         <textarea asp-for="Catatan" class="form-control form-control-sm text-uppercase" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="HadJumlah" class="control-label"></label>
+                        <input type="number" asp-for="HadJumlah" class="form-control form-control-sm text-uppercase" readonly />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Baki Awal RM</label>
+                        <input type="number" name="bakiDiTangan" class="form-control form-control-sm text-uppercase" value="@Model.HadJumlah" />
                     </div>
                 </div>
                 <div class="col-md-6">
