@@ -1,0 +1,91 @@
+﻿@model LAK002PrintModel
+
+@{
+    ViewData["Title"] = "LAK00202 Laporan Cek Yang Dibatalkan";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal jumlah = 0;
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+<div class="form-group">
+        <p>
+            <strong>
+                LAPORAN CEK YANG DIBATALKAN DARI TARIKH : @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]
+            </strong>
+        </p>
+    </div>
+<table class="table table-bordered table-sm topic" id="mytable">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th colspan="11" class="text-center bg-dark text-white" style="line-height: 1.8rem;"><strong>CETAKAN LAPORAN CEK YANG DIBATALKAN</strong></th>
+        </tr>
+        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+
+            <th class="NoRujukan">
+                No Cek/ Tar Cek
+            </th>
+            <th class="NoRujukanCaraBayar">
+                No Baucer
+            </th>
+            <th>
+                No Jurnal
+            </th>
+            <th>
+                Amaun Cek RM
+            </th>
+            <th>
+                Nama Penerima
+            </th>
+            <th>
+                Catatan
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AkPV != null)
+        {
+            @foreach (var akPV in Model.AkPV)
+                foreach (var akPVPenerima in akPV.AkPVPenerima.Where(akPVPenerima => akPVPenerima.JCaraBayarId == 2 && akPVPenerima.EnStatusEFT == EnStatusProses.Fail))
+                {
+                    jumlah += akPVPenerima.Amaun;
+
+                    <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+
+                        <td class="text-uppercase">
+                            @Html.DisplayFor(modelItem => akPVPenerima.NoRujukanCaraBayar) <br />
+                            @Convert.ToDateTime(akPVPenerima.TarikhCaraBayar).ToString("dd/MM/yyyy")
+                        </td>
+                        <td class="text-uppercase">
+                            @Html.DisplayFor(modelItem => akPV.NoRujukan)
+                        </td>
+                        <td class="text-uppercase">
+                            @Html.DisplayFor(modelItem => akPV.AkJurnalPenerimaCekBatal)
+                        </td>
+                        <td class="text-right">
+                            @Html.DisplayFor(modelItem => akPVPenerima.Amaun)
+                        </td>
+                        <td class="text-uppercase">
+                            @Html.DisplayFor(modelItem => akPVPenerima.NamaPenerima)
+                        </td>
+                        <td class="text-uppercase">
+                            @Html.DisplayFor(modelItem => akPVPenerima.Catatan)
+                        </td>
+                    </tr>
+                }
+        }
+        <tr class=" font-weight-bold">
+            <td colspan="3" class="text-right text-uppercase table-warning">Jumlah RM</td>
+            <td class="text-right">@Convert.ToDecimal(jumlah).ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+        
+</table>
