@@ -1,0 +1,119 @@
+﻿@model YIT.Akaun.Models.ViewModels.Forms.PrintFormModel
+
+@{
+    ViewData["Title"] = "LAK002 Laporan Cek yang Berkaitan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int year = DateTime.Now.Year;
+    DateTime firstDay = new DateTime(year, 1, 1);
+    DateTime lastDay = new DateTime(year, 12, 31);
+}
+
+<script>
+    //add tbl objek
+    $("body").on("click", "#btnExportExcel", function () {
+        $(".loading").css("display", "");
+        $("#btnExportExcel").prop('disabled', true);
+        var kodLaporan = "";
+        if ($('#LAK00201').is(':checked')) {
+            kodLaporan = "LAK00201";
+            
+        } 
+        if ($('#LAK00202').is(':checked')) {
+            kodLaporan = "LAK00202";
+        }
+       
+        var tarikhDari = $('#tarikhDari').val();
+        var tarikhHingga = $('#tarikhHingga').val();
+        var susunan = $('#susunan').val();
+
+        if (kodLaporan != "") {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ExportExcel","LAK002")',
+                data: { kodLaporan: kodLaporan, tarikhDari: tarikhDari, tarikhHingga: tarikhHingga, susunan: susunan },
+                dataType: "json",
+                success: function (r) {
+                    window.location = "@Url.Action("Download","Account")?fileGuid=" + r.fileGuid
+                        + "&filename=" + r.fileName;
+                    toastr.success("laporan berjaya dijana.", "Berjaya");
+                    toastr.options.timeOut = 2000; // 2s
+                    $("#btnExportExcel").prop('disabled', false);
+                    $(".loading").css("display", "none");
+                   
+                }
+            })
+        } 
+    });
+
+
+</script>
+
+<div class="container">
+    <div class="card box-shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <h5 class="text-uppercase text-info mb-0">@ViewData["Title"]</h5>
+                    <span class="ac-ref">Indeks</span>
+                </div>
+                <div class="col-4 text-right">
+                </div>
+
+            </div>
+            <hr class="mt-2" />
+            <form asp-action="PRINT">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="form-group col-sm">
+                            <div class="custom-control custom-radio pb-2">
+
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00201" value="LAK00201" checked>
+                                <label class="custom-control-label" for="LAK00201">
+                                    01 - Laporan Cek Yang Belum Ditunai
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio pb-2">
+
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00202" value="LAK00202">
+                                <label class="custom-control-label" for="LAK00202">
+                                    02 - Laporan Cek Yang Dibatalkan
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group row g-3">
+                            <label for="Tarikh" class="col-sm-2 col-form-label">Tarikh</label>
+                            <div class="col-sm-5">
+                                <input type="date" class="form-control form-control-sm" id="tarikhDari" asp-for="tarikhDari" value="@firstDay.ToString("yyyy-MM-dd")">
+                            </div>
+                            <div class="col-sm-5">
+                                <input type="date" class="form-control form-control-sm" id="tarikhHingga" asp-for="tarikhHingga" value="@lastDay.ToString("yyy-MM-dd")">
+                            </div>
+                        </div>
+                        <div class="form-group row g-3">
+                            <label for="Susunan" class="col-sm-2 col-form-label">Susunan</label>
+                            <div class="col-sm-5">
+                                <select class="form-control form-control-sm input-group-sm" id="susunan" asp-for="susunan" required>
+                                    <option value="1" selected>Tarikh Baucer</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group text-right">
+                    <input type="submit" value="Cetak" id="btnCetak" formtarget="_blank" class="btn ac-primary" />
+                    <button type="button" formtarget="_blank" id="btnExportExcel" class="btn ac-info">Jana Excel</button>
+                    <span class="loading" style="padding-right:3px; padding-top: 3px; display:inline-block;">
+                        <img src="~/img/Spinner.gif" style="height:40px;">
+                    </span>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,10 +1,16 @@
 ﻿<li class="nav-item">
     <a class="nav-link collapsed text-truncate
-    
+     @Html.ActiveClass("LAK002PrintModel")
        " href="#submenuLaporan" data-toggle="collapse" data-target="#submenuLaporan"><img src="~/img/svg/laporan.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Laporan</span></a>
     <div class="collapse" id="submenuLaporan" aria-expanded="false">
         <ul class="flex-column ps-2 nav">
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK002PrintModel")" asp-area="" asp-controller="LAK002" asp-action="Index">
+                    Laporan Cek yang Berkaitan
+                </a>
+            </li>
 
+            
         </ul>
     </div>
 </li>
