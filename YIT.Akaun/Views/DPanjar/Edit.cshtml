@@ -1,0 +1,212 @@
+﻿@model DPanjar
+
+@{
+    ViewData["Title"] = "Panjar - Ubah";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="_JSCreate" />
+<div class="card box-shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-primary mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Index" asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")" class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah</span>
+            </div>
+            <div class="col-4 ">
+                <a asp-action="Index" asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input name="syscode" value="SPPB" hidden />
+            <input asp-for="JCawanganId" hidden />
+            <input asp-for="JKWPTJBahagianId" hidden />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="JCawanganId" class="control-label"></label>
+                        <input class="form-control form-control-sm" value="@Model.JCawangan?.Kod - @Model.JCawangan?.Perihal " readonly />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="JKWPTJBahagianId" class="control-label"></label>
+                        <input class="form-control form-control-sm" value="@Model.JKWPTJBahagian?.Kod - @Model.JKWPTJBahagian?.JBahagian?.Perihal (@Model.JKWPTJBahagian?.JPTJ?.Perihal)" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AkCartaId" class="control-label"></label>
+                        <select asp-for="AkCartaId" class="form-control form-control-sm text-uppercase" required>
+                            <option value="">- SILA PILIH -</option>
+                            @foreach (var item in ViewBag.AkCarta)
+                            {
+                                <option value="@item.Id">@item.Kod - @item.Perihal</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Catatan" class="control-label"></label>
+                        <textarea asp-for="Catatan" class="form-control form-control-sm text-uppercase" rows="2"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="HadJumlah" class="control-label"></label>
+                        <input type="number" asp-for="HadJumlah" class="form-control form-control-sm text-uppercase" readonly />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Baki Awal RM</label>
+                        <input type="number" name="bakiDiTangan" class="form-control form-control-sm text-uppercase" value="@Model.HadJumlah" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    @*table Pemeganga*@
+                    <div class="card box-shadow mb-3">
+                        <div class="card-header">
+                            <h6>Pemegang Panjar</h6>
+                        </div>
+                        <div class="card-body">
+                            <table id="tblPemegang" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th style="width:10%">Kod</th>
+                                        <th style="width:40%">Nama</th>
+                                        <th style="width:25%">Jawatan</th>
+                                        <th style="width:10%">Mula</th>
+                                        <th style="width:10%">Hingga</th>
+                                        <th style="width:5%">Aktif</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyPemegang">
+                                    @if (ViewBag.dPanjarPemegang != null)
+                                    {
+                                        foreach (var item in ViewBag.dPanjarPemegang)
+                                        {
+                                            var aktif = "YA";
+
+                                            if (item.IsAktif == false)
+                                            {
+                                                aktif = "TIDAK";
+                                            }
+
+                                            <tr>
+                                                <td hidden>@item.DPekerjaId</td>
+                                                <td class="text-uppercase">@item.DPekerja?.NoGaji</td>
+                                                <td class="text-uppercase">@item.DPekerja?.Nama</td>
+                                                <td class="text-uppercase">@item.DPekerja?.Jawatan</td>
+                                                <td class="text-uppercase">@item.JangkaMasaDari.ToString("dd/MM/yyyy")</td>
+                                                <td class="text-uppercase">@item.JangkaMasaHingga?.ToString("dd/MM/yyyy")</td>
+                                                <td class="text-uppercase">@aktif </td>
+                                                <td>
+                                                    <button class="btn ac-primary btn-sm" type="button" data-toggle="modal" data-target="#moPemegang" onclick="UpdatePemegang(this)"><i class="fa fa-edit"></i></button>
+                                                </td>
+                                                <td>
+                                                    <button class="btn ac-danger btn-sm" type="button" onclick="RemovePemegang(this)"><i class="fas fa-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3">
+                                            <select class="form-control form-control-sm text-uppercase" id="pemegangDPekerjaId">
+                                                <option value="" class="text-lowercase" disabled selected>-- Pilih Anggota --</option>
+                                                @foreach (var s in ViewBag.DPekerja)
+                                                {
+                                                    <option value="@s.Id">@s.NoGaji - @s.Nama </option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><input class="form-control form-control-sm text-uppercase" type="date" id="pemegangJangkaMasaDari"></td>
+                                        <td><input class="form-control form-control-sm text-uppercase" type="date" id="pemegangJangkaMasaHingga"></td>
+                                        <td>
+                                            <select class="form-control form-control-sm text-uppercase" id="pemegangIsAktif">
+                                                <option value="true" selected>Ya</option>
+                                                <option value="false">Tidak</option>
+                                            </select>
+                                        </td>
+                                        <td><button class="btn btn-success btn-sm" type="button" id="btnAddPemegang"><i class="fas fa-plus"></i></button></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    @*table Pemegang end*@
+                </div>
+            </div>
+
+            <br />
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Simpan" id="btnSave" class="btn ac-primary btn-sm" />
+                <a asp-action="Index" asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Modal Pemegang -->
+<div class="modal fade bd-example-modal-lg" id="moPemegang" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pemegang</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input id="moPemegangId" hidden />
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="col-form-label">Anggota</label>
+                                <select class="form-control form-control-sm text-uppercase" id="moPemegangDPekerjaId" disabled>
+                                    @foreach (var s in ViewBag.DPekerja)
+                                    {
+                                        <option value="@s.Id">@s.NoGaji - @s.Nama</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-form-label">Aktif</label>
+                                <select class="form-control form-control-sm" id="moPemegangIsAktif">
+                                    <option value="true" selected>YA</option>
+                                    <option value="false">TIDAK</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Jangka Masa Dari</label>
+                                <input type="date" class="form-control form-control-sm" id="moPemegangJangkaMasaDari">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-form-label">Hingga</label>
+                                <input type="date" class="form-control form-control-sm" id="moPemegangJangkaMasaHingga">
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn ac-success btn-sm" data-dismiss="modal" onclick="UpdateModalPemegang()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Pemegang End -->

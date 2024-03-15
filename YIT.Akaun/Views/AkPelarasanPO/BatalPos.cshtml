@@ -24,7 +24,11 @@
                     </div>
                 </div>
                 <input type="submit" value="Batal Pos" class="btn ac-danger btn-sm" />
-                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+                <a asp-action="Index"
+                   asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                   asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
+                   asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")" 
+                   class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
             </form>
     </div>
 </div>

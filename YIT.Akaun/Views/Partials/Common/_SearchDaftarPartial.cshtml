@@ -1,0 +1,27 @@
+﻿<div class="card mb-2">
+    <div class="card-body ps-3 pb-2 ">
+        <label class="form-control-plaintext" for="searchselect">Carian : </label>
+
+        <div class="form-actions no-color mb-2">
+            <form asp-action="Index" method="get">
+                <div class="row g-3">
+                    <div class="col-sm-9 mb-2">
+                        <div class="row g-3">
+                            <div class="col-4">
+                                <label class="form-label">Kata Kunci</label>
+                            </div>
+                            <div class="col-6">
+                                <input class="form-control form-control-sm" type="text" name="searchString" value="@ViewBag.searchString" />
+                            </div>
+                            <div class="col-2">
+                                <button type="submit" class="btn text-info btn-sm" data-toggle="tooltip" data-placement="top" title="Cari"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

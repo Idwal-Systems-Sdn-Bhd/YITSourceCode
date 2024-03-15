@@ -35,11 +35,14 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IAkPelarasanIndenRepository AkPelarasanIndenRepo { get; }
         IAkBelianRepository AkBelianRepo { get; }
         IAkPVRepository AkPVRepo { get; }
+        IAkRekupRepository AkRekupRepo { get; }
 
         IAkJanaanProfilRepository AkJanaanProfilRepo { get; }
         IAkEFTRepository AkEFTRepo { get; }
         IAkJurnalRepository AkJurnalRepo { get; }
         IJKonfigPerubahanEkuitiRepository JKonfigPerubahanEkuitiRepo { get; }
+        IJKonfigPenyataRepository JKonfigPenyataRepo { get; }
+        IDPanjarRepository DPanjarRepo { get; }
         int Save();
     }
 }

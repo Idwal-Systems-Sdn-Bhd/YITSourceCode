@@ -6,7 +6,7 @@
 }
 <div class="card box-shadow">
     <div class="card-body">
-        <partial name="~/Views/Partials/Common/_TitleCreatePartial.cshtml" />
+        <partial name="~/Views/Partials/Common/_TitleCreateDaftarPartial.cshtml" />
 
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -67,15 +67,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Alamat1" class="control-label"></label>
-                <input asp-for="Alamat1" class="form-control form-control-sm mb-2" />
-                <input asp-for="Alamat2" class="form-control form-control-sm mb-2" />
-                <input asp-for="Alamat3" class="form-control form-control-sm" />
+                <input asp-for="Alamat1" class="form-control form-control-sm text-uppercase mb-2" />
+                <input asp-for="Alamat2" class="form-control form-control-sm text-uppercase mb-2" />
+                <input asp-for="Alamat3" class="form-control form-control-sm text-uppercase" />
+                <span asp-validation-for="Alamat1" class="text-danger"></span>
             </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="Poskod" class="control-label"></label>
-                        <input asp-for="Poskod" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="Poskod" class="form-control form-control-sm" />
+                        <span asp-validation-for="Poskod" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -88,12 +90,13 @@
                     <div class="form-group">
                         <label asp-for="JNegeriId" class="control-label"></label>
                         <select asp-for="JNegeriId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="">- SILA PILIH -</option>
                             @foreach (var item in ViewBag.JNegeri)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>
                             }
                         </select>
+                        <span asp-validation-for="JNegeriId" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -102,7 +105,7 @@
                     <div class="form-group">
                         <label asp-for="JBankId" class="control-label"></label>
                         <select asp-for="JBankId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="">- SILA PILIH -</option>
                             @foreach (var item in ViewBag.JBank)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -113,7 +116,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="NoAkaunBank" class="control-label"></label>
-                        <input asp-for="NoAkaunBank" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="NoAkaunBank" class="form-control form-control-sm" />
                         <span asp-validation-for="NoAkaunBank" class="text-danger"></span>
                     </div>
                 </div>
@@ -122,26 +125,31 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="TelefonBimbit" class="control-label"></label>
-                        <input asp-for="TelefonBimbit" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="TelefonBimbit" class="form-control form-control-sm" />
+                        <span asp-validation-for="TelefonBimbit" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="TelefonRumah" class="control-label"></label>
-                        <input asp-for="TelefonRumah" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="TelefonRumah" class="form-control form-control-sm" />
+                        <span asp-validation-for="TelefonRumah" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="Emel" class="control-label"></label>
-                        <input asp-for="Emel" class="form-control form-control-sm" type="email" />
+                        <input asp-for="Emel" class="form-control form-control-sm text-uppercase" type="email" />
+                        <span asp-validation-for="Emel" class="text-danger"></span>
                     </div>
                 </div>
             </div>
             <hr />
             <div class="form-group">
                 <input type="submit" value="Simpan" class="btn ac-primary btn-sm" />
-                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+                <a asp-action="Index"
+                   asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                   class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
             </div>
         </form>
 

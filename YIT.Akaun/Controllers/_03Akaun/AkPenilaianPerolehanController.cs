@@ -53,17 +53,23 @@ namespace YIT.Akaun.Controllers._03Akaun
             string searchColumn
             )
         {
+            if (searchString == null && (searchDate1 == null && searchDate2 == null))
+            {
+                HttpContext.Session.Clear();
+                return View();
+            }
+
             DateTime? date1 = null;
             DateTime? date2 = null;
 
-            if (!string.IsNullOrEmpty(searchDate1) && ! string.IsNullOrEmpty(searchDate2))
+            if (!string.IsNullOrEmpty(searchDate1) && !string.IsNullOrEmpty(searchDate2))
             {
                 date1 = DateTime.Parse(searchDate1);
                 date2 = DateTime.Parse(searchDate2);
             }
 
-            PopulateFormFields(searchString, searchDate1, searchDate2);
-            
+            SaveFormFields(searchString, searchDate1, searchDate2);
+
             var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetResults(searchString,date1,date2,searchColumn, EnStatusBorang.Semua);
 
             foreach( var item in akPP)
@@ -82,6 +88,35 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             }
             return View(akPP);
+        }
+
+        private void SaveFormFields(string searchString, string searchDate1, string searchDate2)
+        {
+            PopulateFormFields(searchString, searchDate1, searchDate2);
+
+            if (searchString != null)
+            {
+                HttpContext.Session.SetString("searchString", searchString);
+            }
+            else
+            {
+                searchString = HttpContext.Session.GetString("searchString");
+                ViewBag.searchString = searchString;
+            }
+
+            if (searchDate1 != null && searchDate2 != null)
+            {
+                HttpContext.Session.SetString("searchDate1", searchDate1);
+                HttpContext.Session.SetString("searchDate2", searchDate2);
+            }
+            else
+            {
+                searchDate1 = HttpContext.Session.GetString("searchDate1");
+                searchDate2 = HttpContext.Session.GetString("searchDate2");
+
+                ViewBag.searchDate1 = searchDate1;
+                ViewBag.searchDate2 = searchDate2;
+            }
         }
 
         public IActionResult Details(int? id)
@@ -117,7 +152,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (akPP.EnStatusBorang != EnStatusBorang.None)
             {
                 TempData[SD.Error] = "Hapus data tidak dibenarkan..!";
-                return (RedirectToAction(nameof(Index)));
+                return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
             }
             EmptyCart();
             PopulateCartAkPenilaianPerolehanFromDb(akPP);
@@ -140,7 +175,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (akPP.EnStatusBorang != EnStatusBorang.Lulus)
             {
                 TempData[SD.Error] = "Data belum diluluskan..!";
-                return (RedirectToAction(nameof(Index)));
+                return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
             }
             EmptyCart();
             PopulateCartAkPenilaianPerolehanFromDb(akPP);
@@ -161,7 +196,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 if (await _unitOfWork.AkPenilaianPerolehanRepo.IsLulusAsync(id) == false)
                 {
                     TempData[SD.Error] = "Data belum diluluskan";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 _unitOfWork.AkPenilaianPerolehanRepo.BatalLulus(id, tindakan, user?.Email);
@@ -175,7 +210,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Data tidak wujud";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public IActionResult BatalPos(int? id)
@@ -194,7 +229,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (akPenilaianPerolehan.EnStatusBorang != EnStatusBorang.Lulus)
             {
                 TempData[SD.Error] = "Data belum diluluskan..!";
-                return (RedirectToAction(nameof(Index)));
+                return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
             }
             EmptyCart();
             PopulateCartAkPenilaianPerolehanFromDb(akPenilaianPerolehan);
@@ -216,13 +251,13 @@ namespace YIT.Akaun.Controllers._03Akaun
                 if (await _unitOfWork.AkPenilaianPerolehanRepo.IsPostedAsync((int)id, akPenilaianPerolehan.NoRujukan) == false)
                 {
                     TempData[SD.Error] = "Data belum diposting.";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 if (await _unitOfWork.AkPenilaianPerolehanRepo.IsLulusAsync(id) == false)
                 {
                     TempData[SD.Error] = "Data belum diluluskan";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 _unitOfWork.AkPenilaianPerolehanRepo.BatalPos(id, tindakan, user?.UserName);
@@ -236,7 +271,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Data belum disahkan / disemak / diluluskan";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public async Task<IActionResult> PosSemula(int id, string syscode)
@@ -255,13 +290,13 @@ namespace YIT.Akaun.Controllers._03Akaun
                 if (await _unitOfWork.AkPenilaianPerolehanRepo.IsPostedAsync((int)id, obj.NoRujukan))
                 {
                     TempData[SD.Error] = "Data sudah diposting.";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 if (await _unitOfWork.AkPenilaianPerolehanRepo.IsLulusAsync(id))
                 {
                     TempData[SD.Error] = "Data telah diluluskan";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 _unitOfWork.AkPenilaianPerolehanRepo.Lulus(id, pekerjaId, user?.UserName);
@@ -273,7 +308,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Success] = "Data berjaya pos semula..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
         public async Task<IActionResult> Create()
         {
@@ -328,7 +363,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 _appLog.Insert("Tambah", akPP.NoRujukan ?? "", akPP.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya ditambah..!";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
             }
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PN.GetDisplayName(), akPP.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
             PopulateDropDownList(fullName ?? "", akPP.JKWId);
@@ -352,7 +387,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (akPP.EnStatusBorang != EnStatusBorang.None)
             {
                 TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
-                return (RedirectToAction(nameof(Index)));
+                return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
             }
 
             EmptyCart();
@@ -453,7 +488,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
             }
 
             PopulateDropDownList(fullName ?? "", akPP.JKWId);
@@ -487,7 +522,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Data telah disahkan / disemak / diluluskan";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public async Task<IActionResult> RollBack(int id, string syscode)
@@ -516,7 +551,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Success] = "Data berjaya dikembalikan..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
         private bool AkPenilaianPerolehanExist(int id)
         {

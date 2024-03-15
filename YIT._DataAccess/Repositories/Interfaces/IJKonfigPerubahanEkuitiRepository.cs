@@ -13,7 +13,5 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public JKonfigPerubahanEkuiti GetAllDetailsById(int id);
         public List<JKonfigPerubahanEkuiti> GetAllDetails();
         JKonfigPerubahanEkuiti GetAllDetailsByTahunOrJenisEkuiti(string? tahun, EnJenisLajurJadualPerubahanEkuiti? enJenisEkuiti);
-        string FormulaInSentence(EnJenisOperasi jenisOperasi, string? jenisCarta, bool isKecuali, string? kodList);
-        string GetSetOfCartaList(EnBarisPerubahanEkuiti enBaris, EnJenisOperasi enOperasi, bool isPukal, string? enJenisCartaList, bool isKecuali, string? kodList);
     }
 }

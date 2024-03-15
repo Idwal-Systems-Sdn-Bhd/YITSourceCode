@@ -141,7 +141,6 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(konfigPerubahanEkuiti);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
         // GET: KonfigPerubahanEkuiti/Edit/5
         public IActionResult Edit(int? id)
         {
@@ -187,7 +186,7 @@ namespace YIT.Akaun.Controllers._01Jadual
                     {
                         barisSentences = "";
                     }
-                    string sentence = _unitOfWork.JKonfigPerubahanEkuitiRepo.FormulaInSentence(item.EnJenisOperasi, item.EnJenisCartaList, item.IsKecuali, item.KodList);
+                    string sentence = _unitOfWork.AkCartaRepo.FormulaInSentence(item.EnJenisOperasi, item.EnJenisCartaList, item.IsKecuali, item.KodList);
 
                     item.BarisDescription = barisSentences;
                     item.FormulaDescription = sentence;
@@ -198,7 +197,6 @@ namespace YIT.Akaun.Controllers._01Jadual
             ViewBag.jKonfigPerubahanEkuitiBaris = baris.OrderBy(b => b.EnBaris).ThenBy(b => b.EnJenisOperasi);
         }
         // POST: KonfigPerubahanEkuiti/Edit/5
-        [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, JKonfigPerubahanEkuiti konfigPerubahanEkuiti, string syscode)
@@ -357,7 +355,7 @@ namespace YIT.Akaun.Controllers._01Jadual
                         _cart.RemoveItemBaris(baris.EnBaris, baris.EnJenisOperasi);
                     }
 
-                    baris.SetKodList = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetSetOfCartaList(baris.EnBaris, baris.EnJenisOperasi, baris.IsPukal, baris.EnJenisCartaList, baris.IsKecuali, baris.KodList);
+                    baris.SetKodList = _unitOfWork.AkCartaRepo.GetSetOfCartaStringList(baris.IsPukal, baris.EnJenisCartaList, baris.IsKecuali, baris.KodList);
 
                     _cart.AddItemBaris(0, baris.EnBaris, baris.EnJenisOperasi, baris.IsPukal, baris.EnJenisCartaList, baris.IsKecuali, baris.KodList, baris.SetKodList);
                 }
@@ -419,7 +417,7 @@ namespace YIT.Akaun.Controllers._01Jadual
                     {
                         barisSentences = "";
                     }
-                    string sentence = _unitOfWork.JKonfigPerubahanEkuitiRepo.FormulaInSentence(item.EnJenisOperasi, item.EnJenisCartaList, item.IsKecuali, item.KodList);
+                    string sentence = _unitOfWork.AkCartaRepo.FormulaInSentence(item.EnJenisOperasi, item.EnJenisCartaList, item.IsKecuali, item.KodList);
 
                     item.BarisDescription = barisSentences;
                     item.FormulaDescription = sentence;
@@ -461,7 +459,7 @@ namespace YIT.Akaun.Controllers._01Jadual
                 {
                     _cart.RemoveItemBaris(baris.EnBaris, baris.EnJenisOperasi);
 
-                    baris.SetKodList = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetSetOfCartaList(baris.EnBaris, baris.EnJenisOperasi, baris.IsPukal, baris.EnJenisCartaList, baris.IsKecuali, baris.KodList);
+                    baris.SetKodList = _unitOfWork.AkCartaRepo.GetSetOfCartaStringList( baris.IsPukal, baris.EnJenisCartaList, baris.IsKecuali, baris.KodList);
 
                     _cart.AddItemBaris(baris.JKonfigPerubahanEkuitiId,baris.EnBaris,baris.EnJenisOperasi, baris.IsPukal, baris.EnJenisCartaList,baris.IsKecuali,baris.KodList, baris.SetKodList);
                 }

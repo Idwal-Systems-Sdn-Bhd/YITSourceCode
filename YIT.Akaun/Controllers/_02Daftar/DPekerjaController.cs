@@ -38,9 +38,42 @@ namespace YIT.Akaun.Controllers._02Daftar
             _appLog = appLog;
             _userManager = userManager;
         }
-        public IActionResult Index()
+        public IActionResult Index(string searchString,
+           string searchColumn
+           )
         {
-            return View(_unitOfWork.DPekerjaRepo.GetAllDetails());
+
+            if (searchString == null)
+            {
+                HttpContext.Session.Clear();
+                return View();
+            }
+
+            SaveFormFields(searchString);
+
+            var dP = _unitOfWork.DPekerjaRepo.GetResults(searchString, searchColumn);
+
+            return View(dP);
+        }
+
+        private void SaveFormFields(string searchString)
+        {
+            PopulateFormFields(searchString);
+
+            if (searchString != null)
+            {
+                HttpContext.Session.SetString("searchString", searchString);
+            }
+            else
+            {
+                searchString = HttpContext.Session.GetString("searchString");
+                ViewBag.searchString = searchString;
+            }
+        }
+
+        private void PopulateFormFields(string searchString)
+        {
+            ViewBag.searchString = searchString;
         }
 
         public IActionResult Create()
@@ -71,7 +104,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                     _appLog.Insert("Tambah", pekerja.NoGaji + " - " + pekerja.Nama, pekerja.NoGaji ?? "Tiada No Gaji", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya ditambah..!";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
                 }
                 
             }
@@ -166,7 +199,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
             }
             PopulateDropdownList();
             return View(pekerja);
@@ -215,7 +248,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                 TempData[SD.Success] = "Data berjaya dihapuskan..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
         }
 
         public async Task<IActionResult> RollBack(int id, string syscode)
@@ -244,7 +277,8 @@ namespace YIT.Akaun.Controllers._02Daftar
                 TempData[SD.Success] = "Data berjaya dikembalikan..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
+
         }
 
         private bool NoKPExists(string noKp)

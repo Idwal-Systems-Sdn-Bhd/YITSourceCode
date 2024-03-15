@@ -1,0 +1,231 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        $('#moPenerimaDPekerjaId').select2({
+            dropdownParent: $('#moPemegang'),
+            theme: "bootstrap"
+        });
+    });
+
+    function EmptyPemegangFields() {
+        $('#moPemegangDPekerjaId').val("").change();
+    }
+
+    // empty cart
+    function EmptyCart() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("EmptyCart","DPanjar")',
+            dataType: "json",
+            success: function (msg) {
+                $('table tbody#tbodyPemegang').empty();
+                $('#pemegangDPekerjaId option:selected').prop('disabled', true);
+
+            },
+            error: function (req, status, error) {
+                toastr.error(error);
+            }
+        })
+    }
+    // empty cart end
+
+    function PopulateTablesFromCart(){
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAllItemCartDPanjar","DPanjar")',
+            dataType: "json",
+            success: function (r) {
+                $("table tbody#tbodyPemegang").empty();
+                if (r.pemegang.length > 0) {
+                    for (var i = 0; i < r.pemegang.length; i++) {
+                        var item = r.pemegang[i];
+                        var aktif = "YA";
+
+                        if (item.isAktif == false) {
+                            aktif = "TIDAK";
+                        }
+                        var str = "<tr><td hidden>" + item.dPekerjaId +
+                            "</td><td class='text-uppercase'>" + item.dPekerja.noGaji +
+                            "</td><td class='text-uppercase'>" + item.dPekerja.nama +
+                            "</td><td class='text-uppercase'>" + item.dPekerja.jawatan +
+                            "</td><td class='text-uppercase'>" + showDate(item.jangkaMasaDari) +
+                            "</td><td class='text-uppercase'>" + showDate(item.jangkaMasaHingga) +
+                            "</td><td class='text-uppercase'>" + aktif +
+                            "</td><td>" +
+                            "<button class='btn ac-primary btn-sm' type='button' data-toggle='modal' data-target='#moPemegang' onclick='UpdatePemegang(this)'><i class='fa fa-edit' ></i></button>" +
+                            "</td><td>" +
+                            "<button class='btn ac-danger btn-sm' type='button' onclick='RemovePemegang(this)'><i class='fas fa-trash' ></i></button>" +
+                            "</td><tr>";
+                        $("table tbody#tbodyPemegang").append(str);
+                    }
+                }
+            }
+        })
+    }
+
+    // add tbl pemegang
+    $("body").on("click", "#btnAddPemegang", function () {
+        var Id = $('#Id');
+        var dPekerjaId = $('#pemegangDPekerjaId');
+        if (dPekerjaId.val() != null) {
+            GetDPekerja(Id.val(), dPekerjaId.val());
+
+        } else {
+            toastr.error("Sila pilih anggota");
+        }
+    });
+
+    function GetDPekerja(Id, dPekerjaId) {
+        var Pemegang = {
+            DPekerjaId: dPekerjaId
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetDPekerja","DPanjar")',
+            data: Pemegang,
+            dataType: "json",
+            success: function (r) {
+                if (r.result == "OK") {
+                    var jangkaMasaDari = $('#pemegangJangkaMasaDari');
+                    var jangkaMasaHingga = $('#pemegangJangkaMasaHingga');
+                    var isAktif = $('#pemegangIsAktif');
+
+                    var DPanjarPemegang = {
+                        DPanjarId: Id,
+                        DPekerjaId: dPekerjaId,
+                        JangkaMasaDari: jangkaMasaDari.val(),
+                        JangkaMasaHingga: jangkaMasaHingga.val(),
+                        IsAktif: isAktif.val()
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("SaveCartDPanjarPemegang","DPanjar")',
+                        data: DPanjarPemegang,
+                        dataType: "json",
+                        success: function (msg) {
+                            if (msg.result == "OK") {
+                                PopulateTablesFromCart();
+                                $("#pemegangDPekerjaId option[value=" + dPekerjaId + "]").prop('disabled', true);
+                                // clear textbox
+                                EmptyPemegangFields();
+
+                            } else {
+                                toastr.error(msg.message);
+                            }
+
+                        }
+                    })
+
+                }
+                else {
+                    toastr.error(r.message);
+                }
+            }
+        })
+    };
+    // add tbl pemegang end
+
+    // remove tbl pemegang
+    function RemovePemegang(button) {
+        var row = $(button).closest("TR");
+        var dPekerjaId = $("TD", row).eq(0).html();
+        var nama = $("TD", row).eq(2).html();
+
+        if (confirm("Hapus pemegang : " + nama + " ?")) {
+            var table = $('#tblPemegang')[0];
+
+            var DPanjarPemegang = {
+                DPekerjaId: dPekerjaId
+            }
+
+            if (dPekerjaId != null) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RemoveCartDPanjarPemegang","DPanjar")',
+                    data: DPanjarPemegang,
+                    dataType: "json",
+                    success: function (r) {
+                        if (r.result == "OK") {
+                            table.deleteRow(row[0].rowIndex);
+                            $("#pemegangDPekerjaId option[value=" + dPekerjaId + "]").prop('disabled', false);
+                        } else {
+                            toastr.error(r.message);
+                        }
+
+                    }
+                });
+            }
+        }
+    };
+    // remove tbl pemegang end
+
+    //update tbl pemegang
+    function UpdatePemegang(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var dPekerjaId = $("TD", row).eq(0).html();
+
+        var DPanjarPemegang = {
+            DPekerjaId: dPekerjaId
+        }
+        if (dPekerjaId != null) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAnItemFromCartDPanjarPemegang", "DPanjar")',
+                data: DPanjarPemegang,
+                dataType: "json",
+                success: function (r) {
+                    //insert data in modal pemegang
+
+                    $("#moPemegangId").val(r.record.id);
+                    $("#moPemegangDPekerjaId").val(r.record.dPekerjaId).change();
+                    $("#moPemegangJangkaMasaDari").val(showDateReverse(r.record.jangkaMasaDari));
+                    $("#moPemegangJangkaMasaHingga").val(showDateReverse(r.record.jangkaMasaHingga));
+
+                    if (r.record.isAktif == true) {
+                        $("#moPemegangIsAktif").val("true").change();
+                    }
+                    else {
+                        $("#moPemegangIsAktif").val("false").change();
+                    }
+                    
+                    
+
+                    //show modal pemegang
+                    $("#moPemegang").modal({ backdrop: 'static', keyboard: false });
+
+                }
+            });
+        }
+    };
+
+    function UpdateModalPemegang() {
+        var dPanjarId = $("#Id").val();
+        var id = $("#moPemegangId").val();
+        var dPekerjaId = $("#moPemegangDPekerjaId").val();
+        var jangkaMasaDari = $("#moPemegangJangkaMasaDari").val();
+        var jangkaMasaHingga = $("#moPemegangJangkaMasaHingga").val();
+        var isAktif = $("#moPemegangIsAktif").val();
+
+        var DPanjarPemegang = {
+            DPanjarId: dPanjarId,
+            Id: id,
+            DPekerjaId: dPekerjaId,
+            JangkaMasaDari: jangkaMasaDari,
+            JangkaMasaHingga: jangkaMasaHingga,
+            IsAktif: isAktif
+        }
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveAnItemFromCartDPanjarPemegang", "DPanjar")',
+            data: DPanjarPemegang,
+            dataType: "json",
+            success: function (r) {
+                //insert notification here
+
+                PopulateTablesFromCart();
+            }
+        });
+    };
+    //update tbl pemegang end
+</script>

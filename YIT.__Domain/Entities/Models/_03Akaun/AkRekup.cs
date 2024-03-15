@@ -11,5 +11,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public decimal Jumlah { get; set; }
         public int DPanjarId { get; set; }
         public DPanjar? DPanjar { get; set; }
+        public bool IsLinked { get; set; }
     }
 }

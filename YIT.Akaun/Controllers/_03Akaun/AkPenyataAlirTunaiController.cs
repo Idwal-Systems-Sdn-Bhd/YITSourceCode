@@ -19,8 +19,8 @@ namespace YIT.Akaun.Controllers._03Akaun
     [Authorize]
     public class AkPenyataAlirTunaiController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = Modules.kodPAkAlirTunai;
-        public const string namamodul = Modules.namaPAkAlirTunai;
+        public const string modul = Modules.kodPAkAlirTunaiBulanan;
+        public const string namamodul = Modules.namaPAkAlirTunaiBulanan;
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;

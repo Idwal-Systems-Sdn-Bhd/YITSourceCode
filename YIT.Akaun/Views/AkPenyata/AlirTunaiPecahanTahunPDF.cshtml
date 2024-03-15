@@ -1,0 +1,193 @@
+﻿@model IEnumerable<_AkPenyataAlirTunai>
+
+@{
+    ViewData["Title"] = "Cetakan Penyata Alir Tunai";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+
+}
+<style>
+
+    .topic tr {
+        line-height: 0.5rem;
+    }
+
+    .center {
+        padding: 70px 0;
+        border: 3px solid green;
+        text-align: center;
+    }
+
+    .notbold {
+        font-weight: normal
+    }
+
+    .max-lines {
+        display: block; /* or inline-block */
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+        max-height: 5.8em;
+    }
+
+    .breakhere {
+        page-break-after: always
+    }
+
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-row-group
+    }
+
+    tr {
+        page-break-inside: avoid
+    }
+
+    .row {
+        display: -webkit-box; /* wkhtmltopdf uses this one */
+        display: flex;
+        -webkit-box-pack: center; /* wkhtmltopdf uses this one */
+        justify-content: center;
+    }
+
+        .row > div {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+
+            .row > div:last-child {
+                margin-right: 0;
+            }
+</style>
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
+    </div>
+</div>
+<br />
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN PENYATA ALIR TUNAI BAGI TAHUN @ViewData["Tahun1"] DAN TAHUN @ViewData["Tahun2"]
+                    <br />
+                    MENGIKUT KUMP. WANG : @ViewData["NamaKW"]
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+
+<div class="row flex-row">
+    <div class="col-12">
+        <table class="table table-borderless table-sm topic">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nota</th>
+                    <th>@ViewData["Tahun1"] RM</th>
+                    <th>@ViewData["Tahun2"] RM</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var bold = "";
+                    var uppercase = "";
+                    var border = "";
+
+                    if (item.EnKategoriTajuk == EnKategoriTajuk.TajukUtama)
+                    {
+                        bold = "font-weight-bold";
+                        uppercase = "text-uppercase";
+                    }
+
+                    switch (item.EnKategoriJumlah)
+                    {
+                        case EnKategoriJumlah.Amaun:
+
+                            break;
+                        case EnKategoriJumlah.JumlahKecil:
+                            border = "border-top";
+                            break;
+                        case EnKategoriJumlah.JumlahBesar:
+                            border = "border-top border-bottom";
+                            break;
+                        case EnKategoriJumlah.JumlahKeseluruhan:
+                            border = "border-top border-bottom";
+                            bold = "font-weight-bold";
+                            uppercase = "text-uppercase";
+                            break;
+
+                    }
+                    <tr>
+                        <td class="@bold @uppercase ">@item.Perihal</td>
+                        <td></td>
+                        @if (item.EnKategoriTajuk == EnKategoriTajuk.Perihalan)
+                        {
+                            <td class="@bold @uppercase @border text-right">@Convert.ToDecimal(item.Amaun1).ToString("#,##0.00")</td>
+                            <td class="@bold @uppercase @border text-right">@Convert.ToDecimal(item.Amaun2).ToString("#,##0.00")</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                            <td></td>
+                        }
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<hr />
+<div class="table-responsive-sm">
+    <table class="table table-sm topic table-bordered">
+        <thead class="table-dark">
+
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center" width="33%">Disedia </td>
+                <td class="text-center" width="33%">Disemak </td>
+                <td class="text-center" width="33%">Diluluskan </td>
+            </tr>
+            <tr>
+                <td class="text-center" height="50px"></td>
+
+                <td class="text-center" height="50px"></td>
+                <td class="text-center" height="50px"></td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Tarikh: @DateTime.Now</td>
+                <td class="text-left">Tarikh:</td>
+                <td class="text-left">Tarikh:</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

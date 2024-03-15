@@ -125,12 +125,18 @@ function display_timer() {
 /*StartThisSessionTimer();*/
 
 function showDate(d) {
-    var s = new Date(d);
-    var month = s.getMonth() + 1;
-    var day = s.getDate();
-    var year = s.getFullYear();
+    if (d != null) {
+        var s = new Date(d);
+        var month = s.getMonth() + 1;
+        var day = s.getDate();
+        var year = s.getFullYear();
 
-    return (day < 10 ? '0' + day : day) + "/" + (month < 10 ? '0' + month : month) + "/" + year;
+        return (day < 10 ? '0' + day : day) + "/" + (month < 10 ? '0' + month : month) + "/" + (year < 10 ? '000' + year : year);
+    }
+    else {
+        return "";
+    }
+
 }
 
 function showDateReverse(d) {
@@ -139,7 +145,7 @@ function showDateReverse(d) {
     var day = s.getDate();
     var year = s.getFullYear();
 
-    return year + "-" + (month < 10 ? '0' + month : month) + "-" + (day < 10 ? '0' + day : day);
+    return (year < 10 ? '000' + year : year) + "-" + (month < 10 ? '0' + month : month) + "-" + (day < 10 ? '0' + day : day);
 }
 
 

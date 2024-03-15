@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DKonfigKelulusan>
+﻿@model IEnumerable<DKonfigKelulusanViewModel>
 
 @{
     ViewData["Title"] = "Konfigurasi Kelulusan";
@@ -13,27 +13,27 @@
     <div class="card card-body border main-page" hidden>
         <partial name="~/Views/Partials/Common/_TitleIndexPartial.cshtml" />
 
-        <partial name="~/Views/Partials/Common/_SearchJadualIndexPartial.cshtml" />
+        <partial name="~/Views/Partials/Common/_SearchDaftarPartial.cshtml" />
 
         @if (Model != null && Model.Count() > 0)
         {
             <div class="table-responsive">
-                <table class="table table-hover compact" width="100%">
+                <table id="table" class="table table-hover compact" width="100%">
                     <caption>Rekod dipamerkan : @Model.Count()</caption>
                     <thead class="table-secondary">
                         <tr>
                             <th width="5%">Bil</th>
-                            <th class="kod">
-                                Anggota
+                            <th>
+                                Modul
                             </th>
                             <th>
                                 Kategori
                             </th>
                             <th>
-                                Modul
-                            </th>
-                            <th>
                                 Bahagian
+                            </th>
+                            <th class="kod">
+                                Anggota
                             </th>
                             <th class="perihal">
                                 Min. Amaun RM
@@ -51,16 +51,16 @@
                             <tr class="@tabletype text-uppercase">
                                 <td></td>
                                 <td class="text-uppercase">
-                                    @item.DPekerja?.NoGaji - @item.DPekerja?.Nama
+                                    @item.EnJenisModulKelulusan
                                 </td>
                                 <td class="text-uppercase">
                                     @item.EnKategoriKelulusan
                                 </td>
                                 <td class="text-uppercase">
-                                    @item.EnJenisModulKelulusan
+                                    @item.JBahagian
                                 </td>
                                 <td class="text-uppercase">
-                                    @item.JBahagian?.Perihal
+                                    @item.DPekerja?.NoGaji - @item.DPekerja?.Nama
                                 </td>
                                 <td class="text-uppercase text-end">
                                     @Convert.ToDecimal(item.MinAmaun).ToString("#,##0.00")

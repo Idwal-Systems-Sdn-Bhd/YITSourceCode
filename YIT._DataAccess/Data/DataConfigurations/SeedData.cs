@@ -574,6 +574,13 @@ namespace YIT._DataAccess.Data.DataConfigurations
                           Perihal = "CITI BANK BHD",
                           KodBNMEFT = "CITIMYKL",
                           Length1 = 16
+                      },
+                      new JBank
+                      {
+                          Kod = "75",
+                          Perihal = "MBSB BANK BHD",
+                          KodBNMEFT = "AFBQMYKL",
+                          Length1 = 16
                       }
                     );
 

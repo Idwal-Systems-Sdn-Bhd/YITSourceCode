@@ -57,6 +57,13 @@ namespace YIT.Akaun.Controllers._03Akaun
            string searchDate2,
            string searchColumn)
         {
+
+            if (searchString == null && (searchDate1 == null && searchDate2 == null))
+            {
+                HttpContext.Session.Clear();
+                return View();
+            }
+
             DateTime? date1 = null;
             DateTime? date2 = null;
 
@@ -66,11 +73,40 @@ namespace YIT.Akaun.Controllers._03Akaun
                 date2 = DateTime.Parse(searchDate2);
             }
 
-            PopulateFormFields(searchString, searchDate1, searchDate2);
+            SaveFormFields(searchString, searchDate1, searchDate2);
 
             var akPV = _unitOfWork.AkPVRepo.GetResults(searchString, date1, date2, searchColumn, EnStatusBorang.Semua, null);
 
             return View(akPV);
+        }
+
+        private void SaveFormFields(string searchString, string searchDate1, string searchDate2)
+        {
+            PopulateFormFields(searchString, searchDate1, searchDate2);
+
+            if (searchString != null)
+            {
+                HttpContext.Session.SetString("searchString", searchString);
+            }
+            else
+            {
+                searchString = HttpContext.Session.GetString("searchString");
+                ViewBag.searchString = searchString;
+            }
+
+            if (searchDate1 != null && searchDate2 != null)
+            {
+                HttpContext.Session.SetString("searchDate1", searchDate1);
+                HttpContext.Session.SetString("searchDate2", searchDate2);
+            }
+            else
+            {
+                searchDate1 = HttpContext.Session.GetString("searchDate1");
+                searchDate2 = HttpContext.Session.GetString("searchDate2");
+
+                ViewBag.searchDate1 = searchDate1;
+                ViewBag.searchDate2 = searchDate2;
+            }
         }
 
         private void PopulateFormFields(string searchString, string searchDate1, string searchDate2)
@@ -114,7 +150,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (akPV.EnStatusBorang != EnStatusBorang.None)
             {
                 TempData[SD.Error] = "Hapus data tidak dibenarkan..!";
-                return (RedirectToAction(nameof(Index)));
+                return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
             }
             EmptyCart();
             ManipulateHiddenDiv(akPV.EnJenisBayaran);
@@ -138,7 +174,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (akPV.EnStatusBorang != EnStatusBorang.Lulus)
             {
                 TempData[SD.Error] = "Data belum diluluskan..!";
-                return (RedirectToAction(nameof(Index)));
+                return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
             }
             EmptyCart();
             PopulateCartAkPVFromDb(akPV);
@@ -160,13 +196,13 @@ namespace YIT.Akaun.Controllers._03Akaun
                 if (await _unitOfWork.AkPVRepo.IsPostedAsync((int)id, akPV.NoRujukan) == false)
                 {
                     TempData[SD.Error] = "Data belum diposting.";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 if (await _unitOfWork.AkPVRepo.IsLulusAsync(id) == false)
                 {
                     TempData[SD.Error] = "Data belum diluluskan";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 _unitOfWork.AkPVRepo.BatalLulus(id, tindakan, user?.Email);
@@ -180,7 +216,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Data tidak wujud";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public IActionResult BatalPos(int? id)
@@ -199,7 +235,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (akPV.EnStatusBorang != EnStatusBorang.Lulus)
             {
                 TempData[SD.Error] = "Data belum diluluskan..!";
-                return (RedirectToAction(nameof(Index)));
+                return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
             }
             EmptyCart();
             PopulateCartAkPVFromDb(akPV);
@@ -221,13 +257,13 @@ namespace YIT.Akaun.Controllers._03Akaun
                 if (await _unitOfWork.AkPVRepo.IsPostedAsync((int)id, akPV.NoRujukan) == false)
                 {
                     TempData[SD.Error] = "Data belum diposting.";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 if (await _unitOfWork.AkPVRepo.IsLulusAsync(id) == false)
                 {
                     TempData[SD.Error] = "Data belum diluluskan";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 _unitOfWork.AkPVRepo.BatalPos(id, tindakan, user?.UserName);
@@ -241,7 +277,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Data belum disahkan / disemak / diluluskan";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public async Task<IActionResult> PosSemula(int id, string syscode)
@@ -260,13 +296,13 @@ namespace YIT.Akaun.Controllers._03Akaun
                 if (await _unitOfWork.AkPVRepo.IsPostedAsync((int)id, obj.NoRujukan))
                 {
                     TempData[SD.Error] = "Data sudah diposting.";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 if (await _unitOfWork.AkPVRepo.IsLulusAsync(id))
                 {
                     TempData[SD.Error] = "Data telah diluluskan";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
                 _unitOfWork.AkPVRepo.Lulus(id, pekerjaId, user?.UserName);
@@ -278,7 +314,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Success] = "Data berjaya pos semula..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public async Task<IActionResult> Create()
@@ -394,7 +430,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 _appLog.Insert("Tambah", akPV.NoRujukan ?? "", akPV.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya ditambah..!";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
             }
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PV.GetDisplayName(), akPV.Tahun ?? DateTime.Now.ToString("yyyy"));
             PopulateDropDownList(akPV.JKWId);
@@ -438,7 +474,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (akPV.EnStatusBorang != EnStatusBorang.None)
             {
                 TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
-                return (RedirectToAction(nameof(Index)));
+                return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
             }
 
             EmptyCart();
@@ -588,7 +624,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
             }
 
             PopulateDropDownList(akPV.JKWId);
@@ -623,7 +659,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Data telah diluluskan";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public async Task<IActionResult> RollBack(int id, string syscode)
@@ -652,7 +688,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Success] = "Data berjaya dikembalikan..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         private bool AkPVExist(int id)
@@ -687,6 +723,8 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             ViewBag.EnJenisId = jenisId;
 
+            ViewBag.AkRekup = _unitOfWork.AkRekupRepo.GetAllFilteredBy(false);
+            ViewBag.DPanjar = _unitOfWork.DPanjarRepo.GetAllDetails();
             //ViewBag.SuGajiBulanan = _context.SuGajiBulanan.ToList();
         }
 
@@ -1524,6 +1562,101 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? dPekerja.NoAkaunBank;
                             akPVPenerima.EnJenisId = dPekerja.EnJenisId;
                             break;
+                        case EnKategoriDaftarAwam.LainLain:
+                            // rekupan / baki awal
+                            if (akPVPenerima.AkRekupId != null)
+                            {
+                                var akRekup = _unitOfWork.AkRekupRepo.GetDetailsById((int)akPVPenerima.AkRekupId);
+
+                                if (akRekup != null && akRekup.DPanjar != null && akRekup.DPanjar.DPanjarPemegang != null && akRekup.DPanjar.DPanjarPemegang.Count() > 0)
+                                {
+                                    // find active pemegang panjar
+                                    foreach (var pemegang in akRekup.DPanjar.DPanjarPemegang)
+                                    {
+                                        if (pemegang.DPekerja != null)
+                                        {
+                                            if (pemegang.IsAktif)
+                                            {
+                                                akPVPenerima.NamaPenerima = akPVPenerima.NamaPenerima ?? pemegang.DPekerja.Nama;
+                                                akPVPenerima.NoPendaftaranPenerima = akPVPenerima.NoPendaftaranPenerima ?? pemegang.DPekerja.NoKp;
+                                                akPVPenerima.NoPendaftaranPemohon = akPVPenerima.NoPendaftaranPemohon ?? pemegang.DPekerja.NoKp;
+                                                akPVPenerima.Alamat1 = akPVPenerima.Alamat1 ?? pemegang.DPekerja.Alamat1;
+                                                akPVPenerima.Alamat2 = akPVPenerima.Alamat2 ?? pemegang.DPekerja.Alamat2;
+                                                akPVPenerima.Alamat3 = akPVPenerima.Alamat3 ?? pemegang.DPekerja.Alamat3;
+                                                akPVPenerima.JBankId = akPVPenerima.JBankId ?? pemegang.DPekerja.JBankId;
+                                                akPVPenerima.Emel = akPVPenerima.Emel ?? pemegang.DPekerja.Emel;
+                                                akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? pemegang.DPekerja.KodM2E;
+                                                akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? pemegang.DPekerja.NoAkaunBank;
+                                                akPVPenerima.EnJenisId = pemegang.DPekerja.EnJenisId;
+                                                akPVPenerima.DPanjarId = akRekup.DPanjarId;
+                                                akPVPenerima.Amaun = akRekup.Jumlah;
+
+                                            }
+                                            else
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        
+                                    }
+
+                                    var objek = new AkPVObjek()
+                                    {
+                                        AkCartaId = akRekup.DPanjar.AkCartaId,
+                                        JKWPTJBahagianId = (int)akRekup.DPanjar.JKWPTJBahagianId!,
+                                        Amaun = akRekup.Jumlah
+
+                                    };
+                                    // insert if empty, update if available
+                                    if (_cart.AkPVObjek.Any(o => o.AkCartaId == akRekup.DPanjar.AkCartaId && o.JKWPTJBahagianId == akRekup.DPanjar.JKWPTJBahagianId))
+                                    {
+                                        SaveAnItemFromCartAkPVObjek(objek);
+                                    }
+                                    else
+                                    {
+                                        SaveCartAkPVObjek(objek);
+                                    }
+                                }
+                                
+                            }
+                            // tambah / kurangkan had limit pemegang
+                            else
+                            {
+                                if (akPVPenerima.DPanjarId != null)
+                                {
+                                    var dPanjar = _unitOfWork.DPanjarRepo.GetAllDetailsById((int)akPVPenerima.DPanjarId);
+                                    if (dPanjar != null && dPanjar.DPanjarPemegang != null && dPanjar.DPanjarPemegang.Count() > 0)
+                                    {
+                                        // find active pemegang panjar
+                                        foreach (var pemegang in dPanjar.DPanjarPemegang)
+                                        {
+                                            if (pemegang.DPekerja != null)
+                                            {
+                                                if (pemegang.IsAktif)
+                                                {
+                                                    akPVPenerima.NamaPenerima = akPVPenerima.NamaPenerima ?? pemegang.DPekerja.Nama;
+                                                    akPVPenerima.NoPendaftaranPenerima = akPVPenerima.NoPendaftaranPenerima ?? pemegang.DPekerja.NoKp;
+                                                    akPVPenerima.NoPendaftaranPemohon = akPVPenerima.NoPendaftaranPemohon ?? pemegang.DPekerja.NoKp;
+                                                    akPVPenerima.Alamat1 = akPVPenerima.Alamat1 ?? pemegang.DPekerja.Alamat1;
+                                                    akPVPenerima.Alamat2 = akPVPenerima.Alamat2 ?? pemegang.DPekerja.Alamat2;
+                                                    akPVPenerima.Alamat3 = akPVPenerima.Alamat3 ?? pemegang.DPekerja.Alamat3;
+                                                    akPVPenerima.JBankId = akPVPenerima.JBankId ?? pemegang.DPekerja.JBankId;
+                                                    akPVPenerima.Emel = akPVPenerima.Emel ?? pemegang.DPekerja.Emel;
+                                                    akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? pemegang.DPekerja.KodM2E;
+                                                    akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? pemegang.DPekerja.NoAkaunBank;
+                                                    akPVPenerima.EnJenisId = pemegang.DPekerja.EnJenisId;
+                                                }
+                                                else
+                                                {
+                                                    continue;
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                            break;
                     }
                     if (akPVPenerima.JCaraBayarId != 0)
                     {
@@ -1640,6 +1773,97 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? dPekerja.KodM2E;
                             akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? dPekerja.NoAkaunBank;
                             akPVPenerima.EnJenisId = dPekerja.EnJenisId;
+                            break;
+                        case EnKategoriDaftarAwam.LainLain:
+                            if (akPVPenerima.AkRekupId != null)
+                            {
+                                var akRekup = _unitOfWork.AkRekupRepo.GetDetailsById((int)akPVPenerima.AkRekupId);
+
+                                if (akRekup != null && akRekup.DPanjar != null && akRekup.DPanjar.DPanjarPemegang != null && akRekup.DPanjar.DPanjarPemegang.Count() > 0)
+                                {
+                                    // find active pemegang panjar
+                                    foreach (var pemegang in akRekup.DPanjar.DPanjarPemegang)
+                                    {
+                                        if (pemegang.DPekerja != null)
+                                        {
+                                            if (pemegang.IsAktif)
+                                            {
+                                                akPVPenerima.NamaPenerima = akPVPenerima.NamaPenerima ?? pemegang.DPekerja.Nama;
+                                                akPVPenerima.NoPendaftaranPenerima = akPVPenerima.NoPendaftaranPenerima ?? pemegang.DPekerja.NoKp;
+                                                akPVPenerima.NoPendaftaranPemohon = akPVPenerima.NoPendaftaranPemohon ?? pemegang.DPekerja.NoKp;
+                                                akPVPenerima.Alamat1 = akPVPenerima.Alamat1 ?? pemegang.DPekerja.Alamat1;
+                                                akPVPenerima.Alamat2 = akPVPenerima.Alamat2 ?? pemegang.DPekerja.Alamat2;
+                                                akPVPenerima.Alamat3 = akPVPenerima.Alamat3 ?? pemegang.DPekerja.Alamat3;
+                                                akPVPenerima.JBankId = akPVPenerima.JBankId ?? pemegang.DPekerja.JBankId;
+                                                akPVPenerima.Emel = akPVPenerima.Emel ?? pemegang.DPekerja.Emel;
+                                                akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? pemegang.DPekerja.KodM2E;
+                                                akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? pemegang.DPekerja.NoAkaunBank;
+                                                akPVPenerima.EnJenisId = pemegang.DPekerja.EnJenisId;
+                                                akPVPenerima.DPanjarId = akRekup.DPanjarId;
+                                            }
+                                            else
+                                            {
+                                                continue;
+                                            }
+                                        }
+
+                                    }
+                                    var objek = new AkPVObjek()
+                                    {
+                                        AkCartaId = akRekup.DPanjar.AkCartaId,
+                                        JKWPTJBahagianId = (int)akRekup.DPanjar.JKWPTJBahagianId!,
+                                        Amaun = akRekup.Jumlah
+
+                                    };
+                                    // insert if empty, update if available
+                                    if (_cart.AkPVObjek.Any(o => o.AkCartaId == akRekup.DPanjar.AkCartaId && o.JKWPTJBahagianId == akRekup.DPanjar.JKWPTJBahagianId))
+                                    {
+                                        SaveAnItemFromCartAkPVObjek(objek);
+                                    }
+                                    else
+                                    {
+                                        SaveCartAkPVObjek(objek);
+                                    }
+                                }
+
+                            }
+                            // tambah / kurangkan had limit pemegang
+                            else
+                            {
+                                if (akPVPenerima.DPanjarId != null)
+                                {
+                                    var dPanjar = _unitOfWork.DPanjarRepo.GetAllDetailsById((int)akPVPenerima.DPanjarId);
+                                    if (dPanjar != null && dPanjar.DPanjarPemegang != null && dPanjar.DPanjarPemegang.Count() > 0)
+                                    {
+                                        // find active pemegang panjar
+                                        foreach (var pemegang in dPanjar.DPanjarPemegang)
+                                        {
+                                            if (pemegang.DPekerja != null)
+                                            {
+                                                if (pemegang.IsAktif)
+                                                {
+                                                    akPVPenerima.NamaPenerima = akPVPenerima.NamaPenerima ?? pemegang.DPekerja.Nama;
+                                                    akPVPenerima.NoPendaftaranPenerima = akPVPenerima.NoPendaftaranPenerima ?? pemegang.DPekerja.NoKp;
+                                                    akPVPenerima.NoPendaftaranPemohon = akPVPenerima.NoPendaftaranPemohon ?? pemegang.DPekerja.NoKp;
+                                                    akPVPenerima.Alamat1 = akPVPenerima.Alamat1 ?? pemegang.DPekerja.Alamat1;
+                                                    akPVPenerima.Alamat2 = akPVPenerima.Alamat2 ?? pemegang.DPekerja.Alamat2;
+                                                    akPVPenerima.Alamat3 = akPVPenerima.Alamat3 ?? pemegang.DPekerja.Alamat3;
+                                                    akPVPenerima.JBankId = akPVPenerima.JBankId ?? pemegang.DPekerja.JBankId;
+                                                    akPVPenerima.Emel = akPVPenerima.Emel ?? pemegang.DPekerja.Emel;
+                                                    akPVPenerima.KodM2E = akPVPenerima.KodM2E ?? pemegang.DPekerja.KodM2E;
+                                                    akPVPenerima.NoAkaunBank = akPVPenerima.NoAkaunBank ?? pemegang.DPekerja.NoAkaunBank;
+                                                    akPVPenerima.EnJenisId = pemegang.DPekerja.EnJenisId;
+                                                }
+                                                else
+                                                {
+                                                    continue;
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
                             break;
                     }
                     if (akPVPenerima.JCaraBayarId != 0)

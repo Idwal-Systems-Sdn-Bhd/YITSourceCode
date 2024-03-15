@@ -10,6 +10,16 @@
             dropdownParent: $('#moPenerima'),
             theme: "bootstrap"
         });
+
+        $('#moPenerimaAkRekupId').select2({
+            dropdownParent: $('#moPenerima'),
+            theme: "bootstrap"
+        });
+
+        $('#moPenerimaDPanjarId').select2({
+            dropdownParent: $('#moPenerima'),
+            theme: "bootstrap"
+        });
         //
     });
 
@@ -48,26 +58,109 @@
     });
     //
 
+    function EmptyPenerimaFields() {
+        $("#moPenerimaDDaftarAwamId").val("").change();
+        $("#moPenerimaDPekerjaId").val("").change();
+        $("#moPenerimaDPanjarId").val("").change();
+        $("#moPenerimaAkRekupId").val("").change();
+        $("input[name=moPenerimaIsPanjar][value='false']").prop('checked', true);
+        $("input[name=moPenerimaIsHadLimit][value='false']").prop('checked', true);
+        $("#moPenerimaDivDPekerjaId").prop('hidden', true);
+        $("#moPenerimaDivDDaftarAwamId").prop('hidden', true);
+        $("#moPenerimaDivIsPanjar").prop('hidden', true);
+        $("#moPenerimaDivIsHadLimit").prop('hidden', true);
+        $("#moPenerimaDivRekupId").prop('hidden', true);
+        $("#moPenerimaDivPanjarId").prop('hidden', true);
+        $("#moPenerimaNoPendaftaranPenerima").val("");
+        $("#moPenerimaNamaPenerima").val("");
+        $("#moPenerimaNoPendaftaranPemohon").val("");
+        $("#moPenerimaJBankId").val("").change();
+        $("#moPenerimaNoAkaunBank").val("");
+        $("#moPenerimaAlamat1").val("");
+        $("#moPenerimaAlamat2").val("");
+        $("#moPenerimaAlamat3").val("");
+        $("#moPenerimaEmel").val("");
+        $("#moPenerimaKodM2E").val("");
+    }
+
     // on click kategoriDaftarAwam dropdown
     $("body").on('change', "#moPenerimaEnKategoriDaftarAwam", function () {
         var kategoriDaftarAwam = $("#moPenerimaEnKategoriDaftarAwam").val();
-        $("#moPenerimaDDaftarAwamId").val("").change();
-        $("#moPenerimaDPekerjaId").val("").change();
+        EmptyPenerimaFields();
 
         switch (kategoriDaftarAwam) {
             case "@EnKategoriDaftarAwam.Pekerja.GetDisplayCode()":
                 $("#moPenerimaDivDPekerjaId").removeAttr('hidden');
                 $("#moPenerimaDivDDaftarAwamId").prop('hidden', true);
+                $("#moPenerimaDivIsPanjar").prop('hidden', true);
+                $("#moPenerimaDivRekupId").prop('hidden', true);
+                $("#moPenerimaDivPanjarId").prop('hidden', true);
                 break;
             case "@EnKategoriDaftarAwam.Pembekal.GetDisplayCode()":
                 $("#moPenerimaDivDPekerjaId").prop('hidden', true);
                 $("#moPenerimaDivDDaftarAwamId").removeAttr('hidden');
+                $("#moPenerimaDivIsPanjar").prop('hidden', true);
+                $("#moPenerimaDivRekupId").prop('hidden', true);
+                $("#moPenerimaDivPanjarId").prop('hidden', true);
+                break;
+            case "@EnKategoriDaftarAwam.LainLain.GetDisplayCode()":
+                $("#moPenerimaDivDPekerjaId").prop('hidden', true);
+                $("#moPenerimaDivDDaftarAwamId").prop('hidden', true);
+                if ($("#EnJenisBayaran").val() == @EnJenisBayaran.Panjar.GetDisplayCode()) {
+                    $("#moPenerimaDivIsPanjar").removeAttr('hidden');
+                }
+                $("#moPenerimaDivRekupId").prop('hidden', true);
+                $("#moPenerimaDivPanjarId").prop('hidden', true);
                 break;
             default:
                 $("#moPenerimaDivDPekerjaId").prop('hidden', true);
                 $("#moPenerimaDivDDaftarAwamId").prop('hidden', true);
+                $("#moPenerimaDivIsPanjar").prop('hidden', true);
+                $("#moPenerimaDivRekupId").prop('hidden', true);
+                $("#moPenerimaDivPanjarId").prop('hidden', true);
                 break;
         }
+    });
+    //
+
+    // on click isPanjar dropdown
+    $("body").on('change', "#moPenerimaIsPanjar", function () {
+        $("#moPenerimaDPanjarId").val("").change();
+        $("#moPenerimaAkRekupId").val("").change();
+        $("input[name=moPenerimaIsHadLimit][value='false']").prop('checked', true);
+
+        switch ($(this).val()) {
+            case "false":
+                $("#moPenerimaDivRekupId").prop('hidden', true);
+                $("#moPenerimaDivPanjarId").prop('hidden', true);
+                $("#moPenerimaDivIsHadLimit").prop('hidden', true);
+                break;
+            case "true":
+                $("#moPenerimaDivRekupId").removeAttr('hidden');
+                $("#moPenerimaDivPanjarId").prop('hidden', true);
+                $("#moPenerimaDivIsHadLimit").removeAttr('hidden');
+                break;
+        }
+
+    });
+    //
+
+    // on click isHadLimit dropdown
+    $("body").on('change', "#moPenerimaIsHadLimit", function () {
+        $("#moPenerimaDPanjarId").val("").change();
+        $("#moPenerimaAkRekupId").val("").change();
+
+        switch ($(this).val()) {
+            case "false":
+                $("#moPenerimaDivRekupId").removeAttr('hidden');
+                $("#moPenerimaDivPanjarId").prop('hidden', true);
+                break;
+            case "true":
+                $("#moPenerimaDivRekupId").prop('hidden', true);
+                $("#moPenerimaDivPanjarId").removeAttr('hidden');
+                break;
+        }
+
     });
     //
 
@@ -359,14 +452,12 @@
         var jKWPTJBahagianId = $("#objekJKWPTJBahagianId");
         if ($("#objekAmaun").val() == 0.00) {
             toastr.error("Amaun 0.00 tidak dibenarkan");
-            toastr.options.timeOut = 2000; // 2s
         }
         else {
             if (jKWPTJBahagianId.val() != null && akCartaId.val() != null) {
                 GetJKWPTJBahagianAkCarta(Id.val(), jKWPTJBahagianId.val(), akCartaId.val());
             } else {
                 toastr.error("Sila pilih bahagian / kod akaun");
-                toastr.options.timeOut = 2000; // 2s
             }
         }
 
@@ -417,7 +508,6 @@
                         }
                         else {
                             toastr.error(msg.message);
-                            toastr.options.timeOut = 2000; // 2s
                         }
 
                     }
@@ -728,6 +818,14 @@
     }
 
     function ClearFieldsModalPenerima() {
+        $("#moPenerimaDPanjarId").val("").change();
+        $("#moPenerimaAkRekupId").val("").change();
+        $("input[name=moPenerimaIsPanjar][value='false']").prop('checked', true);
+        $("input[name=moPenerimaIsHadLimit][value='false']").prop('checked', true);
+        $("#moPenerimaDivIsPanjar").prop('hidden', true);
+        $("#moPenerimaDivRekupId").prop('hidden', true);
+        $("#moPenerimaDivPanjarId").prop('hidden', true);
+        $("#moPenerimaDivIsHadLimit").prop('hidden', true);
         $("#moPenerimaId").val("");
         $("#moPenerimaAkJanaanProfilPenerimaId").val("");
         $("#moPenerimaEnKategoriDaftarAwam").val("");
@@ -778,6 +876,8 @@
         var amaun = $("#moPenerimaAmaun").val();
         var rujukanMohon = $("#moPenerimaRujukanMohon").val();
         var enJenisId = $("#moPenerimaEnJenisId").val();
+        var akRekupId = $("#moPenerimaAkRekupId").val();
+        var dPanjarId = $("#moPenerimaDPanjarId").val();
 
         var AkPVPenerima = {
             Id: id,
@@ -802,7 +902,9 @@
             TarikhCaraBayar: tarikhCaraBayar,
             Amaun: amaun,
             RujukanMohon: rujukanMohon,
-            EnJenisId: enJenisId
+            EnJenisId: enJenisId,
+            AkRekupId: akRekupId,
+            DPanjarId: dPanjarId
         }
         $.ajax({
             type: "POST",
@@ -887,6 +989,25 @@
                             $("#moPenerimaDivDDaftarAwamId").prop('hidden', true);
                             $("#moPenerimaDivDPekerjaId").removeAttr('hidden');
                             break;
+                        case @EnKategoriDaftarAwam.LainLain.GetDisplayCode():
+                            if (r.record.dPanjarId != null) {
+                                $("input[name=moPenerimaIsPanjar][value='true']").prop('checked', true);
+                                $("input[name=moPenerimaIsHadLimit][value='true']").prop('checked', true);
+                                $("#moPenerimaDivPanjarId").removeAttr('hidden');
+                                $("#moPenerimaDivRekupId").prop('hidden', true);
+                                $("#moPenerimaDivIsPanjar").removeAttr('hidden');
+                                $("#moPenerimaDivIsHadLimit").removeAttr('hidden');
+                            }
+
+                            if (r.record.akRekupId != null) {
+                                $("input[name=moPenerimaIsPanjar][value='true']").prop('checked', true);
+                                $("input[name=moPenerimaIsHadLimit][value='false']").prop('checked', true);
+                                $("#moPenerimaDivRekupId").removeAttr('hidden');
+                                $("#moPenerimaDivPanjarId").prop('hidden', true);
+                                $("#moPenerimaDivIsPanjar").removeAttr('hidden');
+                                $("#moPenerimaDivIsHadLimit").removeAttr('hidden');
+                            }
+                            break;
                     }
 
                     $("#moPenerimaNoPendaftaranPenerima").val(r.record.noPendaftaranPenerima);
@@ -907,7 +1028,8 @@
                     $("#moPenerimaRujukanMohon").val(r.record.rujukanMohon);
                     $("#moPenerimaAkJanaanProfilPenerimaId").val(r.record.akJanaanProfilPenerimaId);
                     $("#moPenerimaEnJenisId").val(r.record.enJenisId).change();
-
+                    $("#moPenerimaDPanjarId").val(r.record.dPanjarId).change();
+                    $("#moPenerimaAkRekupId").val(r.record.akRekupId).change();
 
                     //show modal penerima
                     $("#moPenerima").modal({ backdrop: 'static', keyboard: false });
@@ -942,6 +1064,8 @@
         var amaun = $("#moPenerimaAmaun").val();
         var rujukanMohon = $("#moPenerimaRujukanMohon").val();
         var enJenisId = $("#moPenerimaAkJanaanProfilPenerimaId").val();
+        var akRekupId = $("#moPenerimaAkRekupId").val();
+        var dPanjarId = $("#moPenerimaDPanjarId").val();
 
 
         var AkPVPenerima = {
@@ -968,7 +1092,9 @@
             TarikhCaraBayar: tarikhCaraBayar,
             Amaun: amaun,
             RujukanMohon: rujukanMohon,
-            EnJenisId: enJenisId
+            EnJenisId: enJenisId,
+            AkRekupId: akRekupId,
+            DPanjarId: dPanjarId
         }
         $.ajax({
             type: "POST",

@@ -204,7 +204,10 @@
                     else {
                         $("input[name=barisIsPukal][value=" + r.record.isPukal + "]").prop('checked', true);
                         $('#divBarisPukal').prop('hidden',true);
-
+                        if (r.record.kodList != null) {
+                            arr = r.record.kodList.split(",");
+                            $('#barisKodList').val(arr).trigger('change');
+                        }
                     }
 
                     if (r.record.enJenisCartaList != null) {

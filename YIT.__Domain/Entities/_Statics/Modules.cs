@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,6 +43,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodJKonfigPerubahanEkuiti = "JD0010";
         public const string namaJKonfigPerubahanEkuiti = "Jadual Konfigurasi Perubahan Ekuiti";
+
+        public const string kodJKonfigPenyata = "JD0011";
+        public const string namaJKonfigPenyata = "Jadual Konfigurasi Penyata";
         //
 
         // Daftar 
@@ -56,7 +59,10 @@ namespace YIT.__Domain.Entities._Statics
         public const string namaDKonfigKelulusan = "Daftar Konfigurasi Kelulusan";
 
         public const string kodDPenerimaCekGaji = "DF0004";
-        public const string namaDPenerimaCekGaji = "Penerima Cek Gaji";
+        public const string namaDPenerimaCekGaji = "Daftar Penerima Cek Gaji";
+
+        public const string kodDPanjar = "DF0005";
+        public const string namaDPanjar = "Daftar Pemegang Panjar";
 
         // Akaun
         public const string kodAkCarta = "AK0001";
@@ -197,23 +203,27 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodPAkBukuTunai = "PAK001";
         public const string namaPAkBukuTunai = "Penyata Buku Tunai";
 
-        public const string kodPAkAlirTunai = "PAK002";
-        public const string namaPAkAlirTunai = "Penyata Alir Tunai";
+        public const string kodPAkAlirTunaiBulanan = "PAK002";
+        public const string namaPAkAlirTunaiBulanan = "Penyata Alir Tunai Bulanan";
 
-        public const string kodPAkPerubahanEkuiti = "PAK003";
+        public const string kodPAkAlirTunaiTahunan = "PAK003";
+        public const string namaPAkAlirTunaiTahunan = "Penyata Alir Tunai";
+
+        public const string kodPAkPerubahanEkuiti = "PAK004";
         public const string namaPAkPerubahanEkuti = "Penyata Perubahan Ekuiti";
 
-        public const string kodPAkTimbangDuga = "PAK004";
+        public const string kodPAkTimbangDuga = "PAK005";
         public const string namaPAkTimbangDuga = "Penyata Timbang Duga";
 
-        public const string kodPAkUntungRugi = "PAK005";
+        public const string kodPAkUntungRugi = "PAK006";
         public const string namaPAkUntungRugi = "Penyata Untung Rugi";
 
-        public const string kodPAkKunciKiraKira = "PAK006";
+        public const string kodPAkKunciKiraKira = "PAK007";
         public const string namaPAkKunciKiraKira = "Penyata Kunci Kira - Kira";
 
         public const string kodLCekYangBerkaitan = "LAK002";
         public const string namaLCekYangBerkaitan = "Laporan Cek Yang Berkaitan";
+
         //
     }
 }

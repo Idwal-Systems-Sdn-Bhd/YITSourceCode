@@ -1,0 +1,101 @@
+﻿@model JKonfigPenyata
+
+@{
+    ViewData["Title"] = "Konfigurasi Penyata - Papar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card box-shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-dark mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / Papar</span>
+            </div>
+            <div class="col-4">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Tahun)
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Tahun
+            </dd>
+            <dt class="col-sm-12 pb-2">
+                Paparan laporan adalah seperti berikut :
+            </dt>
+        </dl>
+        <div class="card">
+            <div class="card-body">
+                <div class="container">
+                    <dl class="row">
+                        <dt class="col-8 mb-3">
+                            Tajuk
+                        </dt>
+                        <dt class="col-4 text-center">
+                            @Model.Tahun RM
+                        </dt>
+                        @if (Model.JKonfigPenyataBaris != null && Model.JKonfigPenyataBaris.Any())
+                        {
+                            foreach (var item in Model.JKonfigPenyataBaris.OrderBy(b => b.Susunan))
+                            {
+                                var bold = "";
+                                var uppercase = "";
+                                var border = "";
+                                var formula = "";
+
+                                if (item.EnKategoriTajuk == EnKategoriTajuk.TajukUtama)
+                                {
+                                    bold = "fw-bold";
+                                    uppercase = "text-uppercase";
+                                }
+
+                                switch (item.EnKategoriJumlah)
+                                {
+                                    case EnKategoriJumlah.Amaun:
+
+                                        break;
+                                    case EnKategoriJumlah.JumlahKecil:
+                                        border = "border-top";
+                                        break;
+                                    case EnKategoriJumlah.JumlahBesar:
+                                        border = "border-top border-bottom";
+                                        break;
+                                    case EnKategoriJumlah.JumlahKeseluruhan:
+                                        border = "border-top border-bottom";
+                                        bold = "fw-bold";
+                                        uppercase = "text-uppercase";
+                                        break;
+
+                                }
+
+                                if (item.IsFormula) formula = "[formula]";
+                                <dd class="col-8 @bold @uppercase">
+                                    @item.Perihal
+                                </dd>
+                                <dd class="col-4 text-end @bold @uppercase @border ">
+                                    @formula
+                                </dd>
+
+
+                            }
+                        }
+                    </dl>
+                </div>
+                
+            </div>
+        </div>
+
+        <hr />
+        <div class="form-group">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn ac-primary btn-sm">Ubah</a>
+            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+        </div>
+
+    </div>
+</div>

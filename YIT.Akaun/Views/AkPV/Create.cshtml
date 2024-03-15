@@ -10,7 +10,7 @@
 <partial name="_JSCreate" />
 <div class="card box-shadow">
     <div class="card-body">
-        <partial name="~/Views/Partials/Common/_TitleCreatePartial.cshtml" />
+        <partial name="~/Views/Partials/Common/_TitleCreateTransaksiPartial.cshtml" />
 
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -342,7 +342,11 @@
             <hr />
             <div class="form-group">
                 <input type="submit" value="Simpan" id="btnSave" class="btn ac-primary btn-sm" />
-                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+                <a asp-action="Index"
+                   asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                   asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
+                   asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")" 
+                   class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
             </div>
         </form>
     </div>
@@ -468,8 +472,8 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-8">
-                            <div class="form-group" id="moPenerimaDivDDaftarAwamId" hidden>
+                        <div class="col-md-8" id="moPenerimaDivDDaftarAwamId" hidden>
+                            <div class="form-group">
                                 <label class="control-label">Daftar Awam</label>
                                 <select id="moPenerimaDDaftarAwamId" class="form-control form-control-sm text-uppercase select2">
                                     <option value="">- SILA PILIH -</option>
@@ -489,9 +493,63 @@
                                     }
                                 </select>
                             </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" id="moPenerimaDivIsPanjar" hidden>
+                                <label class="control-label">Berkaitan Panjar?</label>
+                                <div class="form-check">
+                                    <input class="form-check-input moPenerimaIsPanjar" type="radio" id="moPenerimaIsPanjar" name="moPenerimaIsPanjar" value="false" checked>
+                                    <label class="form-check-label" for="moPenerimaIsPanjar">
+                                        Tidak
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input moPenerimaIsPanjar" type="radio" id="moPenerimaIsPanjar" name="moPenerimaIsPanjar" value="true">
+                                    <label class="form-check-label" for="moPenerimaIsPanjar">
+                                        Ya
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group" id="moPenerimaDivIsHadLimit" hidden>
+                                <label class="control-label">Tambah / Kurang Had Limit?</label>
+                                <div class="form-check">
+                                    <input class="form-check-input moPenerimaIsHadLimit" type="radio" id="moPenerimaIsHadLimit" name="moPenerimaIsHadLimit" value="false" checked>
+                                    <label class="form-check-label" for="moPenerimaIsHadLimit">
+                                        Tidak
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input moPenerimaIsHadLimit" type="radio" id="moPenerimaIsHadLimit" name="moPenerimaIsHadLimit" value="true">
+                                    <label class="form-check-label" for="moPenerimaIsHadLimit">
+                                        Ya
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
+                    <div class="form-group" id="moPenerimaDivRekupId" hidden>
+                        <label class="control-label">Kod Rekupan</label>
+                        <select id="moPenerimaAkRekupId" class="form-control form-control-sm text-uppercase select2">
+                            <option value="">- SILA PILIH -</option>
+                            @foreach (var item in ViewBag.AkRekup)
+                            {
+                                <option value="@item.Id">@item.NoRujukan - @Convert.ToDecimal(item.Jumlah).ToString("RM #,##0.00") (@item.DPanjar?.JCawangan?.Kod - @item.DPanjar?.JCawangan?.Perihal) </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group" id="moPenerimaDivPanjarId" hidden>
+                        <label class="control-label">Kod Panjar</label>
+                        <select id="moPenerimaDPanjarId" class="form-control form-control-sm text-uppercase select2">
+                            <option value="">- SILA PILIH -</option>
+                            @foreach (var item in ViewBag.DPanjar)
+                            {
+                                <option value="@item.Id">@item.JCawangan?.Kod - @item.JCawangan?.Perihal (@item.Kod) </option>
+                            }
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label class="control-label">Jenis Id</label>
                         <select id="moPenerimaEnJenisId" class="form-control form-control-sm text-uppercase">
@@ -636,8 +694,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" id="moAddModalPenerima" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="AddModalPenerima()">OK</button>
-                <button type="button" id="moUpdateModalPenerima" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="UpdateModalPenerima()">OK</button>
+                <button type="button" id="moAddModalPenerima" class="btn ac-success btn-sm" data-dismiss="modal" onclick="AddModalPenerima()">OK</button>
+                <button type="button" id="moUpdateModalPenerima" class="btn ac-success btn-sm" data-dismiss="modal" onclick="UpdateModalPenerima()">OK</button>
             </div>
         </div>
     </div>

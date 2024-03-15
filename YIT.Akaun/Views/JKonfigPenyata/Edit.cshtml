@@ -1,0 +1,329 @@
+﻿@model JKonfigPenyata
+
+@{
+    ViewData["Title"] = "Konfigurasi Penyata - Ubah";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="_JSCreate.cshtml" />
+<div class="card box-shadow">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-primary mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah</span>
+            </div>
+            <div class="col-4 ">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+
+        </div>
+        <hr class="mt-2" />
+
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input name="syscode" value="SPPB" hidden />
+            <input asp-for="Kod" value="@Modules.kodPAkAlirTunaiTahunan" hidden />
+            <input asp-for="Perihal" value="@Modules.namaPAkAlirTunaiTahunan" hidden />
+            <input asp-for="Tahun" value="@Model.Tahun" hidden />
+            <div class="row mb-2">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label asp-for="Tahun" class="control-label"></label>
+                        <input name="tahun" value="@Model.Tahun" class="form-control form-control-sm" maxlength="4" readonly />
+                    </div>
+                </div>
+            </div>
+            @*table Baris*@
+            <div class="card box-shadow mb-3">
+                <div class="card-body">
+                    <table id="tblBaris" class="table table-sm nowrap table-borderless" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th style="width:5%">Susunan</th>
+                                <th style="width:80%">Tajuk</th>
+                                <th style="width:20%" id="thTahun">@Model.Tahun RM </th>
+                                <th class="text-center"></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyBaris">
+                            @if (ViewBag.JKonfigPenyataBaris != null)
+                            {
+                                foreach (var item in ViewBag.JKonfigPenyataBaris)
+                                {
+                                    var bold = "";
+                                    var uppercase = "";
+                                    var border = "";
+                                    var formula = "";
+
+                                    if (item.EnKategoriTajuk == EnKategoriTajuk.TajukUtama)
+                                    {
+                                        bold = "fw-bold";
+                                        uppercase = "text-uppercase";
+                                    }
+
+                                    switch (item.EnKategoriJumlah)
+                                    {
+                                        case EnKategoriJumlah.Amaun:
+
+                                            break;
+                                        case EnKategoriJumlah.JumlahKecil:
+                                            border = "border-top";
+                                            break;
+                                        case EnKategoriJumlah.JumlahBesar:
+                                            border = "border-top border-bottom";
+                                            break;
+                                        case EnKategoriJumlah.JumlahKeseluruhan:
+                                            border = "border-top border-bottom";
+                                            bold = "fw-bold";
+                                            uppercase = "text-uppercase";
+                                            break;
+
+                                    }
+                                    if (item.IsFormula) formula = "[formula]";
+                                    <tr>
+                                        <td hidden>@item.Bil</td>
+                                        <td>@item.Susunan</td>
+                                        <td width="80%" class="@bold @uppercase"><label>@item.Perihal</label></td>
+                                        <td class="@bold @uppercase @border text-end ">@formula</td>
+                                        <td><button class="btn ac-primary btn-sm" type="button" data-toggle="modal" data-target="#moBaris" onclick="UpdateBaris(this)"><i class="fa fa-edit"></i></button></td>
+                                        <td><button class="btn ac-danger btn-sm" type="button" onclick="RemoveBaris(this)"><i class="fas fa-trash"></i></button></td>
+                                    </tr>
+                                }
+
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target="#moBaris" onclick="AddBaris()"><i class="fas fa-plus"></i></button></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            @*table Baris end*@
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Simpan" class="btn ac-primary btn-sm" />
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Modal Baris -->
+<div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" id="moBaris" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="moBarisTitle"></h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close" onclick="BarisBack()">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input id="moBarisBil" hidden />
+                    <input id="moBarisIsFormula" hidden />
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label>Pilih Kategori Tajuk</label>
+                                                <select id="moBarisEnKategoriTajuk" class="form-control form-control-sm select2">
+                                                    @foreach (var item in ViewBag.EnKategoriTajuk)
+                                                    {
+                                                        <option value="@item.id">@item.indek - @item.perihal</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Susunan</label>
+                                                <select id="moBarisSusunan" class="form-control form-control-sm">
+                                                    @for (var i = 0; i <= 99; i++)
+                                                    {
+                                                        <option value="@i">@i</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <label class="control-label">Perihal</label>
+                                        <input class="form-control form-control-sm" id="moBarisPerihal" />
+                                    </div>
+                                    @*table Baris Formula*@
+                                    <div id="divBarisFormula" hidden>
+                                        <div class="form-group mb-2">
+                                            <label>Pilih Kategori Jumlah</label>
+                                            <select id="moBarisEnKategoriJumlah" class="form-control form-control-sm select2">
+                                                @foreach (var item in ViewBag.EnKategoriJumlah)
+                                                {
+                                                    <option value="@item.id">@item.indek - @item.perihal</option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                        <div class="card box-shadow mb-3" id="divBarisFormulaTable" hidden>
+                                            <div class="card-header">
+                                                <h6>Formula</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <table id="tblBarisFormula" class="table table-borderless table-sm nowrap" cellpadding="0" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width:80%">Formula</th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbodyBarisFormula">
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td><button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target="#moBarisFormula" onclick="AddBarisFormula()"><i class="fas fa-plus"></i></button></td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-2 " id="divBarisSusunanList" hidden>
+                                        <label>Pilih Senarai Jumlah Mengikut Susunan</label>
+                                        <select id="moBarisJumlahSusunanList" class="form-control form-control-sm select2" multiple="multiple">
+                                            @for (var i = 0; i <= 99; i++)
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    @*table Baris end*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn ac-success btn-sm" data-dismiss="modal" onclick="UpdateModalBaris()">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Baris End -->
+<!-- Modal Baris Formula -->
+<div class="modal fade bd-example-modal-lg" id="moBarisFormula" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="moBarisFormulaTitle"></h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input id="moBarisFormulaId" hidden />
+                    <input id="moBarisFormulaBarisBil" hidden />
+                    <input id="moFormulaEnJenisOperasi" hidden />
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label class="control-label">Operasi</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input moBarisFormulaEnJenisOperasi" type="radio" id="moBarisFormulaEnJenisOperasi" name="moBarisFormulaEnJenisOperasi" value="@EnJenisOperasi.Tambah" checked>
+                                            <label class="form-check-label" for="moBarisFormulaEnJenisOperasi">
+                                                @EnJenisOperasi.Tambah.GetDisplayName()
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input moBarisFormulaEnJenisOperasi" type="radio" id="moBarisFormulaEnJenisOperasi" name="moBarisFormulaEnJenisOperasi" value="@EnJenisOperasi.Tolak">
+                                            <label class="form-check-label" for="moBarisFormulaIsPukal">
+                                                @EnJenisOperasi.Tolak.GetDisplayName()
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Kaedah Pemilihan</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input moBarisFormulaIsPukal" type="radio" id="moBarisFormulaIsPukal" name="moBarisFormulaIsPukal" value="false" checked>
+                                            <label class="form-check-label" for="moBarisFormulaIsPukal">
+                                                Satu - persatu
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input moBarisFormulaIsPukal" type="radio" id="moBarisFormulaIsPukal" name="moBarisFormulaIsPukal" value="true">
+                                            <label class="form-check-label" for="moBarisFormulaIsPukal">
+                                                Pukal
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                    <div id="divBarisFormulaPukal" hidden>
+                                        <div class="form-group">
+                                            <label>Jenis Kod</label>
+                                            <select id="moBarisFormulaEnJenisCartaList" class="form-control form-control-sm select2" multiple="multiple">
+                                                @foreach (var s in ViewBag.EnJenisCartaList)
+                                                {
+                                                    <option value="@s.id">@s.perihal </option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Ada Pengecualian?</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input moBarisFormulaIsKecuali" type="radio" id="moBarisFormulaIsKecuali" name="moBarisFormulaIsKecuali" value="false" checked>
+                                                <label class="form-check-label" for="moBarisFormulaIsKecuali">
+                                                    Tidak
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input moBarisFormulaIsKecuali" type="radio" id="moBarisFormulaIsKecuali" name="moBarisFormulaIsKecuali" value="true">
+                                                <label class="form-check-label" for="moBarisFormulaIsKecuali">
+                                                    Ya
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Pilih Kod Akaun</label>
+                                        <select id="moBarisFormulaKodList" class="form-control form-control-sm select2" multiple="multiple">
+                                            @foreach (var s in ViewBag.KodList)
+                                            {
+                                                <option value="@s.Id">@s.Kod -  @s.Perihal </option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn ac-success btn-sm" data-dismiss="modal" onclick="UpdateModalBarisFormula()">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Baris Formula End -->
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

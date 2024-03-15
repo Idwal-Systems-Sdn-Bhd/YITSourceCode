@@ -52,6 +52,13 @@ namespace YIT.Akaun.Controllers._03Akaun
           string searchDate2,
           string searchColumn)
         {
+
+            if (searchString == null && (searchDate1 == null && searchDate2 == null))
+            {
+                HttpContext.Session.Clear();
+                return View();
+            }
+
             DateTime? date1 = null;
             DateTime? date2 = null;
 
@@ -61,11 +68,40 @@ namespace YIT.Akaun.Controllers._03Akaun
                 date2 = DateTime.Parse(searchDate2);
             }
 
-            PopulateFormFields(searchString, searchDate1, searchDate2);
+            SaveFormFields(searchString, searchDate1, searchDate2);
 
             var akJanaanProfil = _unitOfWork.AkJanaanProfilRepo.GetResults(searchString, date1, date2, searchColumn, EnStatusBorang.Semua);
 
             return View(akJanaanProfil);
+        }
+
+        private void SaveFormFields(string searchString, string searchDate1, string searchDate2)
+        {
+            PopulateFormFields(searchString, searchDate1, searchDate2);
+
+            if (searchString != null)
+            {
+                HttpContext.Session.SetString("searchString", searchString);
+            }
+            else
+            {
+                searchString = HttpContext.Session.GetString("searchString");
+                ViewBag.searchString = searchString;
+            }
+
+            if (searchDate1 != null && searchDate2 != null)
+            {
+                HttpContext.Session.SetString("searchDate1", searchDate1);
+                HttpContext.Session.SetString("searchDate2", searchDate2);
+            }
+            else
+            {
+                searchDate1 = HttpContext.Session.GetString("searchDate1");
+                searchDate2 = HttpContext.Session.GetString("searchDate2");
+
+                ViewBag.searchDate1 = searchDate1;
+                ViewBag.searchDate2 = searchDate2;
+            }
         }
 
         private void PopulateFormFields(string searchString, string searchDate1, string searchDate2)
@@ -108,7 +144,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (_unitOfWork.AkPVRepo.HaveAkJanaanProfil((int)id))
             {
                 TempData[SD.Error] = "Hapus data tidak dibenarkan..!";
-                return (RedirectToAction(nameof(Index)));
+                return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
             }
             EmptyCart();
             PopulateCartAkJanaanProfilFromDb(akJanaanProfil);
@@ -193,7 +229,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 _appLog.Insert("Tambah", akJanaanProfil.NoRujukan ?? "", akJanaanProfil.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya ditambah..!";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
             }
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.JP.GetDisplayName(), akJanaanProfil.Tarikh.ToString() ?? DateTime.Now.ToString("yyyy"));
             PopulateDropDownList();
@@ -219,7 +255,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 if (_context.AkPV.Any(pv => pv.AkJanaanProfilId == (int)id && (pv.EnStatusBorang != EnStatusBorang.None || pv.EnStatusBorang != EnStatusBorang.Kemaskini)))
                 {
                     TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
-                    return (RedirectToAction(nameof(Index)));
+                    return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
                 }
             }
 
@@ -367,7 +403,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
             }
 
             PopulateDropDownList();
@@ -401,7 +437,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Data telah diluluskan";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         public async Task<IActionResult> RollBack(int id, string syscode)
@@ -430,7 +466,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Success] = "Data berjaya dikembalikan..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
         private bool AkJanaanProfilExist(int id)

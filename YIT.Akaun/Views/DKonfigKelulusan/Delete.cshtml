@@ -6,7 +6,7 @@
 }
 <div class="card box-shadow">
     <div class="card-body">
-        <partial name="~/Views/Partials/Common/_TitleDeletePartial.cshtml" />
+        <partial name="~/Views/Partials/Common/_TitleDeleteDaftarPartial.cshtml" />
 
         <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
         <div class="form-group">
@@ -17,29 +17,31 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label asp-for="EnKategoriKelulusan" class="control-label"></label>
-                    <input asp-for="EnKategoriKelulusan" class="form-control form-control-sm text-uppercase" value="@Model.EnKategoriKelulusan.GetDisplayName()" readonly />
+                    <input asp-for="EnKategoriKelulusan" class="form-control form-control-sm text-uppercase" value="@Model.EnKategoriKelulusan" readonly />
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label asp-for="EnJenisModulKelulusan" class="control-label"></label>
-                    <input asp-for="EnJenisModulKelulusan" class="form-control form-control-sm text-uppercase" value="@Model.EnJenisModulKelulusan.GetDisplayName()" readonly />
+                    <input asp-for="EnJenisModulKelulusan" class="form-control form-control-sm text-uppercase" value="@Model.EnJenisModulKelulusan" readonly />
                 </div>
             </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="JBahagianId" class="control-label"></label>
+            <input class="form-control form-control-sm text-uppercase" value="@Model.JBahagian?.Kod - @Model.JBahagian?.Perihal" readonly />
         </div>
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
                     <label asp-for="KataLaluan" class="control-label"></label>
                     <input asp-for="KataLaluan" class="form-control form-control-sm text-uppercase" readonly />
-                    <span asp-validation-for="KataLaluan" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="Tandatangan" class="control-label"></label>
                         <input asp-for="Tandatangan" class="form-control form-control-sm text-uppercase" readonly />
-                        <span asp-validation-for="Tandatangan" class="text-danger"></span>
                     </div>
             </div>
         </div>
@@ -53,7 +55,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label asp-for="MaksAmaun" class="control-label text-white"></label>
-                    <input asp-for="MaksAmaun" class="form-control form-control-sm text-uppercase" readonly />
+                    <input asp-for="MaksAmaun" class="form-control form-control-sm" readonly />
                 </div>
             </div>
         </div>
@@ -63,7 +65,9 @@
             <input type="hidden" asp-for="Id" />
             <input name="syscode" value="SPPB" hidden />
             <input type="submit" value="Hapus" class="btn ac-danger btn-sm" />
-            <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+            <a asp-action="Index"
+               asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+               class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
         </form>
     </div>
 </div>

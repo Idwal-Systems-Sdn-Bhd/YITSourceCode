@@ -37,9 +37,41 @@ namespace YIT.Akaun.Controllers._02Daftar
             _appLog = appLog;
             _userManager = userManager;
         }
-        public IActionResult Index()
+        public IActionResult Index(string searchString,
+           string searchColumn
+           )
         {
-            return View(_unitOfWork.DDaftarAwamRepo.GetAllDetails());
+            if (searchString == null)
+            {
+                HttpContext.Session.Clear();
+                return View();
+            }
+
+            SaveFormFields(searchString);
+
+            var dDA = _unitOfWork.DDaftarAwamRepo.GetResults(searchString, searchColumn);
+
+            return View(dDA);
+        }
+
+        private void SaveFormFields(string searchString)
+        {
+            PopulateFormFields(searchString);
+
+            if (searchString != null)
+            {
+                HttpContext.Session.SetString("searchString", searchString);
+            }
+            else
+            {
+                searchString = HttpContext.Session.GetString("searchString") ?? "";
+                ViewBag.searchString = searchString;
+            }
+        }
+
+        private void PopulateFormFields(string searchString)
+        {
+            ViewBag.searchString = searchString;
         }
 
         public IActionResult Create()
@@ -67,17 +99,17 @@ namespace YIT.Akaun.Controllers._02Daftar
                     daftarAwam.Kod = GenerateRunningNumber(daftarAwam.Nama);
 
                     var user = await _userManager.GetUserAsync(User);
-                    int? daftarAwamId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+                    int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
                     daftarAwam.UserId = user?.UserName ?? "";
 
                     daftarAwam.TarMasuk = DateTime.Now;
-                    daftarAwam.DPekerjaMasukId = daftarAwamId;
+                    daftarAwam.DPekerjaMasukId = pekerjaId;
 
                     _context.Add(daftarAwam);
-                    _appLog.Insert("Tambah", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam.Kod, 0, 0, daftarAwamId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Tambah", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam.Kod, 0, 0, pekerjaId, modul, syscode, namamodul, user);
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya ditambah..!";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
                 }
 
             }
@@ -136,8 +168,10 @@ namespace YIT.Akaun.Controllers._02Daftar
             {
                 try
                 {
+                    daftarAwam.Kod = GenerateRunningNumber(daftarAwam.Nama);
+
                     var user = await _userManager.GetUserAsync(User);
-                    int? daftarAwamId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
+                    int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
                     var objAsal = await _context.DDaftarAwam.FirstOrDefaultAsync(x => x.Id == daftarAwam.Id);
                     if (objAsal != null)
@@ -153,13 +187,13 @@ namespace YIT.Akaun.Controllers._02Daftar
                         daftarAwam.UserIdKemaskini = user?.UserName ?? "";
 
                         daftarAwam.TarKemaskini = DateTime.Now;
-                        daftarAwam.DPekerjaKemaskiniId = daftarAwamId;
+                        daftarAwam.DPekerjaKemaskiniId = pekerjaId;
 
                     }
 
                     _unitOfWork.DDaftarAwamRepo.Update(daftarAwam);
 
-                    _appLog.Insert("Ubah", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam?.Kod ?? "", id, 0, daftarAwamId, modul, syscode, namamodul, user);
+                    _appLog.Insert("Ubah", daftarAwam.Kod + " - " + daftarAwam.Nama, daftarAwam?.Kod ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
 
                     await _context.SaveChangesAsync();
                     TempData[SD.Success] = "Data berjaya diubah..!";
@@ -175,8 +209,10 @@ namespace YIT.Akaun.Controllers._02Daftar
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
             }
+
+            ViewBag.KodSyarikat = GenerateRunningNumber(daftarAwam.Nama?.Substring(1) ?? "A");
             PopulateDropdownList();
             return View(daftarAwam);
         }
@@ -201,7 +237,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
-            var daftarAwam = _unitOfWork.DDaftarAwamRepo.GetById((int)id);
+            var daftarAwam = _unitOfWork.DDaftarAwamRepo.GetById(id);
 
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
@@ -217,7 +253,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                 await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya dihapuskan..!";
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
         }
 
         public async Task<IActionResult> RollBack(int id, string syscode)
@@ -246,7 +282,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                 TempData[SD.Success] = "Data berjaya dikembalikan..!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
         }
 
         private bool NamaKategoriDaftarAwamExists(string nama, EnKategoriDaftarAwam daftarAwam)

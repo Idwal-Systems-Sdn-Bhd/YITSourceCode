@@ -107,8 +107,27 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
             EmptyCart();
             ViewBag.DKonfigKelulusanId = HttpContext.Session.GetInt32("DPelulusId");
+            ManipulateHiddenDiv(akPV.EnJenisBayaran);
             PopulateCartAkPVFromDb(akPV);
             return View(akPV);
+        }
+        private void ManipulateHiddenDiv(EnJenisBayaran enJenisBayaran)
+        {
+            switch (enJenisBayaran)
+            {
+                case EnJenisBayaran.Invois:
+                    ViewBag.DivInvois = "";
+                    ViewBag.DivJanaanProfil = "hidden";
+                    break;
+                case EnJenisBayaran.JanaanProfil:
+                    ViewBag.DivInvois = "hidden";
+                    ViewBag.DivJanaanProfil = "";
+                    break;
+                default:
+                    ViewBag.DivInvois = "hidden";
+                    ViewBag.DivJanaanProfil = "hidden";
+                    break;
+            }
         }
 
         // jsonResult

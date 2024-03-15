@@ -9,7 +9,7 @@
 <partial name="_JSCreate" />
 <div class="card box-shadow">
     <div class="card-body">
-        <partial name="~/Views/Partials/Common/_TitleCreatePartial.cshtml" />
+        <partial name="~/Views/Partials/Common/_TitleCreateTransaksiPartial.cshtml" />
 
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -328,7 +328,11 @@
             <hr />
             <div class="form-group">
                 <input type="submit" value="Simpan" id="btnSave" class="btn ac-primary btn-sm" />
-                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+                <a asp-action="Index"
+                   asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                   asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
+                   asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
+                   class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
             </div>
         </form>
     </div>

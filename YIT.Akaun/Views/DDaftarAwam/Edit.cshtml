@@ -4,6 +4,9 @@
     ViewData["Title"] = "Daftar Awam - Ubah";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<partial name="_JSCreate" />
+
 <div class="card box-shadow">
     <div class="card-body">
         <div class="row">
@@ -12,7 +15,9 @@
                 <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah</span>
             </div>
             <div class="col-4 ">
-                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+                <a asp-action="Index"
+                   asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                   class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
             </div>
 
         </div>
@@ -65,7 +70,8 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="Poskod" class="control-label"></label>
-                        <input asp-for="Poskod" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="Poskod" class="form-control form-control-sm" />
+                        <span asp-validation-for="Poskod" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -100,11 +106,18 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="NoAkaunBank" class="control-label"></label>
-                        <input asp-for="NoAkaunBank" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="NoAkaunBank" class="form-control form-control-sm" />
                         <span asp-validation-for="NoAkaunBank" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="KodM2E" class="control-label"></label>
+                        <input asp-for="KodM2E" class="form-control form-control-sm text-uppercase" />
+                        <span asp-validation-for="KodM2E" class="text-danger"></span>
                     </div>
                 </div>
             </div>
@@ -112,7 +125,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="Telefon1" class="control-label"></label>
-                        <input asp-for="Telefon1" class="form-control form-control-sm text-uppercase" />
+                        <input asp-for="Telefon1" class="form-control form-control-sm" />
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -125,7 +138,9 @@
             <hr />
             <div class="form-group">
                 <input type="submit" value="Simpan" class="btn ac-primary btn-sm" />
-                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+                <a asp-action="Index"
+                   asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                   class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
             </div>
         </form>
     </div>
