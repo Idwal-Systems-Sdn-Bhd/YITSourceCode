@@ -113,7 +113,10 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodAkJurnal = "AK0016";
         public const string namaAkJurnal = "Pelarasan Baucer Jurnal";
 
-        public const string kodAkTerima = "AK0017";
+        public const string kodAkCV = "AK0017";
+        public const string namaAkCV = "Baucer Tunai Keluar";
+
+        public const string kodAkTerima = "AK0018";
         public const string namaAkTerima = "Terimaan Resit Rasmi";
         //
 

@@ -74,7 +74,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akInden);
         }
 
-        private void SaveFormFields(string searchString, string searchDate1, string searchDate2)
+        private void SaveFormFields(string? searchString, string? searchDate1, string? searchDate2)
         {
             PopulateFormFields(searchString, searchDate1, searchDate2);
 
@@ -679,11 +679,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                         );
                 }
 
-                PopulateListViewFromCart();
             }
+
+            PopulateListViewFromCart();
         }
 
-        private void PopulateFormFields(string searchString, string searchDate1, string searchDate2)
+        private void PopulateFormFields(string? searchString, string? searchDate1, string? searchDate2)
         {
             ViewBag.searchString = searchString;
             ViewBag.searchDate1 = searchDate1 ?? DateTime.Now.ToString("dd/MM/yyyy");
@@ -811,11 +812,11 @@ namespace YIT.Akaun.Controllers._03Akaun
             try
             {
 
-                var akTO = _cart.AkIndenObjek.FirstOrDefault(x => x.JKWPTJBahagianId == akIndenObjek.JKWPTJBahagianId && x.AkCartaId == akIndenObjek.AkCartaId);
+                var akInden = _cart.AkIndenObjek.FirstOrDefault(x => x.JKWPTJBahagianId == akIndenObjek.JKWPTJBahagianId && x.AkCartaId == akIndenObjek.AkCartaId);
 
                 var user = _userManager.GetUserName(User);
 
-                if (akTO != null)
+                if (akInden != null)
                 {
                     _cart.RemoveItemObjek(akIndenObjek.JKWPTJBahagianId, akIndenObjek.AkCartaId);
 

@@ -40,6 +40,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddScoped(ss => SessionCartJKonfigPerubahanEkuiti.GetCart(ss));
             services.AddScoped(ss => SessionCartJKonfigPenyata.GetCart(ss));
             services.AddScoped(ss => SessionCartDPanjar.GetCart(ss));
+            services.AddScoped(ss => SessionCartAkCV.GetCart(ss));
 
             return services;
         }

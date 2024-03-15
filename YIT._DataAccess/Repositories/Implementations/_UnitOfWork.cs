@@ -61,6 +61,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             AkRekupRepo = new AkRekupRepository(_context);
             DPanjarRepo = new DPanjarRepository(_context);
+            AkCVRepo = new AkCVRepository(_context);
         }
 
         public IJKWRepository JKWRepo { get; private set; }
@@ -127,6 +128,8 @@ namespace YIT._DataAccess.Repositories.Implementations
         public IAkRekupRepository AkRekupRepo { get; }
 
         public IDPanjarRepository DPanjarRepo { get; }
+
+        public IAkCVRepository AkCVRepo { get; }
 
         public void Dispose()
         {

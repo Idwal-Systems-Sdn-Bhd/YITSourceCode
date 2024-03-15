@@ -43,6 +43,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IJKonfigPerubahanEkuitiRepository JKonfigPerubahanEkuitiRepo { get; }
         IJKonfigPenyataRepository JKonfigPenyataRepo { get; }
         IDPanjarRepository DPanjarRepo { get; }
+        IAkCVRepository AkCVRepo { get; }
         int Save();
     }
 }

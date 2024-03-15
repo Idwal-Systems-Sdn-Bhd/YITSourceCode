@@ -25,7 +25,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public Task<bool> IsBatalAsync(int id);
         public void Batal(int id, string? sebabBatal, string? userId);
 
-        public void PostingToAbBukuVot(AkInden akPO);
+        public void PostingToAbBukuVot(AkInden akInden);
         void RemovePostingFromAbBukuVot(AkInden akInden, string userId);
         Task<bool> IsPostedAsync(int id, string noRujukan);
         List<AkInden> GetAllByStatus(EnStatusBorang enStatusBorang);
