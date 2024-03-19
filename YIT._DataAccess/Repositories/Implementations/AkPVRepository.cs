@@ -701,10 +701,13 @@ namespace YIT._DataAccess.Repositories.Implementations
                                 };
 
                                 _context.AkPanjarLejar.Add(akPanjarLejar);
+
+                                rekup.IsLinked = true;
+
+                                _context.AkRekup.Update(rekup);
                             }
-
-
                             // update panjar lejar end
+
                         }
                     }
                 }

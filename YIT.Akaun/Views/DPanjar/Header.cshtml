@@ -1,0 +1,57 @@
+﻿@model AkRekupPrintModel
+@{
+    ViewData["Title"] = "Cetakan Rekupan";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    CompanyDetails company = new CompanyDetails();
+}
+<style>
+
+    .topic tr {
+        line-height: 0.5rem;
+    }
+
+    .center {
+        padding: 70px 0;
+        border: 3px solid green;
+        text-align: center;
+    }
+
+    .notbold {
+        font-weight: normal
+    }
+
+    .breakhere {
+        page-break-after: always
+    }
+
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-row-group
+    }
+
+    tr {
+        page-break-inside: avoid
+    }
+</style>
+
+<div class="row flexrow mb-3 ml-0 ">
+    <div class="col-2 image-container">
+        <img src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    </div>
+    <div class="col-8 text-uppercase">
+        <h5 class="mb-1"><strong>@company.NamaSyarikat</strong></h5>
+        <h6 class="mb-0">@company.AlamatSyarikat1</h6>
+        <h6 class="mb-0">@company.AlamatSyarikat2</h6>
+        <h6 class="mb-0">@company.AlamatSyarikat3</h6>
+        <h6 class="mb-0">Telefon : @company.TelSyarikat Faks : @company.FaksSyarikat</h6>
+    </div>
+
+    <div class="col-2 text-right">
+        <h6 class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</h6>
+        <h6 class="mb-0">Kod Kaunter: @Model.KodKaunter</h6>
+        <h6 class="mb-0">No Rekup: @Model.NoRekup</h6>
+    </div>
+</div>

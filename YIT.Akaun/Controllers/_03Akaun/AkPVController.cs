@@ -426,6 +426,26 @@ namespace YIT.Akaun.Controllers._03Akaun
                 akPV.AkPVInvois = _cart.AkPVInvois?.ToList();
                 akPV.AkPVPenerima = _cart.AkPVPenerima?.ToList();
 
+                // change akRekup isLinked
+                if (akPV.AkPVPenerima != null && akPV.AkPVPenerima.Any())
+                {
+                    foreach (var item in akPV.AkPVPenerima)
+                    {
+                        if (item.AkRekupId != null)
+                        {
+                            var rekup = _unitOfWork.AkRekupRepo.GetById((int)item.AkRekupId);
+
+                            if (rekup != null)
+                            {
+                                rekup.IsLinked = true;
+
+                                _context.AkRekup.Update(rekup);
+                            }
+                        }
+                    }
+                }
+                //
+
                 _context.Add(akPV);
                 _appLog.Insert("Tambah", akPV.NoRujukan ?? "", akPV.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
@@ -585,7 +605,21 @@ namespace YIT.Akaun.Controllers._03Akaun
                         foreach (var item in objAsal.AkPVPenerima)
                         {
                             var model = _context.AkPVPenerima.FirstOrDefault(b => b.Id == item.Id);
-                            if (model != null) _context.Remove(model);
+                            if (model != null)
+                            {
+                                if (model.AkRekupId != null)
+                                {
+                                    var rekup = _unitOfWork.AkRekupRepo.GetById((int)model.AkRekupId);
+
+                                    if (rekup != null)
+                                    {
+                                        rekup.IsLinked = true;
+
+                                        _context.AkRekup.Update(rekup);
+                                    }
+                                }
+                                _context.Remove(model);
+                            }
                         }
                     }
 
@@ -596,6 +630,26 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akPV.AkPVObjek = _cart.AkPVObjek?.ToList();
                     akPV.AkPVInvois = _cart.AkPVInvois.ToList();
                     akPV.AkPVPenerima = _cart.AkPVPenerima?.ToList();
+
+                    // change akRekup isLinked
+                    if (akPV.AkPVPenerima != null && akPV.AkPVPenerima.Any())
+                    {
+                        foreach (var item in akPV.AkPVPenerima)
+                        {
+                            if (item.AkRekupId != null)
+                            {
+                                var rekup = _unitOfWork.AkRekupRepo.GetById((int)item.AkRekupId);
+
+                                if (rekup != null)
+                                {
+                                    rekup.IsLinked = true;
+
+                                    _context.AkRekup.Update(rekup);
+                                }
+                            }
+                        }
+                    }
+                    //
 
                     _unitOfWork.AkPVRepo.Update(akPV);
 
@@ -637,7 +691,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, string sebabHapus, string syscode)
         {
-            var akPV = _unitOfWork.AkPVRepo.GetById((int)id);
+            var akPV = _unitOfWork.AkPVRepo.GetById(id);
 
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
@@ -652,6 +706,31 @@ namespace YIT.Akaun.Controllers._03Akaun
                 _context.AkPV.Remove(akPV);
                 _appLog.Insert("Hapus", akPV.NoRujukan ?? "", akPV.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
+
+                // change akRekup isLinked
+                var pvPenerima = await _context.AkPVPenerima.Where(pvp => pvp.AkPVId == id).ToListAsync();
+
+                if (pvPenerima != null && pvPenerima.Any())
+                {
+                    foreach (var item in pvPenerima)
+                    {
+                        if (item.AkRekupId != null)
+                        {
+                            var rekup = _unitOfWork.AkRekupRepo.GetById((int)item.AkRekupId);
+
+                            if (rekup != null)
+                            {
+                                rekup.IsLinked = false;
+
+                                _context.AkRekup.Update(rekup);
+                            }
+                        }
+                    }
+                }
+                //
+
+                await _context.SaveChangesAsync();
+
                 TempData[SD.Success] = "Data berjaya dihapuskan..!";
             }
             else
@@ -668,6 +747,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
             var obj = await _context.AkPV.IgnoreQueryFilters()
+                .Include(pv => pv.AkPVPenerima)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             // Batal operation
@@ -678,6 +758,26 @@ namespace YIT.Akaun.Controllers._03Akaun
                 obj.UserIdKemaskini = user?.UserName ?? "";
                 obj.TarKemaskini = DateTime.Now;
                 obj.DPekerjaKemaskiniId = pekerjaId;
+
+                // change akRekup isLinked
+                if (obj.AkPVPenerima != null && obj.AkPVPenerima.Any())
+                {
+                    foreach (var item in obj.AkPVPenerima)
+                    {
+                        if (item.AkRekupId != null)
+                        {
+                            var rekup = _unitOfWork.AkRekupRepo.GetById((int)item.AkRekupId);
+
+                            if (rekup != null)
+                            {
+                                rekup.IsLinked = true;
+
+                                _context.AkRekup.Update(rekup);
+                            }
+                        }
+                    }
+                }
+                //
 
                 _context.AkPV.Update(obj);
 

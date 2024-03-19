@@ -1,6 +1,11 @@
 ﻿<script type="text/javascript">
     var columnSearchVar;
     $(document).ready(function () {
+        $('#moAkRekupId').select2({
+            dropdownParent: $('#moCetak'),
+            theme: "bootstrap"
+        });
+
         var scrollY;
 
         var table = $('#table').DataTable({
@@ -38,7 +43,7 @@
                 "infoEmpty": "Tiada data untuk dipamerkan",
                 "infoFiltered": " - ditapis daripada _MAX_ jumlah keseluruhan rekod"
             },
-            
+
         });
 
         $("#table_wrapper .dataTables_scrollBody").scroll(function () {
@@ -85,4 +90,110 @@
             }
         });
     });
+
+
+    function ModalRekupClick(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var id = $("TD", row).eq(1).html();
+        var kodKaunter = $("TD", row).eq(2).html();
+        //var jumSokong = Number(jumKeseluruhan.replace(/[^0-9.-]+/g, ""));
+        //alert(noPermohonan);
+        if (id != null) {
+            JsonGetLastDateRekupInTunaiLejar(id);
+            $(".moId").val(id);
+            $(".moKodKaunter").val(kodKaunter.trim());
+        }
+
+    };
+
+    @{
+    int year = DateTime.Now.Year;
+    DateTime firstDay = new DateTime(year, 1, 1);
+
+    DateTime lastDay = new DateTime(year, 12, 31);
+    }
+
+    function JsonGetLastDateRekupInTunaiLejar(id) {
+        if (id != null) {
+            $.ajax({
+                type: "POST",
+                //url: "/AkPOLaras/JsonGetNoPO",
+                url: '@Url.Action("GetLastDateRekupAkPanjarLejar", "DPanjar")',
+                data: { id: id },
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.result == "OK") {
+                        $("#tarikhDari").val(msg.tarikh);
+                        $("#tarikhHingga").val("@lastDay.ToString("yyyy-MM-dd")");
+                        $("#tarikhHingga").prop("min", msg.tarikh);
+                        $('#btnRekup').show();
+                    } else {
+                        toastr.error("Tiada baki awal bagi pemegang tunai runcit ini", "Ralat");
+                        toastr.options.timeOut = 5000; // 5s
+                        $('#btnRekup').hide();
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+    }
+
+    // modal cetak click
+    function ModalCetakClick(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var id = $("TD", row).eq(1).html();
+        var kodKaunter = $("TD", row).eq(2).html();
+        $('#moAkRekupId').empty();
+        //var jumSokong = Number(jumKeseluruhan.replace(/[^0-9.-]+/g, ""));
+        //alert(noPermohonan);
+        if (id != null) {
+            JsonGetListOfNoRekup(id);
+            $(".moId").val(id);
+            $(".moKodKaunter").val(kodKaunter.trim());
+        }
+
+    };
+
+    function JsonGetListOfNoRekup(id) {
+        if (id != null) {
+            $.ajax({
+                type: "POST",
+                //url: "/AkPOLaras/JsonGetNoPO",
+                url: '@Url.Action("GetListOfNoRekup", "DPanjar")',
+                data: { id: id },
+                dataType: "json",
+                success: function (msg) {
+
+                    if (msg.record.length > 0) {
+                        var value = 0;
+                        for (var i = 0; i < msg.record.length; i++) {
+                            value++;
+                            var item = msg.record[i];
+
+                            var data = {
+                                id: item.noRujukan,
+                                text: item.noRujukan
+                            };
+
+                            var rekupList = new Option(data.text, data.id, false, false);
+                            $("#moAkRekupId").append(rekupList).trigger('change');
+                        }
+                        $('#btnCetak').show();
+                    } else {
+                        toastr.error("Belum ada rekupan dibuat", "Ralat");
+                        toastr.options.timeOut = 5000; // 5s
+                        $('#btnCetak').hide();
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+    }
+    // end
 </script>

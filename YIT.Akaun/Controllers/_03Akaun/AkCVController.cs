@@ -7,6 +7,7 @@ using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
+using YIT._DataAccess.Repositories.Implementations;
 using YIT._DataAccess.Repositories.Interfaces;
 using YIT._DataAccess.Services;
 using YIT._DataAccess.Services.Cart;
@@ -23,6 +24,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         public const string namamodul = Modules.namaAkCV;
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
+        private readonly IAkPanjarLejarRepository _panjarLejar;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly _AppLogIRepository<AppLog, int> _appLog;
         private readonly UserServices _userServices;
@@ -31,6 +33,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         public AkCVController(
             ApplicationDbContext context,
             _IUnitOfWork unitOfWork,
+            IAkPanjarLejarRepository panjarLejar,
             UserManager<IdentityUser> userManager,
             _AppLogIRepository<AppLog, int> appLog,
             UserServices userServices,
@@ -38,6 +41,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         {
             _context = context;
             _unitOfWork = unitOfWork;
+            _panjarLejar = panjarLejar;
             _userManager = userManager;
             _appLog = appLog;
             _userServices = userServices;
@@ -265,6 +269,11 @@ namespace YIT.Akaun.Controllers._03Akaun
                     return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
+                if (await _panjarLejar.IsExistAsync(pl => pl.AkCVId == id) == true)
+                {
+                    TempData[SD.Error] = "Data telah direkup";
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
+                }
                 _unitOfWork.AkCVRepo.BatalPos(id, tindakan, user?.UserName);
 
                 _appLog.Insert("UnPosting", "Batal Pos " + akCV.NoRujukan ?? "", akCV.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);

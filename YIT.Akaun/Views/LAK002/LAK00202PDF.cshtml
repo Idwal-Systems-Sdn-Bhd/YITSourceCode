@@ -54,33 +54,37 @@
         @if (Model.AkPV != null)
         {
             @foreach (var akPV in Model.AkPV)
-                foreach (var akPVPenerima in akPV.AkPVPenerima.Where(akPVPenerima => akPVPenerima.JCaraBayarId == 2 && akPVPenerima.EnStatusEFT == EnStatusProses.Fail))
+                if (akPV.AkPVPenerima != null)
                 {
-                    jumlah += akPVPenerima.Amaun;
+                    foreach (var akPVPenerima in akPV.AkPVPenerima.Where(akPVPenerima => akPVPenerima.JCaraBayarId == 2 && akPVPenerima.EnStatusEFT == EnStatusProses.Fail))
+                    {
+                        jumlah += akPVPenerima.Amaun;
 
-                    <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                        <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
 
-                        <td class="text-uppercase">
-                            @Html.DisplayFor(modelItem => akPVPenerima.NoRujukanCaraBayar) <br />
-                            @Convert.ToDateTime(akPVPenerima.TarikhCaraBayar).ToString("dd/MM/yyyy")
-                        </td>
-                        <td class="text-uppercase">
-                            @Html.DisplayFor(modelItem => akPV.NoRujukan)
-                        </td>
-                        <td class="text-uppercase">
-                            @Html.DisplayFor(modelItem => akPV.AkJurnalPenerimaCekBatal)
-                        </td>
-                        <td class="text-right">
-                            @Html.DisplayFor(modelItem => akPVPenerima.Amaun)
-                        </td>
-                        <td class="text-uppercase">
-                            @Html.DisplayFor(modelItem => akPVPenerima.NamaPenerima)
-                        </td>
-                        <td class="text-uppercase">
-                            @Html.DisplayFor(modelItem => akPVPenerima.Catatan)
-                        </td>
-                    </tr>
+                            <td class="text-uppercase">
+                                @Html.DisplayFor(modelItem => akPVPenerima.NoRujukanCaraBayar) <br />
+                                @Convert.ToDateTime(akPVPenerima.TarikhCaraBayar).ToString("dd/MM/yyyy")
+                            </td>
+                            <td class="text-uppercase">
+                                @Html.DisplayFor(modelItem => akPV.NoRujukan)
+                            </td>
+                            <td class="text-uppercase">
+                                @Html.DisplayFor(modelItem => akPV.AkJurnalPenerimaCekBatal)
+                            </td>
+                            <td class="text-right">
+                                @Html.DisplayFor(modelItem => akPVPenerima.Amaun)
+                            </td>
+                            <td class="text-uppercase">
+                                @Html.DisplayFor(modelItem => akPVPenerima.NamaPenerima)
+                            </td>
+                            <td class="text-uppercase">
+                                @Html.DisplayFor(modelItem => akPVPenerima.Catatan)
+                            </td>
+                        </tr>
+                    }
                 }
+
         }
         <tr class=" font-weight-bold">
             <td colspan="3" class="text-right text-uppercase table-warning">Jumlah RM</td>

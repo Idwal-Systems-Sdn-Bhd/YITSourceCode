@@ -56,7 +56,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return View(dP);
         }
 
-        private void SaveFormFields(string searchString)
+        private void SaveFormFields(string? searchString)
         {
             PopulateFormFields(searchString);
 
@@ -71,7 +71,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             }
         }
 
-        private void PopulateFormFields(string searchString)
+        private void PopulateFormFields(string? searchString)
         {
             ViewBag.searchString = searchString;
         }
