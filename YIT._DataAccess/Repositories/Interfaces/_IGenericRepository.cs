@@ -10,6 +10,8 @@ namespace YIT._DataAccess.Repositories.Interfaces
     public interface _IGenericRepository<T> where T : class
     {
         T GetById(int id);
+        Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdIgnoreQueryFiltersAsync(Expression<Func<T, bool>> predicate);
         IEnumerable<T> GetAll();
         IEnumerable<T> GetAllIncludeDeleted();
         IEnumerable<T> Find(Expression<Func<T, bool>> predicate);

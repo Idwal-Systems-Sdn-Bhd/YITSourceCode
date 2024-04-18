@@ -25,7 +25,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public void HantarSemula(int id, string? tindakan, string? userId);
         public Task<bool> IsBatalAsync(int id);
         public void Batal(int id, string? sebabBatal, string? userId);
-        public void PostingToAbBukuVot(AkBelian akBelian);
+        public void PostingToAbBukuVot(AkBelian akBelian, bool isDenganTanggungan);
 
         public void RemovePostingFromAbBukuVot(AkBelian akBelian, string userId);
         Task<bool> IsPostedAsync(int id, string noRujukan);

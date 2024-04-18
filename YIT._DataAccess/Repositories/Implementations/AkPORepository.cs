@@ -434,7 +434,9 @@ namespace YIT._DataAccess.Repositories.Implementations
                         DDaftarAwamId = akPO.DDaftarAwamId,
                         VotId = item.AkCartaId,
                         NoRujukan = akPO.NoRujukan,
-                        Tanggungan = item.Amaun
+                        Tanggungan = item.Amaun,
+                        Tbs = item.Amaun,
+                        Baki = -item.Amaun
                     };
 
                     abBukuVotList.Add(abBukuVot);

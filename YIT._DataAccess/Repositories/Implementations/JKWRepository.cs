@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace YIT._DataAccess.Repositories.Implementations
 {
@@ -18,6 +19,12 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             _context = context;
         }
+
+        public EntityEntry Entry(JKW jkw)
+        {
+            return _context.Entry(jkw);
+        }
+
         public List<JKW> GetAllDetails()
         {
             return _context.JKW.Include(kw => kw.JKWPTJBahagian)

@@ -45,6 +45,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                            Tanggungan = tbl.Tanggungan,
                            Liabiliti = tbl.Liabiliti,
                            Belanja = tbl.Belanja,
+                           Tbs = tbl.Tbs,
+                           JumLiabiliti = tbl.JumLiabiliti,
                            Baki = tbl.Baki
 
                        }).GroupBy(x => new { x.Tahun, x.VotId, x.JBahagianId }).ToList();
@@ -66,6 +68,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                 Tanggungan = l.Sum(c => c.Tanggungan),
                 Liabiliti = l.Sum(c => c.Liabiliti),
                 Belanja = l.Sum(c => c.Belanja),
+                Tbs = l.Sum(c => c.Tbs),
+                JumLiabiliti = l.Sum(c => c.Liabiliti),
                 Baki = l.Sum(c => c.Baki)
             }).OrderBy(b => b.Vot!.Kod).ToList();
 

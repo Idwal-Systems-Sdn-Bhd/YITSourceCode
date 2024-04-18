@@ -136,9 +136,9 @@ namespace YIT._DataAccess.Repositories.Implementations
             _context.Dispose();
         }
 
-        public int Save()
+        public async Task<int> Save()
         {
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
     }
 }

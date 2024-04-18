@@ -17,5 +17,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public JKWPTJBahagian? JKWPTJBahagian { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Amaun { get; set; }
+        [NotMapped]
+        public int Counter {  get; set; }
     }
 }

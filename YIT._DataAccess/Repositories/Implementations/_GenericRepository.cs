@@ -53,6 +53,17 @@ namespace YIT._DataAccess.Repositories.Implementations
             return _context.Set<T>()?.Find(id) ?? throw new ArgumentNullException();
         }
 
+        public async Task<T> GetByIdAsync(int id)
+        {
+            return await _context.Set<T>().FindAsync(id) ?? throw new ArgumentNullException();
+        }
+
+        public async Task<T> GetByIdIgnoreQueryFiltersAsync(Expression<Func<T, bool>> predicate)
+        {
+            // Ignore globally set query filters for this particular query
+            return await _context.Set<T>().IgnoreQueryFilters().FirstOrDefaultAsync(predicate) ?? throw new ArgumentNullException();
+        }
+
         public bool IsExist(Expression<Func<T, bool>> predicate)
         {
             return _context.Set<T>().Any(predicate);

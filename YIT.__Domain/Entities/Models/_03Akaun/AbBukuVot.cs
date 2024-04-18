@@ -55,6 +55,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("Belanja RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Belanja { get; set; }
+        [NotMapped]
+        public decimal JumLiabiliti { get; set; }
 
     }
 }
