@@ -45,5 +45,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
         bool PVWithMultipleInvoisNotAkru(AkPV akPV);
         bool PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneSameObjek(AkPV akPV);
         bool PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneDifferentObjek(AkPV akPV);
+        bool PVWithMultipleInvoisAkruWithoutPOOrInden(AkPV akPV);
     }
 }

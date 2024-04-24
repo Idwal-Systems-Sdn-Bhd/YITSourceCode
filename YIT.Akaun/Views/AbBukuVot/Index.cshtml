@@ -130,7 +130,13 @@
                                 Tanggungan RM
                             </th>
                             <th>
+                                TBS RM
+                            </th>
+                            <th>
                                 Liabiliti RM
+                            </th>
+                            <th>
+                                Baki Liabiliti RM
                             </th>
                             <th>
                                 Belanja RM
@@ -146,6 +152,8 @@
                     <tbody>
                         @foreach (var item in Model)
                         {
+
+
                             <tr>
                                 <td>
                                 </td>
@@ -177,16 +185,19 @@
                                     @Convert.ToDecimal(item.Tanggungan).ToString("#,##0.00")
                                 </td>
                                 <td>
+                                    @Convert.ToDecimal(item.Tbs).ToString("#,##0.00")
+                                </td>
+                                <td>
                                     @Convert.ToDecimal(item.Liabiliti).ToString("#,##0.00")
+                                </td>
+                                <td>
+                                    @Convert.ToDecimal(item.JumLiabiliti).ToString("#,##0.00")
                                 </td>
                                 <td>
                                     @Convert.ToDecimal(item.Belanja).ToString("#,##0.00")
                                 </td>
                                 <td>
-                                    @{
-                                        var baki = item.Kredit - item.Debit - item.Tanggungan + item.Belanja;
-                                    }
-                                    @Convert.ToDecimal(baki).ToString("#,##0.00")
+                                    @Convert.ToDecimal(item.Baki).ToString("#,##0.00")
                                 </td>
                                 <td class="action-button">
                                     <a asp-action="Details"

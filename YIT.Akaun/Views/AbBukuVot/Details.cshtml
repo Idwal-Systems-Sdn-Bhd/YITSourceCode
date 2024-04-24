@@ -121,13 +121,13 @@
                                 Tanggungan RM
                             </th>
                             <th>
-                                TBS RM
+                                Baki TBS RM
                             </th>
                             <th>
                                 Liabiliti RM
                             </th>
                             <th>
-                                Jum Liabiliti RM
+                                Baki Liabiliti RM
                             <th>
                                 Belanja RM
                             </th>
@@ -153,14 +153,19 @@
                             jumDebit += item.Debit;
                             jumKredit += item.Kredit;
                             jumTanggungan += item.Tanggungan;
-                            jumTbs += item.Tanggungan;
+                            jumTbs += item.Tbs;
                             jumLiabiliti += item.Liabiliti;
                             jumJumLiabiliti += item.JumLiabiliti;
                             jumBelanja += item.Belanja;
+                            baki += item.Baki;
                             <tr>
                                 <td>
                                 </td>
                                 <td>
+                                    @if (!item.IsPosted)
+                                    {
+                                        <span><i class="fa fa-exclamation-triangle text-warning" title="data ini belum posting"></i></span>
+                                    }
                                     @item.Tarikh.ToString("dd/MM/yyyy")
                                 </td>
                                 <td>
@@ -181,23 +186,20 @@
                                 <td class="text-end">
                                     @Convert.ToDecimal(item.Tanggungan).ToString("#,##0.00")
                                 </td>
-                                <td class="text-end">
+                                <td class="text-end fw-bold">
                                     @Convert.ToDecimal(jumTbs).ToString("#,##0.00")
                                 </td>
                                 <td class="text-end">
                                     @Convert.ToDecimal(item.Liabiliti).ToString("#,##0.00")
                                 </td>
-                                <td class="text-end">
+                                <td class="text-end fw-bold">
                                     @Convert.ToDecimal(jumLiabiliti).ToString("#,##0.00")
                                 </td>
                                 <td class="text-end">
                                     @Convert.ToDecimal(item.Belanja).ToString("#,##0.00")
                                 </td>
-                                <td class="text-end">
-                                    @{
-                                        baki += item.Kredit - item.Debit - item.Tanggungan + item.Belanja;
-                                    }
-                                    @Convert.ToDecimal(baki).ToString("#,##0.00")
+                                <td class="text-end fw-bold">
+                                    @Convert.ToDecimal(item.Baki).ToString("#,##0.00")
                                 </td>
                             </tr>
                         }

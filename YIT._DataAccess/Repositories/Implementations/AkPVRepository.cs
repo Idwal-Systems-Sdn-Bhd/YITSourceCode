@@ -594,7 +594,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                     daftarAwamId = item.DDaftarAwamId;
                 }
             }
-
+            
+            // Cash Basis (PV yang tiada invois atau PV yang ada Invois tanpa akruan)
             if (PVWithoutInvois(akPV) || PVWithOneInvoisNotAkru(akPV) || PVWithMultipleInvoisNotAkru(akPV))
             {
                 if (akPV.AkPVObjek != null && akPV.AkPVObjek.Count > 0)
@@ -622,6 +623,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 }
             }
 
+            // PV yang ada Invois tanpa tanggungan
             if (PVWithOneInvoisAkruWithoutPOOrInden(akPV) || PVWithMultipleInvoisAkruWithoutPOOrInden(akPV))
             {
                 if (akPV.AkPVObjek != null && akPV.AkPVObjek.Count > 0)
@@ -638,7 +640,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                             DDaftarAwamId = daftarAwamId,
                             VotId = item.AkCartaId,
                             NoRujukan = akPV.NoRujukan,
-                            Liabiliti = -item.Amaun
+                            Liabiliti = -item.Amaun,
+                            JumLiabiliti = -item.Amaun
                             // - BakiLiabiliti
                         };
 
@@ -647,34 +650,11 @@ namespace YIT._DataAccess.Repositories.Implementations
                 }
             }
 
-            if (PVWithOneInvoisAkruWithOnePOAndWithoutInden(akPV) || PVWithOneInvoisAkruWithOneIndenAndWithoutPO(akPV))
-            {
-                if (akPV.AkPVObjek != null && akPV.AkPVObjek.Count > 0)
-                {
-                    foreach (var item in akPV.AkPVObjek)
-                    {
-                        AbBukuVot abBukuVot = new AbBukuVot()
-                        {
-                            Tahun = akPV.Tahun,
-                            JKWId = item.JKWPTJBahagian?.JKWId ?? akPV.JKWId,
-                            JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
-                            JBahagianId = item.JKWPTJBahagian.JBahagianId,
-                            Tarikh = akPV.Tarikh,
-                            DDaftarAwamId = daftarAwamId,
-                            VotId = item.AkCartaId,
-                            NoRujukan = akPV.NoRujukan,
-                            Tanggungan = -item.Amaun,
-                            Tbs = -item.Amaun,
-                            Liabiliti = -item.Amaun
-                            // - BakiLiabiliti
-                        };
-
-                        abBukuVotList.Add(abBukuVot);
-                    }
-                }
-            }
-
-            if (PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneSameObjek(akPV) || PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneDifferentObjek(akPV))
+            // PV yang ada Invois dengan tanggungan
+            if (PVWithOneInvoisAkruWithOnePOAndWithoutInden(akPV) || 
+                PVWithOneInvoisAkruWithOneIndenAndWithoutPO(akPV) ||
+                PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneSameObjek(akPV) || 
+                PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneDifferentObjek(akPV))
             {
                 List<AkPOObjek> poList = new List<AkPOObjek>();
 
@@ -704,7 +684,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                             NoRujukan = akPV.NoRujukan,
                             Tanggungan = -item.Amaun,
                             Tbs = -item.Amaun,
-                            Liabiliti = -item.Amaun
+                            Liabiliti = -item.Amaun,
+                            JumLiabiliti = -item.Amaun
                             // - BakiLiabiliti
                         };
 
@@ -714,86 +695,6 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
 
             _context.AbBukuVot.AddRange(abBukuVotList);
-            //if (akPV.IsInvois == true)
-            //{
-            //    if (akPV.AkPVObjek != null && akPV.AkPVObjek.Count > 0)
-            //    {
-            //        int daftarAwamId = 0;
-
-            //        if (akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 0)
-            //        {
-            //            foreach (var item in akPV.AkPVInvois)
-            //            {
-            //                daftarAwamId = item.AkBelian!.DDaftarAwamId;
-            //            }
-            //        }
-            //        foreach (var item in akPV.AkPVObjek)
-            //        {
-            //            if (akPV.IsTanggungan == true)
-            //            {
-            //                AbBukuVot abBukuVot = new AbBukuVot()
-            //                {
-            //                    Tahun = akPV.Tahun,
-            //                    JKWId = item.JKWPTJBahagian?.JKWId ?? akPV.JKWId,
-            //                    JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
-            //                    JBahagianId = item.JKWPTJBahagian.JBahagianId,
-            //                    Tarikh = akPV.Tarikh,
-            //                    DDaftarAwamId = daftarAwamId,
-            //                    VotId = item.AkCartaId,
-            //                    NoRujukan = akPV.NoRujukan,
-            //                    Tanggungan = -item.Amaun,
-            //                    Tbs = -item.Amaun,
-            //                    Liabiliti = -item.Amaun
-            //                };
-
-            //                abBukuVotList.Add(abBukuVot);
-            //            }
-            //            else
-            //            {
-            //                if (akPV.IsInvois)
-            //                {
-            //                    AbBukuVot abBukuVot = new AbBukuVot()
-            //                    {
-            //                        Tahun = akPV.Tahun,
-            //                        JKWId = item.JKWPTJBahagian?.JKWId ?? akPV.JKWId,
-            //                        JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
-            //                        JBahagianId = item.JKWPTJBahagian.JBahagianId,
-            //                        Tarikh = akPV.Tarikh,
-            //                        DDaftarAwamId = daftarAwamId,
-            //                        VotId = item.AkCartaId,
-            //                        NoRujukan = akPV.NoRujukan,
-            //                        Liabiliti = -item.Amaun
-            //                    };
-
-            //                    abBukuVotList.Add(abBukuVot);
-            //                }
-            //                else
-            //                {
-            //                    AbBukuVot abBukuVot = new AbBukuVot()
-            //                    {
-            //                        Tahun = akPV.Tahun,
-            //                        JKWId = item.JKWPTJBahagian?.JKWId ?? akPV.JKWId,
-            //                        JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
-            //                        JBahagianId = item.JKWPTJBahagian.JBahagianId,
-            //                        Tarikh = akPV.Tarikh,
-            //                        DDaftarAwamId = daftarAwamId,
-            //                        VotId = item.AkCartaId,
-            //                        NoRujukan = akPV.NoRujukan,
-            //                        Debit = item.Amaun,
-            //                        Belanja = item.Amaun,
-            //                        Baki = -item.Amaun
-
-            //                    };
-
-            //                    abBukuVotList.Add(abBukuVot);
-            //                }
-
-            //            }
-            //        }
-            //    }
-
-            //    _context.AbBukuVot.AddRange(abBukuVotList);
-            //}
 
         }
 

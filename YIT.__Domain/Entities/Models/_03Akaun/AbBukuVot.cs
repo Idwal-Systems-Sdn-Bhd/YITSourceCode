@@ -57,6 +57,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public decimal Belanja { get; set; }
         [NotMapped]
         public decimal JumLiabiliti { get; set; }
+        [NotMapped]
+        public bool IsPosted { get; set; } = true;
 
     }
 }
