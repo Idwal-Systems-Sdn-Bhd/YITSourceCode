@@ -49,7 +49,7 @@
             <div class="form-group">
                 <label asp-for="JKWId" class="control-label"></label>
                 <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" readonly>
-                    <option value="0">- SILA PILIH -</option>
+                    <option value="0">-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.JKW)
                     {
                         <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -61,7 +61,7 @@
                     <div class="form-group">
                         <label asp-for="AkCartaId" class="control-label"></label>
                         <select asp-for="AkCartaId" class="form-control form-control-sm text-uppercase" readonly>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="0">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.AkCarta)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -73,7 +73,7 @@
                     <div class="form-group">
                         <label asp-for="JBankId" class="control-label"></label>
                         <select asp-for="JBankId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="0">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.JBank)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>

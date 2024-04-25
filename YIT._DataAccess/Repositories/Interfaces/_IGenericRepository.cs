@@ -13,6 +13,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         Task<T> GetByIdAsync(int id);
         Task<T> GetByIdIgnoreQueryFiltersAsync(Expression<Func<T, bool>> predicate);
         IEnumerable<T> GetAll();
+        Task<IEnumerable<T>> GetAllAsync();
         IEnumerable<T> GetAllIncludeDeleted();
         IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
         void Add(T entity);

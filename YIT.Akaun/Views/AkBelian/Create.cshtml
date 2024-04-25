@@ -1,11 +1,13 @@
 ﻿@model AkBelian
 
 @{
+
     ViewData["Title"] = "Invois Pembekal - Tambah";
     Layout = "~/Views/Shared/_Layout.cshtml";
     decimal jumlahPerihal = 0;
 
 }
+<partial name="_JSCreateExt" />
 <partial name="_JSCreate" />
 <div class="card box-shadow">
     <div class="card-body">
@@ -19,7 +21,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="NoRujukan" class="control-label"></label>
-                        <input asp-for="NoRujukan" class="form-control form-control-sm"  required />
+                        <input asp-for="NoRujukan" class="form-control form-control-sm" required />
                         <span asp-validation-for="NoRujukan" class="text-danger"></span>
                     </div>
                 </div>
@@ -96,7 +98,7 @@
             <div class="form-group" id="divAkNotaMintaId" hidden>
                 <label asp-for="AkNotaMintaId" class="control-label"></label>
                 <select asp-for="AkNotaMintaId" class="form-control form-control-sm text-uppercase select2" required>
-                    <option value="" disabled selected>- SILA PILIH -</option>
+                    <option value="" disabled selected>-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.AkNotaMinta)
                     {
                         <option value="@item.Id">@item.NoRujukan</option>
@@ -107,7 +109,7 @@
             <div class="form-group" id="divAkPOId" hidden>
                 <label asp-for="AkPOId" class="control-label"></label>
                 <select asp-for="AkPOId" class="form-control form-control-sm text-uppercase select2" required>
-                    <option value="" disabled selected>- SILA PILIH -</option>
+                    <option value="" disabled selected>-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.AkPO)
                     {
                         <option value="@item.Id">@item.NoRujukan</option>
@@ -118,7 +120,7 @@
             <div class="form-group" id="divAkIndenId" hidden>
                 <label asp-for="AkIndenId" class="control-label"></label>
                 <select asp-for="AkIndenId" class="form-control form-control-sm text-uppercase select2" required>
-                    <option value="" disabled selected>- SILA PILIH -</option>
+                    <option value="" disabled selected>-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.AkInden)
                     {
                         <option value="@item.Id">@item.NoRujukan</option>
@@ -161,11 +163,6 @@
             <div class="form-group">
                 <label asp-for="DDaftarAwamId" class="control-label"></label>
                 <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase select2" required>
-                    <option value="">- SILA PILIH -</option>
-                    @foreach (var item in ViewBag.DDaftarAwam)
-                    {
-                        <option value="@item.Id">@item.Kod - @item.Nama</option>
-                    }
                 </select>
                 <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>
             </div>
@@ -394,7 +391,6 @@
     </div>
 </div>
 <!-- Modal Objek End -->
-
 <!-- Modal Perihal -->
 <div class="modal fade bd-example-modal-lg" id="moPerihal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">

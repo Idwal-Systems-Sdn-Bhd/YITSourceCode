@@ -30,7 +30,7 @@
 @*<div class="form-group" id="divSuGajiBulananId" hidden>
         <label asp-for="SuGajiBulananId" class="control-label"></label>
         <select asp-for="SuGajiBulananId" class="form-control form-control-sm text-uppercase select2" required>
-            <option value="" disabled selected>- SILA PILIH -</option>
+            <option value="" disabled selected>-- SILA PILIH --</option>
             @foreach (var item in ViewBag.SuGajiBulanan)
             {
                 <option value="@item.Id">@item.Tahun / @item.Bulan </option>

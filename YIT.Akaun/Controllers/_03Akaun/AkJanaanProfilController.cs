@@ -163,8 +163,6 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         private void PopulateDropDownList()
         {
-            ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAllDetails();
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
             ViewBag.JBank = _unitOfWork.JBankRepo.GetAll();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();

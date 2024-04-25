@@ -21,8 +21,8 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input name="syscode" value="SPPB" hidden />
-            <!--tambah asp-for="Id"-->
-            <!--tambah asp-for="DDaftarAwamId"-->
+            <input asp-for="Id" hidden />
+            <input asp-for="DDaftarAwamId" hidden/>
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <label asp-for="JCawanganId" class="control-label"></label>
                         <select asp-for="JCawanganId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.JCawangan)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -55,14 +55,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="DDaftarAwamId" class="control-label"></label>
-                        <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase select2" required > <!--tukar jadi input readonly(farhan)-->
-                            <option value="">- SILA PILIH -</option>
-                            @foreach (var item in ViewBag.DDaftarAwam)
-                            {
-                                <option value="@item.Id">@item.Kod - @item.Nama</option>
-                            }
-                        </select>
-                        <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>
+                        <input class="form-control form-control-sm text-uppercase" value="@Model.DDaftarAwam?.Kod - @Model.DDaftarAwam?.Nama" readonly />
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -116,7 +109,7 @@
                     <div class="form-group">
                         <label asp-for="JCaraBayarId" class="control-label"></label>
                         <select asp-for="JCaraBayarId" class="form-control form-control-sm text-uppercase " required>
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.JCaraBayar)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>

@@ -8,6 +8,7 @@
 
 }
 <partial name="_JSCreate" />
+<partial name="_JSCreateExt" />
 <div class="card box-shadow">
     <div class="card-body">
         <partial name="~/Views/Partials/Common/_TitleCreateTransaksiPartial.cshtml" />
@@ -42,16 +43,16 @@
 
             @*div gaji*@
             @*<div class="form-group" id="divSuGajiBulananId" hidden>
-            <label asp-for="SuGajiBulananId" class="control-label"></label>
-            <select asp-for="SuGajiBulananId" class="form-control form-control-sm text-uppercase select2" required>
-                <option value="" disabled selected>- SILA PILIH -</option>
-                @foreach (var item in ViewBag.SuGajiBulanan)
-                {
-                    <option value="@item.Id">@item.Tahun / @item.Bulan </option>
-                }
-            </select>
-            <span asp-validation-for="SuGajiBulananId" class="text-danger"></span>
-        </div>*@
+                    <label asp-for="SuGajiBulananId" class="control-label"></label>
+                    <select asp-for="SuGajiBulananId" class="form-control form-control-sm text-uppercase select2" required>
+                        <option value="" disabled selected>-- SILA PILIH --</option>
+                        @foreach (var item in ViewBag.SuGajiBulanan)
+                        {
+                            <option value="@item.Id">@item.Tahun / @item.Bulan </option>
+                        }
+                    </select>
+                    <span asp-validation-for="SuGajiBulananId" class="text-danger"></span>
+                </div>*@
             @*div end*@
             <div class="row">
                 <div class="col-md-4">
@@ -101,7 +102,7 @@
                     <div class="form-group">
                         <label asp-for="EnJenisBayaran" class="control-label"></label>
                         <select asp-for="EnJenisBayaran" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="0">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.EnJenisBayaran)
                             {
                                 <option value="@item.id">@item.perihal</option>
@@ -128,7 +129,7 @@
             <div class="form-group" id="divAkJanaanProfil" @ViewBag.DivJanaanProfil>
                 <label asp-for="AkJanaanProfilId" class="control-label"></label>
                 <select asp-for="AkJanaanProfilId" class="form-control form-control-sm text-uppercase select2" required>
-                    <option value="" disabled selected>- SILA PILIH -</option>
+                    <option value="" disabled selected>-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.AkJanaanProfil)
                     {
                         <option value="@item.Id">@item.Tarikh.ToString("dd/MM/yyyy") - @item.NoRujukan </option>
@@ -136,7 +137,7 @@
                 </select>
                 <span asp-validation-for="AkJanaanProfilId" class="text-danger"></span>
             </div>
-            <input asp-for="TarikhJanaanProfil" hidden/>
+            <input asp-for="TarikhJanaanProfil" hidden />
             @*div end*@
 
             @*end*@
@@ -345,7 +346,7 @@
                 <a asp-action="Index"
                    asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
                    asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
-                   asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")" 
+                   asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
                    class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
             </div>
         </form>
@@ -464,7 +465,7 @@
                             <div class="form-group">
                                 <label class="control-label">Kategori Daftar Awam</label>
                                 <select id="moPenerimaEnKategoriDaftarAwam" class="form-control form-control-sm text-uppercase">
-                                    <option value="">- SILA PILIH -</option>
+                                    <option value="">-- SILA PILIH --</option>
                                     @foreach (var item in ViewBag.EnKategoriDaftarAwam)
                                     {
                                         <option class="text-uppercase" value="@item.id">@item.indek - @item.perihal</option>
@@ -472,25 +473,15 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-8" id="moPenerimaDivDDaftarAwamId" hidden>
-                            <div class="form-group">
+                        <div class="col-md-8" >
+                            <div class="form-group" id="moPenerimaDivDDaftarAwamId" hidden>
                                 <label class="control-label">Daftar Awam</label>
                                 <select id="moPenerimaDDaftarAwamId" class="form-control form-control-sm text-uppercase select2">
-                                    <option value="">- SILA PILIH -</option>
-                                    @foreach (var item in ViewBag.DDaftarAwam)
-                                    {
-                                        <option value="@item.Id">@item.Kod - @item.Nama?.ToUpper()</option>
-                                    }
                                 </select>
                             </div>
                             <div class="form-group" id="moPenerimaDivDPekerjaId" hidden>
                                 <label class="control-label">Pekerja</label>
                                 <select id="moPenerimaDPekerjaId" class="form-control form-control-sm text-uppercase select2">
-                                    <option value="">- SILA PILIH -</option>
-                                    @foreach (var item in ViewBag.DPekerja)
-                                    {
-                                        <option value="@item.Id">@item.NoGaji - @item.Nama?.ToUpper()</option>
-                                    }
                                 </select>
                             </div>
 
@@ -533,7 +524,7 @@
                     <div class="form-group" id="moPenerimaDivRekupId" hidden>
                         <label class="control-label">Kod Rekupan</label>
                         <select id="moPenerimaAkRekupId" class="form-control form-control-sm text-uppercase select2">
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.AkRekup)
                             {
                                 <option value="@item.Id">@item.NoRujukan - @Convert.ToDecimal(item.Jumlah).ToString("RM #,##0.00") (@item.DPanjar?.JCawangan?.Kod - @item.DPanjar?.JCawangan?.Perihal) </option>
@@ -543,7 +534,7 @@
                     <div class="form-group" id="moPenerimaDivPanjarId" hidden>
                         <label class="control-label">Kod Panjar</label>
                         <select id="moPenerimaDPanjarId" class="form-control form-control-sm text-uppercase select2">
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.DPanjar)
                             {
                                 <option value="@item.Id">@item.JCawangan?.Kod - @item.JCawangan?.Perihal (@item.Kod) </option>
@@ -553,7 +544,7 @@
                     <div class="form-group">
                         <label class="control-label">Jenis Id</label>
                         <select id="moPenerimaEnJenisId" class="form-control form-control-sm text-uppercase">
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.EnJenisId)
                             {
                                 <option class="text-uppercase" value="@item.id">@item.indek - @item.perihal</option>
@@ -591,7 +582,7 @@
                             <div class="form-group">
                                 <label class="control-label">Cara Bayar</label>
                                 <select id="moPenerimaJCaraBayarId" class="form-control form-control-sm text-uppercase" required>
-                                    <option value="">- SILA PILIH -</option>
+                                    <option value="">-- SILA PILIH --</option>
                                     @foreach (var item in ViewBag.JCaraBayar)
                                     {
                                         <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -603,7 +594,7 @@
                             <div class="form-group">
                                 <label class="control-label">Bank</label>
                                 <select id="moPenerimaJBankId" class="form-control form-control-sm text-uppercase" required>
-                                    <option value="">- SILA PILIH -</option>
+                                    <option value="">-- SILA PILIH --</option>
                                     @foreach (var item in ViewBag.JBank)
                                     {
                                         <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -672,25 +663,25 @@
                     </div>
 
                     @*<div class="form-group">
-            <label class="control-label">No Rekup</label>
-            <select id="moPenerimaAkRekupId" class="form-control form-control-sm text-uppercase" >
-                <option value="">- SILA PILIH -</option>
-                @foreach (var item in ViewBag.AkRekup)
-                {
-                    <option value="@item.id">@item.NoRujukan - @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")</option>
-                }
-            </select>
-        </div>
-        <div class="form-group">
-            <label class="control-label">No Panjar</label>
-            <select id="moPenerimaDPanjarId" class="form-control form-control-sm text-uppercase" >
-                <option value="">- SILA PILIH -</option>
-                @foreach (var item in ViewBag.DPanjar)
-                {
-                    <option value="@item.id">@item.JCawangan?.Kod (@item.AkCarta?.Kod)</option>
-                }
-            </select>
-        </div>*@
+                            <label class="control-label">No Rekup</label>
+                            <select id="moPenerimaAkRekupId" class="form-control form-control-sm text-uppercase" >
+                                <option value="">-- SILA PILIH --</option>
+                                @foreach (var item in ViewBag.AkRekup)
+                                {
+                                    <option value="@item.id">@item.NoRujukan - @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">No Panjar</label>
+                            <select id="moPenerimaDPanjarId" class="form-control form-control-sm text-uppercase" >
+                                <option value="">-- SILA PILIH --</option>
+                                @foreach (var item in ViewBag.DPanjar)
+                                {
+                                    <option value="@item.id">@item.JCawangan?.Kod (@item.AkCarta?.Kod)</option>
+                                }
+                            </select>
+                        </div>*@
                 </form>
             </div>
             <div class="modal-footer">

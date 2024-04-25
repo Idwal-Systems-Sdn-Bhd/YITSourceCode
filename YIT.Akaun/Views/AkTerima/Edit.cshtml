@@ -48,7 +48,7 @@
                     <div class="form-group">
                         <label asp-for="JKWId" class="control-label"></label>
                         <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="0">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.JKW)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -62,7 +62,7 @@
                     <div class="form-group">
                         <label asp-for="AkBankId" class="control-label"></label>
                         <select asp-for="AkBankId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="0">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.AkBank)
                             {
                                 <option value="@item.Id">@item.Perihal - @item.NoAkaun</option>
@@ -76,7 +76,7 @@
             <div class="form-group">
                 <label asp-for="JCawanganId" class="control-label"></label>
                 <select asp-for="JCawanganId" class="form-control form-control-sm text-uppercase" required>
-                    <option value="0">- SILA PILIH -</option>
+                    <option value="0">-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.JCawangan)
                     {
                         <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -88,7 +88,7 @@
             <div class="form-group">
                 <label asp-for="DDaftarAwamId" class="control-label"></label>
                 <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase" required>
-                    <option value="0">- SILA PILIH -</option>
+                    <option value="0">-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.DDaftarAwam)
                     {
                         <option value="@item.Id">@item.Kod - @item.Nama</option>
@@ -145,7 +145,7 @@
                     <div class="form-group">
                         <label asp-for="JNegeriId" class="control-label"></label>
                         <select asp-for="JNegeriId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="0">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.JNegeri)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -316,7 +316,7 @@
                                     <td>
 
                                         <select class="form-control form-control-sm text-uppercase" id="caraBayarEnJenisCek">
-                                            <option value="0" selected>- SILA PILIH -</option>
+                                            <option value="0" selected>-- SILA PILIH --</option>
                                             @foreach (var item in ViewBag.EnJenisCek)
                                             {
                                                 <option value="@item.id">@item.indek - @item.perihal</option>
@@ -435,7 +435,7 @@
                     <div class="form-group">
                         <label class="col-form-label">Jenis Cek</label>
                         <select class="form-control form-control-sm text-uppercase" id="moCaraBayarEnJenisCek">
-                            <option value="0" selected>- SILA PILIH -</option>
+                            <option value="0" selected>-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.EnJenisCek)
                             {
                                 <option value="@item.id">@item.indek - @item.perihal</option>

@@ -280,7 +280,6 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         private void PopulateDropdownList()
         {
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAll();
 
             ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
 

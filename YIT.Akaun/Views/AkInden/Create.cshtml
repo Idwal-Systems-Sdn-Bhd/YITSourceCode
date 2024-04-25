@@ -7,6 +7,7 @@
 
 }
 <partial name="_JSCreate" />
+<partial name="_JSCreateExt" />
 <div class="card box-shadow">
     <div class="card-body">
         <partial name="~/Views/Partials/Common/_TitleCreateTransaksiPartial.cshtml" />
@@ -41,7 +42,7 @@
                     <div class="form-group">
                         <label asp-for="AkPenilaianPerolehanId" class="control-label"></label>
                         <select asp-for="AkPenilaianPerolehanId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="0">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.AkPenilaianPerolehan)
                             {
                                 <option value="@item.Id">@item.NoRujukan</option>
@@ -67,11 +68,6 @@
             <div class="form-group">
                 <label asp-for="DDaftarAwamId" class="control-label"></label>
                 <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase" required>
-                    <option value="">- SILA PILIH -</option>
-                    @foreach (var item in ViewBag.DDaftarAwam)
-                    {
-                        <option value="@item.Id">@item.Kod - @item.Nama</option>
-                    }
                 </select>
                 <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>
             </div>
@@ -282,7 +278,6 @@
     </div>
 </div>
 <!-- Modal Objek End -->
-
 <!-- Modal Perihal -->
 <div class="modal fade bd-example-modal-lg" id="moPerihal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">

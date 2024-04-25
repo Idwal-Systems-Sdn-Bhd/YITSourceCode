@@ -1,4 +1,5 @@
 ﻿<script type="text/javascript">
+    
     // on click radio button EnJenisBayaranBelian
     $("body").on('change', "#EnJenisBayaranBelian", function () {
         $("#AkPOId").val(0).change();
@@ -50,7 +51,7 @@
 
 
                     //append new options
-                    $("#objekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
+                    $("#objekJKWPTJBahagianId").append("<option value='' disable> -- SILA PILIH -- </option>");
                     for (var i = 0; i < msg.list.length; i++) {
                         var item = msg.list[i];
 
@@ -58,13 +59,6 @@
                         $("#objekJKWPTJBahagianId").append(str);
                     }
 
-                    $("#moObjekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
-                    for (var i = 0; i < msg.list.length; i++) {
-                        var item = msg.list[i];
-
-                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
-                        $("#moObjekJKWPTJBahagianId").append(str);
-                    }
                 }
                 else {
                     toastr.error(message);

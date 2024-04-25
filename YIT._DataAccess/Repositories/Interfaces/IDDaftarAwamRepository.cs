@@ -13,9 +13,10 @@ namespace YIT._DataAccess.Repositories.Interfaces
     {
         public List<DDaftarAwam> GetAllDetails();
         public List<SelectItemList> GetAllDetailsGroupByKod();
-        public List<DDaftarAwam> GetAllDetailsByKategori(EnKategoriDaftarAwam kategoriDaftarAwam);
+        public IEnumerable<DDaftarAwam> GetAllDetailsByKategori(EnKategoriDaftarAwam kategoriDaftarAwam);
         public DDaftarAwam GetAllDetailsById(int id);
         public string GetMaxRefNo(string initial);
         public List<DDaftarAwam> GetResults(string? searchString, string? orderBy);
+        Task<IEnumerable<DDaftarAwam>> GetResultsAsync(string? searchString, string? orderBy);
     }
 }

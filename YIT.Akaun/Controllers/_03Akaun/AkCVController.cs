@@ -348,7 +348,6 @@ namespace YIT.Akaun.Controllers._03Akaun
         private void PopulateDropDownList()
         {
             ViewBag.DPanjar = _unitOfWork.DPanjarRepo.GetAllDetails();
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAll();
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
             var kategoriPenerima = EnumHelper<EnKategoriDaftarAwam>.GetList();

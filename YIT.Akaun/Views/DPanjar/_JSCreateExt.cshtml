@@ -1,0 +1,49 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        //dropdown select2 loads data
+        GetDPekerjaList();
+
+        //
+    });
+    
+    function GetDPekerjaList() {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDPekerjaAktifList", "DPekerja")',
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result == "OK") {
+                    // empty selection
+                    $("#moPemegangDPekerjaId").empty();
+
+                    $("#pemegangDPekerjaId").empty();
+
+                    //append new options
+                    $("#moPemegangDPekerjaId").append("<option value='' disable> -- SILA PLIH -- </option>");
+
+                    //append new options
+                    $("#pemegangDPekerjaId").append("<option value='' disable> -- SILA PLIH -- </option>");
+                    for (var i = 0; i < msg.list.length; i++) {
+                        var item = msg.list[i];
+
+                        var str = "<option value='" + item.id + "'>" + item.noGaji + " - " + item.nama + "</option>";
+                        $("#moPemegangDPekerjaId").append(str);
+
+                        var str = "<option value='" + item.id + "'>" + item.noGaji + " - " + item.nama + "</option>";
+                        $("#pemegangDPekerjaId").append(str);
+                    }
+
+
+                }
+                else {
+                    toastr.error(message);
+                    toastr.options.timeOut = 2000; // 2s
+                }
+
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    }
+</script>

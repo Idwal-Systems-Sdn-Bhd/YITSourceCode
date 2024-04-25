@@ -36,7 +36,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider); ;
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider); 
 
 builder.Services.Configure<IdentityOptions>(opt =>
 {

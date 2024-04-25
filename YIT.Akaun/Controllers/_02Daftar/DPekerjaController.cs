@@ -306,5 +306,20 @@ namespace YIT.Akaun.Controllers._02Daftar
 
             ViewBag.EnStatusKahwin = statusKahwin;
         }
+
+        [HttpGet]
+        public JsonResult GetDPekerjaAktifList()
+        {
+            try
+            {
+                var result = _unitOfWork.DPekerjaRepo.GetAllByStatus("Aktif");
+
+                return Json(new { result = "OK", list = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+        }
     }
 }

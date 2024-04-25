@@ -63,7 +63,7 @@
             <div class="form-group">
                 <label asp-for="EnJenisJurnal" class="control-label"></label>
                 <select asp-for="EnJenisJurnal" class="form-control form-control-sm text-uppercase" required>
-                    <option value="">- SILA PILIH -</option>
+                    <option value="">-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.EnJenisJurnal)
                     {
                         <option value="@item.id">@item.perihal</option>
@@ -74,7 +74,7 @@
             <div class="form-group" id="divAkPV" @ViewBag.DivAkPV>
                 <label asp-for="AkPVId" class="control-label"></label>
                 <select asp-for="AkPVId" class="form-control form-control-sm text-uppercase select2">
-                    <option value="" disabled selected>- SILA PILIH -</option>
+                    <option value="" disabled selected>-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.AkPV)
                     {
                         <option value="@item.Id">@item.Tarikh.ToString("dd/MM/yyyy") - @item.NoRujukan </option>
@@ -280,7 +280,7 @@
                                 <td colspan="2">
                                     <div class="form-group">
                                         <select class="form-control form-control-sm text-uppercase select2" id="penerimaCekBatalAkPVPenerimaId" required>
-                                            <option value="" disabled selected>- SILA PILIH -</option>
+                                            <option value="" disabled selected>-- SILA PILIH --</option>
                                             @foreach (var item in ViewBag.AkPVPenerima)
                                             {
                                                 <option value="@item.Id">@item.AkPV?.NoRujukan - @item.NamaPenerima (@item.NoRujukanCaraBayar)  </option>
@@ -422,7 +422,7 @@
                         <label asp-for="AkPVId" class="control-label"></label>
                         <div class="form-group">
                             <select class="form-control form-control-sm text-uppercase select2" id="moPenerimaCekBatalAkPVPenerimaId" required>
-                                <option value="" disabled selected>- SILA PILIH -</option>
+                                <option value="" disabled selected>-- SILA PILIH --</option>
                                 @foreach (var item in ViewBag.AkPVPenerima)
                                 {
                                     <option value="@item.Id">@item.AkPV?.NoRujukan - @item.NamaPenerima (@item.NoRujukanCaraBayar) </option>

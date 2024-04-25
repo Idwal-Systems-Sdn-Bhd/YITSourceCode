@@ -337,5 +337,19 @@ namespace YIT.Akaun.Controllers._02Daftar
             
         }
 
+        [HttpGet]
+        public JsonResult GetDDaftarAwamPembekalList()
+        {
+            try
+            {
+                var result = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
+
+                return Json(new { result = "OK", list = result });
+            } catch(Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+        }
+
     }
 }

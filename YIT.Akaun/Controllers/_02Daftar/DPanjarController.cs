@@ -100,7 +100,6 @@ namespace YIT.Akaun.Controllers._02Daftar
             ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAll();
         }
 
         [HttpPost]

@@ -638,6 +638,19 @@ namespace YIT.Akaun.Controllers._03Akaun
         {
             ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
             ViewBag.JCukai = _unitOfWork.JCukaiRepo.GetAll();
+            ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
+            ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
+            ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
+            ViewBag.AkPO = _unitOfWork.AkPORepo.GetAllByStatus(EnStatusBorang.Lulus);
+            ViewBag.AkInden = _unitOfWork.AkIndenRepo.GetAllByStatus(EnStatusBorang.Lulus);
+            ViewBag.AkNotaMinta = _unitOfWork.AkNotaMintaRepo.GetAllByStatus(EnStatusBorang.Lulus);
+            ViewBag.EnJenisPerolehan = EnumHelper<EnJenisPerolehan>.GetList();
+        }
+
+        private void PopulateDropDownListAsal(int JKWId)
+        {
+            ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
+            ViewBag.JCukai = _unitOfWork.JCukaiRepo.GetAll();
             ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();

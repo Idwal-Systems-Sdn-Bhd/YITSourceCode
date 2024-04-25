@@ -91,8 +91,6 @@ namespace YIT.Akaun.Controller
                 RoleList = listItems
             };
 
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAll();
-
             ViewBag.JBahagian = _db.JBahagian.ToList();
 
             return View(registerViewModel);

@@ -801,8 +801,6 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
             ViewBag.JCukai = _unitOfWork.JCukaiRepo.GetAll();
             ViewBag.AkJanaanProfil = _unitOfWork.AkJanaanProfilRepo.GetAll();
-            ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAllDetails();
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
             ViewBag.JBank = _unitOfWork.JBankRepo.GetAll();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();

@@ -43,6 +43,11 @@ namespace YIT._DataAccess.Repositories.Implementations
             return _context.Set<T>().ToList();
         }
 
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _context.Set<T>().ToListAsync();
+        }
+
         public IEnumerable<T> GetAllIncludeDeleted()
         {
             return _context.Set<T>().IgnoreQueryFilters().ToList();

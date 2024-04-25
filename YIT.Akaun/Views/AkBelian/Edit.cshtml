@@ -116,7 +116,7 @@
             <div class="form-group" id="divAkNotaMintaId" hidden>
                 <label asp-for="AkNotaMintaId" class="control-label"></label>
                 <select asp-for="AkNotaMintaId" class="form-control form-control-sm text-uppercase select2" required>
-                    <option value="" disabled selected>- SILA PILIH -</option>
+                    <option value="" disabled selected>-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.AkNotaMinta)
                     {
                         <option value="@item.Id">@item.NoRujukan</option>
@@ -127,7 +127,7 @@
             <div class="form-group" id="divAkPOId" hidden>
                 <label asp-for="AkPOId" class="control-label"></label>
                 <select asp-for="AkPOId" class="form-control form-control-sm text-uppercase select2" required>
-                    <option value="" disabled selected>- SILA PILIH -</option>
+                    <option value="" disabled selected>-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.AkPO)
                     {
                         <option value="@item.Id">@item.NoRujukan</option>
@@ -138,7 +138,7 @@
             <div class="form-group" id="divAkIndenId" hidden>
                 <label asp-for="AkIndenId" class="control-label"></label>
                 <select asp-for="AkIndenId" class="form-control form-control-sm text-uppercase select2" required>
-                    <option value="" disabled selected>- SILA PILIH -</option>
+                    <option value="" disabled selected>-- SILA PILIH --</option>
                     @foreach (var item in ViewBag.AkInden)
                     {
                         <option value="@item.Id">@item.NoRujukan</option>
@@ -180,14 +180,7 @@
 
             <div class="form-group">
                 <label asp-for="DDaftarAwamId" class="control-label"></label>
-                <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase select2" disabled>
-                    <option value="">- SILA PILIH -</option>
-                    @foreach (var item in ViewBag.DDaftarAwam)
-                    {
-                        <option value="@item.Id">@item.Kod - @item.Nama</option>
-                    }
-                </select>
-                <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>
+                <input value="@Model.DDaftarAwam?.Kod - @Model.DDaftarAwam?.Nama " class="form-control form-control-sm" readonly />
             </div>
             @*end*@
             <br />

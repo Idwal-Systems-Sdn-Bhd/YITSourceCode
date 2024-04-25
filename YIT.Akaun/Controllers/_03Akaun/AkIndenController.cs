@@ -643,7 +643,6 @@ namespace YIT.Akaun.Controllers._03Akaun
         private void PopulateDropDownList(int JKWId)
         {
             ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
-            ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
             ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
@@ -980,7 +979,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 PageMargins = { Left = 15, Bottom = 10, Right = 15, Top = 10 },
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
                 //CustomSwitches = "--footer-center \"[page]/[toPage]\"" +
-                        //" --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
+                //" --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
                 PageSize = Rotativa.AspNetCore.Options.Size.A4,
             };
         }

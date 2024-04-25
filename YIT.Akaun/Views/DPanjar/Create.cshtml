@@ -5,6 +5,7 @@
 }
 
 <partial name="_JSCreate" />
+<partial name="_JSCreateExt" />
 <div class="card box-shadow">
     <div class="card-body">
         <partial name="~/Views/Partials/Common/_TitleCreateDaftarPartial.cshtml" />
@@ -18,7 +19,7 @@
                     <div class="form-group">
                         <label asp-for="JCawanganId" class="control-label"></label>
                         <select asp-for="JCawanganId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.JCawangan)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -28,7 +29,7 @@
                     <div class="form-group">
                         <label asp-for="JKWPTJBahagianId" class="control-label"></label>
                         <select asp-for="JKWPTJBahagianId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var s in ViewBag.JKWPTJBahagian)
                             {
                                 <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
@@ -38,7 +39,7 @@
                     <div class="form-group">
                         <label asp-for="AkCartaId" class="control-label"></label>
                         <select asp-for="AkCartaId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.AkCarta)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -75,12 +76,7 @@
                                 <tfoot>
                                     <tr>
                                         <td colspan="3">
-                                            <select class="form-control form-control-sm text-uppercase" id="pemegangDPekerjaId">
-                                                <option value="" class="text-lowercase" disabled selected>-- Pilih Anggota --</option>
-                                                @foreach (var s in ViewBag.DPekerja)
-                                                {
-                                                    <option value="@s.Id">@s.NoGaji - @s.Nama </option>
-                                                }
+                                            <select class="form-control form-control-sm text-uppercase select2" id="pemegangDPekerjaId">
                                             </select>
                                         </td>
                                         <td><input class="form-control form-control-sm text-uppercase" type="date" id="pemegangJangkaMasaDari"></td>
@@ -132,11 +128,7 @@
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label class="col-form-label">Anggota</label>
-                                <select class="form-control form-control-sm text-uppercase" id="moPemegangDPekerjaId" disabled>
-                                    @foreach (var s in ViewBag.DPekerja)
-                                    {
-                                        <option value="@s.Id">@s.NoGaji - @s.Nama</option>
-                                    }
+                                <select class="form-control form-control-sm text-uppercase select2" id="moPemegangDPekerjaId" disabled>
                                 </select>
                             </div>
                         </div>
@@ -150,8 +142,8 @@
                             </div>
                         </div>
                     </div>
-                   
-                   
+
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -166,7 +158,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </form>
             </div>
             <div class="modal-footer">

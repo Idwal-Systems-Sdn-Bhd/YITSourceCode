@@ -5,17 +5,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     decimal jumlahPerihal = 0;
 }
+<partial name="_JSEditExt" />
 <partial name="_JSCreate" />
 <div class="card box-shadow">
     <div class="card-body">
         <div class="row">
             <div class="col-8">
                 <h5 class="text-uppercase text-primary mb-0">@ViewData["Title"]</h5>
-                <span class="ac-ref"><a asp-action="Index"
-                    asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
-                    asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
-                    asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
-                    class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah</span>
+                <span class="ac-ref">
+                    <a asp-action="Index"
+                       asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                       asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
+                       asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
+                       class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah
+                </span>
             </div>
             <div class="col-4 ">
                 <a asp-action="Index"
@@ -165,11 +168,6 @@
             <div class="form-group">
                 <label asp-for="DDaftarAwamId" class="control-label"></label>
                 <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase select2" required>
-                    <option value="">- SILA PILIH -</option>
-                    @foreach (var item in ViewBag.DDaftarAwam)
-                    {
-                        <option value="@item.Id">@item.Kod - @item.Nama</option>
-                    }
                 </select>
                 <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>
             </div>

@@ -71,7 +71,7 @@
                     <div class="form-group col-md-4">
                         <label asp-for="JKWId" class="control-label"></label>
                         <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.JKW)
                                 {
                             <option value="@item.Id"> @BelanjawanFormatter.ConvertToKW(item.Kod) - @item.Perihal</option>

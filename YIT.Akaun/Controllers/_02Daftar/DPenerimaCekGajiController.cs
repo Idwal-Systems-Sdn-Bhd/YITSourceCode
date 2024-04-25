@@ -220,14 +220,14 @@ namespace YIT.Akaun.Controllers._02Daftar
                 return NotFound();
             }
 
-            var jak = _unitOfWork.DPenerimaCekGajiRepo.GetAllDetailsById((int)id);
-            if (jak == null)  //tukar jak jd df(farhan)
+            var df = _unitOfWork.DPenerimaCekGajiRepo.GetAllDetailsById((int)id);
+            if (df == null)  //tukar jak jd df(farhan)
             {
                 return NotFound();
 
             }
             PopulateDropdownList();
-            return View(jak);
+            return View(df);
         }
 
         // POST: jCawangan/Delete/5
@@ -293,7 +293,6 @@ namespace YIT.Akaun.Controllers._02Daftar
         }
         public void PopulateDropdownList()
         {
-            ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAll();
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
 
