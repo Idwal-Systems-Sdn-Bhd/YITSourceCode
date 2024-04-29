@@ -14,7 +14,8 @@ using YIT.Akaun.Models.ViewModels.Common;
 
 namespace YIT.Akaun.Controllers._02Daftar
 {
-    [Authorize]
+    
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class DDaftarAwamController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodDDaftarAwam;
@@ -74,6 +75,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             ViewBag.searchString = searchString;
         }
 
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             PopulateDropdownList();
@@ -82,6 +84,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(DDaftarAwam daftarAwam, string syscode)
         {
             if (daftarAwam.EnKategoriDaftarAwam == EnKategoriDaftarAwam.LainLain)
@@ -123,6 +126,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return View(daftarAwam);
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -139,6 +143,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return View(daftarAwam);
         }
 
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -157,6 +162,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, DDaftarAwam daftarAwam, string syscode)
         {
             if (id != daftarAwam.Id)
@@ -217,6 +223,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return View(daftarAwam);
         }
 
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -235,6 +242,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var daftarAwam = _unitOfWork.DDaftarAwamRepo.GetById(id);
@@ -256,6 +264,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -346,6 +355,36 @@ namespace YIT.Akaun.Controllers._02Daftar
 
                 return Json(new { result = "OK", list = result });
             } catch(Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetDDaftarAwam(int DDaftarAwamId)
+        {
+            try
+            {
+                if (DDaftarAwamId != 0)
+                {
+                    var data = _unitOfWork.DDaftarAwamRepo.GetAllDetailsById(DDaftarAwamId);
+
+                    if (data != null)
+                    {
+                        return Json(new { result = "OK", record = data });
+                    }
+                    else
+                    {
+                        return Json(new { result = "Error", message = "data tidak wujud!" });
+                    }
+                }
+                //EmptyCart();
+                else
+                {
+                    return Json(new { result = "None" });
+                }
+            }
+            catch (Exception ex)
             {
                 return Json(new { result = "Error", message = ex.Message });
             }

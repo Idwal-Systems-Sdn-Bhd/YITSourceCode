@@ -57,6 +57,8 @@ builder.Services.ConfigureApplicationCookie(opt =>
 
 builder.Services.AddDIContainer();
 
+builder.Services.AddSystemAuthorization();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>

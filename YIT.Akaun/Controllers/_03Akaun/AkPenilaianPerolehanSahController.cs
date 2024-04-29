@@ -14,7 +14,7 @@ using YIT.Akaun.Infrastructure;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class AkPenilaianPerolehanSahController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodSahAkPenilaianPerolehan;
@@ -84,6 +84,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -118,6 +119,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
+        [Authorize(Policy = modul + "S")]
         public async Task<IActionResult> Sah(int id,int dKonfigKelulusanId, string syscode)
         {
             var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetById((int)id);
@@ -141,6 +143,8 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             return RedirectToAction(nameof(Index));
         }
+        
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> HantarSemula(int id, string? tindakan, string syscode)
         {
             var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetById((int)id);

@@ -13,7 +13,7 @@ using YIT.Akaun.Infrastructure;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class AkPenilaianPerolehanSemakController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodSemakAkPenilaianPerolehan;
@@ -82,6 +82,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPP);
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -116,6 +117,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
+        [Authorize(Policy = modul + "S")]
         public async Task<IActionResult> Semak(int id, int dKonfigKelulusanId, string syscode)
         {
             var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetById((int)id);
@@ -140,6 +142,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> HantarSemulaAsync(int id, string? tindakan, string syscode)
         {
             var akPP = _unitOfWork.AkPenilaianPerolehanRepo.GetById((int)id);

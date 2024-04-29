@@ -16,7 +16,7 @@ using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class JKonfigPerubahanEkuitiController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodJKonfigPerubahanEkuiti;
@@ -48,6 +48,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KonfigPerubahanEkuiti/Details/5
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -66,6 +67,7 @@ namespace YIT.Akaun.Controllers._01Jadual
 
 
         // GET: KonfigPerubahanEkuiti/Create
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             EmptyCart();
@@ -106,6 +108,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: KonfigPerubahanEkuiti/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(JKonfigPerubahanEkuiti konfigPerubahanEkuiti, 
             string syscode)
         {
@@ -142,6 +145,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KonfigPerubahanEkuiti/Edit/5
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -199,6 +203,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: KonfigPerubahanEkuiti/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, JKonfigPerubahanEkuiti konfigPerubahanEkuiti, string syscode)
         {
             if (id != konfigPerubahanEkuiti.Id)
@@ -264,6 +269,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KonfigPerubahanEkuiti/Delete/5
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -282,6 +288,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: KonfigPerubahanEkuiti/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var konfigPerubahanEkuiti = _unitOfWork.JKonfigPerubahanEkuitiRepo.GetById((int)id);
@@ -304,6 +311,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

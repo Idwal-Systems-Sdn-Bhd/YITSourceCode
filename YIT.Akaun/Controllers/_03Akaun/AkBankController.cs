@@ -12,11 +12,11 @@ using YIT._DataAccess.Repositories.Interfaces;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class AkBankController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "AK002";
-        public const string namamodul = "Akaun Bank";
+        public const string modul = Modules.kodAkBank;
+        public const string namamodul = Modules.namaAkBank;
         private readonly _IUnitOfWork _unitOfWork;
         private readonly ApplicationDbContext _context;
         private readonly _AppLogIRepository<AppLog, int> _appLog;
@@ -37,6 +37,8 @@ namespace YIT.Akaun.Controllers._03Akaun
         {
             return View(_unitOfWork.AkBankRepo.GetAllDetails());
         }
+
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -53,6 +55,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akBank);
         }
 
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             PopulateDropdownList();
@@ -61,6 +64,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(AkBank akBank, string syscode)
         {
             if (akBank.NoAkaun != null && NoAkaunBankExists(akBank.NoAkaun) == false)
@@ -92,6 +96,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akBank);
         }
 
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -110,6 +115,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, AkBank akBank, string syscode)
         {
             if (id != akBank.Id)
@@ -162,6 +168,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akBank);
         }
 
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -180,6 +187,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var akBank = _unitOfWork.AkBankRepo.GetById((int)id);
@@ -202,6 +210,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

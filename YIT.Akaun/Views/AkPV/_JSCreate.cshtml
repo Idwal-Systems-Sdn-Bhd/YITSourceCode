@@ -35,8 +35,8 @@
                 AkPVId: akPVId
             }
              $.ajax({
-                type: "POST",
-                url: '@Url.Action("GetAkJanaanProfil","AkPV")',
+                type: "GET",
+                url: '@Url.Action("GetAkJanaanProfil","AkJanaanProfil")',
                 data: AkJanaanProfil,
                 dataType: "json",
                 success: function (msg) {
@@ -173,8 +173,8 @@
                 DDaftarAwamId: dDaftarAwamId
             }
             $.ajax({
-                type: "POST",
-                url: '@Url.Action("GetDDaftarAwam","AkPV")',
+                type: "GET",
+                url: '@Url.Action("GetDDaftarAwam","DDaftarAwam")',
                 data: DDaftarAwam,
                 dataType: "json",
                 success: function (msg) {
@@ -212,8 +212,8 @@
                 DPekerjaId: dPekerjaId
             }
             $.ajax({
-                type: "POST",
-                url: '@Url.Action("GetDPekerja","AkPV")',
+                type: "Get",
+                url: '@Url.Action("GetDPekerja","DPekerja")',
                 data: DPekerja,
                 dataType: "json",
                 success: function (msg) {

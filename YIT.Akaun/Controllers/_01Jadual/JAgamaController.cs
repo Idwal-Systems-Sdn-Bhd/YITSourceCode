@@ -10,7 +10,7 @@ using YIT._DataAccess.Repositories.Interfaces;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class JAgamaController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodJAgama;
@@ -32,12 +32,15 @@ namespace YIT.Akaun.Controllers._01Jadual
             _userManager = userManager;
             _appLog = appLog;
         }
+
         public IActionResult Index()
         {
             return View(_unitOfWork.JAgamaRepo.GetAll());
         }
 
         // GET: KW/Details/5
+        [Authorize(Policy = modul)]
+
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -55,6 +58,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KW/Create
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             return View();
@@ -65,6 +69,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(JAgama agama, string syscode)
         {
             if (agama.Perihal != null && PerihalBangsaExists(agama.Perihal) == false)
@@ -95,8 +100,8 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(agama);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
         // GET: KW/Edit/5
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -115,9 +120,9 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: KW/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, JAgama agama, string syscode)
         {
             if (id != agama.Id)
@@ -169,6 +174,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KW/Delete/5
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -188,6 +194,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: KW/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var agama = _unitOfWork.JAgamaRepo.GetById((int)id);
@@ -210,6 +217,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

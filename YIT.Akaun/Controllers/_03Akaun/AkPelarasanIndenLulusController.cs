@@ -13,7 +13,7 @@ using YIT.Akaun.Infrastructure;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class AkPelarasanIndenLulusController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodLulusAkPelarasanInden;
@@ -93,6 +93,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pelulus, EnJenisModulKelulusan.PelarasanInden);
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -183,6 +184,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
+        [Authorize(Policy = modul + "L")]
         public async Task<IActionResult> Lulus(int id, int dKonfigKelulusanId, string syscode)
         {
             var akPelarasanInden = _unitOfWork.AkPelarasanIndenRepo.GetById((int)id);
@@ -207,6 +209,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> HantarSemulaAsync(int id, string? tindakan, string syscode)
         {
             var akPelarasanInden = _unitOfWork.AkPelarasanIndenRepo.GetById((int)id);

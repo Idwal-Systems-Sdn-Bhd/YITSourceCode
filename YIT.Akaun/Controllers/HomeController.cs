@@ -61,7 +61,7 @@ namespace YIT.Akaun.Controller
 
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = Init.allRole)]
         public IActionResult Privacy()
         {
             return View();

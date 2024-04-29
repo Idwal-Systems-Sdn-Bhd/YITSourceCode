@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Office.CustomUI;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ using YIT.Akaun.Infrastructure;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class AkEFTController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodAkEFTMaybank2E;
@@ -111,6 +113,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -128,6 +131,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akEFT);
         }
 
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -146,6 +150,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akEFT);
         }
 
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -302,6 +307,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(AkEFT akEFT, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -376,6 +382,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akEFT);
         }
 
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -403,6 +410,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, AkEFT akEFT, string? fullName, string syscode)
         {
             if (id != akEFT.Id)
@@ -558,6 +566,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string sebabHapus, string syscode)
         {
             var akEFT = _unitOfWork.AkEFTRepo.GetById((int)id);
@@ -591,6 +600,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

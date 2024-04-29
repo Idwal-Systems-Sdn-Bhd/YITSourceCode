@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using YIT.__Domain.Entities._Statics;
 using YIT._DataAccess.Data;
 
 namespace YIT.Akaun.Controller
 {
 
-    [Authorize(Roles = "SuperAdmin, Admin")]
+    [Authorize(Roles = Init.superAdminAdminRole)]
     public class RolesController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly ApplicationDbContext db;

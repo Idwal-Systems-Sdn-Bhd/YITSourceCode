@@ -10,7 +10,8 @@ using YIT._DataAccess.Repositories.Interfaces;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
-    [Authorize]
+    
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class JPTJController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodJPTJ;
@@ -39,6 +40,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: PTJ/Details/5
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -56,6 +58,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: PTJ/Create
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             PopulateDropdownList();
@@ -65,6 +68,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: PTJ/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(JPTJ ptj, string syscode)
         {
             if (ptj.Kod != null && PerihalPTJExists(ptj.Kod) == false)
@@ -96,8 +100,8 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(ptj);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
         // GET: PTJ/Edit/5
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -115,9 +119,9 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // POST: PTJ/Edit/5
-        [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, JPTJ ptj, string syscode)
         {
             if (id != ptj.Id)
@@ -171,6 +175,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: PTJ/Delete/5
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -190,6 +195,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: PTJ/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var ptj = _unitOfWork.JPTJRepo.GetById((int)id);
@@ -212,6 +218,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

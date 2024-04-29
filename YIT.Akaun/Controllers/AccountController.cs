@@ -57,14 +57,14 @@ namespace YIT.Akaun.Controller
             _cache = cache;
         }
 
-        [Authorize(Roles = "SuperAdmin,Admin")]
+        [Authorize(Roles = Init.superAdminAdminRole)]
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpGet]
-        [Authorize(Roles = "SuperAdmin,Admin")]
+        [Authorize(Roles = Init.superAdminAdminRole)]
         public async Task<IActionResult> Register(string? returnurl = null)
         {
             if (!await _roleManager.RoleExistsAsync("SuperAdmin"))
@@ -132,7 +132,7 @@ namespace YIT.Akaun.Controller
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "SuperAdmin,Admin")]
+        [Authorize(Roles = Init.superAdminAdminRole)]
         public async Task<IActionResult> Register(RegisterViewModel model, string? returnurl = null)
         {
 

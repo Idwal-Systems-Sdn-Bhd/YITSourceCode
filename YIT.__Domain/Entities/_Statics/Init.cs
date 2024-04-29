@@ -12,17 +12,17 @@ namespace YIT.__Domain.Entities._Statics
         public const string superAdminEmail = "superadmin@idwal.com.my";
         public const string superAdminPassword = "SuperIdwalsys57#";
 
-        public const string superAdminAuthRole = "SuperAdmin";
+        public const string superAdminRole = "SuperAdmin";
 
         public const string adminRole = "Admin";
-        public const string superVisorRole = "Supervisor";
+        public const string supervisorRole = "Supervisor";
         public const string userRole = "User";
 
-        public const string superAdminAdminAuthRole = superAdminAuthRole + "," + adminRole;
-        public const string superAdminSuperVisorAuthRole = superAdminAuthRole + "," + superVisorRole;
-        public const string allExceptAdminRole = superAdminAuthRole + "," + superVisorRole + "," + userRole;
-        public const string allExceptSuperadminRole = adminRole + "," + superVisorRole + "," + userRole;
-        public const string allRole = superAdminAuthRole + "," + superVisorRole + "," + userRole + "," + adminRole;
+        public const string superAdminAdminRole = superAdminRole + "," + adminRole;
+        public const string superAdminSupervisorRole = superAdminRole + "," + supervisorRole;
+        public const string allExceptAdminRole = superAdminRole + "," + supervisorRole + "," + userRole;
+        public const string allExceptSuperadminRole = adminRole + "," + supervisorRole + "," + userRole;
+        public const string allRole = superAdminRole + "," + supervisorRole + "," + userRole + "," + adminRole;
 
         // initial password
         public const string commonPassword = "Spmb1234#";

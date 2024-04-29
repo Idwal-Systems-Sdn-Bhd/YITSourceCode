@@ -18,7 +18,7 @@ using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class AkPOController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodAkPO;
@@ -103,6 +103,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -120,6 +121,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPO);
         }
 
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -143,6 +145,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPO);
         }
 
+        [Authorize(Policy = modul + "BL")]
         public IActionResult BatalLulus(int? id)
         {
             if (id == null)
@@ -168,6 +171,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("BatalLulus")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "BL")]
         public async Task<IActionResult> BatalLulusConfirmed(int id, string tindakan, string syscode)
         {
             var akPO = _unitOfWork.AkPORepo.GetById((int)id);
@@ -204,6 +208,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "BL")]
         public IActionResult BatalPos(int? id)
         {
             if (id == null)
@@ -229,6 +234,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("BatalPos")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "BL")]
         public async Task<IActionResult> BatalPosConfirmed(int id, string tindakan, string syscode)
         {
             var akPO = _unitOfWork.AkPORepo.GetById((int)id);
@@ -265,6 +271,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "L")]
         public async Task<IActionResult> PosSemula(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -302,6 +309,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -314,6 +322,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(AkPO akPO, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -360,6 +369,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPO);
         }
 
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -387,6 +397,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, AkPO akPO, string? fullName, string syscode)
         {
             if (id != akPO.Id)
@@ -489,6 +500,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string sebabHapus, string syscode)
         {
             var akPO = _unitOfWork.AkPORepo.GetById((int)id);
@@ -516,6 +528,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

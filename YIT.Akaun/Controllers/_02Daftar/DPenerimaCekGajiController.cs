@@ -26,7 +26,8 @@ using YIT.Akaun.Models.ViewModels.Administrations;
 
 namespace YIT.Akaun.Controllers._02Daftar
 {
-    [Authorize]
+    
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class DPenerimaCekGajiController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodDPenerimaCekGaji;
@@ -72,6 +73,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return akJanaanProfil;
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -91,6 +93,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         }
 
         // GET: jCawangan/Create
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             PopulateDropdownList();
@@ -99,6 +102,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(DPenerimaCekGaji dPenerimaCekGaji, string syscode)
         {
 
@@ -137,6 +141,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         
         // GET: jCawangan/Edit/5
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -156,6 +161,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, DPenerimaCekGaji dPenerimaCekGaji, string syscode)
         {
             if (id != dPenerimaCekGaji.Id)
@@ -213,6 +219,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         }
 
         // GET: jCawangan/Delete/5
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -233,6 +240,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         // POST: jCawangan/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var dPenerimaCekGaji = _unitOfWork.DPenerimaCekGajiRepo.GetById(id);
@@ -255,6 +263,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -338,7 +347,7 @@ namespace YIT.Akaun.Controllers._02Daftar
                 return Json(new { result = "ERROR", message = ex.Message });
             }
         }
-        [AllowAnonymous]
+        
         public async Task<IActionResult> PrintPenerimaCekGaji(int id)
         {
             DPenerimaCekGaji dPenerimaCekGaji = _unitOfWork.DPenerimaCekGajiRepo.GetAllDetailsById(id);
@@ -376,6 +385,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         [HttpPost, ActionName("Generate")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> GenerateDPenerimaCekGajiToAkJanaanProfilPenerima()
         {
             //cari senarai penerima cek gaji

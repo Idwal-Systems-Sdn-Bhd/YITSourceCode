@@ -14,7 +14,7 @@ using static YIT.Akaun.Models.ViewModels.Administrations.UserClaimsViewModel;
 
 namespace YIT.Akaun.Controller
 {
-    [Authorize(Roles = "SuperAdmin,Admin")]
+    [Authorize(Roles = Init.superAdminAdminRole)]
     public class UserController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string syscode = "MAIN";
@@ -333,6 +333,8 @@ namespace YIT.Akaun.Controller
                 }
                 model.Claims.Add(userClaim);
             }
+            model.Claims = model.Claims.OrderBy(m => m.ClaimType).ToList();
+
             return View(model);
         }
         [HttpPost]
