@@ -44,6 +44,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IJKonfigPenyataRepository JKonfigPenyataRepo { get; }
         IDPanjarRepository DPanjarRepo { get; }
         IAkCVRepository AkCVRepo { get; }
+        IAkInvoisRepository AkInvoisRepo { get; }
         Task<int> Save();
     }
 }

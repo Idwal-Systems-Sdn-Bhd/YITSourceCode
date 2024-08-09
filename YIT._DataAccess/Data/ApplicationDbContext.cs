@@ -65,6 +65,9 @@ namespace YIT._DataAccess.Data
         //
 
         // 04Penerimaan 
+        public DbSet<AkInvois> AkInvois { get; set; }
+        public DbSet<AkInvoisObjek> AkInvoisObjek { get; set; }
+        public DbSet<AkInvoisPerihal> AkInvoisPerihal { get; set; }
         public DbSet<AkTerima> AkTerima { get; set; }
         public DbSet<AkTerimaCaraBayar> AkTerimaCaraBayar { get; set; }
         public DbSet<AkTerimaObjek> AkTerimaObjek { get; set; }

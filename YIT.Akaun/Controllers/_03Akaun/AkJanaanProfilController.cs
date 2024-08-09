@@ -889,7 +889,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             int bil = 1;
                             foreach (var item in data.AkJanaanProfilPenerima)
                             {
-                                _cart.AddItemPenerima(0, akPVId, item.Id, item.EnKategoriDaftarAwam, item.DDaftarAwamId, item.DPekerjaId, item.NoPendaftaranPenerima, item.NamaPenerima, item.NoPendaftaranPemohon, item.Catatan, item.JCaraBayarId, item.JBankId, item.NoAkaunBank, item.Alamat1, item.Alamat2, item.Alamat3, item.Emel, item.KodM2E, null, null, item.Amaun, item.NoRujukanMohon, item.AkRekupId, null, false, null, EnStatusProses.None, item.Bil, item.EnJenisId);
+                                _cart.AddItemPenerima(0, akPVId, item.Id, item.EnKategoriDaftarAwam,item.DPenerimaZakatId, item.DDaftarAwamId, item.DPekerjaId, item.NoPendaftaranPenerima, item.NamaPenerima, item.NoPendaftaranPemohon, item.Catatan, item.JCaraBayarId, item.JBankId, item.NoAkaunBank, item.Alamat1, item.Alamat2, item.Alamat3, item.Emel, item.KodM2E, item.Amaun, item.NoRujukanMohon, item.AkRekupId, item.EnJenisId);
 
                                 bil++;
                             }

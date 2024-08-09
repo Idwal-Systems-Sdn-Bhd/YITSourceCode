@@ -15,6 +15,7 @@ using YIT.Akaun.Infrastructure;
 using YIT.Akaun.Microservices;
 using YIT.Akaun.Models.ViewModels.Forms;
 using System.Drawing;
+using YIT._DataAccess.Services.Math;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
@@ -143,9 +144,49 @@ namespace YIT.Akaun.Controllers._03Akaun
         [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
+            ManipulateHiddenDiv(EnJenisTerimaan.Am, EnKategoriDaftarAwam.LainLain);
+            ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.RR.GetDisplayName(), DateTime.Now.ToString("yyyy"));
             EmptyCart();
-            PopulateDropDownList();
+            PopulateDropDownList(1);
             return View();
+        }
+
+        private void ManipulateHiddenDiv(EnJenisTerimaan enJenisTerimaan, EnKategoriDaftarAwam enKategoriDaftarAwam)
+        {
+            switch (enJenisTerimaan)
+            {
+                case EnJenisTerimaan.Invois:
+                    ViewBag.DivInvois = "";
+                    break;
+                default:
+                    ViewBag.DivInvois = "hidden";
+                    break;
+            }
+
+            switch (enKategoriDaftarAwam)
+            {
+                case EnKategoriDaftarAwam.DaftarAwam:
+                    ViewBag.DivDaftarAwam = "";
+                    ViewBag.DivPekerja = "hidden";
+                    break;
+                case EnKategoriDaftarAwam.Pekerja:
+                    ViewBag.DivDaftarAwam = "hidden";
+                    ViewBag.DivPekerja = "";
+                    break;
+                default:
+                    ViewBag.DivDaftarAwam = "hidden";
+                    ViewBag.DivPekerja = "hidden";
+                    break;
+            }
+        }
+
+
+        private string GenerateRunningNumber(string initNoRujukan, string tahun)
+        {
+            var maxRefNo = _unitOfWork.AkPVRepo.GetMaxRefNo(initNoRujukan, tahun);
+
+            var prefix = initNoRujukan + "/" + tahun + "/";
+            return RunningNumberFormatter.GenerateRunningNumber(prefix, maxRefNo, "00000");
         }
 
         [HttpPost]
@@ -164,6 +205,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akTerima.TarMasuk = DateTime.Now;
                     akTerima.DPekerjaMasukId = pekerjaId;
 
+                    akTerima.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.RR.GetDisplayName(), akTerima.Tahun ?? DateTime.Now.ToString("yyyy"));
                     akTerima.AkTerimaObjek = _cart.akTerimaObjek.ToList();
 
                 akTerima.AkTerimaCaraBayar = _cart.akTerimaCaraBayar.ToList();
@@ -176,7 +218,8 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 }
             
-            PopulateDropDownList();
+            PopulateDropDownList(akTerima.JKWId);
+            ManipulateHiddenDiv(akTerima.EnJenisTerimaan, akTerima.EnKategoriDaftarAwam);
             PopulateListViewFromCart();
             return View(akTerima);
         }
@@ -196,7 +239,8 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
 
             EmptyCart();
-            PopulateDropDownList();
+            PopulateDropDownList(akTerima.JKWId);
+            ManipulateHiddenDiv(akTerima.EnJenisTerimaan, akTerima.EnKategoriDaftarAwam);
             PopulateCartAkTerimaFromDb(akTerima);
             return View(akTerima);
         }
@@ -292,7 +336,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
             }
 
-            PopulateDropDownList();
+            ManipulateHiddenDiv(akTerima.EnJenisTerimaan, akTerima.EnKategoriDaftarAwam);
+            PopulateDropDownList(akTerima.JKWId);
             PopulateListViewFromCart();
             return View(akTerima);
         }
@@ -485,18 +530,26 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
         }
         
-        private void PopulateDropDownList()
+        private void PopulateDropDownList(int JKWId)
         {
             ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
+            ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
             ViewBag.AkBank = _unitOfWork.AkBankRepo.GetAllDetails();
             ViewBag.JNegeri = _unitOfWork.JNegeriRepo.GetAll();
-            ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetails();
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
             ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
 
             ViewBag.EnJenisCek = EnumHelper<EnJenisCek>.GetList();
+
+            var jenisTerimaan = EnumHelper<EnJenisTerimaan>.GetList();
+
+            ViewBag.EnJenisTerimaan = jenisTerimaan;
+
+            var kategoriDaftarAwam = EnumHelper<EnKategoriDaftarAwam>.GetList();
+
+            ViewBag.EnKategoriDaftarAwam = kategoriDaftarAwam;
         }
 
         private void PopulateCartAkTerimaFromDb(AkTerima akTerima)
@@ -561,6 +614,17 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
 
             ViewBag.akTerimaCaraBayar = caraBayar;
+
+            List<AkTerimaInvois> invois = _cart.AkTerimaInvois.ToList();
+
+            foreach (AkTerimaInvois item in invois)
+            {
+                var akInvois = _unitOfWork.AkInvoisRepo.GetDetailsById(item.AkInvoisId);
+
+                item.AkInvois = akInvois;
+
+            }
+            ViewBag.akTerimaInvois = invois;
 
         }
 

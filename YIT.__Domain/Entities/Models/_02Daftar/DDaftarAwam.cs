@@ -75,5 +75,6 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public EnJenisId EnJenisId { get; set; }
         public virtual ICollection<AkInden>? AkInden { get; set; }
         public virtual ICollection<AkPO>? AkPO { get; set; }
+        public virtual ICollection<AkInvois>? AkInvois { get; set; }
     }
 }

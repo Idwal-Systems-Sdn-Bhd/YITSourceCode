@@ -87,5 +87,24 @@ namespace YIT._DataAccess.Services.Cart.Session
             Session?.Remove("CartAkTerima");
         }
         //TerimaCaraBayar End
+
+        //TerimaInvois
+        public override void AddItemInvois(int akTerimaId, bool isTanggungan, int akBelianId, int akInvoisId, decimal amaun)
+        {
+            base.AddItemInvois(akTerimaId, isTanggungan, akBelianId, akInvoisId, amaun);
+            Session?.SetJson("CartAkTerima", this);
+        }
+        public override void RemoveItemInvois(int akBelianId)
+        {
+            base.RemoveItemInvois(akBelianId);
+            Session?.SetJson("CartAkTerima", this);
+        }
+        public override void ClearInvois()
+        {
+            base.ClearInvois();
+            Session?.Remove("CartAkTerima");
+        }
+        //TerimaInvois End
+
     }
 }
