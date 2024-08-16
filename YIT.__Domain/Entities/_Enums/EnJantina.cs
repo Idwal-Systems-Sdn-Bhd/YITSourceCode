@@ -11,7 +11,7 @@ namespace YIT.__Domain.Entities._Enums
     {
         [Display(Name = "Lelaki")]
         Lelaki = 1,
-        [Display(Name = "Permpuan")]
+        [Display(Name = "Perempuan")]
         Perempuan = 2,
         [Display(Name = "Lain-lain")]
         LainLain = 0

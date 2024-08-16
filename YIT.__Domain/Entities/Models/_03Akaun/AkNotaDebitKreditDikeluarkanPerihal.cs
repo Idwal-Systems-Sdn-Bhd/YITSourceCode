@@ -4,11 +4,11 @@ using YIT.__Domain.Entities.Models._50LHDN;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
-    public class AkInvoisPerihal
+    public class AkNotaDebitKreditDikeluarkanPerihal
     {
         public int Id { get; set; }
-        public int AkInvoisId { get; set; }
-        public AkInvois? AkInvois { get; set; }
+        public int AkNotaDebitKreditDikeluarkanId { get; set; }
+        public AkNotaDebitKreditDikeluarkan? AkNotaDebitKreditDikeluarkan { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Bil { get; set; }
         public string? Perihal { get; set; }

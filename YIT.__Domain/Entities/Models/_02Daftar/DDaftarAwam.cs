@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YIT.__Domain.Entities.Models._03Akaun;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YIT.__Domain.Entities.Models._02Daftar
 {
@@ -76,5 +77,29 @@ namespace YIT.__Domain.Entities.Models._02Daftar
         public virtual ICollection<AkInden>? AkInden { get; set; }
         public virtual ICollection<AkPO>? AkPO { get; set; }
         public virtual ICollection<AkInvois>? AkInvois { get; set; }
+
+        public static EnLHDNIdType GetLHDNIdType(EnJenisId enJenisId)
+        {
+            var type = new EnLHDNIdType();
+            switch (enJenisId)
+            {
+                case EnJenisId.KPBaru: case EnJenisId.KPLama:
+                    type = EnLHDNIdType.NRIC;
+                    break;
+                case EnJenisId.Passport:
+                    type = EnLHDNIdType.PASSPORT;
+                    break;
+                case EnJenisId.KodPembekal:
+                    type = EnLHDNIdType.BRN;
+                    break;
+                case EnJenisId.NoTentera:
+                    type = EnLHDNIdType.ARMY;
+                    break;
+                default:
+                    type = EnLHDNIdType.NRIC;
+                    break;
+            }
+            return type;
+        }
     }
 }

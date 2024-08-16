@@ -60,6 +60,8 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<AkCV>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkEFT>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkJurnal>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<AkNotaDebitKreditDikeluarkan>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+
             //
 
             // Sumber
@@ -688,6 +690,30 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<AkInvois>()
                     .HasOne(m => m.JKW)
                     .WithMany(t => t.AkInvois)
+                    .HasForeignKey(m => m.JKWId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkNotaDebitKreditDikeluarkanObjek>()
+                    .HasOne(m => m.AkCarta)
+                    .WithMany(t => t.AkNotaDebitKreditDikeluarkanObjek)
+                    .HasForeignKey(m => m.AkCartaId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkNotaDebitKreditDikeluarkanObjek>()
+                    .HasOne(m => m.AkNotaDebitKreditDikeluarkan)
+                    .WithMany(t => t.AkNotaDebitKreditDikeluarkanObjek)
+                    .HasForeignKey(m => m.AkNotaDebitKreditDikeluarkanId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkNotaDebitKreditDikeluarkanPerihal>()
+                    .HasOne(m => m.AkNotaDebitKreditDikeluarkan)
+                    .WithMany(t => t.AkNotaDebitKreditDikeluarkanPerihal)
+                    .HasForeignKey(m => m.AkNotaDebitKreditDikeluarkanId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkNotaDebitKreditDikeluarkan>()
+                    .HasOne(m => m.JKW)
+                    .WithMany(t => t.AkNotaDebitKreditDikeluarkan)
                     .HasForeignKey(m => m.JKWId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
         }

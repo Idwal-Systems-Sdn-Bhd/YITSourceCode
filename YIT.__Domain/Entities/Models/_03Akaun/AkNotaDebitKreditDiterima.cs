@@ -5,15 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Bases;
 using YIT.__Domain.Entities.Models._01Jadual;
-using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._50LHDN;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
-    public class AkInvois : GenericTransactionFields
+    public class AkNotaDebitKreditDiterima : GenericTransactionFields
     {
         public int Id { get; set; }
         [DisplayName("Tahun Belanjawan")]
@@ -22,17 +20,15 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? NoRujukan { get; set; }
         [DisplayName("Tarikh")]
         public DateTime Tarikh { get; set; }
-
-        [DisplayName("Pembekal")]
-        public int DDaftarAwamId { get; set; }
-        public DDaftarAwam? DDaftarAwam { get; set; }
-        [DisplayName("Akaun Penghutang")]
-        public int? AkAkaunAkruId { get; set; }
-        public AkCarta? AkAkaunAkru { get; set; }
+        // nota :
+        // 0 - debit
+        // 1 - kredit
+        public int FlDebitKredit { get; set; }
+        public int AkBelianId { get; set; }
+        public AkBelian? AkBelian { get; set; }
         [DisplayName("Jumlah RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Jumlah { get; set; }
-        [DisplayName("Kump. Wang")]
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         public string? Ringkasan { get; set; }
@@ -45,9 +41,9 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public decimal JumlahCukai { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal JumlahTanpaCukai { get; set; }
-        public string? KodPbklLama { get; set; }
-        public ICollection<AkInvoisObjek>? AkInvoisObjek { get; set; }
-        public ICollection<AkInvoisPerihal>? AkInvoisPerihal { get; set; }
+        public ICollection<AkNotaDebitKreditDiterimaObjek>? AkNotaDebitKreditDiterimaObjek { get; set; }
+        public ICollection<AkNotaDebitKreditDiterimaPerihal>? AkNotaDebitKreditDiterimaPerihal { get; set; }
+
 
     }
 }
