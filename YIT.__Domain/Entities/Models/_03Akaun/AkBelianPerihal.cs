@@ -24,6 +24,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? Unit { get; set; }
         public EnLHDNJenisCukai EnLHDNJenisCukai { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
+        public decimal KadarCukai { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal AmaunCukai { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Harga { get; set; }
