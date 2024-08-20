@@ -54,6 +54,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("Cadangan Pembekal")]
         public int DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam { get; set; }
+        [DisplayName("MSIC")]
         public int? LHDNMSICId { get; set; }
         public LHDNMSIC? LHDNMSIC { get; set; }
         [Column(TypeName = "decimal(18, 2)")]

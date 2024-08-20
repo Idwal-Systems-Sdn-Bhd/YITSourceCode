@@ -14,6 +14,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? Perihal { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Kuantiti { get; set; }
+        public int? LHDNKodKlasifikasiId { get; set; }
+        public LHDNKodKlasifikasi? LHDNKodKlasifikasi { get; set; }
         public int? LHDNUnitUkuranId { get; set; }
         public LHDNUnitUkuran? LHDNUnitUkuran { get; set; }
         public string? Unit { get; set; }
