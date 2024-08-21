@@ -8,25 +8,25 @@ using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT._DataAccess.Services.Cart
 {
-    public class CartAkPelarasanInden
+    public class CartAkNotaDebitKreditDikeluarkan
     {
-        //AkPelarasanIndenObjek
-        private List<AkPelarasanIndenObjek> collectionObjek = new List<AkPelarasanIndenObjek>();
+        //NotaDebitKreditDikeluarkanObjek
+        private List<AkNotaDebitKreditDikeluarkanObjek> collectionObjek = new List<AkNotaDebitKreditDikeluarkanObjek>();
 
         public virtual void AddItemObjek(
-            int akPelarasanIndenId,
+            int akNotaDebitKreditDikeluarkanId,
             int jKWPTJBahagianId,
             int akCartaId,
             decimal amaun
             )
         {
-            AkPelarasanIndenObjek line = collectionObjek.FirstOrDefault(pp => pp.JKWPTJBahagianId == jKWPTJBahagianId && pp.AkCartaId == akCartaId)!;
+            AkNotaDebitKreditDikeluarkanObjek line = collectionObjek.FirstOrDefault(pp => pp.JKWPTJBahagianId == jKWPTJBahagianId && pp.AkCartaId == akCartaId)!;
 
             if (line == null)
             {
-                collectionObjek.Add(new AkPelarasanIndenObjek()
+                collectionObjek.Add(new AkNotaDebitKreditDikeluarkanObjek()
                 {
-                    AkPelarasanIndenId = akPelarasanIndenId,
+                    AkNotaDebitKreditDikeluarkanId = akNotaDebitKreditDikeluarkanId,
                     JKWPTJBahagianId = jKWPTJBahagianId,
                     AkCartaId = akCartaId,
                     Amaun = amaun
@@ -38,14 +38,14 @@ namespace YIT._DataAccess.Services.Cart
 
         public virtual void ClearObjek() => collectionObjek.Clear();
 
-        public virtual IEnumerable<AkPelarasanIndenObjek> AkPelarasanIndenObjek => collectionObjek;
+        public virtual IEnumerable<AkNotaDebitKreditDikeluarkanObjek> AkNotaDebitKreditDikeluarkanObjek => collectionObjek;
         //
 
-        // AkPelarasanIndenPerihal
+        // NotaDebitKreditDikeluarkanPerihal
 
-        private List<AkPelarasanIndenPerihal> collectionPerihal = new List<AkPelarasanIndenPerihal>();
+        private List<AkNotaDebitKreditDikeluarkanPerihal> collectionPerihal = new List<AkNotaDebitKreditDikeluarkanPerihal>();
         public virtual void AddItemPerihal(
-            int akPelarasanIndenId,
+            int akNotaDebitKreditDikeluarkanId,
             decimal bil,
             string? perihal,
             decimal kuantiti,
@@ -59,14 +59,14 @@ namespace YIT._DataAccess.Services.Cart
             decimal amaun
             )
         {
-            AkPelarasanIndenPerihal line = collectionPerihal.FirstOrDefault(pp => pp.Bil == bil)!;
+            AkNotaDebitKreditDikeluarkanPerihal line = collectionPerihal.FirstOrDefault(pp => pp.Bil == bil)!;
 
             if (line == null)
             {
                 amaunCukai = Math.PriceFormatter.GetTaxAmount(harga, kuantiti, kadarCukai);
-                collectionPerihal.Add(new AkPelarasanIndenPerihal
+                collectionPerihal.Add(new AkNotaDebitKreditDikeluarkanPerihal
                 {
-                    AkPelarasanIndenId = akPelarasanIndenId,
+                    AkNotaDebitKreditDikeluarkanId = akNotaDebitKreditDikeluarkanId,
                     Bil = bil,
                     Perihal = perihal,
                     Kuantiti = kuantiti,
@@ -79,6 +79,7 @@ namespace YIT._DataAccess.Services.Cart
                     Harga = harga,
                     Amaun = Math.PriceFormatter.GetTotalPayableAmount(harga, kuantiti, amaunCukai)
 
+
                 });
             }
         }
@@ -87,7 +88,7 @@ namespace YIT._DataAccess.Services.Cart
 
         public virtual void ClearPerihal() => collectionPerihal.Clear();
 
-        public virtual IEnumerable<AkPelarasanIndenPerihal> AkPelarasanIndenPerihal => collectionPerihal;
+        public virtual IEnumerable<AkNotaDebitKreditDikeluarkanPerihal> AkNotaDebitKreditDikeluarkanPerihal => collectionPerihal;
         //
     }
 }

@@ -20,6 +20,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             return _context.AkNotaMinta
                 .IgnoreQueryFilters()
+                .Include(t => t.LHDNMSIC)
                 .Include(t => t.JKW)
                 .Include(t => t.DPemohon)
                 .Include(t => t.DDaftarAwam)
@@ -54,6 +55,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var akNotaMintaList = _context.AkNotaMinta
                 .IgnoreQueryFilters()
+                .Include(t => t.LHDNMSIC)
                 .Include(t => t.JKW)
                 .Include(t => t.DPemohon)
                 .Include(t => t.DDaftarAwam)

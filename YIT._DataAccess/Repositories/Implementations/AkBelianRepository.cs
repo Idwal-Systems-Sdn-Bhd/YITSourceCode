@@ -22,6 +22,8 @@ namespace YIT._DataAccess.Repositories.Implementations
             return _context.AkBelian
                 .IgnoreQueryFilters()
                 .Include(t => t.JKW)
+                .Include(t => t.LHDNMSIC)
+                .Include(t => t.LHDNEInvois)
                 .Include(t => t.DDaftarAwam)
                 .Include(t => t.DPekerjaPosting)
                 .Include(t => t.AkAkaunAkru)
@@ -59,6 +61,8 @@ namespace YIT._DataAccess.Repositories.Implementations
             var akBelianList = _context.AkBelian
                 .IgnoreQueryFilters()
                 .Include(t => t.JKW)
+                .Include(t => t.LHDNMSIC)
+                .Include(t => t.LHDNEInvois)
                 .Include(t => t.DDaftarAwam)
                 .Include(t => t.DPekerjaPosting)
                 .Include(t => t.AkAkaunAkru)

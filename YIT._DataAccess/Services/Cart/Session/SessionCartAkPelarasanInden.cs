@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YIT.__Domain.Entities._Enums;
 
 namespace YIT._DataAccess.Services.Cart.Session
 {
@@ -41,9 +42,9 @@ namespace YIT._DataAccess.Services.Cart.Session
         //
 
         // AkPelarasanIndenPerihal
-        public override void AddItemPerihal(int akIndenId, decimal bil, string? perihal, decimal kuantiti, string? unit, decimal harga, decimal amaun)
+        public override void AddItemPerihal(int akPelarasanIndenId, decimal bil, string? perihal, decimal kuantiti, int? lHDNKodKlasifikasiId, int? lHDNUnitUkuranId, string? unit, EnLHDNJenisCukai enLHDNJenisCukai, decimal kadarCukai, decimal amaunCukai, decimal harga, decimal amaun)
         {
-            base.AddItemPerihal(akIndenId, bil, perihal, kuantiti, unit, harga, amaun);
+            base.AddItemPerihal(akPelarasanIndenId, bil, perihal, kuantiti, lHDNKodKlasifikasiId, lHDNUnitUkuranId, unit, enLHDNJenisCukai, kadarCukai, amaunCukai, harga, amaun);
             Session?.SetJson("CartAkPelarasanInden", this);
         }
 

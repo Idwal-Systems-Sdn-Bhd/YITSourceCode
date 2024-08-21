@@ -63,6 +63,10 @@ namespace YIT._DataAccess.Repositories.Implementations
             DPanjarRepo = new DPanjarRepository(_context);
             AkCVRepo = new AkCVRepository(_context);
             AkInvoisRepo = new AkInvoisRepository(_context);
+
+            LHDNKodKlasifikasiRepo = new LHDNKodKlasifikasiRepository(_context);
+            LHDNMSICRepo = new LHDNMSICRepository(_context);
+            LHDNUnitUkuranRepo = new LHDNUnitUkuranRepository(_context);
         }
 
         public IJKWRepository JKWRepo { get; private set; }
@@ -133,6 +137,12 @@ namespace YIT._DataAccess.Repositories.Implementations
         public IAkCVRepository AkCVRepo { get; }
 
         public IAkInvoisRepository AkInvoisRepo { get; }
+
+        public ILHDNKodKlasifikasiRepository LHDNKodKlasifikasiRepo { get; }
+
+        public ILHDNMSICRepository LHDNMSICRepo { get; }
+
+        public ILHDNUnitUkuranRepository LHDNUnitUkuranRepo { get; }
 
         public void Dispose()
         {
