@@ -101,7 +101,7 @@
             </div>
 
             <div class="row mb-2">
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="EnKaedahPerolehan" class="control-label"></label>
                         <select asp-for="EnKaedahPerolehan" class="form-control form-control-sm text-uppercase" required>
@@ -111,6 +111,19 @@
                             }
                         </select>
                         <span asp-validation-for="EnKaedahPerolehan" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="LHDNMSICId" class="control-label"></label>
+                        <select asp-for="LHDNMSICId" class="form-control form-control-sm text-uppercase select2" required>
+                            @foreach (var item in ViewBag.LHDNMSIC)
+                            {
+                                <option value="@item.Id">@item.Code - @item.Description</option>
+                            }
+                        </select>
+                        <span asp-validation-for="LHDNMSICId" class="text-danger"></span>
+
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -329,110 +342,8 @@
 </div>
 
 <!-- Modal Objek -->
-<div class="modal fade bd-example-modal-lg" id="moObjek" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Objek</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <input id="moObjekId" hidden />
-                    <div class="form-group">
-                        <label class="col-form-label">Bahagian</label>
-                        <select class="form-control form-control-sm text-uppercase" id="moObjekJKWPTJBahagianId" disabled>
-                            <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
-                            @foreach (var s in ViewBag.JKWPTJBahagian)
-                            {
-                                <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-form-label">Kod Akaun</label>
-                        <select class="form-control form-control-sm" id="moObjekAkCartaId" disabled>
-                            <option value="" disabled selected>-- Pilih Kod Akaun --</option>
-                            @foreach (var s in ViewBag.AkCarta)
-                            {
-                                <option value="@s.Id">@s.Kod - @s.Perihal </option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-form-label">Amaun</label>
-                        <input type="number" class="form-control form-control-sm" id="moObjekAmaun">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="UpdateModalObjek()">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="~/Views/Partials/Modal/_ModalObjekPartial.cshtml" />
 <!-- Modal Objek End -->
 <!-- Modal Perihal -->
-<div class="modal fade bd-example-modal-lg" id="moPerihal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Perihal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <input id="moPerihalId" hidden />
-                    <div class="row">
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="col-form-label">Bil</label>
-                                <input type="number" class="form-control form-control-sm" id="moPerihalBil" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-form-label">Perihal</label>
-                        <textarea class="form-control form-control-sm text-uppercase" id="moPerihalPerihal" rows="2"></textarea>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="col-form-label">Ktt</label>
-                                <input type="number" class="form-control form-control-sm" id="moPerihalKuantiti" step="0.01">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="col-form-label">Unit</label>
-                                <input type="text" class="form-control form-control-sm text-uppercase" id="moPerihalUnit">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="col-form-label">Harga/Unit RM</label>
-                                <input type="number" class="form-control form-control-sm" id="moPerihalHarga" step="0.01">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="col-form-label">Amaun</label>
-                                <input type="number" class="form-control form-control-sm" id="moPerihalAmaun" readonly>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="UpdateModalPerihal()">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="~/Views/Partials/Modal/_ModalPerihalPartial.cshtml" />
 <!-- Modal Perihal End -->

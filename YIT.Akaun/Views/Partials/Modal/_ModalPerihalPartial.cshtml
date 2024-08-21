@@ -1,0 +1,94 @@
+﻿<!-- Modal Perihal -->
+<div class="modal fade bd-example-modal-lg" id="moPerihal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Perihal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="CloseModalPerihal()">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input id="moPerihalId" hidden />
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="col-form-label">Bil</label>
+                                <input type="number" class="form-control form-control-sm" id="moPerihalBil" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label class="col-form-label">Kod Klasifikasi</label>
+                                <select class="form-control form-control-sm text-uppercase select2" id="moPerihalLHDNKodKlasifikasiId">
+                                    @foreach (var s in ViewBag.LHDNKodKlasifikasi)
+                                    {
+                                    <option value="@s.Id">@s.Code - @s.Description </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Perihal</label>
+                        <textarea class="form-control form-control-sm text-uppercase" id="moPerihalPerihal" rows="2"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="col-form-label">Ktt</label>
+                                <input type="number" class="form-control form-control-sm" id="moPerihalKuantiti" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label class="col-form-label">Unit</label>
+                                <input type="text" class="form-control form-control-sm text-uppercase" id="moPerihalUnit">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label class="col-form-label">Harga/Unit RM</label>
+                                <input type="number" class="form-control form-control-sm" id="moPerihalHarga" step="0.01">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label class="control-label">Jenis Cukai</label>
+                                <select class="form-control form-control-sm text-uppercase" id="moPerihalEnLHDNJenisCukai">
+                                    @foreach (var item in ViewBag.EnLHDNJenisCukai)
+                                    {
+                                    <option value="@item.id">@item.perihal</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="col-form-label">Kadar %</label>
+                                <input type="text" class="form-control form-control-sm text-uppercase" id="moPerihalKadarCukai">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Amaun Cukai Dikenakan RM</label>
+                        <input type="number" class="form-control form-control-sm" id="moPerihalAmaunCukai" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Jumlah RM</label>
+                        <input type="number" class="form-control form-control-sm" id="moPerihalAmaun" readonly>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="UpdateModalPerihal()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Perihal End -->

@@ -122,13 +122,13 @@ namespace YIT.__Domain.Entities._Statics
 
         // Pemprosesan (PP)
         public const string kodSahAbWaran = "PP0001";
-        public const string namaSahAbWaran = "Pemprosesan Sah Penilaian Perolehan";
+        public const string namaSahAbWaran = "Pemprosesan Sah Waran";
 
         public const string kodSemakAbWaran = "PP0002";
-        public const string namaSemakAbWaran = "Pemprosesan Semak Penilaian Perolehan";
+        public const string namaSemakAbWaran = "Pemprosesan Semak Waran";
 
         public const string kodLulusAbWaran = "PP0003";
-        public const string namaLulusAbWaran = "Pemprosesan Lulus Penilaian Perolehan";
+        public const string namaLulusAbWaran = "Pemprosesan Lulus Waran";
 
         public const string kodSahAkPenilaianPerolehan = "PP0004";
         public const string namaSahAkPenilaianPerolehan = "Pemprosesan Sah Penilaian Perolehan";

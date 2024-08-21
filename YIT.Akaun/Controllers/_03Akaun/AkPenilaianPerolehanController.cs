@@ -592,6 +592,10 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
             ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
             ViewBag.EnKaedahPerolehan = EnumHelper<EnKaedahPerolehan>.GetList();
+            ViewBag.EnLHDNJenisCukai = EnumHelper<EnLHDNJenisCukai>.GetList();
+            ViewBag.LHDNMSIC = _unitOfWork.LHDNMSICRepo.GetAll();
+            ViewBag.LHDNKodKlasifikasi = _unitOfWork.LHDNKodKlasifikasiRepo.GetAll();
+            ViewBag.LHDNUnitUkuran = _unitOfWork.LHDNUnitUkuranRepo.GetAll();
 
         }
 
@@ -618,7 +622,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                         item.Bil,
                         item.Perihal,
                         item.Kuantiti,
-                        item.Unit,
+                        item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                        item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, 
+                        item.Unit, 
+                        item.EnLHDNJenisCukai, 
+                        item.KadarCukai, 
+                        item.AmaunCukai,
                         item.Harga,
                         item.Amaun
                         );
@@ -684,14 +693,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                     _cart.AddItemObjek(akPenilaianPerolehanObjek.AkPenilaianPerolehanId, akPenilaianPerolehanObjek.JKWPTJBahagianId, akPenilaianPerolehanObjek.AkCartaId, akPenilaianPerolehanObjek.Amaun);
                 }
 
-
-
                 return Json(new { result = "OK" });
             }
             catch (Exception ex)
             {
                 return Json(new { result = "ERROR", message = ex.Message });
-            }
+            }   
         }
 
         public JsonResult RemoveCartAkPenilaianPerolehanObjek(AkPenilaianPerolehanObjek akPenilaianPerolehanObjek)
@@ -778,7 +785,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 if (akPenilaianPerolehanPerihal != null)
                 {
-                    _cart.AddItemPerihal(akPenilaianPerolehanPerihal.AkPenilaianPerolehanId,akPenilaianPerolehanPerihal.Bil, akPenilaianPerolehanPerihal.Perihal, akPenilaianPerolehanPerihal.Kuantiti,akPenilaianPerolehanPerihal.Unit,akPenilaianPerolehanPerihal.Harga,akPenilaianPerolehanPerihal.Amaun);
+                    _cart.AddItemPerihal(akPenilaianPerolehanPerihal.AkPenilaianPerolehanId, akPenilaianPerolehanPerihal.Bil, akPenilaianPerolehanPerihal.Perihal, akPenilaianPerolehanPerihal.Kuantiti, akPenilaianPerolehanPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akPenilaianPerolehanPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akPenilaianPerolehanPerihal.Unit, akPenilaianPerolehanPerihal.EnLHDNJenisCukai, akPenilaianPerolehanPerihal.KadarCukai, akPenilaianPerolehanPerihal.AmaunCukai, akPenilaianPerolehanPerihal.Harga, akPenilaianPerolehanPerihal.Amaun);
                 }
 
 
@@ -837,7 +844,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.RemoveItemPerihal(akPenilaianPerolehanPerihal.Bil);
 
-                    _cart.AddItemPerihal(akPenilaianPerolehanPerihal.AkPenilaianPerolehanId, akPenilaianPerolehanPerihal.Bil, akPenilaianPerolehanPerihal.Perihal, akPenilaianPerolehanPerihal.Kuantiti, akPenilaianPerolehanPerihal.Unit, akPenilaianPerolehanPerihal.Harga, akPenilaianPerolehanPerihal.Amaun);
+                    _cart.AddItemPerihal(akPenilaianPerolehanPerihal.AkPenilaianPerolehanId, akPenilaianPerolehanPerihal.Bil, akPenilaianPerolehanPerihal.Perihal, akPenilaianPerolehanPerihal.Kuantiti, akPenilaianPerolehanPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akPenilaianPerolehanPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akPenilaianPerolehanPerihal.Unit, akPenilaianPerolehanPerihal.EnLHDNJenisCukai, akPenilaianPerolehanPerihal.KadarCukai, akPenilaianPerolehanPerihal.AmaunCukai, akPenilaianPerolehanPerihal.Harga, akPenilaianPerolehanPerihal.Amaun);
                 }
 
                 return Json(new { result = "OK" });

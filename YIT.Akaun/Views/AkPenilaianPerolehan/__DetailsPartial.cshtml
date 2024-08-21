@@ -64,10 +64,16 @@
 </div>
 
 <div class="row mb-2">
-    <div class="col-md-8">
+    <div class="col-md-4">
         <div class="form-group">
             <label asp-for="EnKaedahPerolehan" class="control-label"></label>
             <input asp-for="EnKaedahPerolehan" class="form-control form-control-sm text-uppercase" value="@Model.EnKaedahPerolehan.GetDisplayName()" readonly />
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="LHDNMSICId" class="control-label"></label>
+            <input class="form-control form-control-sm text-uppercase" value="@Model.LHDNMSIC?.Code - @Model.LHDNMSIC?.Description " readonly />
         </div>
     </div>
     <div class="col-md-4">
