@@ -11,8 +11,13 @@
     <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
 </head>
 
-<body style="font-size: 12px;">
+<body>
     <style>
+        body {
+            color: #525252;
+            font-size: 12px;
+        }
+
         .image-container {
             width: 80px;
             height: 80px;
@@ -76,6 +81,73 @@
         .sign {
             max-height: 70px;
             position: fixed;
+        }
+
+        .main-category {
+            padding-top: 5px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #707070;
+            color: #525252;
+        }
+
+        .table-header-skyblue-line {
+            padding-bottom: 12px;
+            border-bottom: 1px solid #66a5f2;
+        }
+
+        .table-header-skyblue {
+            padding-bottom: 12px;
+            background-color: #66a5f2;
+            color: white;
+        }
+
+        .table-body-lightgray {
+            padding-bottom: 12px;
+            border-top: 1px solid #c7c7c7;
+            border-left: 1px solid #c7c7c7;
+            border-right: 1px solid #c7c7c7;
+        }
+
+        .table-footer-skyblue {
+            padding-bottom: 12px;
+            border-top: 1px solid #66a5f2;
+        }
+
+        .table-item-label {
+            padding-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .table-item-divider {
+            padding-bottom: 10px;
+            font-size: 14px;
+            padding-left: 10px;
+        }
+
+        .table-item-input {
+            padding-bottom: 10px;
+            font-size: 14px;
+            padding-left: 6px;
+            text-transform: uppercase;
+        }
+
+        .table-signature-basic {
+            border-spacing: 10px;
+            border-collapse: separate;
+            margin-left: -10px;
+            margin-right: -10px;
+        }
+
+        .table-signature-basic-title {
+            padding-bottom: 60px;
+            font-size: 14px;
+            border-bottom: 1px solid #707070;
+        }
+
+        .table-signature-basic-item {
+            padding-bottom: 5px;
+            font-size: 14px;
+            line-height: 4px;
         }
     </style>
     @RenderBody()
