@@ -295,6 +295,11 @@ namespace YIT.Akaun.Infrastructure
                 opt.AddPolicy(Modules.kodSemakAkPenilaianPerolehan + "S", policy => policy.RequireClaim(Modules.kodSemakAkPenilaianPerolehan + "S"));
                 opt.AddPolicy(Modules.kodLulusAkPenilaianPerolehan + "E", policy => policy.RequireClaim(Modules.kodLulusAkPenilaianPerolehan + "E"));
 
+                opt.AddPolicy(Modules.kodLulusAkNotaMinta + "L", policy => policy.RequireClaim(Modules.kodLulusAkNotaMinta + "L"));
+                opt.AddPolicy(Modules.kodSahAkNotaMinta + "S", policy => policy.RequireClaim(Modules.kodSahAkNotaMinta + "S"));
+                opt.AddPolicy(Modules.kodSemakAkNotaMinta + "S", policy => policy.RequireClaim(Modules.kodSemakAkNotaMinta + "S"));
+                opt.AddPolicy(Modules.kodLulusAkNotaMinta + "E", policy => policy.RequireClaim(Modules.kodLulusAkNotaMinta + "E"));
+
                 opt.AddPolicy(Modules.kodLulusAkPO + "L", policy => policy.RequireClaim(Modules.kodLulusAkPO + "L"));
                 opt.AddPolicy(Modules.kodLulusAkPO + "E", policy => policy.RequireClaim(Modules.kodLulusAkPO + "E"));
 

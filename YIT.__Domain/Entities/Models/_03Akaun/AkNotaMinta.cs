@@ -40,6 +40,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("Cadangan Pembekal")]
         public int DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam { get; set; }
+        [DisplayName("MSIC")]
         public int? LHDNMSICId { get; set; }
         public LHDNMSIC? LHDNMSIC { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
@@ -48,6 +49,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public decimal JumlahTanpaCukai { get; set; }
         public ICollection<AkNotaMintaObjek>? AkNotaMintaObjek { get; set; }
         public ICollection<AkNotaMintaPerihal>? AkNotaMintaPerihal { get; set; }
+        [NotMapped]
+        public AkPV? AkPV { get; set; }
 
     }
 }

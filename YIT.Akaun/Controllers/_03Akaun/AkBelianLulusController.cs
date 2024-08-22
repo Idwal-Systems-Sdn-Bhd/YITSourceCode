@@ -94,7 +94,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pelulus, EnJenisModulKelulusan.Belian);
         }
 
-        [Authorize(Policy = modul)]
+        [Authorize(Policy = modul + "L")]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -153,7 +153,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                         item.Bil,
                         item.Perihal,
                         item.Kuantiti,
+                        item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                        item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                         item.Unit,
+                        item.EnLHDNJenisCukai,
+                        item.KadarCukai,
+                        item.AmaunCukai,
                         item.Harga,
                         item.Amaun
                         );

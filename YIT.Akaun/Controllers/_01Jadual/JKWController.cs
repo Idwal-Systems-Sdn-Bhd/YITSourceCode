@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
+using YIT.__Domain.Entities.Bases;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
@@ -488,14 +489,27 @@ namespace YIT.Akaun.Controllers._01Jadual
             }
         }
 
+        [HttpPost]
         public JsonResult GetJKWPTJBahagianList(int JKWId)
         {
             try
             {
                 var jKWPTJBahagianList = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
+                List<SelectItemListWithId> list = new List<SelectItemListWithId>();
+
+                
                 if (jKWPTJBahagianList != null && jKWPTJBahagianList.Count > 0)
                 {
-                    return Json(new { result = "OK", list = jKWPTJBahagianList });
+                    foreach (var item in jKWPTJBahagianList)
+                    {
+                        list.Add(new SelectItemListWithId
+                        {
+                            Id = item.Id,
+                            Value = item.Kod,
+                            TextValue = item.JBahagian?.Perihal + " ("+ item.JPTJ?.Perihal +")"
+                        });
+                    }
+                    return Json(new { result = "OK", list });
                 }
                 else
                 {

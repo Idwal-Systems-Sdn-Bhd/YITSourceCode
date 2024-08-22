@@ -90,7 +90,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pengesah, EnJenisModulKelulusan.Jurnal);
         }
 
-        [Authorize(Policy = modul)]
+        [Authorize(Policy = modul + "S")]
         public IActionResult Details(int? id)
         {
             if (id == null)

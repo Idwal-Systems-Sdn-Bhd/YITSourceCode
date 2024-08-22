@@ -1,0 +1,44 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+
+        //dropdown select2 loads data
+        GetDDaftarAwamList(@Model.DDaftarAwamId);
+        $('#moPerihalLHDNKodKlasifikasiId').select2({
+            dropdownParent: $('#moPerihal'),
+            theme: "bootstrap"
+        });
+        //
+    });
+    function GetDDaftarAwamList(id) {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDDaftarAwamPembekalList", "DDaftarAwam")',
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result == "OK") {
+                    // empty selection
+                    $("#DDaftarAwamId").empty();
+
+                    //append new options
+                    $("#DDaftarAwamId").append("<option value='' disable> -- SILA PLIH -- </option>");
+                    for (var i = 0; i < msg.list.length; i++) {
+                        var item = msg.list[i];
+
+                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.nama + "</option>";
+                        $("#DDaftarAwamId").append(str);
+                    }
+                    $("#DDaftarAwamId").val(id).trigger("change");
+
+                }
+                else {
+                    toastr.error(message);
+                    toastr.options.timeOut = 2000; // 2s
+                }
+
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    }
+    </script>

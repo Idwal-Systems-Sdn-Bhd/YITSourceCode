@@ -257,6 +257,11 @@ namespace YIT.__Domain.Entities._Statics
             new Claim(Modules.kodSemakAkPenilaianPerolehan + "S",Modules.namaSemakAkPenilaianPerolehan),
             new Claim(Modules.kodLulusAkPenilaianPerolehan + "E",Modules.namaLulusAkPenilaianPerolehan + " : Hantar Semula"),
 
+            new Claim(Modules.kodLulusAkNotaMinta + "L",Modules.namaLulusAkNotaMinta),
+            new Claim(Modules.kodSahAkNotaMinta + "S",Modules.namaSahAkNotaMinta),
+            new Claim(Modules.kodSemakAkNotaMinta + "S",Modules.namaSemakAkNotaMinta),
+            new Claim(Modules.kodLulusAkNotaMinta + "E",Modules.namaLulusAkNotaMinta + " : Hantar Semula"),
+
             new Claim(Modules.kodLulusAkPO + "L",Modules.namaLulusAkPO),
             new Claim(Modules.kodLulusAkPO + "E",Modules.namaLulusAkPO + " : Hantar Semula"),
 

@@ -14,24 +14,24 @@ using YIT.Akaun.Infrastructure;
 namespace YIT.Akaun.Controllers._03Akaun
 {
     [Authorize(Roles = Init.superAdminSupervisorRole)]
-    public class AbWaranSemakController : Microsoft.AspNetCore.Mvc.Controller
+    public class AkNotaMintaSemakController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = Modules.kodSemakAbWaran;
-        public const string namamodul = Modules.namaSemakAbWaran;
+        public const string modul = Modules.kodSemakAkNotaMinta;
+        public const string namamodul = Modules.namaSemakAkNotaMinta;
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly _AppLogIRepository<AppLog, int> _appLog;
         private readonly UserServices _userServices;
-        private readonly CartAbWaran _cart;
+        private readonly CartAkNotaMinta _cart;
 
-        public AbWaranSemakController(
+        public AkNotaMintaSemakController(
             ApplicationDbContext context,
             _IUnitOfWork unitOfWork,
             UserManager<IdentityUser> userManager,
             _AppLogIRepository<AppLog, int> appLog,
             UserServices userServices,
-            CartAbWaran cart)
+            CartAkNotaMinta cart)
         {
             _context = context;
             _unitOfWork = unitOfWork;
@@ -54,7 +54,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             PopulateFormFields(searchString, password, searchDate1, searchDate2);
 
-            List<AbWaran> abWaran = new List<AbWaran>();
+            List<AkNotaMinta> akPP = new List<AkNotaMinta>();
             if (!string.IsNullOrEmpty(searchDate1) && !string.IsNullOrEmpty(searchDate2))
             {
                 date1 = DateTime.Parse(searchDate1);
@@ -66,7 +66,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 // cek is user and password valid or not
                 HttpContext.Session.SetInt32("DPenyemakId", (int)dKonfigKelulusanId);
 
-                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password, EnJenisModulKelulusan.Waran, EnKategoriKelulusan.Penyemak) == false)
+                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password, EnJenisModulKelulusan.NotaMinta,EnKategoriKelulusan.Penyemak) == false)
                 {
                     TempData[SD.Error] = "Katalaluan Tidak Sah";
                     return View();
@@ -74,13 +74,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                 else
                 {
 
-                    abWaran = _unitOfWork.AbWaranRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.Sah, (int)dKonfigKelulusanId, EnKategoriKelulusan.Penyemak, EnJenisModulKelulusan.Waran);
+                    akPP = _unitOfWork.AkNotaMintaRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.Sah, (int)dKonfigKelulusanId,EnKategoriKelulusan.Penyemak, EnJenisModulKelulusan.NotaMinta);
 
                 }
             }
 
-            return View(abWaran);
-
+            return View(akPP);
         }
 
         [Authorize(Policy = modul + "S")]
@@ -91,15 +90,15 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            var abWaran = _unitOfWork.AbWaranRepo.GetDetailsById((int)id);
-            if (abWaran == null)
+            var akPP = _unitOfWork.AkNotaMintaRepo.GetDetailsById((int)id);
+            if (akPP == null)
             {
                 return NotFound();
             }
             EmptyCart();
             ViewBag.DKonfigKelulusanId = HttpContext.Session.GetInt32("DPenyemakId");
-            PopulateCartAbWaranFromDb(abWaran);
-            return View(abWaran);
+            PopulateCartAkNotaMintaFromDb(akPP);
+            return View(akPP);
         }
 
         // jsonResults
@@ -108,6 +107,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             try
             {
                 _cart.ClearObjek();
+                _cart.ClearPerihal();
 
                 return Json(new { result = "OK" });
             }
@@ -120,17 +120,17 @@ namespace YIT.Akaun.Controllers._03Akaun
         [Authorize(Policy = modul + "S")]
         public async Task<IActionResult> Semak(int id, int dKonfigKelulusanId, string syscode)
         {
-            var abWaran = _unitOfWork.AbWaranRepo.GetById((int)id);
+            var akPP = _unitOfWork.AkNotaMintaRepo.GetById((int)id);
 
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-            if (abWaran != null)
+            if (akPP != null)
             {
 
-                _unitOfWork.AbWaranRepo.Semak(id, dKonfigKelulusanId, user?.UserName ?? "");
+                _unitOfWork.AkNotaMintaRepo.Semak(id, dKonfigKelulusanId, user?.UserName ?? "");
 
-                _appLog.Insert("Posting", "Menyemak " + abWaran.NoRujukan ?? "" + "; penyemakId: " + dKonfigKelulusanId.ToString(), abWaran.NoRujukan ?? "", id, abWaran.Jumlah, pekerjaId, modul, syscode, namamodul, user);
+                _appLog.Insert("Posting", "Menyemak " + akPP.NoRujukan ?? "" + "; penyemakId: " + dKonfigKelulusanId.ToString(), akPP.NoRujukan ?? "", id, akPP.Jumlah, pekerjaId, modul, syscode, namamodul, user);
                 _context.SaveChanges();
                 TempData[SD.Success] = "Data berjaya disemak..!";
             }
@@ -145,17 +145,17 @@ namespace YIT.Akaun.Controllers._03Akaun
         [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> HantarSemulaAsync(int id, string? tindakan, string syscode)
         {
-            var abWaran = _unitOfWork.AbWaranRepo.GetById((int)id);
+            var akPP = _unitOfWork.AkNotaMintaRepo.GetById((int)id);
 
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-            if (abWaran != null)
+            if (akPP != null)
             {
-                _unitOfWork.AbWaranRepo.HantarSemula(id, tindakan, user?.UserName ?? "");
+                _unitOfWork.AkNotaMintaRepo.HantarSemula(id,tindakan,user?.UserName ?? "");
 
-                _appLog.Insert("Ubah", "Hantar Semula " + abWaran.NoRujukan ?? "", abWaran.NoRujukan ?? "", id, abWaran.Jumlah, pekerjaId, modul, syscode, namamodul, user);
-                _context.SaveChanges();
+                _appLog.Insert("Ubah", "Hantar Semula " + akPP.NoRujukan ?? "", akPP.NoRujukan ?? "", id, akPP.Jumlah, pekerjaId, modul, syscode, namamodul, user);
+                await _context.SaveChangesAsync();
                 TempData[SD.Success] = "Data berjaya dihantar semula..!";
             }
             else
@@ -165,28 +165,50 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             return RedirectToAction(nameof(Index));
         }
-        private void PopulateCartAbWaranFromDb(AbWaran abWaran)
+
+        private void PopulateCartAkNotaMintaFromDb(AkNotaMinta akPP)
         {
-            if (abWaran.AbWaranObjek != null)
+            if (akPP.AkNotaMintaObjek != null)
             {
-                foreach (var item in abWaran.AbWaranObjek)
+                foreach (var item in akPP.AkNotaMintaObjek)
                 {
                     _cart.AddItemObjek(
-                           abWaran.Id,
-                           item.JKWPTJBahagianId,
-                           item.AkCartaId,
-                           item.Amaun,
-                           item.TK);
+                            akPP.Id,
+                            item.JKWPTJBahagianId,
+                            item.AkCartaId,
+                            item.Amaun);
                 }
             }
-            PopulateListViewFromCart();
+
+            if (akPP.AkNotaMintaPerihal != null)
+            {
+                foreach (var item in akPP.AkNotaMintaPerihal)
+                {
+                    _cart.AddItemPerihal(
+                        akPP.Id,
+                        item.Bil,
+                        item.Perihal,
+                        item.Kuantiti,
+                        item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                        item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, 
+                        item.Unit, 
+                        item.EnLHDNJenisCukai, 
+                        item.KadarCukai, 
+                        item.AmaunCukai,
+                        item.Harga,
+                        item.Amaun
+                        );
+                }
+
+                PopulateListViewFromCart();
+            }
         }
 
         private void PopulateListViewFromCart()
         {
-            List<AbWaranObjek> objek = _cart.AbWaranObjek.ToList();
+            List<AkNotaMintaObjek> objek = _cart.AkNotaMintaObjek.ToList();
 
-            foreach (AbWaranObjek item in objek)
+            foreach (AkNotaMintaObjek item in objek)
             {
                 var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
@@ -199,7 +221,11 @@ namespace YIT.Akaun.Controllers._03Akaun
                 item.AkCarta = akCarta;
             }
 
-            ViewBag.abWaranObjek = objek;
+            ViewBag.akNotaMintaObjek = objek;
+
+            List<AkNotaMintaPerihal> perihal = _cart.AkNotaMintaPerihal.ToList();
+
+            ViewBag.akNotaMintaPerihal = perihal;
         }
 
         private void PopulateFormFields(string searchString, string password, string searchDate1, string searchDate2)
@@ -208,8 +234,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.password = password;
             ViewBag.searchDate1 = searchDate1 ?? DateTime.Now.ToString("dd/MM/yyyy");
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
-            ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Penyemak, EnJenisModulKelulusan.Waran);
+            ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Penyemak, EnJenisModulKelulusan.NotaMinta);
         }
-
     }
 }

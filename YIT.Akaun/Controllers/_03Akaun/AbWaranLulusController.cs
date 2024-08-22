@@ -83,7 +83,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         }
 
-        [Authorize(Policy = modul)]
+        [Authorize(Policy = modul + "L")]
         public IActionResult Details(int? id)
         {
             if (id == null)

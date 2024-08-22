@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
@@ -12,6 +14,7 @@ using YIT._DataAccess.Services;
 using YIT._DataAccess.Services.Cart;
 using YIT._DataAccess.Services.Math;
 using YIT.Akaun.Infrastructure;
+using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
@@ -59,11 +62,40 @@ namespace YIT.Akaun.Controllers._03Akaun
                 date2 = DateTime.Parse(searchDate2);
             }
 
-            PopulateFormFields(searchString, searchDate1, searchDate2);
+            SaveFormFields(searchString, searchDate1, searchDate2);
 
             var akNotaMinta = _unitOfWork.AkNotaMintaRepo.GetResults(searchString, date1, date2, searchColumn, EnStatusBorang.Semua);
 
             return View(akNotaMinta);
+        }
+
+        private void SaveFormFields(string? searchString, string? searchDate1, string? searchDate2)
+        {
+            PopulateFormFields(searchString, searchDate1, searchDate2);
+
+            if (searchString != null)
+            {
+                HttpContext.Session.SetString("searchString", searchString);
+            }
+            else
+            {
+                searchString = HttpContext.Session.GetString("searchString");
+                ViewBag.searchString = searchString;
+            }
+
+            if (searchDate1 != null && searchDate2 != null)
+            {
+                HttpContext.Session.SetString("searchDate1", searchDate1);
+                HttpContext.Session.SetString("searchDate2", searchDate2);
+            }
+            else
+            {
+                searchDate1 = HttpContext.Session.GetString("searchDate1");
+                searchDate2 = HttpContext.Session.GetString("searchDate2");
+
+                ViewBag.searchDate1 = searchDate1;
+                ViewBag.searchDate2 = searchDate2;
+            }
         }
 
         [Authorize(Policy = modul)]
@@ -115,7 +147,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             string? fullName = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.Nama;
 
             EmptyCart();
-            PopulateDropDownList(fullName ?? "");
+            PopulateDropDownList(fullName ?? "", 1);
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.NM.GetDisplayName(), DateTime.Now.ToString("yyyy"));
             return View();
         }
@@ -140,7 +172,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     {
                         TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
                         ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.NM.GetDisplayName(), akNotaMinta.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
-                        PopulateDropDownList(fullName ?? "");
+                        PopulateDropDownList(fullName ?? "", akNotaMinta.JKWId);
                         PopulateListViewFromCart();
                         return View(akNotaMinta);
                     }
@@ -165,7 +197,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.NM.GetDisplayName(), akNotaMinta.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
-            PopulateDropDownList(fullName ?? "");
+            PopulateDropDownList(fullName ?? "", akNotaMinta.JKWId);
             PopulateListViewFromCart();
             return View(akNotaMinta);
         }
@@ -191,7 +223,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
 
             EmptyCart();
-            PopulateDropDownList(akNotaMinta.DPemohon?.Nama ?? "");
+            PopulateDropDownList(akNotaMinta.DPemohon?.Nama ?? "", akNotaMinta.JKWId);
             PopulateCartAkNotaMintaFromDb(akNotaMinta);
             return View(akNotaMinta);
         }
@@ -216,7 +248,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     if (_unitOfWork.DKonfigKelulusanRepo.IsPersonAvailable(EnJenisModulKelulusan.NotaMinta, EnKategoriKelulusan.Pengesah, jKWPtjBahagian.JBahagianId, akNotaMinta.Jumlah) == false)
                     {
                         TempData[SD.Error] = "Tiada Pengesah yang wujud untuk senarai kod bahagian berikut.";
-                        PopulateDropDownList(fullName ?? "");
+                        PopulateDropDownList(fullName ?? "", akNotaMinta.JKWId);
                         PopulateListViewFromCart();
                         return View(akNotaMinta);
                     }
@@ -293,7 +325,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDropDownList(fullName ?? "");
+            PopulateDropDownList(fullName ?? "", akNotaMinta.JKWId);
             PopulateListViewFromCart();
             return View(akNotaMinta);
         }
@@ -370,14 +402,20 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RunningNumberFormatter.GenerateRunningNumber(prefix, maxRefNo, "00000");
         }
 
-        private void PopulateDropDownList(string fullName)
+        private void PopulateDropDownList(string fullName, int JKWId)
         {
 
             ViewBag.FullName = fullName;
-            ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
+            ViewBag.JKW = _unitOfWork.JKWRepo.GetAllDetails();
             ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
-            ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
+            ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
+            ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
+            ViewBag.EnKaedahPerolehan = EnumHelper<EnKaedahPerolehan>.GetList();
+            ViewBag.EnLHDNJenisCukai = EnumHelper<EnLHDNJenisCukai>.GetList();
+            ViewBag.LHDNMSIC = _unitOfWork.LHDNMSICRepo.GetAll();
+            ViewBag.LHDNKodKlasifikasi = _unitOfWork.LHDNKodKlasifikasiRepo.GetAll();
+            ViewBag.LHDNUnitUkuran = _unitOfWork.LHDNUnitUkuranRepo.GetAll();
 
         }
 
@@ -404,7 +442,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                         item.Bil,
                         item.Perihal,
                         item.Kuantiti,
-                        item.Unit,
+                        item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                        item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, 
+                        item.Unit, 
+                        item.EnLHDNJenisCukai, 
+                        item.KadarCukai, 
+                        item.AmaunCukai,
                         item.Harga,
                         item.Amaun
                         );
@@ -438,12 +481,13 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.akNotaMintaPerihal = perihal;
         }
 
-        private void PopulateFormFields(string searchString, string searchDate1, string searchDate2)
+        private void PopulateFormFields(string? searchString, string? searchDate1, string? searchDate2)
         {
             ViewBag.searchString = searchString;
             ViewBag.searchDate1 = searchDate1 ?? DateTime.Now.ToString("dd/MM/yyyy");
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
         }
+
 
         // jsonResults
         public JsonResult EmptyCart()
@@ -590,7 +634,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 if (akNotaMintaPerihal != null)
                 {
-                    _cart.AddItemPerihal(akNotaMintaPerihal.AkNotaMintaId, akNotaMintaPerihal.Bil, akNotaMintaPerihal.Perihal, akNotaMintaPerihal.Kuantiti, akNotaMintaPerihal.Unit, akNotaMintaPerihal.Harga, akNotaMintaPerihal.Amaun);
+                    _cart.AddItemPerihal(akNotaMintaPerihal.AkNotaMintaId, akNotaMintaPerihal.Bil, akNotaMintaPerihal.Perihal, akNotaMintaPerihal.Kuantiti,akNotaMintaPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akNotaMintaPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akNotaMintaPerihal.Unit,akNotaMintaPerihal.EnLHDNJenisCukai,  akNotaMintaPerihal.KadarCukai, akNotaMintaPerihal.AmaunCukai, akNotaMintaPerihal.Harga, akNotaMintaPerihal.Amaun);
                 }
 
 
@@ -649,7 +693,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.RemoveItemPerihal(akNotaMintaPerihal.Bil);
 
-                    _cart.AddItemPerihal(akNotaMintaPerihal.AkNotaMintaId, akNotaMintaPerihal.Bil, akNotaMintaPerihal.Perihal, akNotaMintaPerihal.Kuantiti, akNotaMintaPerihal.Unit, akNotaMintaPerihal.Harga, akNotaMintaPerihal.Amaun);
+                    _cart.AddItemPerihal(akNotaMintaPerihal.AkNotaMintaId, akNotaMintaPerihal.Bil, akNotaMintaPerihal.Perihal, akNotaMintaPerihal.Kuantiti, akNotaMintaPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akNotaMintaPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akNotaMintaPerihal.Unit, akNotaMintaPerihal.EnLHDNJenisCukai, akNotaMintaPerihal.KadarCukai, akNotaMintaPerihal.AmaunCukai, akNotaMintaPerihal.Harga, akNotaMintaPerihal.Amaun);
                 }
 
                 return Json(new { result = "OK" });
@@ -669,7 +713,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 foreach (AkNotaMintaObjek item in objek)
                 {
-                    var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetById(item.JKWPTJBahagianId);
+                    var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
                     item.JKWPTJBahagian = jkwPtjBahagian;
 
@@ -689,5 +733,33 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return Json(new { result = "ERROR", message = ex.Message });
             }
         }
+
+        // printing akNotaMinta
+        [AllowAnonymous]
+        public async Task<IActionResult> PrintPDFById(int id)
+        {
+            AkNotaMinta akNotaMinta = _unitOfWork.AkNotaMintaRepo.GetDetailsById(id);
+
+            var company = await _userServices.GetCompanyDetails();
+            EmptyCart();
+            PopulateCartAkNotaMintaFromDb(akNotaMinta);
+            //string customSwitches = "--page-offset 0 --footer-center [page] / [toPage] --footer-font-size 6";
+
+            return new ViewAsPdf(modul + EnJenisFail.PDF, akNotaMinta,
+                new ViewDataDictionary(ViewData) {
+                    { "NamaSyarikat", company.NamaSyarikat },
+                    { "AlamatSyarikat1", company.AlamatSyarikat1 },
+                    { "AlamatSyarikat2", company.AlamatSyarikat2 },
+                    { "AlamatSyarikat3", company.AlamatSyarikat3 }
+                })
+            {
+                PageMargins = { Left = 15, Bottom = 10, Right = 15, Top = 10 },
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
+                //CustomSwitches = "--footer-center \"[page]/[toPage]\"" +
+                //        " --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
+                PageSize = Rotativa.AspNetCore.Options.Size.A4,
+            };
+        }
+        // printing akNotaMinta end
     }
 }

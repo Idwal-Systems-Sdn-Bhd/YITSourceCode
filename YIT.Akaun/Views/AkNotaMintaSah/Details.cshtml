@@ -1,0 +1,48 @@
+﻿@model AkNotaMinta
+
+@{
+    ViewData["Title"] = "Pengesahan Nota Minta - Papar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card box-shadow mb-2">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="text-uppercase text-dark mb-0">@ViewData["Title"]</h5>
+                <span class="ac-ref"><a asp-action="Index" class="text-secondary">Indeks</a> / Papar</span>
+            </div>
+            <div class="col-4">
+                <a asp-action="Index" class="text-secondary float-end"><i class="fas fa-times fa-2x"></i></a>
+            </div>
+
+        </div>
+        <hr />
+        <partial name="~/Views/AkNotaMinta/__DetailsPartial.cshtml">
+            <hr />
+
+            <div class="form-group">
+                <a asp-action="Sah" asp-route-id="@Model.Id" asp-route-syscode="SPPB" asp-route-dKonfigKelulusanId="@ViewBag.DKonfigKelulusanId" class="btn ac-primary btn-sm">Sah</a>
+                <a asp-action="Index" class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+
+            </div>
+
+    </div>
+</div>
+<div class="card box-shadow">
+    <div class="card-body">
+        <form asp-action="HantarSemula">
+            <div asp-validation-summary="ModelOnly"></div>
+            <input type="hidden" asp-for="Id" />
+            <input name="syscode" value="SPPB" hidden />
+            <div class="row mb-2">
+                <div class="form-group">
+                    <label class="control-label">Tindakan</label>
+                    <textarea name="tindakan" class="form-control text-uppercase form-control-sm" rows="2" required></textarea>
+                    <span class="text-danger">sila isi ruang ini untuk operasi hantar semula</span>
+                </div>
+            </div>
+            <input type="submit" value="Hantar Semula" class="btn ac-danger btn-sm" />
+        </form>
+    </div>
+</div>
