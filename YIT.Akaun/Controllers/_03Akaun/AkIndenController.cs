@@ -14,6 +14,7 @@ using YIT._DataAccess.Services;
 using YIT._DataAccess.Services.Cart;
 using YIT._DataAccess.Services.Math;
 using YIT.Akaun.Infrastructure;
+using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
@@ -357,6 +358,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                 akInden.AkIndenObjek = _cart.AkIndenObjek?.ToList();
                 akInden.AkIndenPerihal = _cart.AkIndenPerihal.ToList();
 
+                if (akInden.AkIndenPerihal != null && akInden.AkIndenPerihal.Any())
+                {
+                    decimal jumlahCukai = 0;
+                    decimal jumlahTanpaCukai = 0;
+                    foreach (var item in akInden.AkIndenPerihal)
+                    {
+                        jumlahCukai += item.AmaunCukai;
+                        jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                    }
+
+                    akInden.JumlahCukai = jumlahCukai;
+                    akInden.JumlahTanpaCukai = jumlahTanpaCukai;
+                }
+
                 _context.Add(akInden);
                 _appLog.Insert("Tambah", akInden.NoRujukan ?? "", akInden.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
@@ -461,6 +476,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akInden.TarKemaskini = DateTime.Now;
                     akInden.AkIndenObjek = _cart.AkIndenObjek?.ToList();
                     akInden.AkIndenPerihal = _cart.AkIndenPerihal.ToList();
+
+                    if (akInden.AkIndenPerihal != null && akInden.AkIndenPerihal.Any())
+                    {
+                        decimal jumlahCukai = 0;
+                        decimal jumlahTanpaCukai = 0;
+                        foreach (var item in akInden.AkIndenPerihal)
+                        {
+                            jumlahCukai += item.AmaunCukai;
+                            jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                        }
+
+                        akInden.JumlahCukai = jumlahCukai;
+                        akInden.JumlahTanpaCukai = jumlahTanpaCukai;
+                    }
 
                     _unitOfWork.AkIndenRepo.Update(akInden);
 
@@ -661,6 +690,10 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
             ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
             ViewBag.AkPenilaianPerolehan = _unitOfWork.AkPenilaianPerolehanRepo.GetAllByJenis(1);
+            ViewBag.EnLHDNJenisCukai = EnumHelper<EnLHDNJenisCukai>.GetList();
+            ViewBag.LHDNMSIC = _unitOfWork.LHDNMSICRepo.GetAll();
+            ViewBag.LHDNKodKlasifikasi = _unitOfWork.LHDNKodKlasifikasiRepo.GetAll();
+            ViewBag.LHDNUnitUkuran = _unitOfWork.LHDNUnitUkuranRepo.GetAll();
         }
 
         private void PopulateCartAkIndenFromDb(AkInden akInden)
@@ -686,7 +719,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                         item.Bil,
                         item.Perihal,
                         item.Kuantiti,
+                        item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                        item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                         item.Unit,
+                        item.EnLHDNJenisCukai,
+                        item.KadarCukai,
+                        item.AmaunCukai,
                         item.Harga,
                         item.Amaun
                         );
@@ -749,7 +787,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                                 item.Bil,
                                 item.Perihal,
                                 item.Kuantiti,
+                                item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                                item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                                 item.Unit,
+                                item.EnLHDNJenisCukai,
+                                item.KadarCukai,
+                                item.AmaunCukai,
                                 item.Harga,
                                 item.Amaun
                                 );
@@ -871,7 +914,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 if (akIndenPerihal != null)
                 {
-                    _cart.AddItemPerihal(akIndenPerihal.AkIndenId, akIndenPerihal.Bil, akIndenPerihal.Perihal, akIndenPerihal.Kuantiti, akIndenPerihal.Unit, akIndenPerihal.Harga, akIndenPerihal.Amaun);
+                    _cart.AddItemPerihal(akIndenPerihal.AkIndenId, akIndenPerihal.Bil, akIndenPerihal.Perihal, akIndenPerihal.Kuantiti, akIndenPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akIndenPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,akIndenPerihal.Unit,akIndenPerihal.EnLHDNJenisCukai,akIndenPerihal.KadarCukai, akIndenPerihal.AmaunCukai, akIndenPerihal.Harga, akIndenPerihal.Amaun);
                 }
 
 
@@ -930,7 +973,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.RemoveItemPerihal(akIndenPerihal.Bil);
 
-                    _cart.AddItemPerihal(akIndenPerihal.AkIndenId, akIndenPerihal.Bil, akIndenPerihal.Perihal, akIndenPerihal.Kuantiti, akIndenPerihal.Unit, akIndenPerihal.Harga, akIndenPerihal.Amaun);
+                    _cart.AddItemPerihal(akIndenPerihal.AkIndenId, akIndenPerihal.Bil, akIndenPerihal.Perihal, akIndenPerihal.Kuantiti, akIndenPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akIndenPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akIndenPerihal.Unit, akIndenPerihal.EnLHDNJenisCukai, akIndenPerihal.KadarCukai, akIndenPerihal.AmaunCukai, akIndenPerihal.Harga, akIndenPerihal.Amaun);
                 }
 
                 return Json(new { result = "OK" });

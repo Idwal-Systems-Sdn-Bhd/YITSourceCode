@@ -2,7 +2,10 @@
     $(document).ready(function () {
         //dropdown select2 loads data
         GetDDaftarAwamList();
-
+        $('#moPerihalLHDNKodKlasifikasiId').select2({
+            dropdownParent: $('#moPerihal'),
+            theme: "bootstrap"
+        });
         //
     });
     function GetDDaftarAwamList() {

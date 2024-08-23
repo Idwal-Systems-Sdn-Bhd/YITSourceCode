@@ -190,6 +190,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                 akNotaMinta.AkNotaMintaObjek = _cart.AkNotaMintaObjek?.ToList();
                 akNotaMinta.AkNotaMintaPerihal = _cart.AkNotaMintaPerihal.ToList();
 
+                if (akNotaMinta.AkNotaMintaPerihal != null && akNotaMinta.AkNotaMintaPerihal.Any())
+                {
+                    decimal jumlahCukai = 0;
+                    decimal jumlahTanpaCukai = 0;
+                    foreach (var item in akNotaMinta.AkNotaMintaPerihal)
+                    {
+                        jumlahCukai += item.AmaunCukai;
+                        jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                    }
+
+                    akNotaMinta.JumlahCukai = jumlahCukai;
+                    akNotaMinta.JumlahTanpaCukai = jumlahTanpaCukai;
+                }
+
                 _context.Add(akNotaMinta);
                 _appLog.Insert("Tambah", akNotaMinta.NoRujukan ?? "", akNotaMinta.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
@@ -294,6 +308,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akNotaMinta.TarKemaskini = DateTime.Now;
                     akNotaMinta.AkNotaMintaObjek = _cart.AkNotaMintaObjek?.ToList();
                     akNotaMinta.AkNotaMintaPerihal = _cart.AkNotaMintaPerihal.ToList();
+
+                    if (akNotaMinta.AkNotaMintaPerihal != null && akNotaMinta.AkNotaMintaPerihal.Any())
+                    {
+                        decimal jumlahCukai = 0;
+                        decimal jumlahTanpaCukai = 0;
+                        foreach (var item in akNotaMinta.AkNotaMintaPerihal)
+                        {
+                            jumlahCukai += item.AmaunCukai;
+                            jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                        }
+
+                        akNotaMinta.JumlahCukai = jumlahCukai;
+                        akNotaMinta.JumlahTanpaCukai = jumlahTanpaCukai;
+                    }
 
                     _unitOfWork.AkNotaMintaRepo.Update(akNotaMinta);
 

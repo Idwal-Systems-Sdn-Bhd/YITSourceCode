@@ -113,7 +113,7 @@
                         <span asp-validation-for="EnKaedahPerolehan" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" hidden>
                     <div class="form-group">
                         <label asp-for="LHDNMSICId" class="control-label"></label>
                         <select asp-for="LHDNMSICId" class="form-control form-control-sm text-uppercase select2" required>
@@ -126,7 +126,7 @@
 
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="JKWId" class="control-label"></label>
                         <input class="form-control form-control-sm" readonly value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" />

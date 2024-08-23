@@ -149,7 +149,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                         item.Bil,
                         item.Perihal,
                         item.Kuantiti,
+                        item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                        item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                         item.Unit,
+                        item.EnLHDNJenisCukai,
+                        item.KadarCukai,
+                        item.AmaunCukai,
                         item.Harga,
                         item.Amaun
                         );
@@ -399,6 +404,10 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
             ViewBag.AkInden = _unitOfWork.AkIndenRepo.GetAllByStatus(EnStatusBorang.Lulus);
             ViewBag.EnJenisPerolehan = EnumHelper<EnJenisPerolehan>.GetList();
+            ViewBag.EnLHDNJenisCukai = EnumHelper<EnLHDNJenisCukai>.GetList();
+            ViewBag.LHDNMSIC = _unitOfWork.LHDNMSICRepo.GetAll();
+            ViewBag.LHDNKodKlasifikasi = _unitOfWork.LHDNKodKlasifikasiRepo.GetAll();
+            ViewBag.LHDNUnitUkuran = _unitOfWork.LHDNUnitUkuranRepo.GetAll();
         }
 
         [HttpPost]
@@ -437,6 +446,20 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 akPelarasanInden.AkPelarasanIndenObjek = _cart.AkPelarasanIndenObjek?.ToList();
                 akPelarasanInden.AkPelarasanIndenPerihal = _cart.AkPelarasanIndenPerihal.ToList();
+
+                if (akPelarasanInden.AkPelarasanIndenPerihal != null && akPelarasanInden.AkPelarasanIndenPerihal.Any())
+                {
+                    decimal jumlahCukai = 0;
+                    decimal jumlahTanpaCukai = 0;
+                    foreach (var item in akPelarasanInden.AkPelarasanIndenPerihal)
+                    {
+                        jumlahCukai += item.AmaunCukai;
+                        jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                    }
+
+                    akPelarasanInden.JumlahCukai = jumlahCukai;
+                    akPelarasanInden.JumlahTanpaCukai = jumlahTanpaCukai;
+                }
 
                 _context.Add(akPelarasanInden);
                 _appLog.Insert("Tambah", akPelarasanInden.NoRujukan ?? "", akPelarasanInden.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
@@ -542,6 +565,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akPelarasanInden.TarKemaskini = DateTime.Now;
                     akPelarasanInden.AkPelarasanIndenObjek = _cart.AkPelarasanIndenObjek?.ToList();
                     akPelarasanInden.AkPelarasanIndenPerihal = _cart.AkPelarasanIndenPerihal.ToList();
+
+                    if (akPelarasanInden.AkPelarasanIndenPerihal != null && akPelarasanInden.AkPelarasanIndenPerihal.Any())
+                    {
+                        decimal jumlahCukai = 0;
+                        decimal jumlahTanpaCukai = 0;
+                        foreach (var item in akPelarasanInden.AkPelarasanIndenPerihal)
+                        {
+                            jumlahCukai += item.AmaunCukai;
+                            jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                        }
+
+                        akPelarasanInden.JumlahCukai = jumlahCukai;
+                        akPelarasanInden.JumlahTanpaCukai = jumlahTanpaCukai;
+                    }
 
                     _unitOfWork.AkPelarasanIndenRepo.Update(akPelarasanInden);
 
@@ -749,7 +786,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                                 item.Bil,
                                 item.Perihal,
                                 item.Kuantiti,
+                                item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                                item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                                 item.Unit,
+                                item.EnLHDNJenisCukai,
+                                item.KadarCukai,
+                                item.AmaunCukai,
                                 item.Harga,
                                 item.Amaun
                                 );
@@ -871,7 +913,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 if (akPelarasanIndenPerihal != null)
                 {
-                    _cart.AddItemPerihal(akPelarasanIndenPerihal.AkPelarasanIndenId, akPelarasanIndenPerihal.Bil, akPelarasanIndenPerihal.Perihal, akPelarasanIndenPerihal.Kuantiti, akPelarasanIndenPerihal.Unit, akPelarasanIndenPerihal.Harga, akPelarasanIndenPerihal.Amaun);
+                    _cart.AddItemPerihal(akPelarasanIndenPerihal.AkPelarasanIndenId, akPelarasanIndenPerihal.Bil, akPelarasanIndenPerihal.Perihal, akPelarasanIndenPerihal.Kuantiti,  akPelarasanIndenPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akPelarasanIndenPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akPelarasanIndenPerihal.Unit, akPelarasanIndenPerihal.EnLHDNJenisCukai, akPelarasanIndenPerihal.KadarCukai, akPelarasanIndenPerihal.AmaunCukai, akPelarasanIndenPerihal.Harga, akPelarasanIndenPerihal.Amaun);
                 }
 
 
@@ -930,7 +972,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.RemoveItemPerihal(akPelarasanIndenPerihal.Bil);
 
-                    _cart.AddItemPerihal(akPelarasanIndenPerihal.AkPelarasanIndenId, akPelarasanIndenPerihal.Bil, akPelarasanIndenPerihal.Perihal, akPelarasanIndenPerihal.Kuantiti, akPelarasanIndenPerihal.Unit, akPelarasanIndenPerihal.Harga, akPelarasanIndenPerihal.Amaun);
+                    _cart.AddItemPerihal(akPelarasanIndenPerihal.AkPelarasanIndenId, akPelarasanIndenPerihal.Bil, akPelarasanIndenPerihal.Perihal, akPelarasanIndenPerihal.Kuantiti, akPelarasanIndenPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akPelarasanIndenPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akPelarasanIndenPerihal.Unit, akPelarasanIndenPerihal.EnLHDNJenisCukai, akPelarasanIndenPerihal.KadarCukai, akPelarasanIndenPerihal.AmaunCukai, akPelarasanIndenPerihal.Harga, akPelarasanIndenPerihal.Amaun);
                 }
 
                 return Json(new { result = "OK" });

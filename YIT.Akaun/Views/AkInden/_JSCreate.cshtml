@@ -8,34 +8,42 @@
     });
 
     function GetJKWPTJBahagianList(jKWId) {
+        $("#objekJKWPTJBahagianId").empty();
+        $("#moObjekJKWPTJBahagianId").empty();
         $.ajax({
             type: "POST",
             url: '@Url.Action("GetJKWPTJBahagianList", "JKW")',
-            data: { JKWId : jKWId },
+            data: {
+                JKWId: jKWId
+            },
             dataType: "json",
             success: function (msg) {
+                console.log(msg);
+
                 if (msg.result == "OK") {
                     // empty selection
-                    $("#objekJKWPTJBahagianId").empty();
-                    $("#moObjekJKWPTJBahagianId").empty();
-
-
                     //append new options
                     $("#objekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
-                    for (var i = 0; i < msg.list.length; i++) {
-                        var item = msg.list[i];
+                    if (msg.list.length > 0) {
+                        for (var i = 0; i < msg.list.length; i++) {
+                            var item = msg.list[i];
 
-                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
-                        $("#objekJKWPTJBahagianId").append(str);
+                            var str = "<option value='" + item.id + "'>" + item.value + " - " + item.textValue + "</option>";
+                            $("#objekJKWPTJBahagianId").append(str);
+                        }
                     }
+
 
                     $("#moObjekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
-                    for (var i = 0; i < msg.list.length; i++) {
-                        var item = msg.list[i];
+                    if (msg.list.length > 0) {
+                        for (var i = 0; i < msg.list.length; i++) {
+                            var item = msg.list[i];
 
-                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
-                        $("#moObjekJKWPTJBahagianId").append(str);
+                            var str = "<option value='" + item.id + "'>" + item.value + " - " + item.textValue + "</option>";
+                            $("#moObjekJKWPTJBahagianId").append(str);
+                        }
                     }
+
                 }
                 else {
                     toastr.error(message);
@@ -75,7 +83,9 @@
                 success: function (msg) {
                     $("#JKWId").val(msg?.record?.jkw?.id).change();
                     $("#DDaftarAwamId").val(msg?.record?.dDaftarAwam?.id).change();
+                    $("#LHDNMSICId").val(msg?.record?.lhdnmsicId).change();
                     $("#DDaftarAwamId option").prop('disabled', false);
+                    $("#LHDNMSICId option").prop('disabled', false);
 
                     PopulateTablesFromCart();
                 },
@@ -96,8 +106,8 @@
             success: function (msg) {
                 $("table tbody#tbodyObjek").empty();
                 $("table tbody#tbodyPerihal").empty();
-                $("#objekJumlah").val("0.00");
-                $("#objekJumlahPerihal").val("0.00");
+                $("#Jumlah").val("0.00");
+                $("#jumlahPerihal").val("0.00");
                 $("#objekAkCartaId option").prop('disabled', false);
                 $("#objekAkCartaId option:selected").prop('disabled', true);
                 $("#objekJBahagianId option").prop('disabled', false);
@@ -127,6 +137,17 @@
         }
     }
     // check end
+
+    // close modal objek
+    function CloseModalObjek() {
+        $("#moObjek").hide();
+        $(".modal-backdrop").prop("hidden", true);
+    }
+    // close modal perihal
+    function CloseModalPerihal() {
+        $("#moPerihal").hide();
+        $(".modal-backdrop").prop("hidden", true);
+    }
 
     // auto calculate total based on amount and quantity
     $("body").on('change', "#perihalHarga, #perihalKuantiti", function () {
@@ -425,6 +446,8 @@
                 //insert notification here
 
                 PopulateTablesFromCart();
+                CloseModalObjek();
+
             }
         });
     };
@@ -625,8 +648,12 @@
                     $("#moPerihalBil").val(r.record.bil);
                     $("#moPerihalPerihal").val(r.record.perihal);
                     $("#moPerihalKuantiti").val(r.record.kuantiti);
+                    $("#moPerihalLHDNKodKlasifikasiId").val(r.record.lhdnKodKlasifikasiId).change();
                     $("#moPerihalUnit").val(r.record.unit);
                     $("#moPerihalHarga").val(r.record.harga);
+                    $("#moPerihalEnLHDNJenisCukai").val(r.record.enLHDNJenisCukai);
+                    $("#moPerihalKadarCukai").val(r.record.kadarCukai);
+                    $("#moPerihalAmaunCukai").val(r.record.amaunCukai.toFixed(2));
                     $("#moPerihalAmaun").val(r.record.amaun.toFixed(2));
 
                     //show modal perihal
@@ -643,7 +670,10 @@
         var bil = $("#moPerihalBil").val();
         var perihal = $("#moPerihalPerihal").val();
         var kuantiti = $("#moPerihalKuantiti").val();
+        var lhdnKodKlasifikasiId = $("#moPerihalLHDNKodKlasifikasiId").val();
         var unit = $("#moPerihalUnit").val();
+        var enLHDNJenisCukai = $("#moPerihalEnLHDNJenisCukai").val();
+        var kadarCukai = $("#moPerihalKadarCukai").val();
         var harga = $("#moPerihalHarga").val();
         var amaun = $("#moPerihalAmaun").val();
         var jumlah = $("#perihalJumlah");
@@ -654,7 +684,10 @@
             Bil: bil,
             Perihal: perihal,
             Kuantiti: kuantiti,
+            LHDNKodKlasifikasiId: lhdnKodKlasifikasiId,
             Unit: unit,
+            EnLHDNJenisCukai: enLHDNJenisCukai,
+            KadarCukai: kadarCukai,
             Harga: harga,
             Amaun: amaun
         }
@@ -666,6 +699,8 @@
             success: function (r) {
                 //insert notification here
                 PopulateTablesFromCart();
+                CloseModalPerihal();
+
             }
         });
     };

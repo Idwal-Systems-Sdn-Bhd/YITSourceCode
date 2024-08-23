@@ -70,13 +70,13 @@
             <input asp-for="EnKaedahPerolehan" class="form-control form-control-sm text-uppercase" value="@Model.EnKaedahPerolehan.GetDisplayName()" readonly />
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4" hidden>
         <div class="form-group">
             <label asp-for="LHDNMSICId" class="control-label"></label>
             <input class="form-control form-control-sm text-uppercase" value="@Model.LHDNMSIC?.Code - @Model.LHDNMSIC?.Description " readonly />
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="form-group">
             <label asp-for="JKWId" class="control-label"></label>
             <input class="form-control form-control-sm text-uppercase" value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" readonly />

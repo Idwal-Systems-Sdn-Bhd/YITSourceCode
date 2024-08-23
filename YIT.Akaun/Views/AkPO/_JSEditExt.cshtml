@@ -3,7 +3,10 @@
 
         //dropdown select2 loads data
         GetDDaftarAwamList(@Model.DDaftarAwamId);
-
+        $('#moPerihalLHDNKodKlasifikasiId').select2({
+            dropdownParent: $('#moPerihal'),
+            theme: "bootstrap"
+        });
         //
     });
     function GetDDaftarAwamList(id) {

@@ -370,7 +370,20 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 akPP.AkPenilaianPerolehanObjek = _cart.AkPenilaianPerolehanObjek?.ToList();
                 akPP.AkPenilaianPerolehanPerihal = _cart.AkPenilaianPerolehanPerihal.ToList();
+                
+                if (akPP.AkPenilaianPerolehanPerihal != null && akPP.AkPenilaianPerolehanPerihal.Any())
+                {
+                    decimal jumlahCukai = 0;
+                    decimal jumlahTanpaCukai = 0;
+                    foreach (var item in akPP.AkPenilaianPerolehanPerihal)
+                    {
+                        jumlahCukai += item.AmaunCukai;
+                        jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                    }
 
+                    akPP.JumlahCukai = jumlahCukai;
+                    akPP.JumlahTanpaCukai = jumlahTanpaCukai;
+                }
                 _context.Add(akPP);
                 _appLog.Insert("Tambah", akPP.NoRujukan ?? "", akPP.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
@@ -475,6 +488,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akPP.TarKemaskini = DateTime.Now;
                     akPP.AkPenilaianPerolehanObjek = _cart.AkPenilaianPerolehanObjek?.ToList();
                     akPP.AkPenilaianPerolehanPerihal = _cart.AkPenilaianPerolehanPerihal.ToList();
+
+                    if (akPP.AkPenilaianPerolehanPerihal != null && akPP.AkPenilaianPerolehanPerihal.Any())
+                    {
+                        decimal jumlahCukai = 0;
+                        decimal jumlahTanpaCukai = 0;
+                        foreach (var item in akPP.AkPenilaianPerolehanPerihal)
+                        {
+                            jumlahCukai += item.AmaunCukai;
+                            jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                        }
+
+                        akPP.JumlahCukai = jumlahCukai;
+                        akPP.JumlahTanpaCukai = jumlahTanpaCukai;
+                    }
 
                     _unitOfWork.AkPenilaianPerolehanRepo.Update(akPP);
 
