@@ -60,6 +60,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<AkCV>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkEFT>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkJurnal>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<AkAnggar>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             //
 
             // Sumber
@@ -196,6 +197,38 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .WithMany(t => t.AbWaranObjek)
                     .HasForeignKey(m => m.JKWPTJBahagianId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkAnggarObjek>()
+                    .HasOne(m => m.AkAnggar)
+                    .WithMany(t => t.AkAnggarObjek)
+                    .HasForeignKey(m => m.AkAnggarId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkAnggarObjek>()
+                    .HasOne(m => m.AkCarta)
+                    .WithMany(t => t.AkAnggarObjek)
+                    .HasForeignKey(m => m.AkCartaId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkAnggarObjek>()
+                    .HasOne(m => m.JKWPTJBahagian)
+                    .WithMany(t => t.AkAnggarObjek)
+                    .HasForeignKey(m => m.JKWPTJBahagianId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkAnggarLejar>()
+                    .HasOne(m => m.AkAnggar)
+                    .WithMany(t => t.AkAnggarLejar)
+                    .HasForeignKey(m => m.AkAnggarId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired(false);
+
+            modelBuilder.Entity<AkAnggarLejar>()
+                    .HasOne(m => m.AkCarta)
+                    .WithMany(t => t.AkAnggarLejar)
+                    .HasForeignKey(m => m.AkCartaId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired(false);
 
             modelBuilder.Entity<AkPenilaianPerolehanObjek>()
                     .HasOne(m => m.AkCarta)

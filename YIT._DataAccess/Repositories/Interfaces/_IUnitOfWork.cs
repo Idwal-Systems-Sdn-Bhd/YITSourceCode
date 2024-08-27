@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YIT._DataAccess.Repositories.Implementations;
 
 namespace YIT._DataAccess.Repositories.Interfaces
 {
@@ -26,6 +27,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IAkTerimaRepository AkTerimaRepo { get; }
         IJCawanganRepository JCawanganRepo { get; }
         IAbWaranRepository AbWaranRepo { get; }
+        IAkAnggarRepository AkAnggarRepo { get; }
         IAkPenilaianPerolehanRepository AkPenilaianPerolehanRepo { get; }
         IAkPORepository AkPORepo { get; }
         IAkNotaMintaRepository AkNotaMintaRepo { get; }
