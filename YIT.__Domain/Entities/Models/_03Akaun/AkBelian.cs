@@ -53,9 +53,11 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         public string? Ringkasan { get; set; }
+        [DisplayName("No e-Invois")]
         public int? LHDNEInvoisId { get; set; }
         public LHDNEInvois? LHDNEInvois { get; set; }
         public int? LHDNMSICId { get; set; }
+        [DisplayName("MSIC")]
         public LHDNMSIC? LHDNMSIC { get; set; }
         public string? UUID { get; set; }
         [Column(TypeName = "decimal(18, 2)")]

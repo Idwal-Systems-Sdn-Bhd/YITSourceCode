@@ -1,34 +1,4 @@
 ﻿<script type="text/javascript">
-    
-    // on click radio button EnJenisBayaranBelian
-    $("body").on('change', "#EnJenisBayaranBelian", function () {
-        $("#AkPOId").val(0).change();
-        $("#AkIndenId").val(0).change();
-        $("#AkNotaMintaId").val(0).change();
-        switch ($(this).val()) {
-            case "@EnJenisBayaranBelian.PO":
-                $("#divAkPOId").removeAttr('hidden');
-                $("#divAkIndenId").prop('hidden', true);
-                $("#divAkNotaMintaId").prop('hidden', true);
-                break;
-            case "@EnJenisBayaranBelian.Inden":
-                $("#divAkPOId").prop('hidden',true);
-                $("#divAkIndenId").removeAttr('hidden');
-                $("#divAkNotaMintaId").prop('hidden', true);
-                break;
-            case "@EnJenisBayaranBelian.NotaMinta":
-                $("#divAkPOId").prop('hidden',true);
-                $("#divAkIndenId").prop('hidden', true);
-                $("#divAkNotaMintaId").removeAttr('hidden');
-                break;
-            default:
-                $("#divAkPOId").prop('hidden', true);
-                $("#divAkIndenId").prop('hidden', true);
-                $("#divAkNotaMintaId").prop('hidden', true);
-                break;
-        }
-    });
-    // on click end
 
     // autoload JKWPTJBahagian list when KW is picked
     $("body").on('change', "#JKWId", function () {
@@ -84,27 +54,27 @@
     }
     //
 
-    //pick nota minta
-    $("body").on('change', "#AkNotaMintaId", function () {
+    //pick belian
+    $("body").on('change', "#AkBelianId", function () {
         $("#objekAkCartaId option").prop('disabled', false);
         $("#objekAkCartaId option[value='']").prop('disabled', true);
-        var akNotaMintaId = $("#AkNotaMintaId").val();
-        var akBelianId = $("#Id").val();
+        var akBelianId = $("#AkBelianId").val();
+        var akNotaDebitKreditDiterimaId = $("#Id").val();
         EmptyCart();
-        if (akNotaMintaId != 0) {
-            GetAkNotaMintaDetails(akNotaMintaId, akBelianId);
+        if (akBelianId != 0) {
+            GetAkBelianDetails(akBelianId, akNotaDebitKreditDiterimaId);
         } else {
 
         }
 
     });
 
-    function GetAkNotaMintaDetails(akNotaMintaId, akBelianId) {
-        if (akNotaMintaId != null) {
+    function GetAkBelianDetails(akBelianId, akNotaDebitKreditDiterimaId) {
+        if (akBelianId != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetAkNotaMintaDetails", "AkBelian")',
-                data: { id: akNotaMintaId, akBelianId: akBelianId },
+                url: '@Url.Action("GetAkBelianDetails", "AkNotaDebitKreditDiterima")',
+                data: { id: akBelianId, akNotaDebitKreditDiterimaId: akNotaDebitKreditDiterimaId },
                 dataType: "json",
                 success: function (msg) {
                     $("#JKWId").val(msg?.record?.jkw?.id).change();
@@ -121,90 +91,13 @@
             });
         }
     }
-    // pick nota minta end
-
-    //pick pesanan tempatan
-    $("body").on('change', "#AkPOId", function () {
-        $("#objekAkCartaId option").prop('disabled', false);
-        $("#objekAkCartaId option[value='']").prop('disabled', true);
-        var akPOId = $("#AkPOId").val();
-        var akBelianId = $("#Id").val();
-        EmptyCart();
-        if (akPOId != 0) {
-            GetAkPODetails(akPOId, akBelianId);
-        } else {
-
-        }
-
-    });
-
-    function GetAkPODetails(akPOId, akBelianId) {
-        if (akPOId != null) {
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("GetAkPODetails", "AkBelian")',
-                data: { id: akPOId, akBelianId: akBelianId },
-                dataType: "json",
-                success: function (msg) {
-                    $("#JKWId").val(msg?.record?.jkw?.id).change();
-                    $("#DDaftarAwamId").val(msg?.record?.dDaftarAwam?.id).change();
-                    $("#LHDNMSICId").val(msg?.record?.lhdnmsicId).change();
-                    $("#DDaftarAwamId option").prop('disabled', false);
-                    $("#LHDNMSICId option").prop('disabled', false);
-
-                    PopulateTablesFromCart();
-                },
-                error: function (req, status, error) {
-                    alert(error);
-                }
-            });
-        }
-    }
-    // pick pesanan tempatan end
-
-    //pick inden kerja
-    $("body").on('change', "#AkIndenId", function () {
-        $("#objekAkCartaId option").prop('disabled', false);
-        $("#objekAkCartaId option[value='']").prop('disabled', true);
-        var akIndenId = $("#AkIndenId").val();
-        var akBelianId = $("#Id").val();
-        if (akIndenId != 0) {
-            GetAkIndenDetails(akIndenId, akBelianId);
-        } else {
-
-        }
-
-    });
-
-    function GetAkIndenDetails(akIndenId, akBelianId) {
-        if (akIndenId != null) {
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("GetAkIndenDetails", "AkBelian")',
-                data: { id: akIndenId, akBelianId: akBelianId },
-                dataType: "json",
-                success: function (msg) {
-                    $("#JKWId").val(msg?.record?.jkw?.id).change();
-                    $("#DDaftarAwamId").val(msg?.record?.dDaftarAwam?.id).change();
-                    $("#LHDNMSICId").val(msg?.record?.lhdnmsicId).change();
-                    $("#DDaftarAwamId option").prop('disabled', false);
-                    $("#LHDNMSICId option").prop('disabled', false);
-
-                    PopulateTablesFromCart();
-                },
-                error: function (req, status, error) {
-                    alert(error);
-                }
-            });
-        }
-    }
-    // pick inden kerja end
+    // pick belian end
 
     //empty cart
     function EmptyCart() {
         $.ajax({
             type: "POST",
-            url: '@Url.Action("EmptyCart", "AkBelian")',
+            url: '@Url.Action("EmptyCart", "AkNotaDebitKreditDiterima")',
             dataType: "json",
             success: function (msg) {
                 $("table tbody#tbodyObjek").empty();
@@ -281,7 +174,7 @@
         var jumlahPerihal = $("#perihalJumlah");
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetAllItemCartAkBelian", "AkBelian")',
+            url: '@Url.Action("GetAllItemCartAkNotaDebitKreditDiterima", "AkNotaDebitKreditDiterima")',
             dataType: "json",
             success: function (r) {
 
@@ -295,8 +188,6 @@
                             "</td><td class='text-uppercase'>" + item1.jkwptjBahagian.kod + " - " + item1.jkwptjBahagian.jBahagian.perihal + " (" + item1.jkwptjBahagian.jptj.perihal + ") " +
                             "</td><td hidden>" + item1.akCartaId +
                             "</td><td class='text-uppercase'>" + item1.akCarta.kod + " - " + item1.akCarta.perihal +
-                            "</td><td hidden>" + item1.jCukaiId +
-                            "</td><td class='text-uppercase'>" + item1.jCukai.kod +
                             "</td><td class='text-end'>" + (item1.amaun).toFixed(2) +
                             "</td><td>" +
                             "<button class='btn ac-primary btn-sm' type='button' data-toggle='modal' data-target='#moObjek' onclick='UpdateObjek(this)'><i class='fa fa-edit' ></i></button>" +
@@ -383,8 +274,8 @@
 
                 var objekAmaun = $("#objekAmaun");
 
-                var AkBelianObjek = {
-                    AkBelianId: Id,
+                var AkNotaDebitKreditDiterimaObjek = {
+                    AkNotaDebitKreditDiterimaId: Id,
                     JKWPTJBahagianId: objekJKWPTJBahagianId.val(),
                     AkCartaId: objekAkCartaId.val(),
                     JCukaiId: objekJCukaiId.val(),
@@ -393,8 +284,8 @@
                 //Send the JSON array to Controller to Save into session (cart)
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("SaveCartAkBelianObjek", "AkBelian")',
-                    data: AkBelianObjek,
+                    url: '@Url.Action("SaveCartAkNotaDebitKreditDiterimaObjek", "AkNotaDebitKreditDiterima")',
+                    data: AkNotaDebitKreditDiterimaObjek,
                     dataType: "json",
                     success: function (result) {
 
@@ -488,15 +379,15 @@
             sum = parseFloat(objekJumlah.val()) - parseFloat(objekAmaun);
             objekJumlah.val(sum.toFixed(2));
 
-            var AkBelianObjek = {
+            var AkNotaDebitKreditDiterimaObjek = {
                 JKWPTJBahagianId: jKWPTJBahagianId,
                 AkCartaId: akCartaId
             }
-            if (AkBelianObjek != null) {
+            if (AkNotaDebitKreditDiterimaObjek != null) {
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("RemoveCartAkBelianObjek", "AkBelian")',
-                    data: AkBelianObjek,
+                    url: '@Url.Action("RemoveCartAkNotaDebitKreditDiterimaObjek", "AkNotaDebitKreditDiterima")',
+                    data: AkNotaDebitKreditDiterimaObjek,
                     dataType: "json",
                     success: function (r) {
                         //Delete the Table row using it's Index.
@@ -517,22 +408,21 @@
         var jKWPTJBahagianId = $("TD", row).eq(0).html();
         var akCartaId = $("TD", row).eq(2).html();
 
-        var AkBelianObjek = {
+        var AkNotaDebitKreditDiterimaObjek = {
             JKWPTJBahagianId: jKWPTJBahagianId,
             AkCartaId: akCartaId
         }
         if (jKWPTJBahagianId != null && akCartaId != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetAnItemFromCartAkBelianObjek", "AkBelian")',
-                data: AkBelianObjek,
+                url: '@Url.Action("GetAnItemFromCartAkNotaDebitKreditDiterimaObjek", "AkNotaDebitKreditDiterima")',
+                data: AkNotaDebitKreditDiterimaObjek,
                 dataType: "json",
                 success: function (r) {
                     //insert data in modal objek
                     $("#moObjekId").val(r.record.id);
                     $("#moObjekJKWPTJBahagianId").val(r.record.jkwptjBahagianId);
                     $("#moObjekAkCartaId").val(r.record.akCartaId);
-                    $("#moObjekJCukaiId").val(r.record.jCukaiId);
                     $("#moObjekAmaun").val(r.record.amaun.toFixed(2));
 
                     //show modal objek
@@ -544,26 +434,24 @@
     };
 
     function UpdateModalObjek() {
-        var akBelianId = $("#Id").val();
+        var akNotaDebitKreditDiterimaId = $("#Id").val();
         var id = $("#moObjekId").val();
         var amaun = $("#moObjekAmaun").val();
         var jKWPTJBahagianId = $("#moObjekJKWPTJBahagianId").val();
         var akCartaId = $("#moObjekAkCartaId").val();
-        var jCukaiId = $("#moObjekJCukaiId").val();
         var jumlah = $("#Jumlah");
 
-        var AkBelianObjek = {
-            AkBelianId: akBelianId,
+        var AkNotaDebitKreditDiterimaObjek = {
+            AkNotaDebitKreditDiterimaId: akNotaDebitKreditDiterimaId,
             Id: id,
             JKWPTJBahagianId: jKWPTJBahagianId,
             akCartaId: akCartaId,
-            JCukaiId: jCukaiId,
             Amaun: amaun
         }
         $.ajax({
             type: "POST",
-            url: '@Url.Action("SaveAnItemFromCartAkBelianObjek", "AkBelian")',
-            data: AkBelianObjek,
+            url: '@Url.Action("SaveAnItemFromCartAkNotaDebitKreditDiterimaObjek", "AkNotaDebitKreditDiterima")',
+            data: AkNotaDebitKreditDiterimaObjek,
             dataType: "json",
             success: function (r) {
                 //insert notification here
@@ -603,7 +491,7 @@
         //Send the JSON array to Controller using AJAX.
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetBil", "AkBelian")',
+            url: '@Url.Action("GetBil", "AkNotaDebitKreditDiterima")',
             data: Perihal,
             dataType: "json",
             success: function (r) {
@@ -620,8 +508,8 @@
                     var harga = $("#perihalHarga");
                     var amaun = $("#perihalAmaun");
 
-                    var AkBelianPerihal = {
-                        AkBelianId: Id,
+                    var AkNotaDebitKreditDiterimaPerihal = {
+                        AkNotaDebitKreditDiterimaId: Id,
                         Bil: bil,
                         Perihal: perihal.val(),
                         Kuantiti: kuantiti.val(),
@@ -632,8 +520,8 @@
                     //Send the JSON array to Controller to Save into session (cart)
                     $.ajax({
                         type: "POST",
-                        url: '@Url.Action("SaveCartAkBelianPerihal", "AkBelian")',
-                        data: AkBelianPerihal,
+                        url: '@Url.Action("SaveCartAkNotaDebitKreditDiterimaPerihal", "AkNotaDebitKreditDiterima")',
+                        data: AkNotaDebitKreditDiterimaPerihal,
                         dataType: "json",
                         success: function (result) {
 
@@ -728,14 +616,14 @@
         sum = parseFloat(jumlah.val()) - parseFloat(amaun);
         jumlah.val(sum.toFixed(2));
 
-        var AkBelianPerihal = {
+        var AkNotaDebitKreditDiterimaPerihal = {
             Bil: bil
         }
-        if (AkBelianPerihal != null) {
+        if (AkNotaDebitKreditDiterimaPerihal != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("RemoveCartAkBelianPerihal", "AkBelian")',
-                data: AkBelianPerihal,
+                url: '@Url.Action("RemoveCartAkNotaDebitKreditDiterimaPerihal", "AkNotaDebitKreditDiterima")',
+                data: AkNotaDebitKreditDiterimaPerihal,
                 dataType: "json",
                 success: function (r) {
                     //Delete the Table row using it's Index.
@@ -755,14 +643,14 @@
         var row = $(button).closest("TR");
         var bil = $("TD", row).eq(0).html();
 
-        var AkBelianPerihal = {
+        var AkNotaDebitKreditDiterimaPerihal = {
             Bil: bil
         }
         if (bil != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetAnItemFromCartAkBelianPerihal", "AkBelian")',
-                data: AkBelianPerihal,
+                url: '@Url.Action("GetAnItemFromCartAkNotaDebitKreditDiterimaPerihal", "AkNotaDebitKreditDiterima")',
+                data: AkNotaDebitKreditDiterimaPerihal,
                 dataType: "json",
                 success: function (r) {
                     //insert data in modal perihal
@@ -787,7 +675,7 @@
     };
 
     function UpdateModalPerihal() {
-        var akBelianId = $("#Id").val();
+        var akNotaDebitKreditDiterimaId = $("#Id").val();
         var id = $("#moPerihalId").val();
         var bil = $("#moPerihalBil").val();
         var perihal = $("#moPerihalPerihal").val();
@@ -800,8 +688,8 @@
         var amaun = $("#moPerihalAmaun").val();
         var jumlah = $("#perihalJumlah");
 
-        var AkBelianPerihal = {
-            AkBelianId: akBelianId,
+        var AkNotaDebitKreditDiterimaPerihal = {
+            AkNotaDebitKreditDiterimaId: akNotaDebitKreditDiterimaId,
             Id: id,
             Bil: bil,
             Perihal: perihal,
@@ -815,8 +703,8 @@
         }
         $.ajax({
             type: "POST",
-            url: '@Url.Action("SaveAnItemFromCartAkBelianPerihal", "AkBelian")',
-            data: AkBelianPerihal,
+            url: '@Url.Action("SaveAnItemFromCartAkNotaDebitKreditDiterimaPerihal", "AkNotaDebitKreditDiterima")',
+            data: AkNotaDebitKreditDiterimaPerihal,
             dataType: "json",
             success: function (r) {
                 //insert notification here

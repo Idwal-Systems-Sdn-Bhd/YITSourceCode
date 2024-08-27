@@ -307,6 +307,13 @@ namespace YIT._DataAccess.Repositories.Implementations
                 return true;
             }
 
+            bool isExistInAkAkaun = await _context.AkAkaun.AnyAsync(b => b.NoRujukan == noRujukan);
+
+            if (isExistInAkAkaun)
+            {
+                return true;
+            }
+
             return false;
 
         }
@@ -357,7 +364,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             if (data != null)
             {
-                if (data.EnJenisBayaranBelian != EnJenisBayaranBelian.LainLain) isDenganTanggungan = true;
+                if (data.EnJenisBayaranBelian == EnJenisBayaranBelian.PO || data.EnJenisBayaranBelian == EnJenisBayaranBelian.Inden) isDenganTanggungan = true;
 
                 if (data.EnStatusBorang != EnStatusBorang.Kemaskini)
                 {

@@ -230,7 +230,7 @@
                 <div class="card-footer">
                     <div class="form-group">
                         <label name="perihalJumlah" class="control-label">Jumlah Perihal RM</label>
-                        <input name="perihalJumlah" id="perihalJumlah" class="form-control form-control-sm" value="@jumlahPerihal" readonly />
+                        <input name="perihalJumlah" id="perihalJumlah" class="form-control form-control-sm" value="@Convert.ToDecimal(jumlahPerihal).ToString("#,##0.00")" readonly />
                     </div>
                 </div>
             </div>

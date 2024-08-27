@@ -48,6 +48,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         ILHDNKodKlasifikasiRepository LHDNKodKlasifikasiRepo { get; }
         ILHDNMSICRepository LHDNMSICRepo { get; }
         ILHDNUnitUkuranRepository LHDNUnitUkuranRepo { get; }
+        IAkNotaDebitKreditDiterimaRepository AkNotaDebitKreditDiterimaRepo { get; }
         Task<int> Save();
     }
 }

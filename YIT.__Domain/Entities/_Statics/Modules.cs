@@ -118,6 +118,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodAkTerima = "AK0018";
         public const string namaAkTerima = "Terimaan Resit Rasmi";
+
+        public const string kodAkNotaDebitKreditDiterima = "AK0019";
+        public const string namaAkNotaDebitKreditDiterima = "Pelarasan Nota Debit Kredit Diterima";
         //
 
         // Pemprosesan (PP)
@@ -198,6 +201,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodLulusAkJurnal = "PP0026";
         public const string namaLulusAkJurnal = "Pemprosesan Lulus Baucer Jurnal";
+
+        public const string kodLulusAkNotaDebitKreditDiterima = "PP0027";
+        public const string namaLulusAkNotaDebitKreditDiterima = "Pemprosesan Lulus Nota Debit Kredit Diterima";
         //
 
         // Laporan Penyata (PAK)

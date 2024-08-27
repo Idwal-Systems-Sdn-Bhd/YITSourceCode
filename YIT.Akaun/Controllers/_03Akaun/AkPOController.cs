@@ -349,7 +349,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             if (ModelState.IsValid)
             {
-
+                akPO.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.PO.GetDisplayName(), akPO.Tarikh.ToString("yyyy") ?? DateTime.Now.ToString("yyyy"));
                 akPO.UserId = user?.UserName ?? "";
                 akPO.TarMasuk = DateTime.Now;
                 akPO.DPekerjaMasukId = pekerjaId;
@@ -397,7 +397,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            if (akPO.EnStatusBorang != EnStatusBorang.None)
+            if (akPO.EnStatusBorang != EnStatusBorang.None && akPO.EnStatusBorang != EnStatusBorang.Kemaskini)
             {
                 TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
                 return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
@@ -450,6 +450,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akPO.UserId = objAsal.UserId;
                     akPO.TarMasuk = objAsal.TarMasuk;
                     akPO.DPekerjaMasukId = objAsal.DPekerjaMasukId;
+                    akPO.EnStatusBorang = objAsal.EnStatusBorang;
 
                     if (objAsal.AkPOObjek != null && objAsal.AkPOObjek.Count > 0)
                     {

@@ -375,6 +375,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                 akBelian.AkBelianObjek = _cart.AkBelianObjek?.ToList();
                 akBelian.AkBelianPerihal = _cart.AkBelianPerihal.ToList();
 
+                if (akBelian.AkBelianPerihal != null && akBelian.AkBelianPerihal.Any())
+                {
+                    decimal jumlahCukai = 0;
+                    decimal jumlahTanpaCukai = 0;
+                    foreach (var item in akBelian.AkBelianPerihal)
+                    {
+                        jumlahCukai += item.AmaunCukai;
+                        jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                    }
+
+                    akBelian.JumlahCukai = jumlahCukai;
+                    akBelian.JumlahTanpaCukai = jumlahTanpaCukai;
+                }
+
                 _context.Add(akBelian);
                 _appLog.Insert("Tambah", akBelian.NoRujukan ?? "", akBelian.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
@@ -400,7 +414,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            if (akBelian.EnStatusBorang != EnStatusBorang.None)
+            if (akBelian.EnStatusBorang != EnStatusBorang.None && akBelian.EnStatusBorang != EnStatusBorang.Kemaskini)
             {
                 TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
                 return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
@@ -458,6 +472,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akBelian.UserId = objAsal.UserId;
                     akBelian.TarMasuk = objAsal.TarMasuk;
                     akBelian.DPekerjaMasukId = objAsal.DPekerjaMasukId;
+                    akBelian.EnStatusBorang = objAsal.EnStatusBorang;
 
                     if (objAsal.AkBelianObjek != null && objAsal.AkBelianObjek.Count > 0)
                     {
@@ -483,6 +498,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akBelian.TarKemaskini = DateTime.Now;
                     akBelian.AkBelianObjek = _cart.AkBelianObjek?.ToList();
                     akBelian.AkBelianPerihal = _cart.AkBelianPerihal.ToList();
+
+                    if (akBelian.AkBelianPerihal != null && akBelian.AkBelianPerihal.Any())
+                    {
+                        decimal jumlahCukai = 0;
+                        decimal jumlahTanpaCukai = 0;
+                        foreach (var item in akBelian.AkBelianPerihal)
+                        {
+                            jumlahCukai += item.AmaunCukai;
+                            jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                        }
+
+                        akBelian.JumlahCukai = jumlahCukai;
+                        akBelian.JumlahTanpaCukai = jumlahTanpaCukai;
+                    }
 
                     _unitOfWork.AkBelianRepo.Update(akBelian);
 
@@ -529,7 +558,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
-            if (akBelian != null && await _unitOfWork.AkBelianRepo.IsSahAsync(id) == false)
+            if (akBelian != null && await _unitOfWork.AkBelianRepo.IsLulusAsync(id) == false)
             {
                 akBelian.UserIdKemaskini = user?.UserName ?? "";
                 akBelian.TarKemaskini = DateTime.Now;
@@ -614,6 +643,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                             // posting start here
                             _unitOfWork.AkBelianRepo.RemovePostingFromAbBukuVot(akBelian, user?.UserName ?? "");
+                            _unitOfWork.AkBelianRepo.RemovePostingFromAkAkaun(akBelian);
 
                             //insert applog
                             _appLog.Insert("UnPosting", "UnPosting Data", akBelian.NoRujukan, (int)id, akBelian.Jumlah, pekerjaId, modul, syscode, namamodul, user);
@@ -661,21 +691,12 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.AkInden = _unitOfWork.AkIndenRepo.GetAllByStatus(EnStatusBorang.Lulus);
             ViewBag.AkNotaMinta = _unitOfWork.AkNotaMintaRepo.GetAllByStatus(EnStatusBorang.Lulus);
             ViewBag.EnJenisPerolehan = EnumHelper<EnJenisPerolehan>.GetList();
+            ViewBag.EnLHDNJenisCukai = EnumHelper<EnLHDNJenisCukai>.GetList();
+            ViewBag.LHDNMSIC = _unitOfWork.LHDNMSICRepo.GetAll();
+            ViewBag.LHDNKodKlasifikasi = _unitOfWork.LHDNKodKlasifikasiRepo.GetAll();
+            ViewBag.LHDNUnitUkuran = _unitOfWork.LHDNUnitUkuranRepo.GetAll();
         }
 
-        private void PopulateDropDownListAsal(int JKWId)
-        {
-            ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
-            ViewBag.JCukai = _unitOfWork.JCukaiRepo.GetAll();
-            ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
-            ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
-            ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
-            ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
-            ViewBag.AkPO = _unitOfWork.AkPORepo.GetAllByStatus(EnStatusBorang.Lulus);
-            ViewBag.AkInden = _unitOfWork.AkIndenRepo.GetAllByStatus(EnStatusBorang.Lulus);
-            ViewBag.AkNotaMinta = _unitOfWork.AkNotaMintaRepo.GetAllByStatus(EnStatusBorang.Lulus);
-            ViewBag.EnJenisPerolehan = EnumHelper<EnJenisPerolehan>.GetList();
-        }
 
         private void PopulateCartAkBelianFromDb(AkBelian akBelian)
         {
@@ -701,7 +722,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                         item.Bil,
                         item.Perihal,
                         item.Kuantiti,
+                        item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                        item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                         item.Unit,
+                        item.EnLHDNJenisCukai,
+                        item.KadarCukai,
+                        item.AmaunCukai,
                         item.Harga,
                         item.Amaun
                         );
@@ -790,7 +816,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                                 item.Bil,
                                 item.Perihal,
                                 item.Kuantiti,
+                                item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                                item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                                 item.Unit,
+                                item.EnLHDNJenisCukai,
+                                item.KadarCukai,
+                                item.AmaunCukai,
                                 item.Harga,
                                 item.Amaun
                                 );
@@ -842,7 +873,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                                 item.Bil,
                                 item.Perihal,
                                 item.Kuantiti,
+                                item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                                item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                                 item.Unit,
+                                item.EnLHDNJenisCukai,
+                                item.KadarCukai,
+                                item.AmaunCukai,
                                 item.Harga,
                                 item.Amaun
                                 );
@@ -892,7 +928,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                                 item.Bil,
                                 item.Perihal,
                                 item.Kuantiti,
+                                item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                                item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                                 item.Unit,
+                                item.EnLHDNJenisCukai,
+                                item.KadarCukai,
+                                item.AmaunCukai,
                                 item.Harga,
                                 item.Amaun
                                 );
@@ -1020,7 +1061,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 if (akBelianPerihal != null)
                 {
-                    _cart.AddItemPerihal(akBelianPerihal.AkBelianId, akBelianPerihal.Bil, akBelianPerihal.Perihal, akBelianPerihal.Kuantiti, akBelianPerihal.Unit, akBelianPerihal.Harga, akBelianPerihal.Amaun);
+                    _cart.AddItemPerihal(akBelianPerihal.AkBelianId, akBelianPerihal.Bil, akBelianPerihal.Perihal, akBelianPerihal.Kuantiti, akBelianPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akBelianPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akBelianPerihal.Unit,akBelianPerihal.EnLHDNJenisCukai, akBelianPerihal.KadarCukai, akBelianPerihal.AmaunCukai, akBelianPerihal.Harga, akBelianPerihal.Amaun);
                 }
 
 
@@ -1079,7 +1120,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.RemoveItemPerihal(akBelianPerihal.Bil);
 
-                    _cart.AddItemPerihal(akBelianPerihal.AkBelianId, akBelianPerihal.Bil, akBelianPerihal.Perihal, akBelianPerihal.Kuantiti, akBelianPerihal.Unit, akBelianPerihal.Harga, akBelianPerihal.Amaun);
+                    _cart.AddItemPerihal(akBelianPerihal.AkBelianId, akBelianPerihal.Bil, akBelianPerihal.Perihal, akBelianPerihal.Kuantiti, akBelianPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akBelianPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akBelianPerihal.Unit, akBelianPerihal.EnLHDNJenisCukai, akBelianPerihal.KadarCukai, akBelianPerihal.AmaunCukai, akBelianPerihal.Harga, akBelianPerihal.Amaun);
                 }
 
                 return Json(new { result = "OK" });

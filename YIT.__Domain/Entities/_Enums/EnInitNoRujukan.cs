@@ -14,9 +14,9 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "ID")]
         ID = 2, // invois dikeluarkan
         [Display(Name = "ND")]
-        ND = 3, // nota debit 
+        ND = 3, // nota debit / kredit diterima
         [Display(Name = "NK")]
-        NK = 4, // nota kredit 
+        NK = 4, // nota debit / kredit dikeluarkan 
         [Display(Name = "PM")]
         PM = 5, // Permohonan Perolehan // PM/2023/00001
         [Display(Name = "PN")]

@@ -410,7 +410,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            if (akPP.EnStatusBorang != EnStatusBorang.None)
+            if (akPP.EnStatusBorang != EnStatusBorang.None && akPP.EnStatusBorang != EnStatusBorang.Kemaskini)
             {
                 TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
                 return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
@@ -463,6 +463,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akPP.UserId = objAsal.UserId;
                     akPP.TarMasuk = objAsal.TarMasuk;
                     akPP.DPekerjaMasukId = objAsal.DPekerjaMasukId;
+                    akPP.EnStatusBorang = objAsal.EnStatusBorang;
 
                     if (objAsal.AkPenilaianPerolehanObjek != null && objAsal.AkPenilaianPerolehanObjek.Count > 0)
                     {
