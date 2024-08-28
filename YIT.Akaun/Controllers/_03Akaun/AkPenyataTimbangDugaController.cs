@@ -20,7 +20,7 @@ using YIT.Akaun.Models.ViewModels.Forms;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class AkPenyataTimbangDugaController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodPAkTimbangDuga;

@@ -28,10 +28,14 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public decimal Kredit { get; set; }
         public int? AkRekupId { get; set; }
         public AkRekup? AkRekup { get; set; }
-        public string? NoRujukan { get; set; }
+        public string? NoRekup { get; set; }
         [NotMapped]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Baki { get; set; }
+        [NotMapped]
+        public string? NoRujukan { get; set; }
+        [NotMapped]
+        public string? Butiran { get; set; }
         public bool IsPaid { get; set; }
 
     }

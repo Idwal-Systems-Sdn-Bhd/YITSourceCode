@@ -21,6 +21,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             return _context.AkPelarasanInden
                 .IgnoreQueryFilters()
+                .Include(t => t.LHDNMSIC)
                 .Include(t => t.JKW)
                 .Include(t => t.AkInden)
                     .ThenInclude(t => t!.DDaftarAwam)
@@ -55,6 +56,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var akPelarasanIndenList = _context.AkPelarasanInden
                 .IgnoreQueryFilters()
+                .Include(t => t.LHDNMSIC)
                 .Include(t => t.JKW)
                 .Include(t => t.AkInden)
                     .ThenInclude(t => t!.DDaftarAwam)

@@ -13,7 +13,8 @@ using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._02Daftar
 {
-    [Authorize]
+    
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class DKonfigKelulusanController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodDKonfigKelulusan;
@@ -54,7 +55,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return View(dKK);
         }
 
-        private void SaveFormFields(string searchString)
+        private void SaveFormFields(string? searchString)
         {
             PopulateFormFields(searchString);
 
@@ -69,11 +70,12 @@ namespace YIT.Akaun.Controllers._02Daftar
             }
         }
 
-        private void PopulateFormFields(string searchString)
+        private void PopulateFormFields(string? searchString)
         {
             ViewBag.searchString = searchString;
         }
 
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             PopulateDropdownList();
@@ -82,6 +84,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(DKonfigKelulusan konfigKelulusan, string syscode)
         {
             if (KonfigKelulusanExists(konfigKelulusan.DPekerjaId,konfigKelulusan.EnKategoriKelulusan,konfigKelulusan.EnJenisModulKelulusan,konfigKelulusan.JBahagianId) == true)
@@ -111,6 +114,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return View(konfigKelulusan);
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -127,6 +131,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return View(konfigKelulusan);
         }
 
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -145,6 +150,7 @@ namespace YIT.Akaun.Controllers._02Daftar
          
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, DKonfigKelulusan konfigKelulusan, string syscode)
         {
             if (id != konfigKelulusan.Id)
@@ -200,6 +206,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         }
 
         // GET: Konfig/Delete/5
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -219,6 +226,7 @@ namespace YIT.Akaun.Controllers._02Daftar
         // GET: Konfig/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var konfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetById((int)id);
@@ -243,6 +251,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -280,7 +289,6 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         private void PopulateDropdownList()
         {
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAll();
 
             ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
 

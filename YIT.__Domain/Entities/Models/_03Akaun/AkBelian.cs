@@ -9,6 +9,7 @@ using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Bases;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._02Daftar;
+using YIT.__Domain.Entities.Models._50LHDN;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
@@ -52,6 +53,17 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         public string? Ringkasan { get; set; }
+        [DisplayName("No e-Invois")]
+        public int? LHDNEInvoisId { get; set; }
+        public LHDNEInvois? LHDNEInvois { get; set; }
+        public int? LHDNMSICId { get; set; }
+        [DisplayName("MSIC")]
+        public LHDNMSIC? LHDNMSIC { get; set; }
+        public string? UUID { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal JumlahCukai { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal JumlahTanpaCukai { get; set; }
         public string? KodPbklLama { get; set; }
         public ICollection<AkBelianObjek>? AkBelianObjek { get; set; }
         public ICollection<AkBelianPerihal>? AkBelianPerihal { get; set; }

@@ -14,7 +14,8 @@ using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
-    [Authorize]
+    
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class JKonfigPenyataController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodJKonfigPenyata;
@@ -45,6 +46,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(_unitOfWork.JKonfigPenyataRepo.GetAllIncludeDeleted());
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -62,6 +64,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(konfigPenyata);
         }
 
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             EmptyCart();
@@ -115,6 +118,7 @@ namespace YIT.Akaun.Controllers._01Jadual
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(JKonfigPenyata konfigPenyata, string syscode)
         {
             if (konfigPenyata.Tahun != null && !TahunKodPenyataExists(konfigPenyata.Tahun, konfigPenyata.Kod))
@@ -170,6 +174,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KonfigPenyata/Edit/5
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -222,6 +227,7 @@ namespace YIT.Akaun.Controllers._01Jadual
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, JKonfigPenyata konfigPenyata, string syscode)
         {
             if (id != konfigPenyata.Id)
@@ -300,6 +306,8 @@ namespace YIT.Akaun.Controllers._01Jadual
         {
             return _unitOfWork.JKonfigPenyataRepo.IsExist(b => b.Id == id);
         }
+        
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -310,8 +318,10 @@ namespace YIT.Akaun.Controllers._01Jadual
 
             return View(konfigPenyata);
         }
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var konfigPenyata = _unitOfWork.JKonfigPenyataRepo.GetById((int)id);
@@ -333,6 +343,8 @@ namespace YIT.Akaun.Controllers._01Jadual
 
             return RedirectToAction(nameof(Index));
         }
+        
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

@@ -9,6 +9,7 @@ using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Bases;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._02Daftar;
+using YIT.__Domain.Entities.Models._50LHDN;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
@@ -34,6 +35,13 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("Pembekal")]
         public int DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam{ get; set; }
+        [DisplayName("MSIC")]
+        public int? LHDNMSICId { get; set; }
+        public LHDNMSIC? LHDNMSIC { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal JumlahCukai { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal JumlahTanpaCukai { get; set; }
         public string? NoRujukanLama { get; set; } // dummy
         public ICollection<AkPOObjek>? AkPOObjek { get; set; }
         public ICollection<AkPOPerihal>? AkPOPerihal { get; set; }

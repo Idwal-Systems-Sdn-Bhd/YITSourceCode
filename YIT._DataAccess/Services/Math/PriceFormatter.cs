@@ -93,5 +93,17 @@ namespace YIT._DataAccess.Services.Math
             return strHasil;
         }
         // change currency to words end
+
+        // get tax amount
+        public static decimal GetTaxAmount(decimal harga, decimal kuantiti, decimal kadarCukai)
+        {
+            return harga * kuantiti * kadarCukai / 100;
+        }
+
+        // get total amount include tax
+        public static decimal GetTotalPayableAmount(decimal harga, decimal kuantiti, decimal amaunCukai)
+        {
+            return (harga * kuantiti) + amaunCukai;
+        }
     }
 }

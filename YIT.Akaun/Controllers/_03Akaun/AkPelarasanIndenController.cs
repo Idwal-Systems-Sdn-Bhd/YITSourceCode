@@ -16,7 +16,7 @@ using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class AkPelarasanIndenController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodAkPelarasanInden;
@@ -72,7 +72,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPelarasanInden);
         }
 
-        private void SaveFormFields(string searchString, string searchDate1, string searchDate2)
+        private void SaveFormFields(string? searchString, string? searchDate1, string? searchDate2)
         {
             PopulateFormFields(searchString, searchDate1, searchDate2);
 
@@ -101,13 +101,14 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
-        private void PopulateFormFields(string searchString, string searchDate1, string searchDate2)
+        private void PopulateFormFields(string? searchString, string? searchDate1, string? searchDate2)
         {
             ViewBag.searchString = searchString;
             ViewBag.searchDate1 = searchDate1 ?? DateTime.Now.ToString("dd/MM/yyyy");
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -148,7 +149,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                         item.Bil,
                         item.Perihal,
                         item.Kuantiti,
+                        item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                        item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                         item.Unit,
+                        item.EnLHDNJenisCukai,
+                        item.KadarCukai,
+                        item.AmaunCukai,
                         item.Harga,
                         item.Amaun
                         );
@@ -182,6 +188,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.akPelarasanIndenPerihal = perihal;
         }
 
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -205,6 +212,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPelarasanInden);
         }
 
+        [Authorize(Policy = modul + "BL")]
         public IActionResult BatalLulus(int? id)
         {
             if (id == null)
@@ -230,6 +238,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("BatalLulus")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "BL")]
         public async Task<IActionResult> BatalLulusConfirmed(int id, string tindakan, string syscode)
         {
             var akPelarasanInden = _unitOfWork.AkPelarasanIndenRepo.GetById((int)id);
@@ -266,6 +275,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "BL")]
         public IActionResult BatalPos(int? id)
         {
             if (id == null)
@@ -291,6 +301,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("BatalPos")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "BL")]
         public async Task<IActionResult> BatalPosConfirmed(int id, string tindakan, string syscode)
         {
             var akPelarasanInden = _unitOfWork.AkPelarasanIndenRepo.GetById((int)id);
@@ -327,6 +338,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "L")]
         public async Task<IActionResult> PosSemula(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -363,6 +375,8 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
+        
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -390,10 +404,15 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
             ViewBag.AkInden = _unitOfWork.AkIndenRepo.GetAllByStatus(EnStatusBorang.Lulus);
             ViewBag.EnJenisPerolehan = EnumHelper<EnJenisPerolehan>.GetList();
+            ViewBag.EnLHDNJenisCukai = EnumHelper<EnLHDNJenisCukai>.GetList();
+            ViewBag.LHDNMSIC = _unitOfWork.LHDNMSICRepo.GetAll();
+            ViewBag.LHDNKodKlasifikasi = _unitOfWork.LHDNKodKlasifikasiRepo.GetAll();
+            ViewBag.LHDNUnitUkuran = _unitOfWork.LHDNUnitUkuranRepo.GetAll();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(AkPelarasanInden akPelarasanInden, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -428,6 +447,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                 akPelarasanInden.AkPelarasanIndenObjek = _cart.AkPelarasanIndenObjek?.ToList();
                 akPelarasanInden.AkPelarasanIndenPerihal = _cart.AkPelarasanIndenPerihal.ToList();
 
+                if (akPelarasanInden.AkPelarasanIndenPerihal != null && akPelarasanInden.AkPelarasanIndenPerihal.Any())
+                {
+                    decimal jumlahCukai = 0;
+                    decimal jumlahTanpaCukai = 0;
+                    foreach (var item in akPelarasanInden.AkPelarasanIndenPerihal)
+                    {
+                        jumlahCukai += item.AmaunCukai;
+                        jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                    }
+
+                    akPelarasanInden.JumlahCukai = jumlahCukai;
+                    akPelarasanInden.JumlahTanpaCukai = jumlahTanpaCukai;
+                }
+
                 _context.Add(akPelarasanInden);
                 _appLog.Insert("Tambah", akPelarasanInden.NoRujukan ?? "", akPelarasanInden.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
@@ -440,6 +473,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPelarasanInden);
         }
 
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -453,7 +487,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            if (akPelarasanInden.EnStatusBorang != EnStatusBorang.None)
+            if (akPelarasanInden.EnStatusBorang != EnStatusBorang.None && akPelarasanInden.EnStatusBorang != EnStatusBorang.Kemaskini)
             {
                 TempData[SD.Error] = "Ubah data tidak dibenarkan..!";
                 return (RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") }));
@@ -467,6 +501,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, AkPelarasanInden akPelarasanInden, string? fullName, string syscode)
         {
             if (id != akPelarasanInden.Id)
@@ -505,6 +540,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akPelarasanInden.UserId = objAsal.UserId;
                     akPelarasanInden.TarMasuk = objAsal.TarMasuk;
                     akPelarasanInden.DPekerjaMasukId = objAsal.DPekerjaMasukId;
+                    akPelarasanInden.EnStatusBorang = objAsal.EnStatusBorang;
 
                     if (objAsal.AkPelarasanIndenObjek != null && objAsal.AkPelarasanIndenObjek.Count > 0)
                     {
@@ -530,6 +566,20 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akPelarasanInden.TarKemaskini = DateTime.Now;
                     akPelarasanInden.AkPelarasanIndenObjek = _cart.AkPelarasanIndenObjek?.ToList();
                     akPelarasanInden.AkPelarasanIndenPerihal = _cart.AkPelarasanIndenPerihal.ToList();
+
+                    if (akPelarasanInden.AkPelarasanIndenPerihal != null && akPelarasanInden.AkPelarasanIndenPerihal.Any())
+                    {
+                        decimal jumlahCukai = 0;
+                        decimal jumlahTanpaCukai = 0;
+                        foreach (var item in akPelarasanInden.AkPelarasanIndenPerihal)
+                        {
+                            jumlahCukai += item.AmaunCukai;
+                            jumlahTanpaCukai += (item.Harga * item.Kuantiti);
+                        }
+
+                        akPelarasanInden.JumlahCukai = jumlahCukai;
+                        akPelarasanInden.JumlahTanpaCukai = jumlahTanpaCukai;
+                    }
 
                     _unitOfWork.AkPelarasanIndenRepo.Update(akPelarasanInden);
 
@@ -568,6 +618,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string sebabHapus, string syscode)
         {
             var akPelarasamInden = _unitOfWork.AkPelarasanIndenRepo.GetById((int)id);
@@ -595,6 +646,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -629,6 +681,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return _unitOfWork.AkPelarasanIndenRepo.IsExist(b => b.Id == id);
         }
 
+        [Authorize(Policy = modul + "BL")]
         public async Task<IActionResult> UnPosting(int? id, string syscode)
         {
             if (id == null)
@@ -734,7 +787,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                                 item.Bil,
                                 item.Perihal,
                                 item.Kuantiti,
+                                item.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id,
+                                item.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id,
                                 item.Unit,
+                                item.EnLHDNJenisCukai,
+                                item.KadarCukai,
+                                item.AmaunCukai,
                                 item.Harga,
                                 item.Amaun
                                 );
@@ -856,7 +914,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
                 if (akPelarasanIndenPerihal != null)
                 {
-                    _cart.AddItemPerihal(akPelarasanIndenPerihal.AkPelarasanIndenId, akPelarasanIndenPerihal.Bil, akPelarasanIndenPerihal.Perihal, akPelarasanIndenPerihal.Kuantiti, akPelarasanIndenPerihal.Unit, akPelarasanIndenPerihal.Harga, akPelarasanIndenPerihal.Amaun);
+                    _cart.AddItemPerihal(akPelarasanIndenPerihal.AkPelarasanIndenId, akPelarasanIndenPerihal.Bil, akPelarasanIndenPerihal.Perihal, akPelarasanIndenPerihal.Kuantiti,  akPelarasanIndenPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akPelarasanIndenPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akPelarasanIndenPerihal.Unit, akPelarasanIndenPerihal.EnLHDNJenisCukai, akPelarasanIndenPerihal.KadarCukai, akPelarasanIndenPerihal.AmaunCukai, akPelarasanIndenPerihal.Harga, akPelarasanIndenPerihal.Amaun);
                 }
 
 
@@ -915,7 +973,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     _cart.RemoveItemPerihal(akPelarasanIndenPerihal.Bil);
 
-                    _cart.AddItemPerihal(akPelarasanIndenPerihal.AkPelarasanIndenId, akPelarasanIndenPerihal.Bil, akPelarasanIndenPerihal.Perihal, akPelarasanIndenPerihal.Kuantiti, akPelarasanIndenPerihal.Unit, akPelarasanIndenPerihal.Harga, akPelarasanIndenPerihal.Amaun);
+                    _cart.AddItemPerihal(akPelarasanIndenPerihal.AkPelarasanIndenId, akPelarasanIndenPerihal.Bil, akPelarasanIndenPerihal.Perihal, akPelarasanIndenPerihal.Kuantiti, akPelarasanIndenPerihal.LHDNKodKlasifikasiId ?? _unitOfWork.LHDNKodKlasifikasiRepo.GetByCodeAsync("022").Result.Id, akPelarasanIndenPerihal.LHDNUnitUkuranId ?? _unitOfWork.LHDNUnitUkuranRepo.GetByCodeAsync("C62").Result.Id, akPelarasanIndenPerihal.Unit, akPelarasanIndenPerihal.EnLHDNJenisCukai, akPelarasanIndenPerihal.KadarCukai, akPelarasanIndenPerihal.AmaunCukai, akPelarasanIndenPerihal.Harga, akPelarasanIndenPerihal.Amaun);
                 }
 
                 return Json(new { result = "OK" });

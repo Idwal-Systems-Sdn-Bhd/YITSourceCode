@@ -20,6 +20,19 @@ namespace YIT._DataAccess.Repositories.Implementations
             _context = context;
         }
 
+        public IEnumerable<DPekerja> GetAllByStatus(string? statusKerja)
+        {
+
+            var result = from pekerja in _context.DPekerja.AsQueryable() select pekerja;
+
+            if (statusKerja != null && statusKerja == "Aktif" )
+            {
+                result = result.Where(p => p.TarikhBerhentiKerja >= DateTime.Now || p.TarikhBerhentiKerja == null);
+            }
+
+            return result.OrderBy(p => p.KodPekerja);
+        }
+
         public List<DPekerja> GetAllDetails()
         {
             return _context.DPekerja

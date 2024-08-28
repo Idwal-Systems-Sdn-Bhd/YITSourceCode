@@ -10,10 +10,11 @@ using YIT._DataAccess.Data;
 using YIT.Akaun.Infrastructure;
 using YIT.Akaun.Models.ViewModels.Prints;
 using System.Data;
+using YIT.__Domain.Entities._Statics;
 
 namespace SPMBNET7.App.Controller
 {
-    [Authorize(Roles = "SuperAdmin,Admin")]
+    [Authorize(Roles = Init.superAdminAdminRole)]
     public class AppLogController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly ApplicationDbContext _context;

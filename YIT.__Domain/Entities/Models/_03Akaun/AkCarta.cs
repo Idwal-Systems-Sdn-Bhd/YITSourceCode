@@ -51,6 +51,9 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public ICollection<AkPanjarLejar>? AkPanjarLejar { get; set; }
         public ICollection<AkAnggarObjek>? AkAnggarObjek { get; set; }
         public ICollection<AkAnggarLejar>? AkAnggarLejar { get; set; }
+        public ICollection<AkInvoisObjek>? AkInvoisObjek { get; set; }
+        public ICollection<AkNotaDebitKreditDikeluarkanObjek>? AkNotaDebitKreditDikeluarkanObjek { get; set; }
+
 
     }
 }

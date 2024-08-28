@@ -1,8 +1,9 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
+using Rotativa.AspNetCore;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
@@ -14,10 +15,11 @@ using YIT._DataAccess.Repositories.Interfaces;
 using YIT._DataAccess.Services.Cart;
 using YIT._DataAccess.Services.Math;
 using YIT.Akaun.Models.ViewModels;
+using YIT.Akaun.Models.ViewModels.Prints;
 
 namespace YIT.Akaun.Controllers._02Daftar
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class DPanjarController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodDPanjar;
@@ -56,7 +58,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             SaveFormFields(searchString);
 
             var dPanjar = _unitOfWork.DPanjarRepo.GetResults(searchString, searchColumn);
-
+            ViewBag.DPanjar = _unitOfWork.DPanjarRepo.GetAllDetails();
             return View(dPanjar);
         }
 
@@ -80,6 +82,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             ViewBag.searchString = searchString;
         }
 
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             ViewBag.Kod = GenerateRunningNumber();
@@ -98,11 +101,11 @@ namespace YIT.Akaun.Controllers._02Daftar
             ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAll();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(DPanjar panjar, string syscode)
         {
             if (panjar.AkCartaId == 0)
@@ -154,6 +157,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return _unitOfWork.DPanjarRepo.IsExist(p => p.JCawanganId == jCawanganId);
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -210,6 +214,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         }
 
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -230,6 +235,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, DPanjar panjar, decimal bakiDiTangan, string syscode)
         {
             if (id != panjar.Id)
@@ -323,6 +329,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         }
 
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -339,6 +346,7 @@ namespace YIT.Akaun.Controllers._02Daftar
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var panjar = _unitOfWork.DPanjarRepo.GetById(id);
@@ -364,6 +372,7 @@ namespace YIT.Akaun.Controllers._02Daftar
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -391,6 +400,266 @@ namespace YIT.Akaun.Controllers._02Daftar
             }
 
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString") });
+        }
+
+        //function get latest date rekup (noPV) in tunai lejar
+        public JsonResult GetLastDateRekupAkPanjarLejar(int id)
+        {
+            try
+            {
+                // cari baucer yang tak direkup lagi paling latest
+                var result = _panjarLejar.GetDetailsLastByDPanjarId(id);
+                var tarikh = DateTime.Now.ToString("yyyy-MM-dd");
+                if (result != null)
+                {
+                    var panjarLejar = _panjarLejar.GetListByDPanjarId(id).FirstOrDefault(pl => pl.AkRekupId == null);
+
+                    if (panjarLejar != null)
+                    {
+                        tarikh = panjarLejar.Tarikh.ToString("yyyy-MM-dd");
+                    }
+                }
+
+                return Json(new { result = "OK", tarikh, record = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+
+        }
+        //function get latest date rekup (noPV) in tunai lejar end
+
+        [Authorize(Policy = modul + "E")]
+        public async Task<IActionResult> Rekup(int? id, string tarikhDari, string tarikhHingga, string syscode)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var user = await _userManager.GetUserAsync(User);
+                int? pekerjaId = _context.ApplicationUsers.FirstOrDefault(b => b.Id == user!.Id)!.DPekerjaId;
+                var panjar = _unitOfWork.DPanjarRepo.GetById((int)id);
+                DateTime date1 = DateTime.Parse(tarikhDari);
+                DateTime date2 = DateTime.Parse(tarikhHingga).AddHours(23.99);
+
+                // check if date 2 less than date 1
+                if (date2 < date1)
+                {
+                    //duplicate id error
+                    TempData[SD.Error] = "Tarikh Hingga tidak boleh kurang dari Tarikh Dari.";
+                    return RedirectToAction(nameof(Index));
+                }
+                // check end
+
+                // step:
+                //1. cari latest no rekup, define running number untuk no rekup.
+                //2. ambil latest list of tunai keluar yang tiada no rekup(range tarikhDari -> tarikhHingga) ikut input user.
+                //3. insert no rekup ikut running number (1)
+                //4. Link rekup Id dengan AkPanjarLejar
+
+                //1
+                var maxRefNoRekup = GenerateAkRekupRunningNumber("", DateTime.Now.ToString("yyyy") , panjar.Id);
+
+                //2
+                List<AkPanjarLejar> panjarLejarBelumRekupList = await _context.AkPanjarLejar
+                    .Where(pl => pl.DPanjarId == panjar.Id && pl.IsPaid == false
+                        && pl.Tarikh >= date1 && pl.Tarikh <= date2)
+                    .OrderBy(pl => pl.Tarikh).ToListAsync();
+
+                if (!panjarLejarBelumRekupList.Any())
+                {
+                    TempData[SD.Error] = "Tiada tunai keluar untuk direkup.";
+                }
+                else
+                {
+                    
+                    decimal jumlahRekupan = 0;
+                    foreach (var item in panjarLejarBelumRekupList)
+                    {
+                        jumlahRekupan += item.Kredit;
+
+                    }
+
+                    //3
+                    _unitOfWork.AkRekupRepo.Add(new AkRekup()
+                    {
+                        NoRujukan = maxRefNoRekup,
+                        Jumlah = jumlahRekupan,
+                        DPanjarId = panjar.Id,
+                        IsLinked = false
+                    });
+
+
+                }
+
+                panjar.UserIdKemaskini = user?.UserName ?? "";
+                panjar.TarKemaskini = DateTime.Now;
+                panjar.DPekerjaKemaskiniId = pekerjaId;
+
+                _unitOfWork.DPanjarRepo.Update(panjar);
+
+                _appLog.Insert("Ubah", "Rekupan panjar bagi cawangan " + panjar.JCawangan?.Kod + " - " + panjar.JCawangan?.Perihal, panjar.JCawangan?.Kod ?? "", panjar.Id, 0, pekerjaId, modul, syscode, namamodul, user);
+
+                await _context.SaveChangesAsync();
+
+                if (panjarLejarBelumRekupList.Any())
+                {
+                    var rekup = _unitOfWork.AkRekupRepo.GetDetailsLastByDPanjarId(panjar.Id);
+
+                    if (rekup != null)
+                    {
+                        foreach (var item in panjarLejarBelumRekupList)
+                        {
+                            item.AkRekupId = rekup.Id;
+
+                        }
+
+                        _panjarLejar.UpdateRange(panjarLejarBelumRekupList);
+                    }
+
+                    
+                }
+
+                await _context.SaveChangesAsync();
+
+                TempData[SD.Success] = "Proses rekupan berjaya..!";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+        }
+
+        // get list of no rekup based on AkTunaiRuncitId
+        public JsonResult GetListOfNoRekup(int id)
+        {
+            try
+            {
+                // cari baucer yang tak direkup lagi paling latest
+                var result = _unitOfWork.AkRekupRepo.GetAllExceptBakiAwalByDPanjarId(id);
+
+                return Json(new { result = "OK", record = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+
+        }
+        // get list of no rekup based on AkTunaiRuncitId end
+
+        // printing Rekupan Panjar
+        public async Task<IActionResult> PrintPdf(int id, string kodKaunter, string noRekup, string syscode)
+        {
+            if (noRekup == null)
+            {
+                TempData[SD.Error] = "Tiada pilihan rekupan";
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                var rekupan = await _context.AkRekup.FirstOrDefaultAsync(r => r.NoRujukan == noRekup);
+
+                var user = await _userManager.GetUserAsync(User);
+                ApplicationUser pekerja = _context.ApplicationUsers.Include(d => d.DPekerja).FirstOrDefault(b => b.Id == user!.Id) ?? new ApplicationUser();
+                int? pekerjaId = _context.ApplicationUsers.FirstOrDefault(b => b.Id == user!.Id)!.DPekerjaId;
+
+                var rekupanList = _panjarLejar.GetListByDPanjarId(id).Where(pl => pl.NoRekup == noRekup && (pl.AkCVId != null || pl.AkJurnalId != null)
+                ).ToList();
+
+
+                AkRekupPrintModel data = new AkRekupPrintModel();
+
+                List<Rekupan> rekupans = new List<Rekupan>();
+
+
+                foreach (var item in rekupanList)
+                {
+                    rekupans.Add(
+                        new Rekupan
+                        {
+                            Tarikh = item.Tarikh,
+                            Butiran = item.Butiran,
+                            NoRujukan = item.NoRujukan,
+                            Debit = item.Debit,
+                            Kredit = item.Kredit,
+                            Baki = item.Baki
+                        }
+                        );
+                }
+
+                data.RekupanList = rekupans;
+
+                CompanyDetails company = new CompanyDetails();
+                data.CompanyDetail = company;
+                if (User.IsInRole("SuperAdmin"))
+                {
+                    data.Penyedia = user?.UserName;
+                }
+                else
+                {
+                    data.Penyedia = pekerja.DPekerja?.Nama;
+                }
+
+                data.NoRekup = noRekup;
+
+                //insert applog
+                _appLog.Insert("Cetak", "Cetak rekupan panjar bagi kaunter " + kodKaunter + ", No Rekup : " + noRekup, noRekup, id, rekupan?.Jumlah ?? 0 , pekerjaId, modul, syscode, namamodul, user);
+
+                //insert applog end
+                await _context.SaveChangesAsync();
+
+                //string customSwitches = string.Format(" --header-html  \"{0}\" " +
+                //                       "--header-spacing \"-12\" " +
+                //                       "--header-font-size \"10\" " +
+                //                       "--footer-center \"[page]/[toPage]\" " +
+                //                       "--footer-font-size \"7\" --footer-spacing 1",
+                //                       Url.Action("Header", "AkRekup",
+                //                       new
+                //                       {
+                //                           NoRekup = noRekup,
+                //                           KodKaunter = kodKaunter
+                //                       },
+                //                       "https"));
+
+                //return new Rotativa.AspNetCore.ViewAsPdf("AkRekupPrintPdf", data)
+                //{
+                //    PageMargins = { Left = 15, Bottom = 15, Right = 15, Top = 15 },
+                //    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+                //    CustomSwitches = customSwitches,
+                //    //CustomSwitches = "--footer-center \"  Tarikh: " +
+                //    //    DateTime.Now.Date.ToString("dd/MM/yyyy") + "            Mukasurat: [page]/[toPage]\"" +
+                //    //    " --footer-line --footer-font-size \"10\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
+                //    PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                //};
+
+                return new ViewAsPdf("AkRekupPrintPdf", data,
+                new ViewDataDictionary(ViewData) {
+                { "NamaSyarikat", company.NamaSyarikat },
+                { "AlamatSyarikat1", company.AlamatSyarikat1 },
+                { "AlamatSyarikat2", company.AlamatSyarikat2 },
+                { "AlamatSyarikat3", company.AlamatSyarikat3 }
+                })
+                    {
+                        PageMargins = { Left = 15, Bottom = 15, Right = 15, Top = 15 },
+                        PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+                        CustomSwitches = "--footer-center \"[page]/[toPage]\"" +
+                            " --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
+                        PageSize = Rotativa.AspNetCore.Options.Size.A4,
+                    };
+                }
+
+        }
+        // printing Rekupan Panjar end
+
+        private dynamic GenerateAkRekupRunningNumber(string initNoRujukan, string tahun, int dPanjarId)
+        {
+            var maxRefNo = _unitOfWork.AkRekupRepo.GetMaxRefNoByDPanjarId(initNoRujukan, dPanjarId);
+
+            var prefix = tahun + "/";
+            return RunningNumberFormatter.GenerateRunningNumber(prefix, maxRefNo, "0000");
         }
 
         public JsonResult EmptyCart()

@@ -22,6 +22,8 @@ namespace YIT._DataAccess.Repositories.Implementations
             return _context.AkBelian
                 .IgnoreQueryFilters()
                 .Include(t => t.JKW)
+                .Include(t => t.LHDNMSIC)
+                .Include(t => t.LHDNEInvois)
                 .Include(t => t.DDaftarAwam)
                 .Include(t => t.DPekerjaPosting)
                 .Include(t => t.AkAkaunAkru)
@@ -59,6 +61,8 @@ namespace YIT._DataAccess.Repositories.Implementations
             var akBelianList = _context.AkBelian
                 .IgnoreQueryFilters()
                 .Include(t => t.JKW)
+                .Include(t => t.LHDNMSIC)
+                .Include(t => t.LHDNEInvois)
                 .Include(t => t.DDaftarAwam)
                 .Include(t => t.DPekerjaPosting)
                 .Include(t => t.AkAkaunAkru)
@@ -303,6 +307,13 @@ namespace YIT._DataAccess.Repositories.Implementations
                 return true;
             }
 
+            bool isExistInAkAkaun = await _context.AkAkaun.AnyAsync(b => b.NoRujukan == noRujukan);
+
+            if (isExistInAkAkaun)
+            {
+                return true;
+            }
+
             return false;
 
         }
@@ -349,8 +360,12 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             var data = GetDetailsById(id);
             var pelulus = _context.DKonfigKelulusan.FirstOrDefault(kk => kk.DPekerjaId == pelulusId);
+            bool isDenganTanggungan = false;
+
             if (data != null)
             {
+                if (data.EnJenisBayaranBelian == EnJenisBayaranBelian.PO || data.EnJenisBayaranBelian == EnJenisBayaranBelian.Inden) isDenganTanggungan = true;
+
                 if (data.EnStatusBorang != EnStatusBorang.Kemaskini)
                 {
                     data.DPelulusId = pelulus!.Id;
@@ -368,7 +383,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                 _context.Update(data);
 
-                PostingToAbBukuVot(data);
+                PostingToAbBukuVot(data, isDenganTanggungan);
 
                 PostingToAkAkaun(data);
             }
@@ -418,30 +433,61 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-        public void PostingToAbBukuVot(AkBelian akBelian)
+        public void PostingToAbBukuVot(AkBelian akBelian, bool isDenganTanggungan)
         {
             List<AbBukuVot> abBukuVotList = new List<AbBukuVot>();
 
             if (akBelian.AkBelianObjek != null && akBelian.AkBelianObjek.Count > 0)
             {
 
-
                 foreach (var item in akBelian.AkBelianObjek)
                 {
-                    AbBukuVot abBukuVot = new AbBukuVot()
+                    if (isDenganTanggungan)
                     {
-                        Tahun = akBelian.Tahun,
-                        JKWId = item.JKWPTJBahagian?.JKWId ?? akBelian.JKWId,
-                        JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
-                        JBahagianId = item.JKWPTJBahagian.JBahagianId,
-                        Tarikh = akBelian.Tarikh,
-                        DDaftarAwamId = akBelian.DDaftarAwamId,
-                        VotId = item.AkCartaId,
-                        NoRujukan = akBelian.NoRujukan,
-                        Liabiliti = item.Amaun
-                    };
+                        AbBukuVot abBukuVot = new AbBukuVot()
+                        {
+                            Tahun = akBelian.Tahun,
+                            JKWId = item.JKWPTJBahagian?.JKWId ?? akBelian.JKWId,
+                            JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
+                            JBahagianId = item.JKWPTJBahagian.JBahagianId,
+                            Tarikh = akBelian.Tarikh,
+                            DDaftarAwamId = akBelian.DDaftarAwamId,
+                            VotId = item.AkCartaId,
+                            NoRujukan = akBelian.NoRujukan,
+                            Debit = item.Amaun,
+                            Liabiliti = item.Amaun,
+                            Belanja = item.Amaun
+                            // + BakiLiabiliti
+                        };
 
-                    abBukuVotList.Add(abBukuVot);
+                        abBukuVotList.Add(abBukuVot);
+                    }
+                    else
+                    {
+                        if (akBelian.AkAkaunAkruId != null)
+                        {
+                            AbBukuVot abBukuVot = new AbBukuVot()
+                            {
+                                Tahun = akBelian.Tahun,
+                                JKWId = item.JKWPTJBahagian?.JKWId ?? akBelian.JKWId,
+                                JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
+                                JBahagianId = item.JKWPTJBahagian.JBahagianId,
+                                Tarikh = akBelian.Tarikh,
+                                DDaftarAwamId = akBelian.DDaftarAwamId,
+                                VotId = item.AkCartaId,
+                                NoRujukan = akBelian.NoRujukan,
+                                Debit = item.Amaun,
+                                Liabiliti = item.Amaun,
+                                Belanja = item.Amaun,
+                                Baki = -item.Amaun
+                                // +BakiLiabiliti
+                            };
+
+                            abBukuVotList.Add(abBukuVot);
+                        }
+
+                    }
+
                 }
             }
 
@@ -460,35 +506,35 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                     foreach (var item in akBelian.AkBelianObjek)
                     {
-                            AkAkaun akAkaun1 = new AkAkaun()
-                            {
-                                JKWId = akBelian.JKWId,
-                                JPTJId = item.JKWPTJBahagian?.JPTJId,
-                                JBahagianId = item.JKWPTJBahagian?.JBahagianId,
-                                NoRujukan = akBelian.NoRujukan,
-                                Tarikh = akBelian.Tarikh,
-                                AkCarta1Id = (int)akBelian.AkAkaunAkruId,
-                                AkCarta2Id = item.AkCartaId,
-                                Kredit = item.Amaun
-                            };
-                            akAkaunList.Add(akAkaun1);
+                        AkAkaun akAkaun1 = new AkAkaun()
+                        {
+                            JKWId = akBelian.JKWId,
+                            JPTJId = item.JKWPTJBahagian?.JPTJId,
+                            JBahagianId = item.JKWPTJBahagian?.JBahagianId,
+                            NoRujukan = akBelian.NoRujukan,
+                            Tarikh = akBelian.Tarikh,
+                            AkCarta1Id = (int)akBelian.AkAkaunAkruId,
+                            AkCarta2Id = item.AkCartaId,
+                            Kredit = item.Amaun
+                        };
+                        akAkaunList.Add(akAkaun1);
 
-                            AkAkaun akAkaun2 = new AkAkaun()
-                            {
-                                JKWId = akBelian.JKWId,
-                                JPTJId = item.JKWPTJBahagian?.JPTJId,
-                                JBahagianId = item.JKWPTJBahagian?.JBahagianId,
-                                NoRujukan = akBelian.NoRujukan,
-                                Tarikh = akBelian.Tarikh,
-                                AkCarta1Id = item.AkCartaId,
-                                AkCarta2Id = (int)akBelian.AkAkaunAkruId,
-                                Debit = item.Amaun
-                            };
+                        AkAkaun akAkaun2 = new AkAkaun()
+                        {
+                            JKWId = akBelian.JKWId,
+                            JPTJId = item.JKWPTJBahagian?.JPTJId,
+                            JBahagianId = item.JKWPTJBahagian?.JBahagianId,
+                            NoRujukan = akBelian.NoRujukan,
+                            Tarikh = akBelian.Tarikh,
+                            AkCarta1Id = item.AkCartaId,
+                            AkCarta2Id = (int)akBelian.AkAkaunAkruId,
+                            Debit = item.Amaun
+                        };
 
-                            akAkaunList.Add(akAkaun2);
-                        }
+                        akAkaunList.Add(akAkaun2);
                     }
-            
+                }
+
 
                 _context.AkAkaun.AddRange(akAkaunList);
             }
@@ -516,7 +562,10 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public List<AkBelian> GetAllByStatus(EnStatusBorang enStatusBorang)
         {
-            return _context.AkBelian.Where(pp => pp.EnStatusBorang == enStatusBorang).ToList();
+            var result = _context.AkBelian.Include(b => b.AkPVInvois).Where(pp => pp.EnStatusBorang == enStatusBorang && pp.FlPosting == 1 && pp.FlBatal != 1).ToList();
+
+            result = result.Where(pp => pp.AkPVInvois != null && pp.AkPVInvois.Count == 0).ToList();
+            return result;
         }
 
         public void BatalPos(int id, string? tindakan, string? userId)
@@ -615,7 +664,6 @@ namespace YIT._DataAccess.Repositories.Implementations
                 {
                     akBelian.Jumlah -= akNotaDebitKreditDiterima.Jumlah;
                 }
-                
 
                 if (akNotaDebitKreditDiterima.AkNotaDebitKreditDiterimaObjek != null && akNotaDebitKreditDiterima.AkNotaDebitKreditDiterimaObjek.Count > 0 && akBelian.AkBelianObjek != null && akBelian.AkBelianObjek.Count > 0)
                 {
@@ -640,9 +688,9 @@ namespace YIT._DataAccess.Repositories.Implementations
                         akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped.Add(akNotaDebitKreditDiterimaObjek);
                     }
 
-                    akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped = akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped.GroupBy(b => new {b.AkCartaId, b.JKWPTJBahagianId}).Select(l => new AkBelianObjek
+                    akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped = akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped.GroupBy(b => new { b.AkCartaId, b.JKWPTJBahagianId }).Select(l => new AkBelianObjek
                     {
-                        Id =l.First().Id,
+                        Id = l.First().Id,
                         AkBelianId = l.First().AkBelianId,
                         AkBelian = l.First().AkBelian,
                         JKWPTJBahagianId = l.First().JKWPTJBahagianId,
@@ -651,7 +699,6 @@ namespace YIT._DataAccess.Repositories.Implementations
                         AkCarta = l.First().AkCarta,
                         Amaun = l.Sum(l => l.Amaun)
                     }).ToList();
-                    
                 }
 
                 akBelian.AkBelianObjek = akNotaDebitKreditDiterimaObjekAkBelianObjekGrouped;

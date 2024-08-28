@@ -24,5 +24,6 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public ICollection<AkJurnalObjek>? AkJurnalObjekDebit { get; set; }
         public ICollection<AkJurnalObjek>? AkJurnalObjekKredit { get; set; }
         public ICollection<AkAnggarObjek>? AkAnggarObjek { get; set; }
+        public ICollection<AkInvoisObjek>? AkInvoisObjek { get; set; }
     }
 }

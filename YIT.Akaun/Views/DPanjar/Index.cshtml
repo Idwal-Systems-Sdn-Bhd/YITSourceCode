@@ -23,6 +23,10 @@
                     <thead class="table-secondary">
                         <tr>
                             <th width="5%">Bil</th>
+                            <th hidden width="5%">Id</th>
+                            <th class="kod" width="5%">
+                                Kod Kaunter
+                            </th>
                             <th class="kod" width="5%">
                                 Kod Cawangan
                             </th>
@@ -41,6 +45,10 @@
                             var tabletype = item.FlHapus == 1 ? "table-danger" : null;
                             <tr class="@tabletype text-uppercase">
                                 <td></td>
+                                <td hidden>@item.Id</td>
+                                <td>
+                                    @item.Kod
+                                </td>
                                 <td>
                                     @item.JCawangan?.Kod
                                 </td>
@@ -58,6 +66,14 @@
                                                class="btn text-primary btn-sm bg-white" type="button"
                                                data-toggle="tooltip" data-placement="top"
                                                title="Ubah/Papar"><i class="fas fa-edit"></i></a>
+                                            <button data-toggle="modal" data-target="#moRekup" class="btn btn-sm bg-white text-purple" type="button" data-placement="top" title="Rekup" onclick="ModalRekupClick(this)">
+                                                <i class="fas fa-money-bill-wave"></i>
+                                            </button>
+
+                                            <button data-toggle="modal" data-target="#moCetak" class="btn btn-sm bg-white text-secondary" type="button" data-placement="top" title="Cetak" onclick="ModalCetakClick(this)">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+
                                             <a asp-action="Delete" asp-route-id="@item.Id"
                                                class="btn text-danger btn-sm bg-white" type="button"
                                                data-toggle="tooltip" data-placement="top"
@@ -84,3 +100,94 @@
 
     </div>
 </div>
+
+<!-- Modal Rekup -->
+<div class="modal fade bd-example-modal-lg" id="moRekup" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="color:#a54ea8;">
+                <h5 class="modal-title">Rekupan Panjar</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form asp-action="Rekup" asp-controller="DPanjar" class="needs-validation">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-body">
+                    <input name="syscode" hidden value="SPPB" />
+                    <input name="id" type="hidden" class="moId" />
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-form-label">Kod Kaunter Panjar</label>
+                                <input type="text" class="form-control form-control-sm moKodKaunter" name="kodKaunter" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <label for="Tarikh" class="col-form-label">Tarikh</label>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6 pb-2">
+                            <input type="date" class="form-control form-control-sm" id="tarikhDari" name="tarikhDari" readonly>
+
+                        </div>
+                        <div class="col-md-6">
+                            <input type="date" class="form-control form-control-sm" id="tarikhHingga" name="tarikhHingga">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-success" id="btnRekup">Mula Rekup</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Rekup End -->
+<!-- Modal Cetak -->
+<div class="modal fade bd-example-modal-lg" id="moCetak" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="color:#a54ea8;">
+                <h5 class="modal-title">Cetakan Rekupan Panjar</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form asp-action="PrintPDF" asp-controller="DPanjar" class="needs-validation">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="modal-body">
+
+                    <input name="syscode" hidden value="SPPB" />
+                    <input name="id" type="hidden" class="moId" />
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-form-label">Kod Kaunter Panjar</label>
+                                <input type="text" class="form-control form-control-sm moKodKaunter" name="kodKaunter" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-form-label">No Rekup</label>
+                                <select class="form-control select2" name="noRekup" id="moAkRekupId">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-success" id="btnCetak" formtarget="_blank">Cetak</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Rekup End -->

@@ -6,6 +6,44 @@
 }
 
 <script type="text/javascript">
+    $(document).ready(function () {
+        //dropdown select2 loads data
+        GetDPekerjaList();
+
+        //
+    });
+
+    function GetDPekerjaList() {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDPekerjaAktifList", "DPekerja")',
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result == "OK") {
+                    // empty selection
+                    $("#ddlDPekerja").empty();
+
+                    //append new options
+                    $("#ddlDPekerja").append("<option value='' disable> -- SILA PLIH -- </option>");
+                    for (var i = 0; i < msg.list.length; i++) {
+                        var item = msg.list[i];
+
+                        var str = "<option value='" + item.id + "'>" + item.noGaji + " - " + item.nama + "</option>";
+                        $("#ddlDPekerja").append(str);
+                    }
+
+                }
+                else {
+                    toastr.error(message);
+                    toastr.options.timeOut = 2000; // 2s
+                }
+
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    }
     // onchange kod pembekal
     $("body").on('change', "#ddlDPekerja", function () {
         var kodPekerja = $("#ddlDPekerja").val();
@@ -61,11 +99,6 @@
                         <label asp-for="DPekerjaId" class="control-label col-md-5"></label><span class="text-danger control-label"></span>
                         <div class="col-md-10">
                             <select class="form-control select2 form-control-sm" asp-for="DPekerjaId" required id="ddlDPekerja">
-                                <option value="0" selected disabled>-- Sila Pilih Anggota -- </option>
-                                @foreach (var s in ViewBag.DPekerja)
-                                {
-                                    <option value="@s.Id">@s.NoGaji - @s.Nama </option>
-                                }
                             </select>
                             <span asp-validation-for="DPekerjaId" class="text-danger"></span>
                         </div>

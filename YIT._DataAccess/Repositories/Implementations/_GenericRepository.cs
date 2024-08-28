@@ -43,6 +43,11 @@ namespace YIT._DataAccess.Repositories.Implementations
             return _context.Set<T>().ToList();
         }
 
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _context.Set<T>().ToListAsync();
+        }
+
         public IEnumerable<T> GetAllIncludeDeleted()
         {
             return _context.Set<T>().IgnoreQueryFilters().ToList();
@@ -51,6 +56,17 @@ namespace YIT._DataAccess.Repositories.Implementations
         public T GetById(int id)
         {
             return _context.Set<T>()?.Find(id) ?? throw new ArgumentNullException();
+        }
+
+        public async Task<T> GetByIdAsync(int id)
+        {
+            return await _context.Set<T>().FindAsync(id) ?? throw new ArgumentNullException();
+        }
+
+        public async Task<T> GetByIdIgnoreQueryFiltersAsync(Expression<Func<T, bool>> predicate)
+        {
+            // Ignore globally set query filters for this particular query
+            return await _context.Set<T>().IgnoreQueryFilters().FirstOrDefaultAsync(predicate) ?? throw new ArgumentNullException();
         }
 
         public bool IsExist(Expression<Func<T, bool>> predicate)

@@ -29,13 +29,15 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "Invois Pembekal")]
         Belian = 9,
         [Display(Name = "Nota Debit/Kredit Pembekal")]
-        NotaDebitKreditPembekal = 10,
+        NotaDebitKreditDiterima = 10,
         [Display(Name = "Baucer Bayaran")]
         PV = 11,
         [Display(Name = "Jurnal")]
         Jurnal = 12,
         [Display(Name = "Anggaran Hasil")]
         AnggaranHasil = 13
+        [Display(Name = "Nota Debit/Kredit Dikeluarkan")]
+        NotaDebitKreditDikeluarkan = 14,
 
     }
 }

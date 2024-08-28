@@ -407,7 +407,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                         DDaftarAwamId = null,
                         VotId = item.AkCartaId,
                         NoRujukan = abWaran.NoRujukan,
-                        Kredit = item.Amaun
+                        Kredit = item.Amaun,
+                        Baki = item.Amaun
                     };
 
                     abBukuVotList.Add(abBukuVot);

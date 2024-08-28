@@ -10,7 +10,8 @@ using YIT._DataAccess.Repositories.Interfaces;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
-    [Authorize]
+    
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class JNegeriController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodJNegeri;
@@ -37,6 +38,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: Negeri/Details/5
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -54,6 +56,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: Negeri/Create
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             return View();
@@ -64,6 +67,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(JNegeri negeri, string syscode)
         {
             if (negeri.Kod != null && KodNegeriExists(negeri.Kod) == false)
@@ -94,8 +98,8 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(negeri);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
         // GET: Negeri/Edit/5
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -114,9 +118,9 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: Negeri/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, JNegeri negeri, string syscode)
         {
             if (id != negeri.Id)
@@ -169,6 +173,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: Negeri/Delete/5
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -188,6 +193,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: Negeri/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var negeri = _unitOfWork.JNegeriRepo.GetById((int)id);
@@ -210,6 +216,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

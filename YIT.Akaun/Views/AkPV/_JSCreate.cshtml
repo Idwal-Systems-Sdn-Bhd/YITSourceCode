@@ -35,8 +35,8 @@
                 AkPVId: akPVId
             }
              $.ajax({
-                type: "POST",
-                url: '@Url.Action("GetAkJanaanProfil","AkPV")',
+                type: "GET",
+                url: '@Url.Action("GetAkJanaanProfil","AkJanaanProfil")',
                 data: AkJanaanProfil,
                 dataType: "json",
                 success: function (msg) {
@@ -173,8 +173,8 @@
                 DDaftarAwamId: dDaftarAwamId
             }
             $.ajax({
-                type: "POST",
-                url: '@Url.Action("GetDDaftarAwam","AkPV")',
+                type: "GET",
+                url: '@Url.Action("GetDDaftarAwam","DDaftarAwam")',
                 data: DDaftarAwam,
                 dataType: "json",
                 success: function (msg) {
@@ -212,8 +212,8 @@
                 DPekerjaId: dPekerjaId
             }
             $.ajax({
-                type: "POST",
-                url: '@Url.Action("GetDPekerja","AkPV")',
+                type: "Get",
+                url: '@Url.Action("GetDPekerja","DPekerja")',
                 data: DPekerja,
                 dataType: "json",
                 success: function (msg) {
@@ -271,37 +271,45 @@
     });
 
     function GetJKWPTJBahagianList(jKWId) {
+        $("#objekJKWPTJBahagianId").empty();
+        $("#moObjekJKWPTJBahagianId").empty();
         $.ajax({
             type: "POST",
             url: '@Url.Action("GetJKWPTJBahagianList", "JKW")',
-            data: { JKWId : jKWId },
+            data: {
+                JKWId: jKWId
+            },
             dataType: "json",
             success: function (msg) {
+                console.log(msg);
+
                 if (msg.result == "OK") {
                     // empty selection
-                    $("#objekJKWPTJBahagianId").empty();
-                    $("#moObjekJKWPTJBahagianId").empty();
-
-
                     //append new options
                     $("#objekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
-                    for (var i = 0; i < msg.list.length; i++) {
-                        var item = msg.list[i];
+                    if (msg.list.length > 0) {
+                        for (var i = 0; i < msg.list.length; i++) {
+                            var item = msg.list[i];
 
-                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
-                        $("#objekJKWPTJBahagianId").append(str);
+                            var str = "<option value='" + item.id + "'>" + item.value + " - " + item.textValue + "</option>";
+                            $("#objekJKWPTJBahagianId").append(str);
+                        }
                     }
+
 
                     $("#moObjekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
-                    for (var i = 0; i < msg.list.length; i++) {
-                        var item = msg.list[i];
+                    if (msg.list.length > 0) {
+                        for (var i = 0; i < msg.list.length; i++) {
+                            var item = msg.list[i];
 
-                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
-                        $("#moObjekJKWPTJBahagianId").append(str);
+                            var str = "<option value='" + item.id + "'>" + item.value + " - " + item.textValue + "</option>";
+                            $("#moObjekJKWPTJBahagianId").append(str);
+                        }
                     }
+
                 }
                 else {
-                    toastr.error(msg.message);
+                    toastr.error(message);
                     toastr.options.timeOut = 2000; // 2s
                 }
 

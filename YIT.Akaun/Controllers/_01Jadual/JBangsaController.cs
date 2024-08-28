@@ -11,7 +11,7 @@ using YIT._DataAccess.Repositories.Interfaces;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class JBangsaController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodJBangsa;
@@ -38,6 +38,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KW/Details/5
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -55,6 +56,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KW/Create
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             return View();
@@ -65,6 +67,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(JBangsa bangsa, string syscode)
         {
             if (bangsa.Perihal != null && PerihalBangsaExists(bangsa.Perihal) == false)
@@ -95,7 +98,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(bangsa);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Policy = modul + "E")]
         // GET: KW/Edit/5
         public IActionResult Edit(int? id)
         {
@@ -115,9 +118,9 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: KW/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, JBangsa bangsa, string syscode)
         {
             if (id != bangsa.Id)
@@ -169,6 +172,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KW/Delete/5
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -188,6 +192,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: KW/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var bangsa = _unitOfWork.JBangsaRepo.GetById((int)id);
@@ -210,6 +215,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

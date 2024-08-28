@@ -7,6 +7,7 @@ using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
+using YIT._DataAccess.Repositories.Implementations;
 using YIT._DataAccess.Repositories.Interfaces;
 using YIT._DataAccess.Services;
 using YIT._DataAccess.Services.Cart;
@@ -16,13 +17,14 @@ using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class AkCVController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodAkCV;
         public const string namamodul = Modules.namaAkCV;
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
+        private readonly IAkPanjarLejarRepository _panjarLejar;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly _AppLogIRepository<AppLog, int> _appLog;
         private readonly UserServices _userServices;
@@ -31,6 +33,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         public AkCVController(
             ApplicationDbContext context,
             _IUnitOfWork unitOfWork,
+            IAkPanjarLejarRepository panjarLejar,
             UserManager<IdentityUser> userManager,
             _AppLogIRepository<AppLog, int> appLog,
             UserServices userServices,
@@ -38,6 +41,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         {
             _context = context;
             _unitOfWork = unitOfWork;
+            _panjarLejar = panjarLejar;
             _userManager = userManager;
             _appLog = appLog;
             _userServices = userServices;
@@ -110,6 +114,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -194,6 +199,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -218,6 +224,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akCV);
         }
 
+        [Authorize(Policy = modul + "BL")]
         public IActionResult BatalPos(int? id)
         {
             if (id == null)
@@ -243,6 +250,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("BatalPos")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "BL")]
         public async Task<IActionResult> BatalPosConfirmed(int id, string tindakan, string syscode)
         {
             var akCV = _unitOfWork.AkCVRepo.GetById((int)id);
@@ -265,6 +273,11 @@ namespace YIT.Akaun.Controllers._03Akaun
                     return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                 }
 
+                if (await _panjarLejar.IsExistAsync(pl => pl.AkCVId == id) == true)
+                {
+                    TempData[SD.Error] = "Data telah direkup";
+                    return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
+                }
                 _unitOfWork.AkCVRepo.BatalPos(id, tindakan, user?.UserName);
 
                 _appLog.Insert("UnPosting", "Batal Pos " + akCV.NoRujukan ?? "", akCV.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
@@ -279,6 +292,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "L")]
         public async Task<IActionResult> PosSemula(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -316,6 +330,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -339,7 +354,6 @@ namespace YIT.Akaun.Controllers._03Akaun
         private void PopulateDropDownList()
         {
             ViewBag.DPanjar = _unitOfWork.DPanjarRepo.GetAllDetails();
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAll();
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
             var kategoriPenerima = EnumHelper<EnKategoriDaftarAwam>.GetList();
@@ -352,6 +366,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(AkCV akCV, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -440,6 +455,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akCV);
         }
 
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -468,6 +484,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, AkCV akCV, string? fullName, string syscode)
         {
             if (id != akCV.Id)
@@ -570,6 +587,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string sebabHapus, string syscode)
         {
             var akCV = _unitOfWork.AkCVRepo.GetById((int)id);
@@ -597,6 +615,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

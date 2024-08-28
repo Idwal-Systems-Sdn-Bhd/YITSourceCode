@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <partial name="_JSCreate" />
+<partial name="_JSCreateExt" />
 <div class="card box-shadow">
     <div class="card-body">
         <div class="row">
@@ -38,7 +39,7 @@
                     <div class="form-group">
                         <label asp-for="AkCartaId" class="control-label"></label>
                         <select asp-for="AkCartaId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.AkCarta)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>
@@ -114,11 +115,6 @@
                                     <tr>
                                         <td colspan="3">
                                             <select class="form-control form-control-sm text-uppercase" id="pemegangDPekerjaId">
-                                                <option value="" class="text-lowercase" disabled selected>-- Pilih Anggota --</option>
-                                                @foreach (var s in ViewBag.DPekerja)
-                                                {
-                                                    <option value="@s.Id">@s.NoGaji - @s.Nama </option>
-                                                }
                                             </select>
                                         </td>
                                         <td><input class="form-control form-control-sm text-uppercase" type="date" id="pemegangJangkaMasaDari"></td>
@@ -167,10 +163,6 @@
                             <div class="form-group">
                                 <label class="col-form-label">Anggota</label>
                                 <select class="form-control form-control-sm text-uppercase" id="moPemegangDPekerjaId" disabled>
-                                    @foreach (var s in ViewBag.DPekerja)
-                                    {
-                                        <option value="@s.Id">@s.NoGaji - @s.Nama</option>
-                                    }
                                 </select>
                             </div>
                         </div>

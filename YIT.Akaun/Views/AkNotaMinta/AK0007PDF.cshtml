@@ -1,0 +1,213 @@
+﻿@model AkNotaMinta
+
+@{
+    ViewData["Title"] = "Cetakan Penilaian Perolehan";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal jumlahPerihal = 0;
+}
+@*
+    nota penggunaan class css
+    -------------------------
+    main-category = tajuk utama mengikut kategori
+    table-header-skyblue-line = kegunaan pada header jadual, wujudkan garisan bawah warna sky blue
+    table-header-skyblue = kegunaan pada header jadual, wujudkan warna latar belakang sky blue, tulisan white
+    table-body-lightgray = kegunaan pada body jadual, wujudkan garisan atas, kiri dan kanan warna lightgray
+    table-footer-skyblue = kegunaan pada footer jadual, wujudkan garisan atas warna sky blue
+    table-item-label = kegunaan pada jadual berbentuk list, format pada label
+    table-item-divider = kegunaan pada jdual berbentuk list, kebiasaan digunakan pada karakter ":"
+    table-item-input = kegunaan pada jadual berbentuk list, format pada input pengguna
+    table-signature-basic = kegunaan pada jadual berbentuk tandatangan, format basic beserta garisan ruangan tandatangan
+    table-signature-basic-title = kegunaan pada jadual berbentuk tandatangan, format pada tajuk tandatangan. contohnya "Disediakan oleh, etc."
+    table-signature-basic-item = kegunaan pada jadual berbentuk tandatangan, format pada perihal tandatangan. contohnya nama, jawatan dan tarikh.
+    *@
+
+<div class="row flexrow mb-1 text-center">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+        <p style="margin-top:2px">Kod Laporan: @Modules.kodAkNotaMinta - @Modules.namaAkNotaMinta</p>
+    </div>
+
+</div>
+<div class="form-group main-category">
+    <h4><strong>BAHAGIAN A: MAKLUMAT NOTA MINTA</strong></h4>
+</div>
+
+<div class="form-group">
+    <table>
+        <tr>
+            <td class="table-item-label">
+                <h5><strong>No Rujukan</strong></h5>
+            </td>
+            <td class="table-item-divider">:</td>
+            <td class="table-item-input">
+                <h5><strong> @Model.NoRujukan</strong></h5>
+            </td>
+        </tr>
+        <tr>
+            <td class="table-item-label">1. Tarikh</td>
+            <td class="table-item-divider">:</td>
+            <td class="table-item-input"> @Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td>
+        </tr>
+        <tr>
+            <td class="table-item-label">2. Kump. Wang</td>
+            <td class="table-item-divider">:</td>
+            <td class="table-item-input"> @BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal</td>
+        </tr>
+        <tr>
+            <td class="table-item-label">3. Tarikh Perlu</td>
+            <td class="table-item-divider">:</td>
+            <td class="table-item-input"> @Convert.ToDateTime(Model.TarikhPerlu).ToString("dd/MM/yyyy")</td>
+        </tr>
+        <tr>
+            <td class="table-item-label">4. Justifikasi Pembelian</td>
+            <td class="table-item-divider">:</td>
+            <td class="table-item-input"> @Model.Sebab</td>
+        </tr>
+    </table>
+</div>
+
+<div class="form-group pb-2">
+    @*table Perihal*@
+    <table class="table-sm text-wrap">
+        <thead class="table-header-skyblue">
+            <tr>
+                <th style="width:10%; padding-left: 10px">Bil</th>
+                <th style="width:40%">Perihal</th>
+                <th style="width:10%">Ktt.</th>
+                <th style="width:10%">Unit</th>
+                <th style="width:10%">Hrg/Unit RM</th>
+                <th style="width:20%">Amaun RM</th>
+            </tr>
+        </thead>
+        <tbody class="text-uppercase ">
+            @if (ViewBag.akNotaMintaPerihal != null)
+            {
+                foreach (var item in ViewBag.akNotaMintaPerihal)
+                {
+                    <tr class="table-body-lightgray">
+                        <td class="text-right" style="padding-left:10px">@item.Bil</td>
+                        <td>@item.Perihal</td>
+                        <td class="text-right">@item.Kuantiti</td>
+                        <td>@item.Unit</td>
+                        <td class="text-right">@Convert.ToDecimal(item.Harga).ToString("#,##0.00")</td>
+                        <td class="text-right">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                    </tr>
+                    jumlahPerihal += item.Amaun;
+                }
+
+            }
+        </tbody>
+        <tfoot class="table-footer-skyblue">
+            <tr>
+                <td style="width:40%;" class="text-center" colspan="5"><strong>Jumlah Perihal RM</strong></td>
+                <td class="text-right"><strong>@Convert.ToDecimal(jumlahPerihal).ToString("#,##0.00")</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="form-group main-category">
+    <h4><strong>BAHAGIAN B: KAEDAH PEROLEHAN DAN MAKLUMAT PERUNTUKAN</strong></h4>
+</div>
+<div class="form-group">
+    <table>
+        <tr>
+            <td class="table-item-label">5. Kaedah Perolehan</td>
+            <td class="table-item-divider">:</td>
+            <td class="table-item-input"> @Model.EnKaedahPerolehan.GetDisplayName()</td>
+        </tr>
+    </table>
+</div>
+
+@*table Objek*@
+<div class="form-group pb-2">
+    @*table Perihal*@
+    <table class="table-sm text-wrap">
+        <thead class="table-header-skyblue">
+            <tr>
+                <th style="width:40%; padding-left:10px">Bahagian</th>
+                <th style="width:40%">Kod</th>
+                <th></th>
+                <th style="width:20%">Amaun RM</th>
+            </tr>
+        </thead>
+        <tbody class="text-uppercase">
+            @if (ViewBag.akNotaMintaObjek != null)
+            {
+                foreach (var item in ViewBag.akNotaMintaObjek)
+                {
+                    <tr class="table-body-lightgray">
+                        <td style="padding-left:10px">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal)</td>
+                        <td>@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
+                        <td></td>
+                        <td class="text-right">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot class="table-footer-skyblue">
+            <tr>
+                <td style="width:40%;" class="text-center" colspan="3"><strong>Jumlah Objek RM</strong></td>
+                <td class="text-right"><strong>@Convert.ToDecimal(Model.Jumlah).ToString("#,##0.00")</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="form-group main-category">
+    <h4><strong>BAHAGIAN C: SYOR PEMBEKAL DAN KELULUSAN</strong></h4>
+</div>
+<div class="form-group">
+    <table>
+        <tr>
+            <td class="table-item-label">8. Cadangan Pembekal</td>
+            <td class="table-item-divider">:</td>
+            <td class="table-item-input"> @Model.DDaftarAwam?.Kod - @Model.DDaftarAwam?.Nama</td>
+        </tr>
+        <tr>
+            <td class="table-item-label">9. Harga Tawaran</td>
+            <td class="table-item-divider">:</td>
+            <td class="table-item-input"> RM @Convert.ToDecimal(Model.Jumlah).ToString("#,##0.00")</td>
+        </tr>
+        <tr>
+            <td class="table-item-label">10. No Pesanan</td>
+            <td class="table-item-divider">:</td>
+            <td class="table-item-input"></td>
+        </tr>
+        <tr>
+            <td class="table-item-label">11. Pengesahan dan Kelulusan</td>
+            <td class="table-item-divider">:</td>
+            <td class="table-item-input"></td>
+    </table>
+</div>
+
+<div class="form-group">
+    <table class="table-signature-basic" width="100%">
+        <tr>
+            <td class="table-signature-basic-title">Disediakan oleh,</td>
+            <td class="table-signature-basic-title">Disahkan oleh,</td>
+            <td class="table-signature-basic-title">Diluluskan/Ditolak</td>
+        </tr>
+        <tr>
+            <td class="table-signature-basic-item">@Model.DPemohon?.Nama</td>
+            <td class="table-signature-basic-item">@Model.DPengesah?.DPekerja?.Nama</td>
+            <td class="table-signature-basic-item">@Model.DPelulus?.DPekerja?.Nama</td>
+        </tr>
+        <tr>
+            <td class="table-signature-basic-item">@Model.DPemohon?.Jawatan</td>
+            <td class="table-signature-basic-item">@Model.DPengesah?.DPekerja?.Jawatan</td>
+            <td class="table-signature-basic-item">@Model.DPelulus?.DPekerja?.Jawatan</td>
+        </tr>
+        <tr>
+            <td class="table-signature-basic-item">Tarikh : @Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td>
+            <td class="table-signature-basic-item">Tarikh : @Convert.ToDateTime(Model.TarikhSah).ToString("dd/MM/yyyy")</td>
+            <td class="table-signature-basic-item">Tarikh : @Convert.ToDateTime(Model.TarikhLulus).ToString("dd/MM/yyyy")</td>
+        </tr>
+    </table>
+</div>
+
+

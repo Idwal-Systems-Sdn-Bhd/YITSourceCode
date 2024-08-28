@@ -153,7 +153,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             {
                 var bil = 1;
                 var groupedAkPVPenerima = printModel.AkPV
-                    .SelectMany(akPV => akPV.AkPVPenerima)
+                    .SelectMany(akPV => akPV.AkPVPenerima!)
                     .Where(akPVPenerima => akPVPenerima.JCaraBayarId == 2 && akPVPenerima.IsCekDitunaikan != true) //2= Cek
                     .GroupBy(akPVPenerima => akPVPenerima.TarikhCaraBayar)
                     .Select(group => new
@@ -182,7 +182,7 @@ namespace YIT.Akaun.Controllers._99Laporan
 
                     // After adding all detail rows for a group, add a summary row
                     var summaryRow = dt.NewRow();
-                    summaryRow["No Cek"] = "Jumlah Pada " + ((DateTime)group.Date).ToString("dd/MM/yyyy");
+                    summaryRow["No Cek"] = "Jumlah Pada " + ((DateTime)group.Date!).ToString("dd/MM/yyyy");
                     summaryRow["Amaun RM"] = group.TotalAmountByDate;
                     dt.Rows.Add(summaryRow);
 
@@ -276,21 +276,39 @@ namespace YIT.Akaun.Controllers._99Laporan
 
                 foreach (var akPV in printModel.AkPV)
                 {
-                    
-                    foreach (var akPVPenerima in akPV.AkPVPenerima.Where(akPVPenerima => akPVPenerima.JCaraBayarId == 2 && akPVPenerima.EnStatusEFT == EnStatusProses.Fail)) //2 = Cek
+                    if (akPV.AkPVPenerima != null)
                     {
-                        decimal Jumlah = 0;
-                        // Check if there are any AkJurnalPenerimaCekBatal items
-                        if (akPV.AkJurnalPenerimaCekBatal != null && akPV.AkJurnalPenerimaCekBatal.Any())
+                        foreach (var akPVPenerima in akPV.AkPVPenerima.Where(akPVPenerima => akPVPenerima.JCaraBayarId == 2 && akPVPenerima.EnStatusEFT == EnStatusProses.Fail)) //2 = Cek
                         {
-                            foreach (var akJurnal in akPV.AkJurnalPenerimaCekBatal)
+                            decimal Jumlah = 0;
+                            // Check if there are any AkJurnalPenerimaCekBatal items
+                            if (akPV.AkJurnalPenerimaCekBatal != null && akPV.AkJurnalPenerimaCekBatal.Any())
                             {
-                                // Now, for each akJurnal, you add a new row. Adjust the data accordingly
+                                foreach (var akJurnal in akPV.AkJurnalPenerimaCekBatal)
+                                {
+                                    // Now, for each akJurnal, you add a new row. Adjust the data accordingly
+                                    dt.Rows.Add(bil,
+                                        akPVPenerima.NoRujukanCaraBayar,
+                                        akPVPenerima.TarikhCaraBayar,
+                                        akPV.NoRujukan,
+                                        akJurnal.AkJurnal?.NoRujukan, // Using individual NoRujukan from akJurnal
+                                        akPVPenerima.Amaun,
+                                        akPVPenerima.NamaPenerima,
+                                        akPVPenerima.Catatan
+                                    );
+
+                                    bil++;
+                                    Jumlah += akPVPenerima.Amaun;
+                                }
+                            }
+                            else
+                            {
+                                // If there are no AkJurnalPenerimaCekBatal items, add a row with some default or empty value for that column
                                 dt.Rows.Add(bil,
                                     akPVPenerima.NoRujukanCaraBayar,
                                     akPVPenerima.TarikhCaraBayar,
                                     akPV.NoRujukan,
-                                    akJurnal.AkJurnal?.NoRujukan, // Using individual NoRujukan from akJurnal
+                                    "",
                                     akPVPenerima.Amaun,
                                     akPVPenerima.NamaPenerima,
                                     akPVPenerima.Catatan
@@ -299,26 +317,12 @@ namespace YIT.Akaun.Controllers._99Laporan
                                 bil++;
                                 Jumlah += akPVPenerima.Amaun;
                             }
-                        }
-                        else
-                        {
-                            // If there are no AkJurnalPenerimaCekBatal items, add a row with some default or empty value for that column
-                            dt.Rows.Add(bil,
-                                akPVPenerima.NoRujukanCaraBayar,
-                                akPVPenerima.TarikhCaraBayar,
-                                akPV.NoRujukan,
-                                "",
-                                akPVPenerima.Amaun,
-                                akPVPenerima.NamaPenerima,
-                                akPVPenerima.Catatan
-                            );
+                            TotalJumlah += Jumlah;
 
-                            bil++;
-                            Jumlah += akPVPenerima.Amaun;
                         }
-                        TotalJumlah += Jumlah;
-
                     }
+                    
+                    
                 }
                 // Add a row for the grand total
                 var grandTotalRow = dt.NewRow();
@@ -382,8 +386,8 @@ namespace YIT.Akaun.Controllers._99Laporan
 
             if (kodLaporan == "LAK00201")
             {
-                var TarikhDari = DateTime.Parse(tarikhDari).ToString("dd/MM/yyyy");
-                var TarikhHingga = DateTime.Parse(tarikhHingga).ToString("dd/MM/yyyy");
+                var TarikhDari = DateTime.Parse(tarikhDari ?? DateTime.Now.ToString("dd/MM/yyyy")).ToString("dd/MM/yyyy");
+                var TarikhHingga = DateTime.Parse(tarikhHingga ?? DateTime.Now.ToString("dd/MM/yyyy")).ToString("dd/MM/yyyy");
                 await PrepareData(kodLaporan, tarikhDari, tarikhHingga, susunan, EnStatusBorang.Lulus, akBankId);
 
 
@@ -413,8 +417,8 @@ namespace YIT.Akaun.Controllers._99Laporan
             if (kodLaporan == "LAK00202")
             {
                 
-                var TarikhDari = DateTime.Parse(tarikhDari).ToString("dd/MM/yyyy");
-                var TarikhHingga = DateTime.Parse(tarikhHingga).ToString("dd/MM/yyyy");
+                var TarikhDari = DateTime.Parse(tarikhDari ?? DateTime.Now.ToString("dd/MM/yyyy")).ToString("dd/MM/yyyy");
+                var TarikhHingga = DateTime.Parse(tarikhHingga ?? DateTime.Now.ToString("dd/MM/yyyy")).ToString("dd/MM/yyyy");
 
                 var akpv1 = new List<AkPV>();
                 var reportModel1 = await PrepareData(kodLaporan, tarikhDari, tarikhHingga, susunan, EnStatusBorang.Lulus, akBankId);

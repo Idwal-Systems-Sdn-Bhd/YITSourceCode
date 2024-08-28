@@ -8,12 +8,12 @@ namespace YIT.__Domain.Entities._Statics
 {
     public static class Modules
     {
-        // Sistem
+        // Sistem (SI)
         public const string kodSiAppInfo = "SI0001";
         public const string namaSiAppInfo = "Sistem Info Syarikat";
         //
 
-        // Jadual
+        // Jadual (JD)
         public const string kodJKW = "JD0001";
         public const string namaJKW = "Jadual Kumpulan Wang";
         
@@ -48,7 +48,7 @@ namespace YIT.__Domain.Entities._Statics
         public const string namaJKonfigPenyata = "Jadual Konfigurasi Penyata";
         //
 
-        // Daftar 
+        // Daftar (DF)
         public const string kodDPekerja = "DF0001";
         public const string namaDPekerja = "Daftar Anggota";
 
@@ -64,7 +64,7 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodDPanjar = "DF0005";
         public const string namaDPanjar = "Daftar Pemegang Panjar";
 
-        // Akaun
+        // Akaun (AK)
         public const string kodAkCarta = "AK0001";
         public const string namaAkCarta = "Carta Akaun";
 
@@ -121,17 +121,21 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodAkAnggar = "AK0019";
         public const string namaAkAnggar = "Anggaran Hasil";
+
+        public const string kodAkNotaDebitKreditDiterima = "AK0020";
+        public const string namaAkNotaDebitKreditDiterima = "Pelarasan Nota Debit Kredit Diterima";
+
         //
 
-        // Pemprosesan
+        // Pemprosesan (PP)
         public const string kodSahAbWaran = "PP0001";
-        public const string namaSahAbWaran = "Pemprosesan Sah Penilaian Perolehan";
+        public const string namaSahAbWaran = "Pemprosesan Sah Waran";
 
         public const string kodSemakAbWaran = "PP0002";
-        public const string namaSemakAbWaran = "Pemprosesan Semak Penilaian Perolehan";
+        public const string namaSemakAbWaran = "Pemprosesan Semak Waran";
 
         public const string kodLulusAbWaran = "PP0003";
-        public const string namaLulusAbWaran = "Pemprosesan Lulus Penilaian Perolehan";
+        public const string namaLulusAbWaran = "Pemprosesan Lulus Waran";
 
         public const string kodSahAkPenilaianPerolehan = "PP0004";
         public const string namaSahAkPenilaianPerolehan = "Pemprosesan Sah Penilaian Perolehan";
@@ -201,11 +205,12 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodLulusAkJurnal = "PP0026";
         public const string namaLulusAkJurnal = "Pemprosesan Lulus Baucer Jurnal";
-        //
-        // Laporan Akaun
-        public const string kodLTerimaan = "LAK001";
-        public const string namaLTerimaan = "Laporan Daftar Resit";
 
+        public const string kodLulusAkNotaDebitKreditDiterima = "PP0027";
+        public const string namaLulusAkNotaDebitKreditDiterima = "Pemprosesan Lulus Nota Debit Kredit Diterima";
+        //
+
+        // Laporan Penyata (PAK)
         public const string kodPAkBukuTunai = "PAK001";
         public const string namaPAkBukuTunai = "Penyata Buku Tunai";
 
@@ -226,6 +231,11 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodPAkKunciKiraKira = "PAK007";
         public const string namaPAkKunciKiraKira = "Penyata Kunci Kira - Kira";
+        //
+
+        // Laporan Akaun (LAK)
+        public const string kodLCekBelumTunai = "LAK001";
+        public const string namaLCekBelumTunai = "Laporan Cek Belum Tunai";
 
         public const string kodLCekYangBerkaitan = "LAK002";
         public const string namaLCekYangBerkaitan = "Laporan Cek Yang Berkaitan";
@@ -235,7 +245,6 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodLBelanjawanTerkini = "LAK004";
         public const string namaLBelanjawanTerkini = "Laporan Belanjawan";
-
 
         //
     }

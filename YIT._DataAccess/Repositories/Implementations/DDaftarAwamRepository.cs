@@ -41,13 +41,20 @@ namespace YIT._DataAccess.Repositories.Implementations
             return result;
         }
 
-        public List<DDaftarAwam> GetAllDetailsByKategori(EnKategoriDaftarAwam kategoriDaftarAwam)
+        public IEnumerable<DDaftarAwam> GetAllDetailsByKategori(EnKategoriDaftarAwam kategoriDaftarAwam)
         {
-            return _context.DDaftarAwam
-                .Include(df => df.JBank)
-                .Include(df => df.JNegeri)
-                .Where(df => df.EnKategoriDaftarAwam == kategoriDaftarAwam)
-                .ToList();
+            var result = _context.DDaftarAwam
+                .Where(df => df.EnKategoriDaftarAwam == kategoriDaftarAwam).AsQueryable();
+
+            if (result.Any())
+            {
+                foreach (var item in result)
+                {
+                    item.JNegeri = _context.JNegeri.Find(item.JNegeri);
+                    item.JBank = _context.JBank.Find(item.JBank);
+                }
+            }
+            return result;
         }
 
         public DDaftarAwam GetAllDetailsById(int id)
@@ -86,6 +93,51 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(df => df.JBank)
                 .Include(df => df.JNegeri)
                 .ToList();
+
+            // searchstring filters
+            if (searchString != null)
+            {
+                dDAList = dDAList.Where(t =>
+                t.Kod!.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.Nama!.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.JBank!.Perihal!.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.Alamat1!.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.NoAkaunBank!.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.KodM2E!.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                t.EnKategoriDaftarAwam!.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+            }
+            // searchString filters end
+
+            // order by filters
+            if (orderBy != null)
+            {
+                switch (orderBy)
+                {
+                    default:
+                        dDAList = dDAList.OrderBy(t => t.Kod).ToList();
+                        break;
+                }
+
+            }
+            // order by filters end
+
+            return dDAList;
+        }
+
+        public async Task<IEnumerable<DDaftarAwam>> GetResultsAsync(string? searchString, string? orderBy)
+        {
+            //if (searchString == null && orderBy == null)
+            //{
+            //    return new List<DDaftarAwam>();
+            //}
+
+            var dDAList = await _context.DDaftarAwam
+                .IgnoreQueryFilters()
+                .Include(df => df.JBank)
+                .Include(df => df.JNegeri)
+                .ToListAsync();
 
             // searchstring filters
             if (searchString != null)

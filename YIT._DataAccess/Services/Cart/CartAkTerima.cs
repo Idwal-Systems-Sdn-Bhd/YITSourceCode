@@ -86,5 +86,40 @@ namespace YIT._DataAccess.Services.Cart
         public virtual void ClearCaraBayar() => collectionCaraBayar.Clear();
 
         public virtual IEnumerable<AkTerimaCaraBayar> akTerimaCaraBayar => collectionCaraBayar;
+
+        //TerimaInvois
+
+        private List<AkTerimaInvois> collectionInvois = new List<AkTerimaInvois>();
+
+        public virtual void AddItemInvois(
+            int akTerimaId,
+            bool isTanggungan,
+            int akBelianId,
+            int akInvoisId,
+            decimal amaun
+            )
+        {
+            AkTerimaInvois line = collectionInvois.FirstOrDefault(p => p.AkBelianId == akBelianId)!;
+
+            if (line == null)
+            {
+                collectionInvois.Add(new AkTerimaInvois
+                {
+                    AkTerimaId = akTerimaId,
+                    IsTanggungan = isTanggungan,
+                    AkBelianId = akBelianId,
+                    AkInvoisId = akInvoisId,
+                    Amaun = amaun
+                });
+            }
+        }
+
+        public virtual void RemoveItemInvois(int akBelianId) =>
+            collectionInvois.RemoveAll(l => l.AkBelianId == akBelianId);
+
+
+        public virtual void ClearInvois() => collectionInvois.Clear();
+
+        public virtual IEnumerable<AkTerimaInvois> AkTerimaInvois => collectionInvois;
     }
 }

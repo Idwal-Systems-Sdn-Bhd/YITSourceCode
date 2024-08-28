@@ -23,7 +23,7 @@ using YIT.Akaun.Views.AkCarta;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class AkPVController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodAkPV;
@@ -116,6 +116,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -134,6 +135,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPV);
         }
 
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -158,6 +160,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akPV);
         }
 
+        [Authorize(Policy = modul + "BL")]
         public IActionResult BatalLulus(int? id)
         {
             if (id == null)
@@ -183,6 +186,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("BatalLulus")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "BL")]
         public async Task<IActionResult> BatalLulusConfirmed(int id, string tindakan, string syscode)
         {
             var akPV = _unitOfWork.AkPVRepo.GetById((int)id);
@@ -219,6 +223,8 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        
+        [Authorize(Policy = modul + "BL")]
         public IActionResult BatalPos(int? id)
         {
             if (id == null)
@@ -244,6 +250,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("BatalPos")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "BL")]
         public async Task<IActionResult> BatalPosConfirmed(int id, string tindakan, string syscode)
         {
             var akPV = _unitOfWork.AkPVRepo.GetById((int)id);
@@ -280,6 +287,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "L")]
         public async Task<IActionResult> PosSemula(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -317,6 +325,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -338,6 +347,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(AkPV akPV, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -426,6 +436,26 @@ namespace YIT.Akaun.Controllers._03Akaun
                 akPV.AkPVInvois = _cart.AkPVInvois?.ToList();
                 akPV.AkPVPenerima = _cart.AkPVPenerima?.ToList();
 
+                // change akRekup isLinked
+                if (akPV.AkPVPenerima != null && akPV.AkPVPenerima.Any())
+                {
+                    foreach (var item in akPV.AkPVPenerima)
+                    {
+                        if (item.AkRekupId != null)
+                        {
+                            var rekup = _unitOfWork.AkRekupRepo.GetById((int)item.AkRekupId);
+
+                            if (rekup != null)
+                            {
+                                rekup.IsLinked = true;
+
+                                _context.AkRekup.Update(rekup);
+                            }
+                        }
+                    }
+                }
+                //
+
                 _context.Add(akPV);
                 _appLog.Insert("Tambah", akPV.NoRujukan ?? "", akPV.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
@@ -458,6 +488,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -486,6 +517,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, AkPV akPV, string? fullName, string syscode)
         {
             if (id != akPV.Id)
@@ -585,7 +617,21 @@ namespace YIT.Akaun.Controllers._03Akaun
                         foreach (var item in objAsal.AkPVPenerima)
                         {
                             var model = _context.AkPVPenerima.FirstOrDefault(b => b.Id == item.Id);
-                            if (model != null) _context.Remove(model);
+                            if (model != null)
+                            {
+                                if (model.AkRekupId != null)
+                                {
+                                    var rekup = _unitOfWork.AkRekupRepo.GetById((int)model.AkRekupId);
+
+                                    if (rekup != null)
+                                    {
+                                        rekup.IsLinked = true;
+
+                                        _context.AkRekup.Update(rekup);
+                                    }
+                                }
+                                _context.Remove(model);
+                            }
                         }
                     }
 
@@ -596,6 +642,26 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akPV.AkPVObjek = _cart.AkPVObjek?.ToList();
                     akPV.AkPVInvois = _cart.AkPVInvois.ToList();
                     akPV.AkPVPenerima = _cart.AkPVPenerima?.ToList();
+
+                    // change akRekup isLinked
+                    if (akPV.AkPVPenerima != null && akPV.AkPVPenerima.Any())
+                    {
+                        foreach (var item in akPV.AkPVPenerima)
+                        {
+                            if (item.AkRekupId != null)
+                            {
+                                var rekup = _unitOfWork.AkRekupRepo.GetById((int)item.AkRekupId);
+
+                                if (rekup != null)
+                                {
+                                    rekup.IsLinked = true;
+
+                                    _context.AkRekup.Update(rekup);
+                                }
+                            }
+                        }
+                    }
+                    //
 
                     _unitOfWork.AkPVRepo.Update(akPV);
 
@@ -635,9 +701,10 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string sebabHapus, string syscode)
         {
-            var akPV = _unitOfWork.AkPVRepo.GetById((int)id);
+            var akPV = _unitOfWork.AkPVRepo.GetById(id);
 
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
@@ -652,6 +719,31 @@ namespace YIT.Akaun.Controllers._03Akaun
                 _context.AkPV.Remove(akPV);
                 _appLog.Insert("Hapus", akPV.NoRujukan ?? "", akPV.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);
                 await _context.SaveChangesAsync();
+
+                // change akRekup isLinked
+                var pvPenerima = await _context.AkPVPenerima.Where(pvp => pvp.AkPVId == id).ToListAsync();
+
+                if (pvPenerima != null && pvPenerima.Any())
+                {
+                    foreach (var item in pvPenerima)
+                    {
+                        if (item.AkRekupId != null)
+                        {
+                            var rekup = _unitOfWork.AkRekupRepo.GetById((int)item.AkRekupId);
+
+                            if (rekup != null)
+                            {
+                                rekup.IsLinked = false;
+
+                                _context.AkRekup.Update(rekup);
+                            }
+                        }
+                    }
+                }
+                //
+
+                await _context.SaveChangesAsync();
+
                 TempData[SD.Success] = "Data berjaya dihapuskan..!";
             }
             else
@@ -662,12 +754,14 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
             int? pekerjaId = _context.ApplicationUsers.Where(b => b.Id == user!.Id).FirstOrDefault()!.DPekerjaId;
 
             var obj = await _context.AkPV.IgnoreQueryFilters()
+                .Include(pv => pv.AkPVPenerima)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             // Batal operation
@@ -678,6 +772,26 @@ namespace YIT.Akaun.Controllers._03Akaun
                 obj.UserIdKemaskini = user?.UserName ?? "";
                 obj.TarKemaskini = DateTime.Now;
                 obj.DPekerjaKemaskiniId = pekerjaId;
+
+                // change akRekup isLinked
+                if (obj.AkPVPenerima != null && obj.AkPVPenerima.Any())
+                {
+                    foreach (var item in obj.AkPVPenerima)
+                    {
+                        if (item.AkRekupId != null)
+                        {
+                            var rekup = _unitOfWork.AkRekupRepo.GetById((int)item.AkRekupId);
+
+                            if (rekup != null)
+                            {
+                                rekup.IsLinked = true;
+
+                                _context.AkRekup.Update(rekup);
+                            }
+                        }
+                    }
+                }
+                //
 
                 _context.AkPV.Update(obj);
 
@@ -701,8 +815,6 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
             ViewBag.JCukai = _unitOfWork.JCukaiRepo.GetAll();
             ViewBag.AkJanaanProfil = _unitOfWork.AkJanaanProfilRepo.GetAll();
-            ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAllDetails();
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
             ViewBag.JBank = _unitOfWork.JBankRepo.GetAll();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
@@ -1415,116 +1527,6 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
-        public JsonResult GetDDaftarAwam(int DDaftarAwamId)
-        {
-            try
-            {
-                if (DDaftarAwamId != 0)
-                {
-                    var data = _unitOfWork.DDaftarAwamRepo.GetAllDetailsById(DDaftarAwamId);
-
-                    if (data != null)
-                    {
-                        return Json(new { result = "OK", record = data });
-                    }
-                    else
-                    {
-                        return Json(new { result = "Error", message = "data tidak wujud!" });
-                    }
-                }
-                //EmptyCart();
-                else
-                {
-                    return Json(new { result = "None" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { result = "Error", message = ex.Message });
-            }
-        }
-
-        public JsonResult GetDPekerja(int DPekerjaId)
-        {
-            try
-            {
-                if (DPekerjaId != 0)
-                {
-                    var data = _unitOfWork.DPekerjaRepo.GetAllDetailsById(DPekerjaId);
-
-                    if (data != null)
-                    {
-                        return Json(new { result = "OK", record = data });
-                    }
-                    else
-                    {
-                        return Json(new { result = "Error", message = "data tidak wujud!" });
-                    }
-                }
-                //EmptyCart();
-                else
-                {
-                    return Json(new { result = "None" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { result = "Error", message = ex.Message });
-            }
-        }
-
-        public JsonResult GetAkJanaanProfil(int akJanaanProfilId, int akPVId)
-        {
-            try
-            {
-                if (akJanaanProfilId != 0)
-                {
-                    var data = _unitOfWork.AkJanaanProfilRepo.GetDetailsById(akJanaanProfilId);
-
-                    if (data != null)
-                    {
-                        // check if already have pv linked
-                        if (_unitOfWork.AkPVRepo.HaveAkJanaanProfil(akJanaanProfilId))
-                        {
-                            return Json(new { result = "Error", message = "Data terkait dengan baucer lain" });
-                        }
-                        //
-
-                        // insert AkJanaanProfilPenerima into cart AkPVPenerima
-                        if (data.AkJanaanProfilPenerima != null && data.AkJanaanProfilPenerima.Count() > 0)
-                        {
-                            int bil = 1;
-                            foreach( var item in data.AkJanaanProfilPenerima)
-                            {
-                                _cart.AddItemPenerima(0, akPVId, item.Id, item.EnKategoriDaftarAwam, item.DDaftarAwamId, item.DPekerjaId, item.NoPendaftaranPenerima, item.NamaPenerima, item.NoPendaftaranPemohon, item.Catatan, item.JCaraBayarId, item.JBankId, item.NoAkaunBank, item.Alamat1, item.Alamat2, item.Alamat3, item.Emel, item.KodM2E, null, null, item.Amaun, item.NoRujukanMohon, item.AkRekupId, null, false, null, EnStatusProses.None, item.Bil, item.EnJenisId);
-
-                                bil++;
-                            }
-                            
-                        }
-                        else
-                        {
-                            return Json(new { result = "Error", message = "Senarai penerima pada janaan tidak wujud!" });
-                        }
-                        //
-                        return Json(new { result = "OK", tarikhJanaanProfil = data.Tarikh });
-                    }
-                    else
-                    {
-                        return Json(new { result = "Error", message = "data tidak wujud!" });
-                    }
-                }
-                //EmptyCart();
-                else
-                {
-                    return Json(new { result = "None" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { result = "Error", message = ex.Message });
-            }
-        }
 
         public JsonResult SaveCartAkPVPenerima(AkPVPenerima akPVPenerima)
         {
@@ -1983,8 +1985,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
-        // printing akPenilaianPerolehan
-        [AllowAnonymous]
+        // printing akPV
         public async Task<IActionResult> PrintPDFById(int id)
         {
             AkPV akPV = _unitOfWork.AkPVRepo.GetDetailsById(id);

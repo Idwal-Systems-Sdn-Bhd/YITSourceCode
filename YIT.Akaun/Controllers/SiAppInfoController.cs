@@ -11,7 +11,7 @@ using System.Runtime.Versioning;
 
 namespace YIT.Akaun.Controller
 {
-    [Authorize(Roles = "SuperAdmin, Admin")]
+    [Authorize(Roles = Init.superAdminAdminRole)]
     public class SiAppInfoController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodSiAppInfo;

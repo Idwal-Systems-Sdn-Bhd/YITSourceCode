@@ -75,7 +75,7 @@
                     <div class="form-group">
                         <label asp-for="EnJenis" class="control-label"></label>
                         <select asp-for="EnJenis" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="0">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.EnJenis)
                             {
                                 <option value="@item.id">@item.perihal</option>
@@ -87,7 +87,7 @@
                     <div class="form-group">
                         <label asp-for="EnParas" class="control-label"></label>
                         <select asp-for="EnParas" class="form-control form-control-sm text-uppercase" required>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="0">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.EnParas)
                             {
                                 <option value="@item.id">@item.perihal</option>

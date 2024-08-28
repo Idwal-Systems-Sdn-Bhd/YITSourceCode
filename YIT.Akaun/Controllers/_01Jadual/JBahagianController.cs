@@ -10,7 +10,7 @@ using YIT._DataAccess.Repositories.Interfaces;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class JBahagianController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodJBahagian;
@@ -39,6 +39,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: Bahagian/Details/5
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -56,6 +57,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: Bahagian/Create
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             PopulateDropdownList();
@@ -65,6 +67,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: Bahagian/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(JBahagian bahagian, string syscode)
         {
             if (bahagian.Perihal != null && PerihalBahagianExists(bahagian.Perihal) == false)
@@ -96,7 +99,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(bahagian);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Policy = modul + "E")]
         // GET: Bahagian/Edit/5
         public IActionResult Edit(int? id)
         {
@@ -115,9 +118,9 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // POST: Bahagian/Edit/5
-        [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, JBahagian bahagian, string syscode)
         {
             if (id != bahagian.Id)
@@ -171,6 +174,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: Bahagian/Delete/5
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -190,6 +194,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: Bahagian/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var bahagian = _unitOfWork.JBahagianRepo.GetById((int)id);
@@ -212,6 +217,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

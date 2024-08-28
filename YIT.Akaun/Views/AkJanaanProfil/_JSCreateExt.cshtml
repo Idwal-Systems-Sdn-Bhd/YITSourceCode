@@ -1,0 +1,71 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        //dropdown select2 loads data
+        GetDDaftarAwamList();
+        GetDPekerjaList();
+
+        //
+    });
+    function GetDDaftarAwamList() {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDDaftarAwamPembekalList", "DDaftarAwam")',
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result == "OK") {
+                    // empty selection
+                    $("#moPenerimaDDaftarAwamId").empty();
+
+                    //append new options
+                    $("#moPenerimaDDaftarAwamId").append("<option value='' disable> -- SILA PLIH -- </option>");
+                    for (var i = 0; i < msg.list.length; i++) {
+                        var item = msg.list[i];
+
+                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.nama + "</option>";
+                        $("#moPenerimaDDaftarAwamId").append(str);
+                    }
+
+                }
+                else {
+                    toastr.error(message);
+                    toastr.options.timeOut = 2000; // 2s
+                }
+
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    }
+    function GetDPekerjaList() {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetDPekerjaAktifList", "DPekerja")',
+            dataType: "json",
+            success: function (msg) {
+                if (msg.result == "OK") {
+                    // empty selection
+                    $("#moPenerimaDPekerjaId").empty();
+
+                    //append new options
+                    $("#moPenerimaDPekerjaId").append("<option value='' disable> -- SILA PLIH -- </option>");
+                    for (var i = 0; i < msg.list.length; i++) {
+                        var item = msg.list[i];
+
+                        var str = "<option value='" + item.id + "'>" + item.noGaji + " - " + item.nama + "</option>";
+                        $("#moPenerimaDPekerjaId").append(str);
+                    }
+
+                }
+                else {
+                    toastr.error(message);
+                    toastr.options.timeOut = 2000; // 2s
+                }
+
+            },
+            error: function (req, status, error) {
+                alert(error);
+            }
+        });
+    }
+</script>

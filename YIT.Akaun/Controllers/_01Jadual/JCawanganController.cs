@@ -10,7 +10,8 @@ using YIT._DataAccess.Repositories.Interfaces;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
-    [Authorize(Roles = "SuperAdmin,Supervisor")]
+    
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class JCawanganController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodJCawangan;
@@ -38,6 +39,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: JCawangan/Details/5
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -54,6 +56,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: jCawangan/Create
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             PopulateDropdownList();
@@ -65,6 +68,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(JCawangan jCawangan, string syscode)
         {
             if (jCawangan.Kod != null && KodJCawanganExists(jCawangan.Kod) == false)
@@ -100,8 +104,8 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(jCawangan);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
         // GET: jCawangan/Edit/5
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -124,6 +128,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, JCawangan jCawangan, string syscode)
         {
             if (id != jCawangan.Id)
@@ -182,6 +187,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: jCawangan/Delete/5
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -200,6 +206,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: jCawangan/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var jCawangan = _unitOfWork.JCawanganRepo.GetById((int)id);
@@ -222,6 +229,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);

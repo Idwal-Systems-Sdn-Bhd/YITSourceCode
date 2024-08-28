@@ -17,7 +17,7 @@ using YIT.Akaun.Microservices;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class AkJanaanProfilController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodAkJanaanProfil;
@@ -75,7 +75,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akJanaanProfil);
         }
 
-        private void SaveFormFields(string searchString, string searchDate1, string searchDate2)
+        private void SaveFormFields(string? searchString, string? searchDate1, string? searchDate2)
         {
             PopulateFormFields(searchString, searchDate1, searchDate2);
 
@@ -104,13 +104,14 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
-        private void PopulateFormFields(string searchString, string searchDate1, string searchDate2)
+        private void PopulateFormFields(string? searchString, string? searchDate1, string? searchDate2)
         {
             ViewBag.searchString = searchString;
             ViewBag.searchDate1 = searchDate1 ?? DateTime.Now.ToString("dd/MM/yyyy");
             ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
         }
 
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -128,6 +129,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akJanaanProfil);
         }
 
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -151,6 +153,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akJanaanProfil);
         }
 
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -163,8 +166,6 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         private void PopulateDropDownList()
         {
-            ViewBag.DDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsByKategori(EnKategoriDaftarAwam.Pembekal);
-            ViewBag.DPekerja = _unitOfWork.DPekerjaRepo.GetAllDetails();
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
             ViewBag.JBank = _unitOfWork.JBankRepo.GetAll();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
@@ -189,6 +190,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(AkJanaanProfil akJanaanProfil, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -237,6 +239,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return View(akJanaanProfil);
         }
 
+        [Authorize(Policy = modul + "E")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -267,6 +270,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> Edit(int id, AkJanaanProfil akJanaanProfil, string? fullName, string syscode)
         {
             if (id != akJanaanProfil.Id)
@@ -413,6 +417,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string sebabHapus, string syscode)
         {
             var akJanaanProfil = _unitOfWork.AkJanaanProfilRepo.GetById((int)id);
@@ -440,6 +445,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -856,6 +862,60 @@ namespace YIT.Akaun.Controllers._03Akaun
             catch (Exception ex)
             {
                 return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetAkJanaanProfil(int akJanaanProfilId, int akPVId)
+        {
+            try
+            {
+                if (akJanaanProfilId != 0)
+                {
+                    var data = _unitOfWork.AkJanaanProfilRepo.GetDetailsById(akJanaanProfilId);
+
+                    if (data != null)
+                    {
+                        // check if already have pv linked
+                        if (_unitOfWork.AkPVRepo.HaveAkJanaanProfil(akJanaanProfilId))
+                        {
+                            return Json(new { result = "Error", message = "Data terkait dengan baucer lain" });
+                        }
+                        //
+
+                        // insert AkJanaanProfilPenerima into cart AkPVPenerima
+                        if (data.AkJanaanProfilPenerima != null && data.AkJanaanProfilPenerima.Count() > 0)
+                        {
+                            int bil = 1;
+                            foreach (var item in data.AkJanaanProfilPenerima)
+                            {
+                                _cart.AddItemPenerima(0, akPVId, item.Id, item.EnKategoriDaftarAwam,item.DPenerimaZakatId, item.DDaftarAwamId, item.DPekerjaId, item.NoPendaftaranPenerima, item.NamaPenerima, item.NoPendaftaranPemohon, item.Catatan, item.JCaraBayarId, item.JBankId, item.NoAkaunBank, item.Alamat1, item.Alamat2, item.Alamat3, item.Emel, item.KodM2E, item.Amaun, item.NoRujukanMohon, item.AkRekupId, item.EnJenisId);
+
+                                bil++;
+                            }
+
+                        }
+                        else
+                        {
+                            return Json(new { result = "Error", message = "Senarai penerima pada janaan tidak wujud!" });
+                        }
+                        //
+                        return Json(new { result = "OK", tarikhJanaanProfil = data.Tarikh });
+                    }
+                    else
+                    {
+                        return Json(new { result = "Error", message = "data tidak wujud!" });
+                    }
+                }
+                //EmptyCart();
+                else
+                {
+                    return Json(new { result = "None" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
             }
         }
     }

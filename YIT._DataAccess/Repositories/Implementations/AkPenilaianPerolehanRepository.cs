@@ -25,7 +25,9 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             return _context.AkPenilaianPerolehan
                 .IgnoreQueryFilters()
+                //.Include(t => t.AkPV)
                 .Include(t => t.JKW)
+                .Include(t => t.LHDNMSIC)
                 .Include(t => t.DPemohon)
                 .Include(t => t.DDaftarAwam)
                 .Include(t => t.DPekerjaPosting)
@@ -46,7 +48,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkPenilaianPerolehanObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JBahagian)
-                .Include(t => t.AkPenilaianPerolehanPerihal)
+                .Include(t => t.AkPenilaianPerolehanPerihal)!
+                    .ThenInclude(t => t.LHDNUnitUkuran)
                 .FirstOrDefault(pp => pp.Id == id) ?? new AkPenilaianPerolehan();
         }
 
@@ -59,6 +62,8 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var akPPList = _context.AkPenilaianPerolehan
                 .IgnoreQueryFilters()
+                //.Include(t => t.AkPV)
+                .Include(t => t.LHDNMSIC)
                 .Include(t => t.JKW)
                 .Include(t => t.DPemohon)
                 .Include(t => t.DDaftarAwam)

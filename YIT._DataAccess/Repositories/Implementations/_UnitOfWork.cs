@@ -63,6 +63,13 @@ namespace YIT._DataAccess.Repositories.Implementations
             AkRekupRepo = new AkRekupRepository(_context);
             DPanjarRepo = new DPanjarRepository(_context);
             AkCVRepo = new AkCVRepository(_context);
+            AkInvoisRepo = new AkInvoisRepository(_context);
+
+            LHDNKodKlasifikasiRepo = new LHDNKodKlasifikasiRepository(_context);
+            LHDNMSICRepo = new LHDNMSICRepository(_context);
+            LHDNUnitUkuranRepo = new LHDNUnitUkuranRepository(_context);
+
+            AkNotaDebitKreditDiterimaRepo = new AkNotaDebitKreditDiterimaRepository(_context);
         }
 
         public IJKWRepository JKWRepo { get; private set; }
@@ -133,14 +140,24 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public IAkCVRepository AkCVRepo { get; }
 
+        public IAkInvoisRepository AkInvoisRepo { get; }
+
+        public ILHDNKodKlasifikasiRepository LHDNKodKlasifikasiRepo { get; }
+
+        public ILHDNMSICRepository LHDNMSICRepo { get; }
+
+        public ILHDNUnitUkuranRepository LHDNUnitUkuranRepo { get; }
+
+        public IAkNotaDebitKreditDiterimaRepository AkNotaDebitKreditDiterimaRepo { get; }
+
         public void Dispose()
         {
             _context.Dispose();
         }
 
-        public int Save()
+        public async Task<int> Save()
         {
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
     }
 }

@@ -4,6 +4,7 @@
     ViewData["Title"] = "Konfigurasi Kelulusan - Tambah";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<partial name="_JSCreateExt">
 <div class="card box-shadow">
     <div class="card-body">
         <partial name="~/Views/Partials/Common/_TitleCreateDaftarPartial.cshtml" />
@@ -13,12 +14,7 @@
             <input name="syscode" value="SPPB" hidden />
             <div class="form-group">
                 <label asp-for="DPekerjaId" class="control-label"></label>
-                <select asp-for="DPekerjaId" class="form-control form-control-sm text-uppercase" required>
-                    <option value="">- SILA PILIH -</option>
-                    @foreach (var item in ViewBag.DPekerja)
-                    {
-                        <option value="@item.Id">@item.NoGaji - @item.Nama</option>
-                    }
+                <select asp-for="DPekerjaId" class="form-control form-control-sm text-uppercase select2" required>
                 </select>
                 <span asp-validation-for="DPekerjaId" class="text-danger"></span>
             </div>
@@ -27,7 +23,7 @@
                     <div class="form-group">
                         <label asp-for="EnKategoriKelulusan" class="control-label"></label>
                         <select asp-for="EnKategoriKelulusan" class="form-control form-control-sm text-uppercase" required>
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.EnKategoriKelulusan)
                             {
                                 <option value="@item.id">@item.indek - @item.perihal</option>
@@ -39,7 +35,7 @@
                     <div class="form-group">
                         <label asp-for="EnJenisModulKelulusan" class="control-label"></label>
                         <select asp-for="EnJenisModulKelulusan" class="form-control form-control-sm text-uppercase" required>
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.EnJenisModulKelulusan)
                             {
                                 <option value="@item.id">@item.indek - @item.perihal</option>
@@ -51,7 +47,7 @@
                     <div class="form-group">
                         <label asp-for="JBahagianId" class="control-label"></label>
                         <select asp-for="JBahagianId" class="form-control form-control-sm text-uppercase">
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.JBahagian)
                             {
                                 <option value="@item.Id">@item.Kod - @item.Perihal</option>

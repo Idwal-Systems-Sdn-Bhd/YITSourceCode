@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
 using YIT.__Domain.Entities._Enums;
+using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
@@ -17,7 +18,7 @@ using YIT.Akaun.Models.ViewModels.Forms;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class AkAkaunController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly _IUnitOfWork _unitOfWork;
@@ -169,7 +170,6 @@ namespace YIT.Akaun.Controllers._03Akaun
         }
 
         // printing list of akaun
-        [AllowAnonymous]
         public async Task<IActionResult> PrintPDF(
             PenyataFormModel form)
         {

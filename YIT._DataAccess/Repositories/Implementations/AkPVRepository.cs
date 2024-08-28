@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -505,7 +507,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                 if (akPV.IsInvois)
                 {
-                    int? akAkaunAkruId = 0;
+                    int? akAkaunAkruId = null;
                     if (akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 0)
                     {
                         foreach (var item in akPV.AkPVInvois)
@@ -516,7 +518,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                     foreach (var item in akPV.AkPVObjek)
                     {
-                        if (akPV.IsAkru)
+                        if (akPV.IsAkru && akAkaunAkruId != null)
                         {
                             AkAkaun akAkaun1 = new AkAkaun()
                             {
@@ -584,65 +586,115 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             List<AbBukuVot> abBukuVotList = new List<AbBukuVot>();
 
-            if (akPV.IsInvois == true)
+            int? daftarAwamId = null;
+            if (akPV.AkPVPenerima != null && akPV.AkPVPenerima.Count > 0)
+            {
+                foreach (var item in akPV.AkPVPenerima)
+                {
+                    daftarAwamId = item.DDaftarAwamId;
+                }
+            }
+            
+            // Cash Basis (PV yang tiada invois atau PV yang ada Invois tanpa akruan)
+            if (PVWithoutInvois(akPV) || PVWithOneInvoisNotAkru(akPV) || PVWithMultipleInvoisNotAkru(akPV))
             {
                 if (akPV.AkPVObjek != null && akPV.AkPVObjek.Count > 0)
                 {
-                    int daftarAwamId = 0;
-
-                    if (akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 0)
-                    {
-                        foreach (var item in akPV.AkPVInvois)
-                        {
-                            daftarAwamId = item.AkBelian!.DDaftarAwamId;
-                        }
-                    }
                     foreach (var item in akPV.AkPVObjek)
                     {
-                        if (akPV.IsTanggungan == true)
+                        AbBukuVot abBukuVot = new AbBukuVot()
                         {
-                            AbBukuVot abBukuVot = new AbBukuVot()
-                            {
-                                Tahun = akPV.Tahun,
-                                JKWId = item.JKWPTJBahagian?.JKWId ?? akPV.JKWId,
-                                JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
-                                JBahagianId = item.JKWPTJBahagian.JBahagianId,
-                                Tarikh = akPV.Tarikh,
-                                DDaftarAwamId = daftarAwamId,
-                                VotId = item.AkCartaId,
-                                NoRujukan = akPV.NoRujukan,
-                                Tanggungan = -item.Amaun,
-                                Liabiliti = -item.Amaun,
-                                Belanja = item.Amaun,
-                                Debit = item.Amaun
-                            };
+                            Tahun = akPV.Tahun,
+                            JKWId = item.JKWPTJBahagian?.JKWId ?? akPV.JKWId,
+                            JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
+                            JBahagianId = item.JKWPTJBahagian.JBahagianId,
+                            Tarikh = akPV.Tarikh,
+                            DDaftarAwamId = daftarAwamId,
+                            VotId = item.AkCartaId,
+                            NoRujukan = akPV.NoRujukan,
+                            Debit = item.Amaun,
+                            Belanja = item.Amaun,
+                            Baki = -item.Amaun
 
-                            abBukuVotList.Add(abBukuVot);
-                        }
-                        else
-                        {
-                            AbBukuVot abBukuVot = new AbBukuVot()
-                            {
-                                Tahun = akPV.Tahun,
-                                JKWId = item.JKWPTJBahagian?.JKWId ?? akPV.JKWId,
-                                JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
-                                JBahagianId = item.JKWPTJBahagian.JBahagianId,
-                                Tarikh = akPV.Tarikh,
-                                DDaftarAwamId = daftarAwamId,
-                                VotId = item.AkCartaId,
-                                NoRujukan = akPV.NoRujukan,
-                                Liabiliti = -item.Amaun,
-                                Belanja = item.Amaun,
-                                Debit = item.Amaun
-                            };
+                        };
 
-                            abBukuVotList.Add(abBukuVot);
-                        }
+                        abBukuVotList.Add(abBukuVot);
                     }
                 }
-
-                _context.AbBukuVot.AddRange(abBukuVotList);
             }
+
+            // PV yang ada Invois tanpa tanggungan
+            if (PVWithOneInvoisAkruWithoutPOOrInden(akPV) || PVWithMultipleInvoisAkruWithoutPOOrInden(akPV))
+            {
+                if (akPV.AkPVObjek != null && akPV.AkPVObjek.Count > 0)
+                {
+                    foreach (var item in akPV.AkPVObjek)
+                    {
+                        AbBukuVot abBukuVot = new AbBukuVot()
+                        {
+                            Tahun = akPV.Tahun,
+                            JKWId = item.JKWPTJBahagian?.JKWId ?? akPV.JKWId,
+                            JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
+                            JBahagianId = item.JKWPTJBahagian.JBahagianId,
+                            Tarikh = akPV.Tarikh,
+                            DDaftarAwamId = daftarAwamId,
+                            VotId = item.AkCartaId,
+                            NoRujukan = akPV.NoRujukan,
+                            Liabiliti = -item.Amaun,
+                            JumLiabiliti = -item.Amaun
+                            // - BakiLiabiliti
+                        };
+
+                        abBukuVotList.Add(abBukuVot);
+                    }
+                }
+            }
+
+            // PV yang ada Invois dengan tanggungan
+            if (PVWithOneInvoisAkruWithOnePOAndWithoutInden(akPV) || 
+                PVWithOneInvoisAkruWithOneIndenAndWithoutPO(akPV) ||
+                PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneSameObjek(akPV) || 
+                PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneDifferentObjek(akPV))
+            {
+                List<AkPOObjek> poList = new List<AkPOObjek>();
+
+                if (akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 0)
+                {
+                    foreach (var invois in akPV.AkPVInvois)
+                    {
+                        // each insert poObjekList into poList
+                        poList.AddRange(invois.AkBelian!.AkPO!.AkPOObjek!);
+
+                    }
+                }
+               
+                if (poList != null && poList.Count > 0)
+                {
+                    foreach (var item in poList)
+                    {
+                        AbBukuVot abBukuVot = new AbBukuVot()
+                        {
+                            Tahun = akPV.Tahun,
+                            JKWId = item.JKWPTJBahagian?.JKWId ?? akPV.JKWId,
+                            JPTJId = (int)item.JKWPTJBahagian!.JPTJId,
+                            JBahagianId = item.JKWPTJBahagian.JBahagianId,
+                            Tarikh = akPV.Tarikh,
+                            DDaftarAwamId = daftarAwamId,
+                            VotId = item.AkCartaId,
+                            NoRujukan = akPV.NoRujukan,
+                            Tanggungan = -item.Amaun,
+                            Tbs = -item.Amaun,
+                            Liabiliti = -item.Amaun,
+                            JumLiabiliti = -item.Amaun
+                            // - BakiLiabiliti
+                        };
+
+                        abBukuVotList.Add(abBukuVot);
+                    }
+                }
+            }
+
+            _context.AbBukuVot.AddRange(abBukuVotList);
 
         }
 
@@ -701,15 +753,17 @@ namespace YIT._DataAccess.Repositories.Implementations
                                 };
 
                                 _context.AkPanjarLejar.Add(akPanjarLejar);
+
+                                rekup.IsLinked = true;
+
+                                _context.AkRekup.Update(rekup);
                             }
-
-
                             // update panjar lejar end
+
                         }
                     }
                 }
             }
-
         }
 
         public void RemovePostingFromAkAkaun(AkPV akPV)
@@ -859,6 +913,277 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         }
 
+        // functions
+        public bool PVWithoutInvois(AkPV akPV)
+        {
+            if (akPV.IsInvois == false && akPV.IsTanggungan == false && akPV.IsAkru == false && akPV.AkPVInvois != null && akPV.AkPVInvois.Count == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool PVWithOneInvoisNotAkru(AkPV akPV)
+        {
+            if (akPV.IsInvois == true && akPV.IsTanggungan == false && akPV.IsAkru == false && akPV.AkPVInvois != null && akPV.AkPVInvois.Count == 1)
+            {
+                bool result = false;
+
+                foreach (var invois in akPV.AkPVInvois)
+                {
+                    if (invois.IsTanggungan == false && invois.AkBelian != null && invois.AkBelian.AkAkaunAkruId == null)
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+                }
+
+                return result;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool PVWithOneInvoisAkruWithoutPOOrInden(AkPV akPV)
+        {
+            if (akPV.IsInvois == true && akPV.IsTanggungan == false && akPV.IsAkru == true && akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 0)
+            {
+                var result = false;
+
+                foreach (var invois in akPV.AkPVInvois)
+                {
+                    if (invois.IsTanggungan == false && invois.AkBelian != null && invois.AkBelian.AkAkaunAkruId != null)
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+                }
+
+                return result;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool PVWithOneInvoisAkruWithOnePOAndWithoutInden(AkPV akPV)
+        {
+            if (akPV.IsInvois == true && akPV.IsTanggungan == true && akPV.IsAkru == true && akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 0)
+            {
+                bool result = false;
+                foreach (var invois in akPV.AkPVInvois)
+                {
+                    if (invois.IsTanggungan == true && invois.AkBelian != null && invois.AkBelian.AkAkaunAkruId != null)
+                    {
+                        if (invois.AkBelian.AkPOId != null && invois.AkBelian.AkIndenId == null)
+                        {
+                            result = true;
+                        }
+                        else
+                        {
+                            result = false;
+                        }
+                    }
+                }
+                return result;
+            }
+            else { return false; }
+        }
+
+        public bool PVWithOneInvoisAkruWithOneIndenAndWithoutPO(AkPV akPV)
+        {
+            if (akPV.IsInvois == true && akPV.IsTanggungan == true && akPV.IsAkru == true && akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 0)
+            {
+                bool result = false;
+                foreach (var invois in akPV.AkPVInvois)
+                {
+                    if (invois.IsTanggungan == true && invois.AkBelian != null && invois.AkBelian.AkAkaunAkruId != null)
+                    {
+                        if (invois.AkBelian.AkIndenId != null && invois.AkBelian.AkPOId == null)
+                        {
+                            result = true;
+                        }
+                        else
+                        {
+                            result = false;
+                        }
+                    }
+                }
+                return result;
+            }
+            else { return false; }
+        }
+
+        public bool PVWithMultipleInvoisNotAkru(AkPV akPV)
+        {
+            if (akPV.IsInvois == true && akPV.IsTanggungan == false && akPV.IsAkru == false && akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 1)
+            {
+                bool result = false;
+                foreach (var invois in akPV.AkPVInvois)
+                {
+                    if (invois.IsTanggungan == false && invois.AkBelian != null && invois.AkBelian.AkAkaunAkruId == null)
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool PVWithMultipleInvoisAkruWithoutPOOrInden(AkPV akPV)
+        {
+            if (akPV.IsInvois == true && akPV.IsTanggungan == false && akPV.IsAkru == true && akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 1)
+            {
+                bool result = false;
+                foreach (var invois in akPV.AkPVInvois)
+                {
+                    if (invois.IsTanggungan == false && invois.AkBelian != null && invois.AkBelian.AkAkaunAkruId != null)
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+                }
+                return result;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneSameObjek(AkPV akPV)
+        {
+            if (akPV.IsInvois == true && akPV.IsTanggungan == true && akPV.IsAkru == true && akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 1)
+            {
+                bool result = false;
+                List<AkPOObjek> poList = new List<AkPOObjek>();
+                foreach (var invois in akPV.AkPVInvois)
+                {
+                    if (invois.IsTanggungan == true && invois.AkBelian != null && invois.AkBelian.AkAkaunAkruId != null && invois.AkBelian.AkPOId != null && invois.AkBelian.AkIndenId == null && invois.AkBelian.AkPO != null && invois.AkBelian.AkPO.AkPOObjek != null && invois.AkBelian.AkPO.AkPOObjek.Count > 0)
+                    {
+                        // each insert poObjekList into poList
+                        poList.AddRange(invois.AkBelian.AkPO.AkPOObjek);
+
+                        result = true;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+                }
+
+                if (result == true)
+                {
+                    poList = poList.GroupBy(x => x.AkCartaId)
+                        .Select(l => new AkPOObjek()
+                        {
+                            AkCartaId = l.First().AkCartaId,
+                            JKWPTJBahagianId = l.First().JKWPTJBahagianId,
+                            Counter = l.Count()
+                        }).ToList();
+
+                    if (poList != null && poList.Count > 0)
+                    {
+                        foreach (var po in poList)
+                        {
+                            if (po.Counter > 1)
+                            {
+                                result = true;
+                            }
+                            else
+                            {
+                                result = false;
+                            }
+                        }
+                    }
+                }
+
+                return result;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneDifferentObjek(AkPV akPV)
+        {
+            if (akPV.IsInvois == true && akPV.IsTanggungan == true && akPV.IsAkru == true && akPV.AkPVInvois != null && akPV.AkPVInvois.Count > 1)
+            {
+                bool result = false;
+                List<AkPOObjek> poList = new List<AkPOObjek>();
+                foreach (var invois in akPV.AkPVInvois)
+                {
+                    if (invois.IsTanggungan == true && invois.AkBelian != null && invois.AkBelian.AkAkaunAkruId != null && invois.AkBelian.AkPOId != null && invois.AkBelian.AkIndenId == null && invois.AkBelian.AkPO != null && invois.AkBelian.AkPO.AkPOObjek != null && invois.AkBelian.AkPO.AkPOObjek.Count > 0)
+                    {
+                        // each insert poObjekList into poList
+                        poList.AddRange(invois.AkBelian.AkPO.AkPOObjek);
+
+                        result = true;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+                }
+
+                if (result == true)
+                {
+                    poList = poList.GroupBy(x => x.AkCartaId)
+                        .Select(l => new AkPOObjek()
+                        {
+                            AkCartaId = l.First().AkCartaId,
+                            JKWPTJBahagianId = l.First().JKWPTJBahagianId,
+                            Counter = l.Count()
+                        }).ToList();
+
+                    if (poList != null && poList.Count > 0)
+                    {
+                        foreach (var po in poList)
+                        {
+                            if (po.Counter == 1)
+                            {
+                                result = true;
+                                break;
+                            }
+                            else
+                            {
+                                result = false;
+                            }
+                        }
+                    }
+                }
+
+                return result;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
 

@@ -94,7 +94,7 @@
                                 @dPenerimaCekGaji.RujukanKami
                             </td>
                             <td class="text-uppercase">
-                                @dPenerimaCekGaji.AmaunGaji <!--buat dlm format #,###,##0.00(farhan)-->
+                                @Convert.ToDecimal(dPenerimaCekGaji.AmaunGaji).ToString("#,##0.00")
                             </td>
 
                             <td width="5%" class="text-center">

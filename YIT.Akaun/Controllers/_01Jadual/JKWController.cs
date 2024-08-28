@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
+using YIT.__Domain.Entities.Bases;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
@@ -14,7 +15,7 @@ using YIT._DataAccess.Services.Math;
 
 namespace YIT.Akaun.Controllers._01Jadual
 {
-    [Authorize(Roles = "SuperAdmin,Supervisor")]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class JKWController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodJKW;
@@ -38,12 +39,14 @@ namespace YIT.Akaun.Controllers._01Jadual
             _appLog = appLog;
             _cart = cart;
         }
+
         public IActionResult Index()
         {
             return View(_unitOfWork.JKWRepo.GetAll());
         }
 
         // GET: KW/Details/5
+        [Authorize(Policy = modul)]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -99,6 +102,8 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KW/Create
+
+        [Authorize(Policy = modul + "C")]
         public IActionResult Create()
         {
             
@@ -110,6 +115,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = modul + "C")]
         public async Task<IActionResult> Create(JKW kW, string syscode)
         {
             if (kW.Kod != null && KodKWExists(kW.Kod) == false)
@@ -140,7 +146,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return View(kW);
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Policy = modul + "E")]
         // GET: KW/Edit/5
         public IActionResult Edit(int? id)
         {
@@ -185,7 +191,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: KW/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Policy = modul + "E")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, JKW kW, string syscode)
@@ -241,6 +247,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         }
 
         // GET: KW/Delete/5
+        [Authorize(Policy = modul + "D")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -260,6 +267,7 @@ namespace YIT.Akaun.Controllers._01Jadual
         // POST: KW/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SuperAdmin,Supervisor", Policy = modul + "D")]
         public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
         {
             var kW = _unitOfWork.JKWRepo.GetById((int)id);
@@ -282,6 +290,7 @@ namespace YIT.Akaun.Controllers._01Jadual
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "R")]
         public async Task<IActionResult> RollBack(int id, string syscode)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -480,14 +489,27 @@ namespace YIT.Akaun.Controllers._01Jadual
             }
         }
 
+        [HttpPost]
         public JsonResult GetJKWPTJBahagianList(int JKWId)
         {
             try
             {
                 var jKWPTJBahagianList = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
+                List<SelectItemListWithId> list = new List<SelectItemListWithId>();
+
+                
                 if (jKWPTJBahagianList != null && jKWPTJBahagianList.Count > 0)
                 {
-                    return Json(new { result = "OK", list = jKWPTJBahagianList });
+                    foreach (var item in jKWPTJBahagianList)
+                    {
+                        list.Add(new SelectItemListWithId
+                        {
+                            Id = item.Id,
+                            Value = item.Kod,
+                            TextValue = item.JBahagian?.Perihal + " ("+ item.JPTJ?.Perihal +")"
+                        });
+                    }
+                    return Json(new { result = "OK", list });
                 }
                 else
                 {

@@ -29,19 +29,25 @@
     <div class="card-body">
         <label asp-for="EnJenisBayaranBelian" class="control-label"></label>
         <div class="row">
-            <div class="col-4">
+            <div class="col-3">
                 <div class="custom-control custom-radio">
                     <input asp-for="EnJenisBayaranBelian" type="radio" name="EnJenisBayaranBelian" class="custom-control-input" value="@EnJenisBayaranBelian.PO" disabled>
                     <label class="custom-control-label" for="EnJenisBayaranBelian1">@EnJenisBayaranBelian.PO.GetDisplayName()</label>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-3">
                 <div class="custom-control custom-radio">
                     <input asp-for="EnJenisBayaranBelian" type="radio" name="EnJenisBayaranBelian" class="custom-control-input" value="@EnJenisBayaranBelian.Inden" disabled>
                     <label class="custom-control-label" for="EnJenisBayaranBelian2">@EnJenisBayaranBelian.Inden.GetDisplayName()</label>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-3">
+                <div class="custom-control custom-radio">
+                    <input asp-for="EnJenisBayaranBelian" type="radio" name="EnJenisBayaranBelian" class="custom-control-input" value="@EnJenisBayaranBelian.NotaMinta" disabled>
+                    <label class="custom-control-label" for="EnJenisBayaranBelian2">@EnJenisBayaranBelian.NotaMinta.GetDisplayName()</label>
+                </div>
+            </div>
+            <div class="col-3">
                 <div class="custom-control custom-radio">
                     <input asp-for="EnJenisBayaranBelian" type="radio" name="EnJenisBayaranBelian" class="custom-control-input" value="@EnJenisBayaranBelian.LainLain" disabled>
                     <label class="custom-control-label" for="EnJenisBayaranBelian3">@EnJenisBayaranBelian.LainLain.GetDisplayName()</label>
@@ -84,22 +90,35 @@ else if (Model.EnJenisBayaranBelian == EnJenisBayaranBelian.Inden)
         <input value="@Model.AkInden?.NoRujukan" class="form-control form-control-sm" readonly />
     </div>
 }
-else if (Model.EnJenisBayaranBelian == EnJenisBayaranBelian.LainLain)
+else if (Model.EnJenisBayaranBelian == EnJenisBayaranBelian.NotaMinta)
 {
     <div class="form-group">
         <label asp-for="AkNotaMintaId" class="control-label"></label>
-        <input value="@Model.AkInden?.NoRujukan" class="form-control form-control-sm" readonly />
+        <input value="@Model.AkNotaMinta?.NoRujukan" class="form-control form-control-sm" readonly />
     </div>
+}
+else if (Model.EnJenisBayaranBelian == EnJenisBayaranBelian.LainLain)
+{
+    @*<div class="form-group">
+        <label asp-for="AkNotaMintaId" class="control-label"></label>
+        <input value="@Model.AkInden?.NoRujukan" class="form-control form-control-sm" readonly />
+    </div>*@
 }
 
 <div class="row mb-2">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="LHDNMSICId" class="control-label"></label>
+            <input class="form-control form-control-sm text-uppercase" value="@Model.LHDNMSIC?.Code - @Model.LHDNMSIC?.Description " readonly />
+        </div>
+    </div>
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="JKWId" class="control-label"></label>
             <input value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" class="form-control form-control-sm" readonly />
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-4">
         <div class="form-group">
             <label asp-for="AkAkaunAkruId" class="control-label"></label>
             <input value="@Model.AkAkaunAkru?.Kod - @Model.AkAkaunAkru?.Perihal " class="form-control form-control-sm" readonly />
@@ -150,7 +169,7 @@ else if (Model.EnJenisBayaranBelian == EnJenisBayaranBelian.LainLain)
     <div class="card-footer">
         <div class="form-group">
             <label asp-for="Jumlah" class="control-label">Jumlah Objek RM</label>
-            <input asp-for="Jumlah" class="form-control form-control-sm"  readonly />
+            <input asp-for="Jumlah" class="form-control form-control-sm" readonly />
         </div>
     </div>
 </div>
@@ -196,7 +215,7 @@ else if (Model.EnJenisBayaranBelian == EnJenisBayaranBelian.LainLain)
     <div class="card-footer">
         <div class="form-group">
             <label name="perihalJumlah" class="control-label">Jumlah Perihal RM</label>
-            <input name="perihalJumlah" id="perihalJumlah" class="form-control form-control-sm" value="@jumlahPerihal" readonly />
+            <input name="perihalJumlah" id="perihalJumlah" class="form-control form-control-sm" value="@Convert.ToDecimal(jumlahPerihal).ToString("#,##0.00")" readonly />
         </div>
     </div>
 </div>

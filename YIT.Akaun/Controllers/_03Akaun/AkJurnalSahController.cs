@@ -13,7 +13,7 @@ using YIT.Akaun.Infrastructure;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize]
+    [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class AkJurnalSahController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodSahAkJurnal;
@@ -90,6 +90,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pengesah, EnJenisModulKelulusan.Jurnal);
         }
 
+        [Authorize(Policy = modul + "S")]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -218,6 +219,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
+        [Authorize(Policy = modul + "S")]
         public async Task<IActionResult> Sah(int id,int dKonfigKelulusanId, string syscode)
         {
             var akJurnal = _unitOfWork.AkJurnalRepo.GetById((int)id);
@@ -242,6 +244,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Policy = modul + "E")]
         public async Task<IActionResult> HantarSemula(int id, string? tindakan, string syscode)
         {
             var akJurnal = _unitOfWork.AkJurnalRepo.GetById((int)id);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT._DataAccess.Services.Cart
@@ -48,7 +49,12 @@ namespace YIT._DataAccess.Services.Cart
             decimal bil,
             string? perihal,
             decimal kuantiti,
+            int? lHDNKodKlasifikasiId,
+            int? lHDNUnitUkuranId,
             string? unit,
+            EnLHDNJenisCukai enLHDNJenisCukai,
+            decimal kadarCukai,
+            decimal amaunCukai,
             decimal harga,
             decimal amaun
             )
@@ -57,15 +63,21 @@ namespace YIT._DataAccess.Services.Cart
 
             if ( line == null )
             {
+                amaunCukai = Math.PriceFormatter.GetTaxAmount(harga, kuantiti, kadarCukai);
                 collectionPerihal.Add(new AkPenilaianPerolehanPerihal
                 {
                     AkPenilaianPerolehanId = akPenilaianPerolehanId,
                     Bil = bil,
                     Perihal = perihal,
                     Kuantiti = kuantiti,
+                    LHDNKodKlasifikasiId = lHDNKodKlasifikasiId,
+                    LHDNUnitUkuranId = lHDNUnitUkuranId,
                     Unit = unit,
+                    EnLHDNJenisCukai = enLHDNJenisCukai,
+                    KadarCukai = kadarCukai,
+                    AmaunCukai = amaunCukai,
                     Harga = harga,
-                    Amaun = amaun
+                    Amaun = Math.PriceFormatter.GetTotalPayableAmount(harga, kuantiti, amaunCukai)
 
                 });
             }

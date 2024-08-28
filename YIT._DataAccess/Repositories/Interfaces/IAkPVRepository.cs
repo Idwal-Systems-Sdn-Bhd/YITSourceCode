@@ -36,5 +36,15 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public void BatalPos(int id, string? tindakan, string? userId);
         public bool HaveAkJanaanProfil(int akJanaanProfilId);
         Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar(string? tarikhDari, string? tarikhHingga);
+
+        public bool PVWithoutInvois(AkPV akPV);
+        bool PVWithOneInvoisNotAkru(AkPV akPV);
+        bool PVWithOneInvoisAkruWithoutPOOrInden(AkPV akPV);
+        bool PVWithOneInvoisAkruWithOnePOAndWithoutInden(AkPV akPV);
+        bool PVWithOneInvoisAkruWithOneIndenAndWithoutPO(AkPV akPV);
+        bool PVWithMultipleInvoisNotAkru(AkPV akPV);
+        bool PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneSameObjek(AkPV akPV);
+        bool PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneDifferentObjek(AkPV akPV);
+        bool PVWithMultipleInvoisAkruWithoutPOOrInden(AkPV akPV);
     }
 }

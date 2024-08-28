@@ -20,6 +20,7 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             return _context.AkPO
                 .IgnoreQueryFilters()
+                .Include(t => t.LHDNMSIC)
                 .Include(t => t.JKW)
                 .Include(t => t.DDaftarAwam)
                 .Include(t => t.DPekerjaPosting)
@@ -54,6 +55,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var akPOList = _context.AkPO
                 .IgnoreQueryFilters()
+                .Include(t => t.LHDNMSIC)
                 .Include(t => t.JKW)
                 .Include(t => t.DDaftarAwam)
                 .Include(t => t.DPekerjaPosting)
@@ -434,7 +436,9 @@ namespace YIT._DataAccess.Repositories.Implementations
                         DDaftarAwamId = akPO.DDaftarAwamId,
                         VotId = item.AkCartaId,
                         NoRujukan = akPO.NoRujukan,
-                        Tanggungan = item.Amaun
+                        Tanggungan = item.Amaun,
+                        Tbs = item.Amaun,
+                        Baki = -item.Amaun
                     };
 
                     abBukuVotList.Add(abBukuVot);

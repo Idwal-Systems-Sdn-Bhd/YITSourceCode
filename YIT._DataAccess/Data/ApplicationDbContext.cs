@@ -6,6 +6,7 @@ using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT.__Domain.Entities.Models._04Sumber;
+using YIT.__Domain.Entities.Models._50LHDN;
 using YIT._DataAccess.Data.DataConfigurations;
 
 namespace YIT._DataAccess.Data
@@ -68,6 +69,9 @@ namespace YIT._DataAccess.Data
         //
 
         // 04Penerimaan 
+        public DbSet<AkInvois> AkInvois { get; set; }
+        public DbSet<AkInvoisObjek> AkInvoisObjek { get; set; }
+        public DbSet<AkInvoisPerihal> AkInvoisPerihal { get; set; }
         public DbSet<AkTerima> AkTerima { get; set; }
         public DbSet<AkTerimaCaraBayar> AkTerimaCaraBayar { get; set; }
         public DbSet<AkTerimaObjek> AkTerimaObjek { get; set; }
@@ -127,12 +131,23 @@ namespace YIT._DataAccess.Data
         public DbSet<AkJurnal> AkJurnal { get; set; }
         public DbSet<AkJurnalObjek> AkJurnalObjek { get; set; }
         public DbSet<AkJurnalPenerimaCekBatal> AkJurnalPenerimaCekBatal { get; set; }
+        public DbSet<AkNotaDebitKreditDikeluarkan> AkNotaDebitKreditDikeluarkan { get; set; }
+        public DbSet<AkNotaDebitKreditDikeluarkanObjek> AkNotaDebitKreditDikeluarkanObjek { get; set; }
+        public DbSet<AkNotaDebitKreditDikeluarkanPerihal> AkNotaDebitKreditDikeluarkanPerihal { get; set; }
         //
 
         // 11Sumber
         public DbSet<SuGajiBulanan> SuGajiBulanan { get; set; }
         public DbSet<SuGajiBulananPekerja> SuGajiBulananPekerja { get; set; }
         public DbSet<SuGajiElaunPotongan> SuGajiElaunPotongan { get; set; }
+        //
+
+        // 50LHDN
+        public DbSet<LHDNEInvois> LHDNEInvois { get; set; }
+        public DbSet<LHDNEInvoisPerihal> LHDNEInvoisPerihal { get; set; }
+        public DbSet<LHDNKodKlasifikasi> LHDNKodKlasifikasi { get; set; }
+        public DbSet<LHDNMSIC> LHDNMSIC { get; set; }
+        public DbSet<LHDNUnitUkuran> LHDNUnitUkuran { get; set; }
         //
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\Models\_04Sumber\" />
     <Folder Include="Validations\" />
   </ItemGroup>
 

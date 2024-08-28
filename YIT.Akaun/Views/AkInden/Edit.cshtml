@@ -6,16 +6,19 @@
     decimal jumlahPerihal = 0;
 }
 <partial name="_JSCreate" />
+<partial name="_JSEditExt" />
 <div class="card box-shadow">
     <div class="card-body">
         <div class="row">
             <div class="col-8">
                 <h5 class="text-uppercase text-primary mb-0">@ViewData["Title"]</h5>
-                <span class="ac-ref"><a asp-action="Index"
-                    asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
-                    asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
-                    asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
-                    class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah</span>
+                <span class="ac-ref">
+                    <a asp-action="Index"
+                       asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                       asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
+                       asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
+                       class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah
+                </span>
             </div>
             <div class="col-4 ">
                 <a asp-action="Index"
@@ -59,7 +62,7 @@
                     <div class="form-group">
                         <label asp-for="AkPenilaianPerolehanId" class="control-label"></label>
                         <select asp-for="AkPenilaianPerolehanId" class="form-control form-control-sm text-uppercase" disabled>
-                            <option value="0">- SILA PILIH -</option>
+                            <option value="0">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.AkPenilaianPerolehan)
                             {
                                 <option value="@item.Id">@item.NoRujukan</option>
@@ -70,27 +73,40 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label asp-for="JKWId" class="control-label"></label>
-                <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" disabled>
-                    <option value="0">- SILA PILIH -</option>
-                    @foreach (var item in ViewBag.JKW)
-                    {
-                        <option value="@item.Id">@BelanjawanFormatter.ConvertToKW(item.Kod) - @item.Perihal</option>
-                    }
-                </select>
-                <span asp-validation-for="JKWId" class="text-danger"></span>
+            <div class="row">
+                <div class="col-md-6" hidden>
+                    <div class="form-group">
+                        <label asp-for="LHDNMSICId" class="control-label"></label>
+                        <select asp-for="LHDNMSICId" class="form-control form-control-sm text-uppercase select2" required>
+                            @foreach (var item in ViewBag.LHDNMSIC)
+                            {
+                                <option value="@item.Id">@item.Code - @item.Description</option>
+                            }
+                        </select>
+                        <span asp-validation-for="LHDNMSICId" class="text-danger"></span>
 
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label asp-for="JKWId" class="control-label"></label>
+                        <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" disabled>
+                            <option value="0">-- SILA PILIH --</option>
+                            @foreach (var item in ViewBag.JKW)
+                            {
+                                <option value="@item.Id">@BelanjawanFormatter.ConvertToKW(item.Kod) - @item.Perihal</option>
+                            }
+                        </select>
+                        <span asp-validation-for="JKWId" class="text-danger"></span>
+
+                    </div>
+                </div>
             </div>
+            
 
             <div class="form-group">
                 <label asp-for="DDaftarAwamId" class="control-label"></label>
                 <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase" required>
-                    <option value="">- SILA PILIH -</option>
-                    @foreach (var item in ViewBag.DDaftarAwam)
-                    {
-                        <option value="@item.Id">@item.Kod - @item.Nama</option>
-                    }
                 </select>
                 <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>
             </div>
@@ -236,7 +252,7 @@
                 <div class="card-footer">
                     <div class="form-group">
                         <label name="perihalJumlah" class="control-label">Jumlah Perihal RM</label>
-                        <input name="perihalJumlah" id="perihalJumlah" class="form-control form-control-sm" value="@jumlahPerihal" readonly />
+                        <input name="perihalJumlah" id="perihalJumlah" class="form-control form-control-sm" value="@Convert.ToDecimal(jumlahPerihal).ToString("#,##0.00")" readonly />
                     </div>
                 </div>
             </div>

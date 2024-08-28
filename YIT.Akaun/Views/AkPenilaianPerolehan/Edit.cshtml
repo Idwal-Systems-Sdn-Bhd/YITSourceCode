@@ -5,17 +5,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     decimal jumlahPerihal = 0;
 }
+<partial name="_JSEditExt" />
 <partial name="_JSCreate" />
 <div class="card box-shadow">
     <div class="card-body">
         <div class="row">
             <div class="col-8">
                 <h5 class="text-uppercase text-primary mb-0">@ViewData["Title"]</h5>
-                <span class="ac-ref"><a asp-action="Index"
-                    asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
-                    asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
-                    asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
-                    class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah</span>
+                <span class="ac-ref">
+                    <a asp-action="Index"
+                       asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+                       asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
+                       asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
+                       class="text-secondary">Indeks</a> / <a asp-action="Details" asp-route-id="@Model.Id" class="text-secondary">Papar</a> / Ubah
+                </span>
             </div>
             <div class="col-4 ">
                 <a asp-action="Index"
@@ -98,7 +101,7 @@
             </div>
 
             <div class="row mb-2">
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <div class="form-group">
                         <label asp-for="EnKaedahPerolehan" class="control-label"></label>
                         <select asp-for="EnKaedahPerolehan" class="form-control form-control-sm text-uppercase" required>
@@ -110,7 +113,20 @@
                         <span asp-validation-for="EnKaedahPerolehan" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" hidden>
+                    <div class="form-group">
+                        <label asp-for="LHDNMSICId" class="control-label"></label>
+                        <select asp-for="LHDNMSICId" class="form-control form-control-sm text-uppercase select2" required>
+                            @foreach (var item in ViewBag.LHDNMSIC)
+                            {
+                                <option value="@item.Id">@item.Code - @item.Description</option>
+                            }
+                        </select>
+                        <span asp-validation-for="LHDNMSICId" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="JKWId" class="control-label"></label>
                         <input class="form-control form-control-sm" readonly value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" />
@@ -164,12 +180,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DDaftarAwamId" class="control-label"></label>
-                <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase" required>
-                    <option value="">- SILA PILIH -</option>
-                    @foreach (var item in ViewBag.DDaftarAwam)
-                    {
-                        <option value="@item.Id">@item.Kod - @item.Nama</option>
-                    }
+                <select asp-for="DDaftarAwamId" class="form-control form-control-sm text-uppercase select2" required>
                 </select>
                 <span asp-validation-for="DDaftarAwamId" class="text-danger"></span>
             </div>
@@ -312,7 +323,7 @@
                 <div class="card-footer">
                     <div class="form-group">
                         <label name="perihalJumlah" class="control-label">Jumlah Perihal RM</label>
-                        <input name="perihalJumlah" id="perihalJumlah" class="form-control form-control-sm" value="@jumlahPerihal" readonly />
+                        <input name="perihalJumlah" id="perihalJumlah" class="form-control form-control-sm" value="@Convert.ToDecimal(jumlahPerihal).ToString("#,##0.00")" readonly />
                     </div>
                 </div>
             </div>
@@ -331,110 +342,8 @@
 </div>
 
 <!-- Modal Objek -->
-<div class="modal fade bd-example-modal-lg" id="moObjek" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Objek</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <input id="moObjekId" hidden />
-                    <div class="form-group">
-                        <label class="col-form-label">Bahagian</label>
-                        <select class="form-control form-control-sm text-uppercase" id="moObjekJKWPTJBahagianId" disabled>
-                            <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
-                            @foreach (var s in ViewBag.JKWPTJBahagian)
-                            {
-                                <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-form-label">Kod Akaun</label>
-                        <select class="form-control form-control-sm" id="moObjekAkCartaId" disabled>
-                            <option value="" disabled selected>-- Pilih Kod Akaun --</option>
-                            @foreach (var s in ViewBag.AkCarta)
-                            {
-                                <option value="@s.Id">@s.Kod - @s.Perihal </option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-form-label">Amaun</label>
-                        <input type="number" class="form-control form-control-sm" id="moObjekAmaun">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="UpdateModalObjek()">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="~/Views/Partials/Modal/_ModalObjekPartial.cshtml" />
 <!-- Modal Objek End -->
 <!-- Modal Perihal -->
-<div class="modal fade bd-example-modal-lg" id="moPerihal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Perihal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <input id="moPerihalId" hidden />
-                    <div class="row">
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="col-form-label">Bil</label>
-                                <input type="number" class="form-control form-control-sm" id="moPerihalBil" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-form-label">Perihal</label>
-                        <textarea class="form-control form-control-sm text-uppercase" id="moPerihalPerihal" rows="2"></textarea>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label class="col-form-label">Ktt</label>
-                                <input type="number" class="form-control form-control-sm" id="moPerihalKuantiti" step="0.01">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="col-form-label">Unit</label>
-                                <input type="text" class="form-control form-control-sm text-uppercase" id="moPerihalUnit">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="col-form-label">Harga/Unit RM</label>
-                                <input type="number" class="form-control form-control-sm" id="moPerihalHarga" step="0.01">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="col-form-label">Amaun</label>
-                                <input type="number" class="form-control form-control-sm" id="moPerihalAmaun" readonly>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="UpdateModalPerihal()">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="~/Views/Partials/Modal/_ModalPerihalPartial.cshtml" />
 <!-- Modal Perihal End -->

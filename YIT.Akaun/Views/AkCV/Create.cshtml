@@ -6,6 +6,7 @@
 
 }
 <partial name="_JSCreate" />
+<partial name="_JSCreateExt" />
 <div class="card box-shadow">
     <div class="card-body">
         <partial name="~/Views/Partials/Common/_TitleCreateTransaksiPartial.cshtml" />
@@ -34,7 +35,7 @@
                     <div class="form-group">
                         <label asp-for="DPanjarId" class="control-label"></label>
                         <select asp-for="DPanjarId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="">- SILA PILIH -</option>
+                            <option value="">-- SILA PILIH --</option>
                             @foreach (var item in ViewBag.DPanjar)
                             {
                                 <option value="@item.Id">@item.JCawangan?.Kod - @item.JCawangan?.Perihal (@item.Kod) </option>
@@ -61,13 +62,8 @@
                 <div class="form-group">
                     <label asp-for="DPekerjaId" class="control-label"></label>
                     <select asp-for="DPekerjaId" class="form-control form-control-sm text-uppercase select2">
-                        <option value="">- SILA PILIH -</option>
-                        @foreach (var item in ViewBag.DPekerja)
-                        {
-                            <option value="@item.Id">@item.NoGaji - @item.Nama </option>
-                        }
                     </select>
-                    <span asp-validation-for="DPanjarId" class="text-danger"></span>
+                    <span asp-validation-for="DPekerjaId" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group" id="divLainLain" @ViewBag.DivLainLain>
@@ -81,7 +77,7 @@
                     <div class="col-md-8">
                         <div class="form-group">
                             <label asp-for="NamaPenerima" class="col-form-label"></label>
-                            <input type="text" class="form-control form-control-sm text-uppercase" asp-for="NamaPenerima"/>
+                            <input type="text" class="form-control form-control-sm text-uppercase" asp-for="NamaPenerima" />
                         </div>
                     </div>
 
@@ -98,7 +94,7 @@
                     <input type="text" class="form-control form-control-sm text-uppercase" asp-for="Alamat3">
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <label asp-for="Catatan" class="control-label"></label>
                 <textarea asp-for="Catatan" class="form-control text-uppercase form-control-sm text-uppercase" rows="2" required></textarea>
@@ -173,7 +169,7 @@
                 <div class="card-footer">
                     <div class="form-group">
                         <label asp-for="Jumlah" class="control-label">Jumlah Objek RM</label>
-                        <input asp-for="Jumlah" value="@ViewBag.Jumlah" class="form-control form-control-sm"  readonly />
+                        <input asp-for="Jumlah" value="@ViewBag.Jumlah" class="form-control form-control-sm" readonly />
                     </div>
                 </div>
             </div>

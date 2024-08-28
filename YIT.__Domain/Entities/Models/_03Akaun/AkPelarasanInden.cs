@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YIT.__Domain.Entities.Bases;
 using YIT.__Domain.Entities.Models._01Jadual;
+using YIT.__Domain.Entities.Models._50LHDN;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
@@ -27,6 +28,13 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         public string? Ringkasan { get; set; }
+        [DisplayName("MSIC")]
+        public int? LHDNMSICId { get; set; }
+        public LHDNMSIC? LHDNMSIC { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal JumlahCukai { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal JumlahTanpaCukai { get; set; }
         public string? NoRujukanLama { get; set; } // dummy
         public ICollection<AkPelarasanIndenObjek>? AkPelarasanIndenObjek { get; set; }
         public ICollection<AkPelarasanIndenPerihal>? AkPelarasanIndenPerihal { get; set; }
