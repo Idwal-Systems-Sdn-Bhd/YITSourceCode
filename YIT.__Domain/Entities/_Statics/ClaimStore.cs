@@ -235,6 +235,14 @@ namespace YIT.__Domain.Entities._Statics
             new Claim(Modules.kodAkNotaDebitKreditDiterima + "R",Modules.namaAkNotaDebitKreditDiterima + " : Rollback"),
             new Claim(Modules.kodAkNotaDebitKreditDiterima + "L",Modules.namaAkNotaDebitKreditDiterima + " : Lulus"),
             new Claim(Modules.kodAkNotaDebitKreditDiterima + "BL",Modules.namaAkNotaDebitKreditDiterima + " : Batal Lulus"),
+
+            new Claim(Modules.kodAkInvois,Modules.namaAkInvois),
+            new Claim(Modules.kodAkInvois + "C",Modules.namaAkInvois + " : Tambah"),
+            new Claim(Modules.kodAkInvois + "E",Modules.namaAkInvois + " : Ubah"),
+            new Claim(Modules.kodAkInvois + "D",Modules.namaAkInvois + " : Hapus"),
+            new Claim(Modules.kodAkInvois + "R",Modules.namaAkInvois + " : Rollback"),
+            new Claim(Modules.kodAkInvois + "L",Modules.namaAkInvois + " : Lulus"),
+            new Claim(Modules.kodAkInvois + "BL",Modules.namaAkInvois + " : Batal Lulus"),
             //
 
             // Pemprosesan (PP)
@@ -278,6 +286,9 @@ namespace YIT.__Domain.Entities._Statics
 
             new Claim(Modules.kodLulusAkNotaDebitKreditDiterima + "L",Modules.namaLulusAkNotaDebitKreditDiterima),
             new Claim(Modules.kodLulusAkNotaDebitKreditDiterima + "E",Modules.namaLulusAkNotaDebitKreditDiterima + " : Hantar Semula"),
+
+            new Claim(Modules.kodLulusAkInvois + "L",Modules.namaLulusAkInvois),
+            new Claim(Modules.kodLulusAkInvois + "E",Modules.namaLulusAkInvois + " : Hantar Semula"),
             //
 
             //

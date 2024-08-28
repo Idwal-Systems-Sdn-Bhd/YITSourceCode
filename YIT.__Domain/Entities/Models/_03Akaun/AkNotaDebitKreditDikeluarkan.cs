@@ -34,6 +34,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public string? Ringkasan { get; set; }
         public int? LHDNEInvoisId { get; set; }
         public LHDNEInvois? LHDNEInvois { get; set; }
+        [DisplayName("MSIC")]
         public int? LHDNMSICId { get; set; }
         public LHDNMSIC? LHDNMSIC { get; set; }
         public string? UUID { get; set; }

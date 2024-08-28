@@ -1,15 +1,14 @@
 ﻿<script type="text/javascript">
     $(document).ready(function () {
-
         //dropdown select2 loads data
-        GetDDaftarAwamList(@Model.DDaftarAwamId);
+        GetDDaftarAwamList();
 
         //
     });
-    function GetDDaftarAwamList(id) {
+    function GetDDaftarAwamList() {
         $.ajax({
             type: "GET",
-            url: '@Url.Action("GetDDaftarAwamPembekalList", "DDaftarAwam")',
+            url: '@Url.Action("GetDDaftarAwamPenghutangList", "DDaftarAwam")',
             dataType: "json",
             success: function (msg) {
                 if (msg.result == "OK") {
@@ -24,7 +23,6 @@
                         var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.nama + "</option>";
                         $("#DDaftarAwamId").append(str);
                     }
-                    $("#DDaftarAwamId").val(id).trigger('change');
 
                 }
                 else {
@@ -38,4 +36,4 @@
             }
         });
     }
-    </script>
+</script>

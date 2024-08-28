@@ -455,6 +455,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                             VotId = item.AkCartaId,
                             NoRujukan = akBelian.NoRujukan,
                             Debit = item.Amaun,
+                            Tbs = -item.Amaun,
                             Liabiliti = item.Amaun,
                             Belanja = item.Amaun
                             // + BakiLiabiliti

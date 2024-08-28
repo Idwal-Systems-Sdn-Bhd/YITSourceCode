@@ -218,12 +218,6 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .HasForeignKey(m => m.JKWPTJBahagianId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
-            modelBuilder.Entity<AkAnggarLejar>()
-                    .HasOne(m => m.AkAnggar)
-                    .WithMany(t => t.AkAnggarLejar)
-                    .HasForeignKey(m => m.AkAnggarId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .IsRequired(false);
 
             modelBuilder.Entity<AkAnggarLejar>()
                     .HasOne(m => m.AkCarta)

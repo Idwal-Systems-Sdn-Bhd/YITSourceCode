@@ -54,50 +54,11 @@
     }
     //
 
-    //pick belian
-    $("body").on('change', "#AkBelianId", function () {
-        $("#objekAkCartaId option").prop('disabled', false);
-        $("#objekAkCartaId option[value='']").prop('disabled', true);
-        var akBelianId = $("#AkBelianId").val();
-        var akNotaDebitKreditDiterimaId = $("#Id").val();
-        EmptyCart();
-        if (akBelianId != 0) {
-            GetAkBelianDetails(akBelianId, akNotaDebitKreditDiterimaId);
-        } else {
-
-        }
-
-    });
-
-    function GetAkBelianDetails(akBelianId, akNotaDebitKreditDiterimaId) {
-        if (akBelianId != null) {
-            $.ajax({
-                type: "POST",
-                url: '@Url.Action("GetAkBelianDetails", "AkNotaDebitKreditDiterima")',
-                data: { id: akBelianId, akNotaDebitKreditDiterimaId: akNotaDebitKreditDiterimaId },
-                dataType: "json",
-                success: function (msg) {
-                    $("#JKWId").val(msg?.record?.jkw?.id).change();
-                    $("#DDaftarAwamId").val(msg?.record?.dDaftarAwam?.id).change();
-                    $("#LHDNMSICId").val(msg?.record?.lhdnmsicId).change();
-                    $("#DDaftarAwamId option").prop('disabled', false);
-                    $("#LHDNMSICId option").prop('disabled', false);
-
-                    PopulateTablesFromCart();
-                },
-                error: function (req, status, error) {
-                    alert(error);
-                }
-            });
-        }
-    }
-    // pick belian end
-
     //empty cart
     function EmptyCart() {
         $.ajax({
             type: "POST",
-            url: '@Url.Action("EmptyCart", "AkNotaDebitKreditDiterima")',
+            url: '@Url.Action("EmptyCart", "AkInvois")',
             dataType: "json",
             success: function (msg) {
                 $("table tbody#tbodyObjek").empty();
@@ -174,7 +135,7 @@
         var jumlahPerihal = $("#perihalJumlah");
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetAllItemCartAkNotaDebitKreditDiterima", "AkNotaDebitKreditDiterima")',
+            url: '@Url.Action("GetAllItemCartAkInvois", "AkInvois")',
             dataType: "json",
             success: function (r) {
 
@@ -273,8 +234,8 @@
 
                 var objekAmaun = $("#objekAmaun");
 
-                var AkNotaDebitKreditDiterimaObjek = {
-                    AkNotaDebitKreditDiterimaId: Id,
+                var AkInvoisObjek = {
+                    AkInvoisId: Id,
                     JKWPTJBahagianId: objekJKWPTJBahagianId.val(),
                     AkCartaId: objekAkCartaId.val(),
                     Amaun: objekAmaun.val()
@@ -282,8 +243,8 @@
                 //Send the JSON array to Controller to Save into session (cart)
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("SaveCartAkNotaDebitKreditDiterimaObjek", "AkNotaDebitKreditDiterima")',
-                    data: AkNotaDebitKreditDiterimaObjek,
+                    url: '@Url.Action("SaveCartAkInvoisObjek", "AkInvois")',
+                    data: AkInvoisObjek,
                     dataType: "json",
                     success: function (result) {
 
@@ -367,15 +328,15 @@
             sum = parseFloat(objekJumlah.val()) - parseFloat(objekAmaun);
             objekJumlah.val(sum.toFixed(2));
 
-            var AkNotaDebitKreditDiterimaObjek = {
+            var AkInvoisObjek = {
                 JKWPTJBahagianId: jKWPTJBahagianId,
                 AkCartaId: akCartaId
             }
-            if (AkNotaDebitKreditDiterimaObjek != null) {
+            if (AkInvoisObjek != null) {
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("RemoveCartAkNotaDebitKreditDiterimaObjek", "AkNotaDebitKreditDiterima")',
-                    data: AkNotaDebitKreditDiterimaObjek,
+                    url: '@Url.Action("RemoveCartAkInvoisObjek", "AkInvois")',
+                    data: AkInvoisObjek,
                     dataType: "json",
                     success: function (r) {
                         //Delete the Table row using it's Index.
@@ -396,15 +357,15 @@
         var jKWPTJBahagianId = $("TD", row).eq(0).html();
         var akCartaId = $("TD", row).eq(2).html();
 
-        var AkNotaDebitKreditDiterimaObjek = {
+        var AkInvoisObjek = {
             JKWPTJBahagianId: jKWPTJBahagianId,
             AkCartaId: akCartaId
         }
         if (jKWPTJBahagianId != null && akCartaId != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetAnItemFromCartAkNotaDebitKreditDiterimaObjek", "AkNotaDebitKreditDiterima")',
-                data: AkNotaDebitKreditDiterimaObjek,
+                url: '@Url.Action("GetAnItemFromCartAkInvoisObjek", "AkInvois")',
+                data: AkInvoisObjek,
                 dataType: "json",
                 success: function (r) {
                     //insert data in modal objek
@@ -422,15 +383,15 @@
     };
 
     function UpdateModalObjek() {
-        var akNotaDebitKreditDiterimaId = $("#Id").val();
+        var akInvoisId = $("#Id").val();
         var id = $("#moObjekId").val();
         var amaun = $("#moObjekAmaun").val();
         var jKWPTJBahagianId = $("#moObjekJKWPTJBahagianId").val();
         var akCartaId = $("#moObjekAkCartaId").val();
         var jumlah = $("#Jumlah");
 
-        var AkNotaDebitKreditDiterimaObjek = {
-            AkNotaDebitKreditDiterimaId: akNotaDebitKreditDiterimaId,
+        var AkInvoisObjek = {
+            AkInvoisId: akInvoisId,
             Id: id,
             JKWPTJBahagianId: jKWPTJBahagianId,
             akCartaId: akCartaId,
@@ -438,8 +399,8 @@
         }
         $.ajax({
             type: "POST",
-            url: '@Url.Action("SaveAnItemFromCartAkNotaDebitKreditDiterimaObjek", "AkNotaDebitKreditDiterima")',
-            data: AkNotaDebitKreditDiterimaObjek,
+            url: '@Url.Action("SaveAnItemFromCartAkInvoisObjek", "AkInvois")',
+            data: AkInvoisObjek,
             dataType: "json",
             success: function (r) {
                 //insert notification here
@@ -479,7 +440,7 @@
         //Send the JSON array to Controller using AJAX.
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetBil", "AkNotaDebitKreditDiterima")',
+            url: '@Url.Action("GetBil", "AkInvois")',
             data: Perihal,
             dataType: "json",
             success: function (r) {
@@ -496,8 +457,8 @@
                     var harga = $("#perihalHarga");
                     var amaun = $("#perihalAmaun");
 
-                    var AkNotaDebitKreditDiterimaPerihal = {
-                        AkNotaDebitKreditDiterimaId: Id,
+                    var AkInvoisPerihal = {
+                        AkInvoisId: Id,
                         Bil: bil,
                         Perihal: perihal.val(),
                         Kuantiti: kuantiti.val(),
@@ -508,8 +469,8 @@
                     //Send the JSON array to Controller to Save into session (cart)
                     $.ajax({
                         type: "POST",
-                        url: '@Url.Action("SaveCartAkNotaDebitKreditDiterimaPerihal", "AkNotaDebitKreditDiterima")',
-                        data: AkNotaDebitKreditDiterimaPerihal,
+                        url: '@Url.Action("SaveCartAkInvoisPerihal", "AkInvois")',
+                        data: AkInvoisPerihal,
                         dataType: "json",
                         success: function (result) {
 
@@ -604,14 +565,14 @@
         sum = parseFloat(jumlah.val()) - parseFloat(amaun);
         jumlah.val(sum.toFixed(2));
 
-        var AkNotaDebitKreditDiterimaPerihal = {
+        var AkInvoisPerihal = {
             Bil: bil
         }
-        if (AkNotaDebitKreditDiterimaPerihal != null) {
+        if (AkInvoisPerihal != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("RemoveCartAkNotaDebitKreditDiterimaPerihal", "AkNotaDebitKreditDiterima")',
-                data: AkNotaDebitKreditDiterimaPerihal,
+                url: '@Url.Action("RemoveCartAkInvoisPerihal", "AkInvois")',
+                data: AkInvoisPerihal,
                 dataType: "json",
                 success: function (r) {
                     //Delete the Table row using it's Index.
@@ -631,14 +592,14 @@
         var row = $(button).closest("TR");
         var bil = $("TD", row).eq(0).html();
 
-        var AkNotaDebitKreditDiterimaPerihal = {
+        var AkInvoisPerihal = {
             Bil: bil
         }
         if (bil != null) {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("GetAnItemFromCartAkNotaDebitKreditDiterimaPerihal", "AkNotaDebitKreditDiterima")',
-                data: AkNotaDebitKreditDiterimaPerihal,
+                url: '@Url.Action("GetAnItemFromCartAkInvoisPerihal", "AkInvois")',
+                data: AkInvoisPerihal,
                 dataType: "json",
                 success: function (r) {
                     //insert data in modal perihal
@@ -663,7 +624,7 @@
     };
 
     function UpdateModalPerihal() {
-        var akNotaDebitKreditDiterimaId = $("#Id").val();
+        var akInvoisId = $("#Id").val();
         var id = $("#moPerihalId").val();
         var bil = $("#moPerihalBil").val();
         var perihal = $("#moPerihalPerihal").val();
@@ -676,8 +637,8 @@
         var amaun = $("#moPerihalAmaun").val();
         var jumlah = $("#perihalJumlah");
 
-        var AkNotaDebitKreditDiterimaPerihal = {
-            AkNotaDebitKreditDiterimaId: akNotaDebitKreditDiterimaId,
+        var AkInvoisPerihal = {
+            AkInvoisId: akInvoisId,
             Id: id,
             Bil: bil,
             Perihal: perihal,
@@ -691,8 +652,8 @@
         }
         $.ajax({
             type: "POST",
-            url: '@Url.Action("SaveAnItemFromCartAkNotaDebitKreditDiterimaPerihal", "AkNotaDebitKreditDiterima")',
-            data: AkNotaDebitKreditDiterimaPerihal,
+            url: '@Url.Action("SaveAnItemFromCartAkInvoisPerihal", "AkInvois")',
+            data: AkInvoisPerihal,
             dataType: "json",
             success: function (r) {
                 //insert notification here

@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIT.__Domain", "YIT.__Domain\YIT.__Domain.csproj", "{D053A6F9-81FC-4E44-A377-6C4B36DEB53C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIT.__Domain", "YIT.__Domain\YIT.__Domain.csproj", "{D053A6F9-81FC-4E44-A377-6C4B36DEB53C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIT._DataAccess", "YIT._DataAccess\YIT._DataAccess.csproj", "{414390E4-2E10-4760-868F-69C4918DA48F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIT._DataAccess", "YIT._DataAccess\YIT._DataAccess.csproj", "{414390E4-2E10-4760-868F-69C4918DA48F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIT.Akaun", "YIT.Akaun\YIT.Akaun.csproj", "{5C3D50EE-D8EE-46BC-BCAE-3A0FBBCD4636}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIT.Akaun", "YIT.Akaun\YIT.Akaun.csproj", "{5C3D50EE-D8EE-46BC-BCAE-3A0FBBCD4636}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YIT.Tests", "YIT.Tests\YIT.Tests.csproj", "{99CF5B7C-8288-457C-B295-2BE2F4CD023F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YIT.API", "YIT.API\YIT.API.csproj", "{7E8143BA-FA1E-47CC-8CBA-7F2E9F299BA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{5C3D50EE-D8EE-46BC-BCAE-3A0FBBCD4636}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C3D50EE-D8EE-46BC-BCAE-3A0FBBCD4636}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C3D50EE-D8EE-46BC-BCAE-3A0FBBCD4636}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99CF5B7C-8288-457C-B295-2BE2F4CD023F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99CF5B7C-8288-457C-B295-2BE2F4CD023F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99CF5B7C-8288-457C-B295-2BE2F4CD023F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99CF5B7C-8288-457C-B295-2BE2F4CD023F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E8143BA-FA1E-47CC-8CBA-7F2E9F299BA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E8143BA-FA1E-47CC-8CBA-7F2E9F299BA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E8143BA-FA1E-47CC-8CBA-7F2E9F299BA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E8143BA-FA1E-47CC-8CBA-7F2E9F299BA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

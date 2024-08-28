@@ -35,9 +35,11 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "Jurnal")]
         Jurnal = 12,
         [Display(Name = "Anggaran Hasil")]
-        AnggaranHasil = 13
+        AnggaranHasil = 13,
         [Display(Name = "Nota Debit/Kredit Dikeluarkan")]
         NotaDebitKreditDikeluarkan = 14,
+        [Display(Name = "Invois Dikeluarkan")]
+        Invois = 15,
 
     }
 }

@@ -18,19 +18,25 @@
                     $("#objekJKWPTJBahagianId").empty();
                     $("#moObjekJKWPTJBahagianId").empty();
 
+
                     //append new options
-                    $("#objekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
+                    $("#objekJKWPTJBahagianId").append("<option value='' disable> -- SILA PILIH -- </option>");
                     for (var i = 0; i < msg.list.length; i++) {
                         var item = msg.list[i];
 
-                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
+                        var str = "<option value='" + item.id + "'>" + item.value + " - " + item.textValue + "</option>";
+
                         $("#objekJKWPTJBahagianId").append(str);
                     }
+
                     $("#moObjekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
-                    for (var i = 0; i < msg.list.length; i++) {
-                        var item = msg.list[i];
-                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.jBahagian.perihal + "</option>";
-                        $("#moObjekJKWPTJBahagianId").append(str);
+                    if (msg.list.length > 0) {
+                        for (var i = 0; i < msg.list.length; i++) {
+                            var item = msg.list[i];
+
+                            var str = "<option value='" + item.id + "'>" + item.value + " - " + item.textValue + "</option>";
+                            $("#moObjekJKWPTJBahagianId").append(str);
+                        }
                     }
                 }
                 else {
@@ -55,7 +61,7 @@
             success: function (msg) {
                 $("table tbody#tbodyObjek").empty();
                 //$("table tbody#tbodyCaraBayar").empty();
-                $("#objekJumlah").val("0.00");
+                $("#Jumlah").val("0.00");
                 // $("#objekJumlahCaraBayar").val("0.00");
                 $("#objekAkCartaId option").prop('disabled', false);
                 $("#objekAkCartaId option:selected").prop('disabled', true);
@@ -69,23 +75,11 @@
     };
     //empty cart end
 
-    //check if jumlahObjek is equal to jumlah
-    // function checkJumlah() {
-    //     var objekJumlah = $("#Jumlah").val();
-    //     var objekAmaun = $("#objekAmaun").val();
-        
-    //     if (objekJumlah == 0.00 && objekAmaun == 0.00) {
-    //         $("#btnSave").show();
-    //     } else {
-    //         if (objekJumlah == objekAmaun) {
-    //             $("#btnSave").show();
-    //         }
-    //         else {
-    //             $("#btnSave").hide();
-    //         }
-    //     }
-    // }
-    //check end
+    // close modal objek
+    function CloseModalObjek() {
+        $("#moObjek").hide();
+        $(".modal-backdrop").prop("hidden", true);
+    }
 
     // populate tables in pages
     function PopulateTablesFromCart() {
@@ -131,9 +125,6 @@
         var Id = $("#Id");
         var akCartaId = $("#objekAkCartaId");
         var jKWPTJBahagianId = $("#objekJKWPTJBahagianId");
-        // if (jkwptjBahagianId.val() != null && akCartaId.val() != null) {
-        //     GetJKWPTJBahagianAkCarta(Id.val(), jkwptjBahagianId.val(), akCartaId.val());
-        // }
 
         if ($("#objekAmaun").val() == 0.00) {
             toastr.error("Amaun 0.00 tidak dibenarkan");
@@ -278,6 +269,7 @@
                         //Delete the Table row using it's Index.
                         table.deleteRow(row[0].rowIndex);
                         checkJumlah();
+                        CloseModalObjek();
                     }
                 });
             }
@@ -361,6 +353,7 @@
                 //insert notification here
 
                 PopulateTablesFromCart();
+                CloseModalObjek();
             }
         });
     };

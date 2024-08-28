@@ -12,40 +12,40 @@
         <form asp-action="Create" id="form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input name="syscode" value="SPPB" hidden />
-        <div class="form-row">
-            <div class="row">
-                <div class="form-group">
-                     <div class="row">
-                    <div class="form-group col-md-2">
-                        <label asp-for="Tahun" class="control-label"></label>
-                        <input asp-for="Tahun" class="form-control form-control-sm" value="@DateTime.Now.ToString("yyyy")" required />
-                        <span asp-validation-for="Tahun" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label asp-for="Tarikh" class="control-label"></label>
-                        <input asp-for="Tarikh" class="form-control form-control-sm text-uppercase" type="date" />
-                        <span asp-validation-for="Tarikh" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label asp-for="JKWId" class="control-label"></label>
-                        <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" required>
-                            <option value="">- SILA PILIH -</option>
-                            @foreach (var item in ViewBag.JKW)
-                                {
-                            <option value="@item.Id"> @BelanjawanFormatter.ConvertToKW(item.Kod) - @item.Perihal</option>
-                                }
-                        </select>
-                        <span asp-validation-for="JKWId" class="text-danger"></span>
+            <div class="form-row">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="form-group col-md-2">
+                                <label asp-for="Tahun" class="control-label"></label>
+                                <input asp-for="Tahun" class="form-control form-control-sm" value="@DateTime.Now.ToString("yyyy")" required />
+                                <span asp-validation-for="Tahun" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label asp-for="Tarikh" class="control-label"></label>
+                                <input asp-for="Tarikh" class="form-control form-control-sm text-uppercase" type="date" />
+                                <span asp-validation-for="Tarikh" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="JKWId" class="control-label"></label>
+                                <select asp-for="JKWId" class="form-control form-control-sm text-uppercase" required>
+                                    <option value="">- SILA PILIH -</option>
+                                    @foreach (var item in ViewBag.JKW)
+                                    {
+                                        <option value="@item.Id"> @BelanjawanFormatter.ConvertToKW(item.Kod) - @item.Perihal</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="JKWId" class="text-danger"></span>
 
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label asp-for="NoRujukan" class="control-label"></label>
-                        <input asp-for="NoRujukan" class="form-control form-control-sm" value="@ViewBag.NoRujukan" required readonly />
-                        <span asp-validation-for="NoRujukan" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="NoRujukan" class="control-label"></label>
+                                <input asp-for="NoRujukan" class="form-control form-control-sm" value="@ViewBag.NoRujukan" required readonly />
+                                <span asp-validation-for="NoRujukan" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            </div>
             </div>
             <div class="row">
                 <div class="form-group">
@@ -75,19 +75,19 @@
                             {
                                 foreach (var item in ViewBag.AkAnggarObjek)
                                 {
-                            <tr>
-                                <td hidden>@item.JKWPTJBahagianId</td>
-                                <td class="text-uppercase">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal)</td>
-                                <td hidden>@item.AkCartaId</td>
-                                <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
-                                <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
-                                <td>
-                                    <button class="btn ac-primary btn-sm" type="button" data-toggle="modal" data-target="#moObjek" onclick="UpdateObjek(this)"><i class="fa fa-edit"></i></button>
-                                </td>
-                                <td>
-                                    <button class="btn ac-danger btn-sm" type="button" onclick="RemoveObjek(this)"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>
+                                    <tr>
+                                        <td hidden>@item.JKWPTJBahagianId</td>
+                                        <td class="text-uppercase">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal)</td>
+                                        <td hidden>@item.AkCartaId</td>
+                                        <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
+                                        <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                                        <td>
+                                            <button class="btn ac-primary btn-sm" type="button" data-toggle="modal" data-target="#moObjek" onclick="UpdateObjek(this)"><i class="fa fa-edit"></i></button>
+                                        </td>
+                                        <td>
+                                            <button class="btn ac-danger btn-sm" type="button" onclick="RemoveObjek(this)"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
                                 }
                             }
                         </tbody>
@@ -98,7 +98,7 @@
                                         <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
                                         @foreach (var s in ViewBag.JKWPTJBahagian)
                                         {
-                                        <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
+                                            <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
                                         }
                                     </select>
                                 </td>
@@ -107,7 +107,7 @@
                                         <option value="" disabled selected>-- Pilih Kod Akaun --</option>
                                         @foreach (var s in ViewBag.AkCarta)
                                         {
-                                        <option value="@s.Id">@s.Kod - @s.Perihal </option>
+                                            <option value="@s.Id">@s.Kod - @s.Perihal </option>
                                         }
                                     </select>
                                 </td>
@@ -144,51 +144,7 @@
 </div>
 
 <!-- Modal Objek -->
-<div class="modal fade bd-example-modal-lg" id="moObjek" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Objek</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <input id="moObjekId" hidden />
-                    <div class="form-group">
-                        <label class="col-form-label">Bahagian</label>
-                        <select class="form-control form-control-sm text-uppercase" id="moObjekJKWPTJBahagianId" disabled>
-                            <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
-                            @foreach (var s in ViewBag.JKWPTJBahagian)
-                                        {
-                            <option value="@s.Id"> @s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>
-                                        }
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-form-label">Kod Akaun</label>
-                        <select class="form-control form-control-sm" id="moObjekAkCartaId" disabled>
-                            <option value="" disabled selected>-- Pilih Kod Akaun --</option>
-                            @foreach (var s in ViewBag.AkCarta)
-                                        {
-                            <option value="@s.Id">@s.Kod - @s.Perihal </option>
-                                        }
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-form-label">Amaun</label>
-                        <input type="number" class="form-control form-control-sm" id="moObjekAmaun">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn ac-success btn-sm" data-bs-dismiss="modal" onclick="UpdateModalObjek()">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="~/Views/Partials/Modal/_ModalObjekPartial.cshtml" />
 <!-- Modal Objek End -->
 
 

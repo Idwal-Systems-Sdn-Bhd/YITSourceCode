@@ -233,11 +233,11 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                     if (akNotaDebitKreditDiterima.FlDebitKredit == 0)
                     {
-                        amaunKredit = item.Amaun;
+                        amaunDebit = item.Amaun;
                     }
                     else
                     {
-                        amaunDebit = item.Amaun;
+                        amaunKredit = item.Amaun;
                     };
 
                     if (isDenganTanggungan)
@@ -254,6 +254,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                             NoRujukan = akNotaDebitKreditDiterima.NoRujukan,
                             Debit = amaunDebit,
                             Kredit = amaunKredit,
+                            Tbs = amaunDebit - amaunKredit,
                             Liabiliti = amaunDebit - amaunKredit,
                             Belanja = amaunDebit - amaunKredit
                             // + BakiLiabiliti
@@ -279,7 +280,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                                 Kredit = amaunKredit,
                                 Liabiliti = amaunDebit - amaunKredit,
                                 Belanja = amaunDebit - amaunKredit,
-                                Baki =  amaunKredit - amaunDebit
+                                Baki = amaunDebit - amaunKredit
                                 // +BakiLiabiliti
                             };
 
@@ -496,14 +497,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 {
                     foreach (var akNotaDebitKreditDiterima in akNotaDebitKreditDiterimaList)
                     {
-                        var penilaianPerolehanObjekBahagianList = new List<JBahagian>();
+                        var akNotaDebitKreditDiterimaObjekBahagianList = new List<JBahagian>();
 
                         // group akNotaDebitKreditDiterimaObjek by bahagian
                         if (akNotaDebitKreditDiterima.AkNotaDebitKreditDiterimaObjek != null && akNotaDebitKreditDiterima.AkNotaDebitKreditDiterimaObjek.Count > 0)
                         {
                             foreach (var item in akNotaDebitKreditDiterima.AkNotaDebitKreditDiterimaObjek)
                             {
-                                penilaianPerolehanObjekBahagianList.Add(item.JKWPTJBahagian?.JBahagian ?? new JBahagian());
+                                akNotaDebitKreditDiterimaObjekBahagianList.Add(item.JKWPTJBahagian?.JBahagian ?? new JBahagian());
                             }
 
                         }
@@ -515,9 +516,9 @@ namespace YIT._DataAccess.Repositories.Implementations
                         }
 
                         // compare each lists, if its equal then insert to results
-                        var items = penilaianPerolehanObjekBahagianList.All(konfigKelulusanBahagianList.Contains);
-                        if (konfigKelulusanBahagianList.OrderBy(kk => kk.Kod).SequenceEqual(penilaianPerolehanObjekBahagianList.OrderBy(pp => pp.Kod))
-                            || penilaianPerolehanObjekBahagianList.All(konfigKelulusanBahagianList.Contains))
+                        var items = akNotaDebitKreditDiterimaObjekBahagianList.All(konfigKelulusanBahagianList.Contains);
+                        if (konfigKelulusanBahagianList.OrderBy(kk => kk.Kod).SequenceEqual(akNotaDebitKreditDiterimaObjekBahagianList.OrderBy(pp => pp.Kod))
+                            || akNotaDebitKreditDiterimaObjekBahagianList.All(konfigKelulusanBahagianList.Contains))
                         {
 
                             results.Add(akNotaDebitKreditDiterima);

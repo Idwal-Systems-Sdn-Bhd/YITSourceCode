@@ -31,6 +31,5 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         public ICollection<AkAnggarObjek>? AkAnggarObjek { get; set; }
-        public ICollection<AkAnggarLejar>? AkAnggarLejar { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         [DisplayName("Tarikh")]
         public DateTime Tarikh { get; set; }
 
-        [DisplayName("Pembekal")]
+        [DisplayName("Pelanggan")]
         public int DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam { get; set; }
         [DisplayName("Akaun Penghutang")]
@@ -36,8 +36,10 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         public string? Ringkasan { get; set; }
+        [DisplayName("No e-Invois")]
         public int? LHDNEInvoisId { get; set; }
         public LHDNEInvois? LHDNEInvois { get; set; }
+        [DisplayName("MSIC")]
         public int? LHDNMSICId { get; set; }
         public LHDNMSIC? LHDNMSIC { get; set; }
         public string? UUID { get; set; }

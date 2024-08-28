@@ -406,10 +406,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                         AkCarta = item.AkCarta,
                         Tarikh = akAnggar.Tarikh,
                         Amaun = item.Amaun,
-                        Sebenar = item.Amaun,
                         NoRujukan = akAnggar.NoRujukan,
                         Baki = 0,
-                        AkAnggar = item.AkAnggar,
                     };
 
                     AkAnggarLejarList.Add(AkAnggarLejar);

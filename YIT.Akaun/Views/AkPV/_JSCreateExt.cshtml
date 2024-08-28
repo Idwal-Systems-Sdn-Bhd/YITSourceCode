@@ -15,7 +15,8 @@
                 if (msg.result == "OK") {
                     // empty selection
                     $("#DDaftarAwamId").empty();
-
+                    $("#moPenerimaDDaftarAwamId").empty();
+                    
                     //append new options
                     $("#DDaftarAwamId").append("<option value='' disable> -- SILA PLIH -- </option>");
                     for (var i = 0; i < msg.list.length; i++) {
@@ -23,6 +24,15 @@
 
                         var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.nama + "</option>";
                         $("#DDaftarAwamId").append(str);
+                    }
+
+                    //append new options
+                    $("#moPenerimaDDaftarAwamId").append("<option value='' disable> -- SILA PLIH -- </option>");
+                    for (var i = 0; i < msg.list.length; i++) {
+                        var item = msg.list[i];
+
+                        var str = "<option value='" + item.id + "'>" + item.kod + " - " + item.nama + "</option>";
+                        $("#moPenerimaDDaftarAwamId").append(str);
                     }
 
                 }

@@ -1,7 +1,7 @@
-﻿@model IEnumerable<AkNotaDebitKreditDiterima>
+﻿@model IEnumerable<AkInvois>
 
 @{
-    ViewData["Title"] = "Nota Debit Kredit Pembekal";
+    ViewData["Title"] = "Invois Dikeluarkan";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <partial name="_JSIndex" />
@@ -29,17 +29,11 @@
                             <th class="tarikh">
                                 Tarikh
                             </th>
-                            <th>
-                                D / K
-                            </th>
                             <th class="jumlah">
                                 Jumlah RM
                             </th>
                             <th >
-                                No Invois
-                            </th>
-                            <th class="pembekal">
-                                Pembekal
+                                Pelanggan
                             </th>
                             <th class="status">
                                 Status
@@ -65,26 +59,11 @@
                                 <td class="text-uppercase text-end">
                                     @item.Tarikh.ToString("dd/MM/yyyy")
                                 </td>
-                                @if (item.FlDebitKredit == 0)
-                                {
-                                    <td class="text-uppercase">
-                                        D
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td class="text-uppercase">
-                                        K
-                                    </td>
-                                }
                                 <td class="text-uppercase text-end">
                                     @Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")
                                 </td>
-                                <td>
-                                    @item.AkBelian?.NoRujukan
-                                </td>
                                 <td class="text-uppercase">
-                                    @item.AkBelian?.DDaftarAwam?.Nama
+                                    @item.DDaftarAwam?.Nama
                                 </td>
                                 <td class="text-uppercase">
                                     @item.EnStatusBorang.GetDisplayName()

@@ -9,7 +9,7 @@
     function GetDDaftarAwamList(id) {
         $.ajax({
             type: "GET",
-            url: '@Url.Action("GetDDaftarAwamList", "DDaftarAwam")',
+            url: '@Url.Action("GetDDaftarAwamPenghutangList", "DDaftarAwam")',
             dataType: "json",
             success: function (msg) {
                 if (msg.result == "OK") {
