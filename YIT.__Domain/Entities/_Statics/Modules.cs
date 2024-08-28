@@ -119,8 +119,12 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodAkTerima = "AK0018";
         public const string namaAkTerima = "Terimaan Resit Rasmi";
 
-        public const string kodAkNotaDebitKreditDiterima = "AK0019";
+        public const string kodAkAnggar = "AK0019";
+        public const string namaAkAnggar = "Anggaran Hasil";
+
+        public const string kodAkNotaDebitKreditDiterima = "AK0020";
         public const string namaAkNotaDebitKreditDiterima = "Pelarasan Nota Debit Kredit Diterima";
+
         //
 
         // Pemprosesan (PP)
@@ -236,8 +240,11 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodLCekYangBerkaitan = "LAK002";
         public const string namaLCekYangBerkaitan = "Laporan Cek Yang Berkaitan";
 
-        public const string kodLTerimaan = "LAK003";
-        public const string namaLTerimaan = "Laporan Daftar Resit";
+        public const string kodLPenerimaanPembayaran = "LAK003";
+        public const string namaLPenerimaanPembayaran = "Laporan Penerimaan Dan Pembayaran";
+
+        public const string kodLBelanjawanTerkini = "LAK004";
+        public const string namaLBelanjawanTerkini = "Laporan Belanjawan";
 
         //
     }

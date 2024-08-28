@@ -62,6 +62,9 @@ namespace YIT._DataAccess.Data
         public DbSet<AbWaran> AbWaran { get; set; }
         public DbSet<AbWaranObjek> AbWaranObjek { get; set; }
         public DbSet<AbBukuVot> AbBukuVot { get; set; }
+        public DbSet<AkAnggar> AkAnggar { get; set; }
+        public DbSet<AkAnggarObjek> AkAnggarObjek { get; set; }
+        public DbSet<AkAnggarLejar> AkAnggarLejar { get; set; }
 
         //
 

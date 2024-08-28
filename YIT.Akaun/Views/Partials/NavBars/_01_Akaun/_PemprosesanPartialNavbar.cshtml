@@ -30,9 +30,14 @@
             @Html.ActiveClass("AkPVLulus")
        @Html.ActiveClass("AkJurnalSah")
          @Html.ActiveClass("AkJurnalSemak")
-         @Html.ActiveClass("AkJurnalLulus")"
-       @Html.ActiveClass("AkNotaDebitKreditDiterimaLulus")
-       href="#submenuPemprosesan" data-toggle="collapse" data-target="#submenuPemprosesan"><img src="~/img/svg/pemprosesan.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Pemprosesan</span></a>
+         @Html.ActiveClass("AkJurnalLulus")
+       @Html.ActiveClass("AkAnggarSah")
+        @Html.ActiveClass("AkAnggarSemak")
+        @Html.ActiveClass("AkAnggarLulus")
+        @Html.ActiveClass("AkNotaDebitKreditDiterimaLulus")
+       " href="#submenuPemprosesan" data-toggle="collapse" data-target="#submenuPemprosesan"><img src="~/img/svg/pemprosesan.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Pemprosesan</span></a>
+       
+
     <div class="collapse" id="submenuPemprosesan" aria-expanded="false">
         <ul class="flex-column ps-2 nav">
             @*AbWaran*@
@@ -337,6 +342,34 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkJurnalLulus")" asp-area="" asp-controller="AkJurnalLulus" asp-action="Index">
+                                Kelulusan
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            @*end*@
+            @*AkAnggar*@
+            <li class="nav-item">
+                <a class="nav-link border-bottom text-truncate collapsed py-1 ms-3
+                 @Html.ActiveClass("AkAnggarSah")
+                 @Html.ActiveClass("AkAnggarSemak")
+                 @Html.ActiveClass("AkAnggarLulus")
+" href="#submenuPemprosesanAkAnggar" data-toggle="collapse" data-target="#submenuPemprosesanAkAnggar"><span>Anggaran Hasil</span></a>
+                <div class="collapse" id="submenuPemprosesanAkAnggar" aria-expanded="false">
+                    <ul class="flex-column nav ps-4">
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkAnggarSah")" asp-area="" asp-controller="AkAnggarSah" asp-action="Index">
+                                Pengesahan
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkAnggarSemak")" asp-area="" asp-controller="AkAnggarSemak" asp-action="Index">
+                                Semakan
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link p-1 text-truncate ps-4 @Html.ActiveSideBarClass("AkAnggarLulus")" asp-area="" asp-controller="AkAnggarLulus" asp-action="Index">
                                 Kelulusan
                             </a>
                         </li>

@@ -37,6 +37,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             AkBankRepo = new AkBankRepository(_context);
             
             AkTerimaRepo = new AkTerimaRepository(_context);
+            AkAnggarRepo = new AkAnggarRepository(_context);
 
             AbWaranRepo = new AbWaranRepository(_context);
 
@@ -101,6 +102,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public IAkTerimaRepository AkTerimaRepo {get; private set;}
         public IAbWaranRepository AbWaranRepo { get; private set; }
+        public IAkAnggarRepository AkAnggarRepo { get; private set; }
 
         public IAkPenilaianPerolehanRepository AkPenilaianPerolehanRepo { get; private set; }
 

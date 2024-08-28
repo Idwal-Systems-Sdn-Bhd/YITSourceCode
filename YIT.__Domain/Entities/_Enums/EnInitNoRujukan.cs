@@ -53,6 +53,8 @@ namespace YIT.__Domain.Entities._Enums
         PV = 21, // baucer pembayaran
         [Display(Name = "JP")]
         JP = 22, // Janaan Profil
+        [Display(Name = "AH")]
+        AH = 23, // Anggaran Hasil
 
     }
 }

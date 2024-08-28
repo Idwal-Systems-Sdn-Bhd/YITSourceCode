@@ -18,6 +18,7 @@ namespace YIT.Akaun.Infrastructure
 
             services.AddTransient<IAkAkaunRepository<AkAkaun>, AkAkaunRepository>();
             services.AddTransient<IAbBukuVotRepository<AbBukuVot>, AbBukuVotRepository>();
+            services.AddTransient<IAkAnggarLejarRepository<AkAnggarLejar>, AkAnggarLejarRepository>();
 
             services.AddTransient<IPenyataRepository, PenyataRepository>();
             services.AddTransient<IAkPanjarLejarRepository, AkPanjarLejarRepository>();
@@ -42,6 +43,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddScoped(ss => SessionCartJKonfigPenyata.GetCart(ss));
             services.AddScoped(ss => SessionCartDPanjar.GetCart(ss));
             services.AddScoped(ss => SessionCartAkCV.GetCart(ss));
+            services.AddScoped(ss => SessionCartAkAnggar.GetCart(ss));
             services.AddScoped(ss => SessionCartAkNotaDebitKreditDiterima.GetCart(ss));
 
             return services;

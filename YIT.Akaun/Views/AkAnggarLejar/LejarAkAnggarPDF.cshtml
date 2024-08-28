@@ -1,0 +1,87 @@
+﻿@model IEnumerable<AkAnggarLejar>
+
+@{
+    ViewData["Title"] = "Cetakan Lejar Anggaran Hasil";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+
+<table>
+    <thead>
+        <tr>
+
+            <td> LAPORAN HASIL DARI TARIKH @ViewData["TarDari"] SEHINGGA @ViewData["TarHingga"] </td>
+
+        </tr>
+       
+    </thead>
+</table>
+<table>
+    <tr>
+        <td>KUMP. WANG </td>
+        <td>:</td>
+        <td> @ViewData["NamaKW"]</td>
+    </tr>
+    <tr>
+        <td>PTJ </td>
+        <td>:</td>
+        <td> @ViewData["NamaPTJ"]</td>
+    </tr>
+</table>
+<br />
+<br />
+<div class="form-group">
+    <table class="table table-bordered" width="100%">
+        <thead>
+
+            <tr>
+                <th>No Rujukan</th>
+                <th>Tarikh</th>
+                <th>PTJ/Bahagian</th>
+                <th>Kod Akaun</th>
+                <th>Amaun</th>
+                <th>Baki</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.NoRujukan
+                    </td>
+                <td>
+                    @item.Tarikh.ToString("dd-MM-yyyy")
+                    </td>
+                <td>
+                    @item.JKWPTJBahagian?.Kod - @item.JKWPTJBahagian?.JBahagian?.Perihal (@item.JKWPTJBahagian?.JPTJ?.Perihal)
+                    </td>
+                <td>
+                    @item.AkCarta?.Kod - @item.AkCarta?.Perihal
+                    </td>
+                <td>
+                    @item.Amaun.ToString("#,##0.00")
+                    </td>
+                <td>
+                    @item.Baki.ToString("#,##0.00")
+                    </td>
+
+            </tr>
+        }
+        </tbody>
+
+
+
+    </table>
+</div>
