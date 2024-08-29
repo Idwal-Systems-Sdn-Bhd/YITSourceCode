@@ -46,6 +46,8 @@ namespace YIT.Akaun.Infrastructure
             services.AddScoped(ss => SessionCartAkAnggar.GetCart(ss));
             services.AddScoped(ss => SessionCartAkNotaDebitKreditDiterima.GetCart(ss));
             services.AddScoped(ss => SessionCartAkInvois.GetCart(ss));
+            services.AddScoped(ss => SessionCartAkNotaDebitKreditDikeluarkan.GetCart(ss));
+
 
             return services;
         }
@@ -285,6 +287,14 @@ namespace YIT.Akaun.Infrastructure
                 opt.AddPolicy(Modules.kodAkInvois + "R", policy => policy.RequireClaim(Modules.kodAkInvois + "R"));
                 opt.AddPolicy(Modules.kodAkInvois + "L", policy => policy.RequireClaim(Modules.kodAkInvois + "L"));
                 opt.AddPolicy(Modules.kodAkInvois + "BL", policy => policy.RequireClaim(Modules.kodAkInvois + "BL"));
+
+                opt.AddPolicy(Modules.kodAkNotaDebitKreditDikeluarkan, policy => policy.RequireClaim(Modules.kodAkNotaDebitKreditDikeluarkan));
+                opt.AddPolicy(Modules.kodAkNotaDebitKreditDikeluarkan + "C", policy => policy.RequireClaim(Modules.kodAkNotaDebitKreditDikeluarkan + "C"));
+                opt.AddPolicy(Modules.kodAkNotaDebitKreditDikeluarkan + "E", policy => policy.RequireClaim(Modules.kodAkNotaDebitKreditDikeluarkan + "E"));
+                opt.AddPolicy(Modules.kodAkNotaDebitKreditDikeluarkan + "D", policy => policy.RequireClaim(Modules.kodAkNotaDebitKreditDikeluarkan + "D"));
+                opt.AddPolicy(Modules.kodAkNotaDebitKreditDikeluarkan + "R", policy => policy.RequireClaim(Modules.kodAkNotaDebitKreditDikeluarkan + "R"));
+                opt.AddPolicy(Modules.kodAkNotaDebitKreditDikeluarkan + "L", policy => policy.RequireClaim(Modules.kodAkNotaDebitKreditDikeluarkan + "L"));
+                opt.AddPolicy(Modules.kodAkNotaDebitKreditDikeluarkan + "BL", policy => policy.RequireClaim(Modules.kodAkNotaDebitKreditDikeluarkan + "BL"));
                 //
 
                 // Pemprosesan (PP)
@@ -331,6 +341,9 @@ namespace YIT.Akaun.Infrastructure
 
                 opt.AddPolicy(Modules.kodLulusAkInvois + "L", policy => policy.RequireClaim(Modules.kodLulusAkInvois + "L"));
                 opt.AddPolicy(Modules.kodLulusAkInvois + "E", policy => policy.RequireClaim(Modules.kodLulusAkInvois + "E"));
+
+                opt.AddPolicy(Modules.kodLulusAkNotaDebitKreditDikeluarkan + "L", policy => policy.RequireClaim(Modules.kodLulusAkNotaDebitKreditDikeluarkan + "L"));
+                opt.AddPolicy(Modules.kodLulusAkNotaDebitKreditDikeluarkan + "E", policy => policy.RequireClaim(Modules.kodLulusAkNotaDebitKreditDikeluarkan + "E"));
                 //
 
 

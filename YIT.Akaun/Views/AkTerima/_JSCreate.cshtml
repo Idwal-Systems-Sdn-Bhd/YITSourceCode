@@ -55,51 +55,21 @@
             }
         });
     }
-    @*function GetJKWPTJBahagianList(jKWId) {
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("GetJKWPTJBahagianList", "JKW")',
-            data: { JKWId : jKWId },
-            dataType: "json",
-            success: function (msg) {
-                if (msg.result == "OK") {
-                    // empty selection
-                    $("#objekJKWPTJBahagianId").empty();
-
-                    //append new options
-                    $("#objekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
-                    for (var i = 0; i < msg.list.length; i++) {
-                        var item = msg.list[i];
-
-                        var str = "<option value='" + item.id + "'>" + item.value + " - " + item.textValue + "</option>";
-
-                        $("#objekJKWPTJBahagianId").append(str);
-                    }
-                }
-                else {
-                    toastr.error(message);
-                    toastr.options.timeOut = 2000; // 2s
-                }
-
-            },
-            error: function (req, status, error) {
-                alert(error);
-            }
-        });
-    }*@
     //
     //empty cart
     function EmptyCart() {
         $.ajax({
             type: "POST",
-            //url: "/AkPV/JsonEmptyCart",
-            url: '@Url.Action("JsonEmptyCart", "AkTerima")',
+            //url: "/AkTerima/JsonEmptyCart",
+            url: '@Url.Action("EmptyCart", "AkTerima")',
             dataType: "json",
             success: function (msg) {
                 $("table tbody#tbodyObjek").empty();
+                $("table tbody#tbodyInvois").empty();
                 $("table tbody#tbodyCaraBayar").empty();
-                $("#objekJumlah").val("0.00");
-                $("#objekJumlahCaraBayar").val("0.00");
+                $("#Jumlah").val("0.00");
+                $("#invoisJumlah").val("0.00");
+                $("#carabayarJumlah").val("0.00");
                 //$("#objekAkCartaId option").prop('disabled', false);
                 //$("#objekAkCartaId option:selected").prop('disabled', true);
                 //$("#objekJBahagianId option").prop('disabled', false);
@@ -112,15 +82,256 @@
     };
     //empty cart end
 
-    // check if jumlahObjek is equal to jumlahUrusniaga
+    $("body").on('change', "#EnJenisTerimaan", function () {
+        var EnJenisTerimaan = $("#EnJenisTerimaan").val();
+        $("#EnKategoriDaftarAwam").prop("disabled", false);
+        $("#EnKategoriDaftarAwam").val("").trigger('change');
+        EmptyCart();
+        EmptyCommonFields();
+        ResetHiddenDiv();
+        switch (EnJenisTerimaan) {
+            case "@EnJenisTerimaan.Invois.GetDisplayCode()":
+                 $("#EnKategoriDaftarAwam").val("@EnKategoriDaftarAwam.Penghutang.GetDisplayCode()").trigger('change');
+                 $("#EnKategoriDaftarAwam").prop("disabled", true);
+                    $("#divDDaftarAwam").prop("hidden", false);
+                 $("#divInvois").prop("hidden", false);
+                 GetDDaftarAwamPenghutangList();
+                break;
+        }
+    });
+
+    $("body").on('change', "#DDaftarAwamId", function () {
+        var DDaftarAwamId = $("#DDaftarAwamId").val();
+        EmptyCommonFields();
+        GetDDaftarAwamDetails(DDaftarAwamId);
+        LoadAkInvoisList(DDaftarAwamId);
+    });
+
+    function GetDDaftarAwamDetails(id, EnKategoriDaftarAwam) {
+        if (id != null) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDDaftarAwam", "DDaftarAwam")',
+                data: { DDaftarAwamId: id },
+                dataType: "json",
+                success: function (msg) {
+                    $("#NoPendaftaranPembayar").val(msg?.record?.noPendaftaran);
+                    $("#Nama").val(msg?.record?.nama);
+                    $("#Alamat1").val(msg?.record?.alamat1);
+                    $("#Alamat2").val(msg?.record?.alamat2);
+                    $("#Alamat3").val(msg?.record?.alamat3);
+                    $("#JNegeriId").val(msg?.record?.jNegeriId).trigger('change');
+                    $("#Telefon1").val(msg?.record?.telefon1);
+                    $("#Emel").val(msg?.record?.emel);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+    }
+
+    function LoadAkInvoisList(id) {
+        if (id != null) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAkInvoisByDDaftarAwamId", "AkInvois")',
+                data: { DDaftarAwamId: id },
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.result == "OK") {
+                        // empty selection
+                        $("#invoisAkInvoisId").empty();
+                        $("#moInvoisAkInvoisId").empty();
+
+                        //append new options
+                        $("#invoisAkInvoisId").append("<option value='' disable> -- SILA PLIH -- </option>");
+                        for (var i = 0; i < msg.list.length; i++) {
+                            var item = msg.list[i];
+
+                            var str = "<option value='" + item.id + "'>" + item.noRujukan + "</option>";
+                            $("#invoisAkInvoisId").append(str);
+                        }
+
+                        //append new options
+                        $("#moInvoisAkInvoisId").append("<option value='' disable> -- SILA PLIH -- </option>");
+                        for (var i = 0; i < msg.list.length; i++) {
+                            var item = msg.list[i];
+
+                            var str = "<option value='" + item.id + "'>" + item.noRujukan + "</option>";
+                            $("#moInvoisAkInvoisId").append(str);
+                        }
+
+                    }
+                    else {
+                        toastr.error(message);
+                        toastr.options.timeOut = 2000; // 2s
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+    }
+
+    //add tbl invois
+    $("body").on('change', "#invoisAkInvoisId", function () {
+        var invoisAkInvoisId = $("#invoisAkInvoisId").val();
+
+        if (invoisAkInvoisId !== 0) {
+            var Invois = {
+                AkInvoisId: invoisAkInvoisId
+            }
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAkInvois","AkTerima")',
+                data: Invois,
+                dataType: "json",
+                success: function (r) {
+                    if (r.result == "Error") {
+                        toastr.error(r.message);
+                        toastr.options.timeOut = 2000;
+                    }
+                    else if (r.result == "OK") {
+                        $("#invoisAmaun").val(r.record.jumlah);
+                    }
+                }
+            })
+
+        }
+    });
+
+    $("body").on("click", "#btnAddInvois", function () {
+        //Reference the Name and Country TextBoxes.
+        var Id = $("#Id");
+        var akInvoisId = $("#invoisAkInvoisId");
+        var amaun = $("#invoisAmaun");
+        if (amaun.val() == 0.00) {
+            toastr.error("Amaun 0.00 tidak dibenarkan");
+            toastr.options.timeOut = 2000; // 2s
+        }
+        else {
+            if (akInvoisId.val() != null) {
+                GetAkInvois(Id.val(), akInvoisId.val(), amaun.val());
+            }
+            else {
+                toastr.error("Sila pilih invois");
+                toastr.options.timeOut = 2000; // 2s
+            }
+        }
+    });
+
+    function GetAkInvois(Id, akInvoisId, amaun) {
+        var Invois = {
+            AkInvoisId: akInvoisId,
+            Amaun: amaun
+        }
+        //Send the JSON array to Controller using AJAX.
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetAkInvois", "AkTerima")',
+            data: Invois,
+            dataType: "json",
+            success: function (r) {
+
+                if (r.result == "Error") {
+                    toastr.error(r.message);
+                    toastr.options.timeOut = 2000; // 2s
+                }
+                else {
+                    //Reference the TextBoxes.
+                    var invoisAkInvoisId = $("#invoisAkInvoisId");
+                    var invoisAmaun = $("#invoisAmaun");
+                    var AkTerimaInvois = {
+                        AkTerimaId: Id,
+                        AkInvoisId: akInvoisId,
+                        Amaun: amaun
+                    }
+                    //Send the JSON array to Controller to Save into session (cart)
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("SaveCartAkTerimaInvois", "AkTerima")',
+                        data: AkTerimaInvois,
+                        dataType: "json",
+                        success: function (result) {
+
+                            PopulateTablesFromCart();
+                            $("#invoisAkInvoisId option:selected").prop('disabled', true);
+                            //Clear the TextBoxes.
+                            invoisAkInvoisId.val("").trigger('change');
+                            invoisAmaun.val(0.00);
+                        }
+                    });
+                }
+
+
+            }
+        });
+
+    }
+    //add tbl invois end
+
+    // remove tbl invois
+    function RemoveInvois(button) {
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var akInvoisId = $("TD", row).eq(0).html();
+        var noRujukan = $("TD", row).eq(1).html();
+        var invoisAmaun = $("TD", row).eq(2).html();
+        if (confirm("Hapus : " + noRujukan + " ?")) {
+
+            var AkTerimaInvois = {
+                AkInvoisId: akInvoisId,
+                Amaun: invoisAmaun
+            }
+            if (AkTerimaInvois != null) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RemoveCartAkTerimaInvois", "AkTerima")',
+                    data: AkTerimaInvois,
+                    dataType: "json",
+                    success: function (r) {
+                        $("#invoisAkInvoisId option[value=" + akInvoisId + "]").prop('disabled', false);
+
+                        PopulateTablesFromCart();
+                    }
+                });
+            }
+
+        }
+    }
+    //
+
+    function EmptyCommonFields() {
+        $("#NoPendaftaranPembayar").val("");
+        $("#Nama").val("");
+        $("#Alamat1").val("");
+        $("#Alamat2").val("");
+        $("#Alamat3").val("");
+        $("#JNegeriId").val("").trigger('change');
+        $("#Telefon1").val("");
+        $("#Emel").val("");
+
+    }
+
+    function ResetHiddenDiv() {
+        $("#divDDaftarAwam").prop("hidden", true);
+        $("#divDPekerja").prop("hidden", true);
+        $("#divInvois").prop("hidden", true);
+        $("#divInvois").prop("hidden", true);
+    }
+
+    // check if jumlahObjek is equal to jumlahPerihal
     function checkJumlah() {
         var objekJumlah = $("#Jumlah").val();
-        var caraBayarJumlah = $("#caraBayarJumlah").val();
+        var carabayarJumlah = $("#carabayarJumlah").val();
 
-        if (objekJumlah == 0.00 && caraBayarJumlah == 0.00) {
+        if (objekJumlah == 0.00 && carabayarJumlah == 0.00) {
             $("#btnSave").show();
         } else {
-            if (objekJumlah == caraBayarJumlah) {
+            if (objekJumlah == carabayarJumlah) {
                 $("#btnSave").show();
             }
             else {
@@ -130,10 +341,29 @@
     }
     // check end
 
+    // close modal objek
+    function CloseModalObjek() {
+        $("#moObjek").hide();
+        $(".modal-backdrop").prop("hidden", true);
+    }
+
+    // close modal invois
+    function CloseModalInvois() {
+        $("#moInvois").hide();
+        $(".modal-backdrop").prop("hidden", true);
+    }
+
+    // close modal carabayar
+    function CloseModalCaraBayar() {
+        $("#moCaraBayar").hide();
+        $(".modal-backdrop").prop("hidden", true);
+    }
+
     // populate tables in pages
     function PopulateTablesFromCart() {
     var jumlah = $("#Jumlah");
-    var jumlahCaraBayar = $("#JumlahCaraBayar");
+    var invoisJumlah = $("#invoisJumlah");
+    var carabayarJumlah = $("#carabayarJumlah");
     $.ajax({
         type: "POST",
         url: '@Url.Action("GetAllItemCartAkTerima", "AkTerima")',
@@ -146,8 +376,8 @@
             if (r.objek.length > 0) {
                 for (var i = 0; i < r.objek.length; i++) {
                     var item1 = r.objek[i];
-                    var str = "<tr><td hidden>" + item1.jBahagianId +
-                        "</td><td class='text-uppercase'>" + item1.jBahagian.kod + " - " + item1.jBahagian.perihal +
+                    var str = "<tr><td hidden>" + item1.jkwptjBahagianId +
+                        "</td><td class='text-uppercase'>" + item1.jkwptjBahagian.kod + " - " + item1.jkwptjBahagian.jBahagian.perihal + " (" + item1.jkwptjBahagian.jptj.perihal + ") " +
                         "</td><td hidden>" + item1.akCartaId +
                         "</td><td class='text-uppercase'>" + item1.akCarta.kod + " - " + item1.akCarta.perihal +
                         "</td><td class='text-end'>" + (item1.amaun).toFixed(2) +
@@ -207,8 +437,27 @@
                 }
             }
 
-            jumlahCaraBayar.val(sum.toFixed(2));
+            carabayarJumlah.val(sum.toFixed(2));
             // refresh updated table carabayar end
+
+            // refresh updated table invois
+            $("table tbody#tbodyInvois").empty();
+            var sum = 0;
+
+            for (var i = 0; i < r.invois.length; i++) {
+                var item1 = r.invois[i];
+
+                var str = "<tr><td hidden>" + item1.akInvoisId +
+                    "</td><td class='text-uppercase'>" + item1.akInvois.noRujukan +
+                    "</td><td class='text-end'>" + (item1.amaun).toFixed(2) +
+                    "</td><td>" +
+                    "<button class='btn ac-danger btn-sm' type='button' onclick='RemoveInvois(this)'><i class='fas fa-trash' ></i></button>" +
+                    "</td><tr>";
+                $("table tbody#tbodyInvois").append(str);
+                sum += item1.amaun;
+            }
+            invoisJumlah.val(sum.toFixed(2));
+            // refresh updated table invois end
 
             checkJumlah();
         }
@@ -216,39 +465,50 @@
 
 }
     // populate tables in pages end
+
     //add tbl objek
     $("body").on("click", "#btnAddObjek", function () {
         //Reference the Name and Country TextBoxes.
         var Id = $("#Id");
         var akCartaId = $("#objekAkCartaId");
-        var jBahagianId = $("#objekJBahagianId");
-        if (jBahagianId.val() != null && akCartaId.val() != null) {
-            GetJBahagianAkCarta(Id.val(), jBahagianId.val(), akCartaId.val());
+        var jKWPTJBahagianId = $("#objekJKWPTJBahagianId");
+        if ($("#objekAmaun").val() == 0.00) {
+            toastr.error("Amaun 0.00 tidak dibenarkan");
+            toastr.options.timeOut = 2000; // 2s
         }
+        else {
+            if (jKWPTJBahagianId.val() != null && akCartaId.val() != null) {
+                GetJKWPTJBahagianAkCarta(Id.val(), jKWPTJBahagianId.val(), akCartaId.val());
+            } else {
+                toastr.error("Sila pilih bahagian / kod akaun");
+                toastr.options.timeOut = 2000; // 2s
+            }
+        }
+
 
     });
 
-    function GetJBahagianAkCarta(Id, jBahagianId, akCartaId) {
+    function GetJKWPTJBahagianAkCarta(Id, jKWPTJBahagianId, akCartaId) {
         var Objek = {
-            JBahagianId: jBahagianId,
+            JKWPTJBahagianId: jKWPTJBahagianId,
             AkCartaId: akCartaId
         }
         //Send the JSON array to Controller using AJAX.
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetJBahagianAkCarta", "AkTerima")',
+            url: '@Url.Action("GetJKWPTJBahagianAkCarta", "JKW")',
             data: Objek,
             dataType: "json",
             success: function (r) {
                 //Reference the TextBoxes.
-                var objekJBahagianId = $("#objekJBahagianId");
+                var objekJKWPTJBahagianId = $("#objekJKWPTJBahagianId");
                 var objekAkCartaId = $("#objekAkCartaId");
 
                 var objekAmaun = $("#objekAmaun");
 
                 var AkTerimaObjek = {
                     AkTerimaId: Id,
-                    JBahagianId: objekJBahagianId.val(),
+                    JKWPTJBahagianId: objekJKWPTJBahagianId.val(),
                     AkCartaId: objekAkCartaId.val(),
                     Amaun: objekAmaun.val()
                 }
@@ -272,14 +532,14 @@
                         //Add Row.
                         var row = tBody.insertRow(-1);
 
-                        //Add jBahagianId cell.
+                        //Add jkwptjBahagianId cell.
                         var cell = $(row.insertCell(-1));
-                        cell.html(r.jBahagian.id);
+                        cell.html(r.jkwPtjBahagian.id);
                         cell.prop("hidden", !this.checked);
 
-                        //Add jBahagian cell.
+                        //Add jkwptjBahagian cell.
                         var cell = $(row.insertCell(-1));
-                        cell.html(r.jBahagian.kod + ' - ' + r.jBahagian.perihal);
+                        cell.html(r.jkwPtjBahagian.kod + " - " + r.jkwPtjBahagian.jBahagian.perihal + " (" + r.jkwPtjBahagian.jptj.perihal + ")");
                         cell.addClass('text-uppercase');
 
                         //Add akCartaId cell.
@@ -308,7 +568,7 @@
                         cell.append(btnRemove1);
 
                         //Clear the TextBoxes.
-                        objekJBahagianId.val("").trigger('change');
+                        objekJKWPTJBahagianId.val("").trigger('change');
                         objekAkCartaId.val("").trigger('change');
                         objekAmaun.val("0.00");
                         checkJumlah();
@@ -323,58 +583,57 @@
 
     //remove tbl objek
     function RemoveObjek(button) {
-    //Determine the reference of the Row using the Button.
-    var row = $(button).closest("TR");
-    var jBahagianId = $("TD", row).eq(0).html();
-    var namaBahagian = $("TD", row).eq(1).html();
-    var akCartaId = $("TD", row).eq(2).html();
-    var namaCarta = $("TD", row).eq(3).html();
-    var objekAmaun = $("TD", row).eq(4).html();
-    var objekJumlah = $("#Jumlah");
-    if (confirm("Hapus bahagian : " + namaBahagian + ", Kod Akaun : " + namaCarta + " ?")) {
-        //Get the reference of the Table.
-        var table = $("#tblObjek")[0];
+        //Determine the reference of the Row using the Button.
+        var row = $(button).closest("TR");
+        var jKWPTJBahagianId = $("TD", row).eq(0).html();
+        var namaBahagian = $("TD", row).eq(1).html();
+        var akCartaId = $("TD", row).eq(2).html();
+        var namaCarta = $("TD", row).eq(3).html();
+        var objekAmaun = $("TD", row).eq(4).html();
+        var objekJumlah = $("#Jumlah");
+        if (confirm("Hapus bahagian : " + namaBahagian + ", Kod Akaun : " + namaCarta + " ?")) {
+            //Get the reference of the Table.
+            var table = $("#tblObjek")[0];
 
-        //Sum value to Total text field
-        var sum = 0;
-        sum = parseFloat(objekJumlah.val()) - parseFloat(objekAmaun);
-        objekJumlah.val(sum.toFixed(2));
+            //Sum value to Total text field
+            var sum = 0;
+            sum = parseFloat(objekJumlah.val()) - parseFloat(objekAmaun);
+            objekJumlah.val(sum.toFixed(2));
 
-        var AkTerimaObjek = {
-            JBahagianId: jBahagianId,
-            AkCartaId: akCartaId
+            var AkTerimaObjek = {
+                JKWPTJBahagianId: jKWPTJBahagianId,
+                AkCartaId: akCartaId
+            }
+            if (AkTerimaObjek != null) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("RemoveCartAkTerimaObjek", "AkTerima")',
+                    data: AkTerimaObjek,
+                    dataType: "json",
+                    success: function (r) {
+                        //Delete the Table row using it's Index.
+                        table.deleteRow(row[0].rowIndex);
+                        checkJumlah();
+                    }
+                });
+            }
+
         }
-        if (AkTerimaObjek != null) {
-            $.ajax({
-                type: "POST",
-                //url: "/AkTerima/RemoveAkTerima1",
-                url: '@Url.Action("RemoveCartAkTerimaObjek", "AkTerima")',
-                data: AkTerimaObjek,
-                dataType: "json",
-                success: function (r) {
-                    //Delete the Table row using it's Index.
-                    table.deleteRow(row[0].rowIndex);
-                    checkJumlah();
-                }
-            });
-        }
-
-    }
-};
+    };
     //remove tbl objek end
 
     //update tbl objek
     function UpdateObjek(button) {
         //Determine the reference of the Row using the Button.
         var row = $(button).closest("TR");
-        var jBahagianId = $("TD", row).eq(0).html();
+        var jKWPTJBahagianId = $("TD", row).eq(0).html();
         var akCartaId = $("TD", row).eq(2).html();
 
         var AkTerimaObjek = {
-            JBahagianId: jBahagianId,
+            JKWPTJBahagianId: jKWPTJBahagianId,
             AkCartaId: akCartaId
         }
-        if (jBahagianId != null && akCartaId != null) {
+        if (jKWPTJBahagianId != null && akCartaId != null) {
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetAnItemFromCartAkTerimaObjek", "AkTerima")',
@@ -383,7 +642,7 @@
                 success: function (r) {
                     //insert data in modal objek
                     $("#moObjekId").val(r.record.id);
-                    $("#moObjekJBahagianId").val(r.record.jBahagianId);
+                    $("#moObjekJKWPTJBahagianId").val(r.record.jkwptjBahagianId);
                     $("#moObjekAkCartaId").val(r.record.akCartaId);
                     $("#moObjekAmaun").val(r.record.amaun.toFixed(2));
 
@@ -399,14 +658,14 @@
         var akTerimaId = $("#Id").val();
         var id = $("#moObjekId").val();
         var amaun = $("#moObjekAmaun").val();
-        var jBahagianId = $("#moObjekJBahagianId").val();
+        var jKWPTJBahagianId = $("#moObjekJKWPTJBahagianId").val();
         var akCartaId = $("#moObjekAkCartaId").val();
         var jumlah = $("#Jumlah");
 
         var AkTerimaObjek = {
             AkTerimaId: akTerimaId,
             Id: id,
-            JBahagianId: jBahagianId,
+            JKWPTJBahagianId: jKWPTJBahagianId,
             akCartaId: akCartaId,
             Amaun: amaun
         }
@@ -419,6 +678,7 @@
                 //insert notification here
 
                 PopulateTablesFromCart();
+                CloseModalObjek();
             }
         });
     };
@@ -475,7 +735,7 @@
                     dataType: "json",
                     success: function (result) {
 
-                        var jumlah = $("#JumlahCaraBayar");
+                        var jumlah = $("#carabayarJumlah");
 
                         //Sum value to Total text field
                         var sum = 0;
@@ -569,7 +829,7 @@
     var jCaraBayarId = $("TD", row).eq(0).html();
     var namaCaraBayar = $("TD", row).eq(1).html();
     var caraBayarAmaun = $("TD", row).eq(2).html();
-        var carabayarJumlah = $("#JumlahCaraBayar");
+        var carabayarJumlah = $("#carabayarJumlah");
     if (confirm("Hapus Cara Bayar : " + namaCaraBayar + " ?")) {
         //Get the reference of the Table.
         var table = $("#tblCaraBayar")[0];
@@ -616,7 +876,7 @@
                 data: AkTerimaCaraBayar,
                 dataType: "json",
                 success: function (r) {
-                    //insert data in modal objek
+                    //insert data in modal
                     $("#moCaraBayarId").val(r.record.id);
                     $("#moCaraBayarJCaraBayarId").val(r.record.jCaraBayarId);
                     $("#moCaraBayarAmaun").val(r.record.amaun.toFixed(2));
@@ -627,7 +887,7 @@
                     $("#moCaraBayarNoSlip").val(r.record.noSlip);
                     $("#moCaraBayarTarikhSlip").val(showDateReverse(r.record.tarikhSlip));
 
-                    //show modal objek
+                    //show modal
                     $("#moCaraBayar").modal({ backdrop: 'static', keyboard: false });
 
                 }
@@ -668,10 +928,11 @@
                 //insert notification here
 
                 PopulateTablesFromCart();
+                CloseModalCaraBayar();
             }
         });
     };
 
-    //update tbl objek end
+    //update tbl caraBayar end
 
 </script>

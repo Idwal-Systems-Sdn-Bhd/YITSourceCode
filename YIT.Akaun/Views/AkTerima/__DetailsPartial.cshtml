@@ -2,9 +2,17 @@
 
 @{
     decimal jumlahUrusniaga = 0;
+    decimal jumlahInvois = 0;
 }
 
 <div class="row mb-2">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="Tahun" class="control-label"></label>
+            <input class="form-control form-control-sm" asp-for="Tahun" readonly />
+            <span asp-validation-for="Tahun" class="text-danger"></span>
+        </div>
+    </div>
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="Tarikh" class="control-label"></label>
@@ -14,67 +22,99 @@
     </div>
     <div class="col-md-4">
         <div class="form-group">
+            <label asp-for="NoRujukan" class="control-label"></label>
+            <input asp-for="NoRujukan" class="form-control form-control-sm" readonly />
+            <span asp-validation-for="NoRujukan" class="text-danger"></span>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-4">
+        <div class="form-group">
             <label asp-for="JKWId" class="control-label"></label>
-            <input value="@Model.JKW?.Kod - @Model.JKW?.Perihal" class="form-control form-control-sm" readonly />
+            <input value="@BelanjawanFormatter.ConvertToKW(Model.JKW?.Kod) - @Model.JKW?.Perihal" class="form-control form-control-sm" readonly />
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="JCawanganId" class="control-label"></label>
+            <input value="@Model.JCawangan?.Kod - @Model.JCawangan?.Perihal" class="form-control form-control-sm text-uppercase" readonly />
 
         </div>
     </div>
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="AkBankId" class="control-label"></label>
-            <input value="@Model.AkBank?.Perihal - @Model.AkBank?.NoAkaun" class="form-control form-control-sm" readonly />
+            <input value="@Model.AkBank?.Kod - @Model.AkBank?.Perihal" class="form-control form-control-sm text-uppercase" readonly />
 
         </div>
     </div>
 </div>
-<div class="form-group">
-    <label asp-for="JCawanganId" class="control-label"></label>
-    <input value="@Model.JCawangan?.Kod - @Model.JCawangan?.Perihal" class="form-control form-control-sm text-uppercase" readonly />
+
+<div class="row">
+
+    <div class="form-group col-md-6">
+        <div class="form-group">
+            <div class="form-group">
+                <label asp-for="EnJenisTerimaan" class="control-label"></label>
+                <input value="@Model.EnJenisTerimaan.GetDisplayName()" class="form-control form-control-sm text-uppercase" readonly />
+
+            </div>
+        </div>
+    </div>
+    <div class="form-group col-md-6">
+        <div class="form-group">
+            <label asp-for="EnKategoriDaftarAwam" class="control-label"></label>
+            <input value="@Model.EnKategoriDaftarAwam.GetDisplayName()" class="form-control form-control-sm text-uppercase" readonly />
+
+        </div>
+    </div>
+
 
 </div>
-<div class="form-group">
+<div class="form-group" id="divDDaftarAwam" @ViewBag.DivDaftarAwam>
     <label asp-for="DDaftarAwamId" class="control-label"></label>
     <input value="@Model.DDaftarAwam?.Kod - @Model.DDaftarAwam?.Nama" class="form-control form-control-sm text-uppercase" readonly />
 
 </div>
 
+<div class="form-group" id="divDPekerja" @ViewBag.DivPekerja>
+    <label asp-for="DPekerjaId" class="control-label"></label>
+    <input value="@Model.DPekerja?.NoGaji - @Model.DPekerja?.Nama" class="form-control form-control-sm text-uppercase" readonly />
+
+</div>
 <div class="row mb-2">
-    <div class="col-md-3">
-        <div class="form-group">
-            <label asp-for="NoRujukan" class="control-label"></label>
-            <input asp-for="NoRujukan" class="form-control form-control-sm" readonly />
-        </div>
-    </div>
-    <div class="col-md-3">
+
+    <div class="col-md-4">
         <div class="form-group">
             <label asp-for="NoPendaftaranPembayar" class="control-label"></label>
             <input asp-for="NoPendaftaranPembayar" class="form-control form-control-sm text-uppercase" readonly />
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-8">
         <div class="form-group">
             <label asp-for="Nama" class="control-label"></label>
             <input asp-for="Nama" class="form-control form-control-sm text-uppercase" readonly />
         </div>
     </div>
 </div>
-
 <div class="form-group">
     <label asp-for="Alamat1" class="control-label"></label>
     <input asp-for="Alamat1" class="form-control form-control-sm mb-2 text-uppercase" readonly />
     <input asp-for="Alamat2" class="form-control form-control-sm mb-2 text-uppercase" readonly />
     <input asp-for="Alamat3" class="form-control form-control-sm text-uppercase" readonly />
 </div>
-<div class="row">
 
+<div class="row">
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="JNegeriId" class="control-label"></label>
             <input value="@Model.JNegeri?.Kod - @Model.JNegeri?.Perihal" class="form-control form-control-sm" readonly />
         </div>
     </div>
-</div>
-<div class="row">
     <div class="col-md-4">
         <div class="form-group">
             <label asp-for="Telefon1" class="control-label"></label>
@@ -92,6 +132,45 @@
     <label asp-for="Ringkasan" class="control-label"></label>
     <textarea asp-for="Ringkasan" class="form-control form-control-sm text-uppercase" rows="2" readonly></textarea>
 </div>
+<br />
+@*table Invois*@
+<div class="card box-shadow mb-3" id="divInvois" @ViewBag.DivInvois>
+    <div class="card-header">
+        <h6>Invois</h6>
+    </div>
+    <div class="card-body">
+        <table id="tblInvois" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th style="width:70%">No Rujukan</th>
+                    <th style="width:20%">Amaun RM</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyInvois">
+                @if (ViewBag.akTerimaInvois != null)
+                {
+                    foreach (var item in ViewBag.akTerimaInvois)
+                    {
+                        <tr>
+                            <td hidden>@item.AkInvoisId</td>
+                            <td class="text-uppercase">@item.AkInvois.NoRujukan</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                        </tr>
+                        jumlahInvois += item.Amaun;
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <div class="form-group">
+            <label name="invoisJumlah" class="control-label">Jumlah Invois RM</label>
+            <input name="invoisJumlah" id="invoisJumlah" class="form-control form-control-sm" value="@Convert.ToDecimal(jumlahInvois).ToString("#,##0.00")" readonly />
+        </div>
+    </div>
+</div>
+@*table Invois end*@
 
 @*table Objek*@
 <div class="card box-shadow mb-3">
@@ -113,12 +192,13 @@
                     foreach (var item in ViewBag.akTerimaObjek)
                     {
                         <tr>
-                            <td class="text-uppercase">@BelanjawanFormatter.ConvertToBahagian(item.JBahagian?.JPTJ?.JKW?.Kod, item.JBahagian?.JPTJ?.Kod, item.JBahagian?.Kod) - @item.JBahagian?.Perihal </td>
-                            <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal </td>
+                            <td hidden>@item.JKWPTJBahagianId</td>
+                            <td class="text-uppercase">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal)</td>
+                            <td hidden>@item.AkCartaId</td>
+                            <td class="text-uppercase">@item.AkCarta?.Kod - @item.AkCarta?.Perihal</td>
                             <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
                         </tr>
                     }
-
                 }
             </tbody>
         </table>

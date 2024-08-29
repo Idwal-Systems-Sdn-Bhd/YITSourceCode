@@ -127,6 +127,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodAkInvois = "AK0021";
         public const string namaAkInvois = "Terimaan Invois Dikeluarkan";
+
+        public const string kodAkNotaDebitKreditDikeluarkan = "AK0022";
+        public const string namaAkNotaDebitKreditDikeluarkan = "Pelarasan Nota Debit Kredit Dikeluarkan";
         //
 
         // Pemprosesan (PP)
@@ -213,6 +216,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodLulusAkInvois = "PP0028";
         public const string namaLulusAkInvois = "Pemprosesan Lulus Invois Dikeluarkan";
+
+        public const string kodLulusAkNotaDebitKreditDikeluarkan = "PP0029";
+        public const string namaLulusAkNotaDebitKreditDikeluarkan = "Pemprosesan Lulus Nota Debit Kredit Dikeluarkan";
         //
 
         // Laporan Penyata (PAK)

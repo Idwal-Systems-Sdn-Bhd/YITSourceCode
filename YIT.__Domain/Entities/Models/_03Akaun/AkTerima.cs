@@ -2,14 +2,8 @@
 using YIT.__Domain.Entities.Bases;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._02Daftar;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YIT.__Domain.Entities.Models._03Akaun
 {
@@ -67,5 +61,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
 
         public ICollection<AkTerimaObjek>? AkTerimaObjek { get; set; }
         public ICollection<AkTerimaCaraBayar>? AkTerimaCaraBayar { get; set; }
+        public ICollection<AkTerimaInvois>? AkTerimaInvois { get; set; }
     }
 }

@@ -23,15 +23,19 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         // nota :
         // 0 - debit
         // 1 - kredit
+        [DisplayName("Debit / Kredit")]
         public int FlDebitKredit { get; set; }
+        [DisplayName("No Invois")]
         public int AkInvoisId { get; set; }
         public AkInvois? AkInvois { get; set; }
         [DisplayName("Jumlah RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Jumlah { get; set; }
+        [DisplayName("Kump. Wang")]
         public int JKWId { get; set; }
         public JKW? JKW { get; set; }
         public string? Ringkasan { get; set; }
+        [DisplayName("No e-Invois")]
         public int? LHDNEInvoisId { get; set; }
         public LHDNEInvois? LHDNEInvois { get; set; }
         [DisplayName("MSIC")]

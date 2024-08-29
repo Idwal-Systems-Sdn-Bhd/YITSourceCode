@@ -10,7 +10,6 @@ using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
-using YIT._DataAccess.Services;
 using YIT._DataAccess.Services.Math;
 using YIT.Akaun.Infrastructure;
 using YIT.Akaun.Models.ViewModels.Common;
@@ -210,7 +209,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         }
         // printing list of akaun end
 
-        public JsonResult GetNamaOrRingkasan(string noRujukan)
+        public async Task<JsonResult> GetNamaOrRingkasan(string noRujukan)
         {
             try
             {
@@ -219,16 +218,93 @@ namespace YIT.Akaun.Controllers._03Akaun
                 List<ListItemViewModel> penerima = new List<ListItemViewModel>();
                 switch (jenis)
                 {
+                    case "RR":
+                        AkTerima resit = await _unitOfWork.AkTerimaRepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
+                        if (resit != null)
+                        {
+                            penerima.Add(new ListItemViewModel
+                            {
+                                id = resit.Id,
+                                indek = 1,
+                                perihal = resit.Nama?.ToUpper()
+                            });
+                        }
+                        break;
+
+                    case "ID":
+                        AkInvois invois = await _unitOfWork.AkInvoisRepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
+                        if (invois != null)
+                        {
+                            penerima.Add(new ListItemViewModel
+                            {
+                                id = invois.Id,
+                                indek = 1,
+                                perihal = invois.Ringkasan?.ToUpper()
+                            });
+                        }
+                        break;
+                    // nota debit kredit diterima 
+                    case "ND":
+                        AkNotaDebitKreditDiterima notaDebitKreditDiterima = await _unitOfWork.AkNotaDebitKreditDiterimaRepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
+                        if (notaDebitKreditDiterima != null)
+                        {
+                            penerima.Add(new ListItemViewModel
+                            {
+                                id = notaDebitKreditDiterima.Id,
+                                indek = 1,
+                                perihal = notaDebitKreditDiterima.Ringkasan?.ToUpper()
+                            });
+                        }
+                        break;
+
+                    case "NK":
+                        AkNotaDebitKreditDikeluarkan notaDebitKreditDikeluarkan = await _unitOfWork.AkNotaDebitKreditDikeluarkanRepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
+                        if (notaDebitKreditDikeluarkan != null)
+                        {
+                            penerima.Add(new ListItemViewModel
+                            {
+                                id = notaDebitKreditDikeluarkan.Id,
+                                indek = 1,
+                                perihal = notaDebitKreditDikeluarkan.Ringkasan?.ToUpper()
+                            });
+                        }
+                        break;
+
+                    case "PN":
+                        AkPenilaianPerolehan penilaianPerolehan = await _unitOfWork.AkPenilaianPerolehanRepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
+                        if (penilaianPerolehan != null)
+                        {
+                            penerima.Add(new ListItemViewModel
+                            {
+                                id = penilaianPerolehan.Id,
+                                indek = 1,
+                                perihal = penilaianPerolehan.Sebab?.ToUpper()
+                            });
+                        }
+                        break;
+
+                    case "NM":
+                        AkNotaMinta notaMinta = await _unitOfWork.AkNotaMintaRepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
+                        if (notaMinta != null)
+                        {
+                            penerima.Add(new ListItemViewModel
+                            {
+                                id = notaMinta.Id,
+                                indek = 1,
+                                perihal = notaMinta.Sebab?.ToUpper()
+                            });
+                        }
+                        break;
                     // po
                     case "PO":
-                        AkPO po = _context.AkPO.Include(b => b.DDaftarAwam).Where(b =>  b.NoRujukan == noRujukan).FirstOrDefault() ?? new AkPO();
+                        AkPO po = _context.AkPO.Include(b => b.AkPenilaianPerolehan).Where(b =>  b.NoRujukan == noRujukan).FirstOrDefault() ?? new AkPO();
                         if (po != null)
                         {
                             penerima.Add(new ListItemViewModel
                             {
                                 id = po.Id,
                                 indek = 1,
-                                perihal = po.DDaftarAwam?.Nama?.ToUpper()
+                                perihal = po.AkPenilaianPerolehan?.Sebab?.ToUpper()
                             });
                         }
                         break;
@@ -245,6 +321,30 @@ namespace YIT.Akaun.Controllers._03Akaun
                             });
                         }
                         break;
+                    case "PX":
+                        AkPelarasanPO pelarasanPo = await _unitOfWork.AkPelarasanPORepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
+                        if (pelarasanPo != null)
+                        {
+                            penerima.Add(new ListItemViewModel
+                            {
+                                id = pelarasanPo.Id,
+                                indek = 1,
+                                perihal = pelarasanPo.Ringkasan?.ToUpper()
+                            });
+                        }
+                        break;
+                    case "IX":
+                        AkPelarasanInden pelarasanInden = await _unitOfWork.AkPelarasanIndenRepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
+                        if (pelarasanInden != null)
+                        {
+                            penerima.Add(new ListItemViewModel
+                            {
+                                id = pelarasanInden.Id,
+                                indek = 1,
+                                perihal = pelarasanInden.Ringkasan?.ToUpper()
+                            });
+                        }
+                        break;
                     // belian (invois pembekal)
                     case "IN":
                         AkBelian belian = _context.AkBelian.Include(b => b.DDaftarAwam).Where(b => b.NoRujukan == noRujukan).FirstOrDefault() ?? new AkBelian();
@@ -258,20 +358,16 @@ namespace YIT.Akaun.Controllers._03Akaun
                             });
                         }
                         break;
-                    // nota debit kredit diterima 
-                    case "ND":
-                    case "NK":
-                        AkNotaDebitKreditDiterima akNota = _context.AkNotaDebitKreditDiterima
-                            .Include(b => b.AkBelian)
-                            .ThenInclude(b => b!.DDaftarAwam)
-                            .Where(b => b.NoRujukan == noRujukan).FirstOrDefault() ?? new AkNotaDebitKreditDiterima();
-                        if (akNota != null)
+                    
+                    case "JU":
+                        AkJurnal jurnal = await _unitOfWork.AkJurnalRepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
+                        if (jurnal != null)
                         {
                             penerima.Add(new ListItemViewModel
                             {
-                                id = akNota.Id,
+                                id = jurnal.Id,
                                 indek = 1,
-                                perihal = akNota.AkBelian?.DDaftarAwam?.Nama?.ToUpper()
+                                perihal = jurnal.Ringkasan?.ToUpper()
                             });
                         }
                         break;
@@ -306,46 +402,8 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                         }
                         break;
-                    // jurnal
-                    case "JU":
-                    case "JR":
-                        AkJurnal jurnal = _context.AkJurnal.Where(b => b.NoRujukan == noRujukan).FirstOrDefault() ?? new AkJurnal();
-                        if (jurnal != null)
-                        {
-                            penerima.Add(new ListItemViewModel
-                            {
-                                id = jurnal.Id,
-                                indek = 1,
-                                perihal = jurnal.Ringkasan?.ToUpper()
-                            });
-                        }
-                        break;
-                    // invois dikeluarkan
-                    //case "ID":
-                    //    AkInvois invois = _context.AkInvois.Include(b => b.AkPenghutang).Where(b => b.NoInbois == noRujukan).FirstOrDefault();
-                    //    if (invois != null)
-                    //    {
-                    //        penerima.Add(new ListItemViewModel
-                    //        {
-                    //            id = invois.Id,
-                    //            indek = 1,
-                    //            perihal = invois.AkPenghutang.NamaSykt?.ToUpper()
-                    //        });
-                    //    }
-                    //    break;
-                    // resit rasmi
-                    case "RR":
-                        AkTerima resit = _context.AkTerima.Where(b => b.NoRujukan == noRujukan).FirstOrDefault() ?? new AkTerima();
-                        if (resit != null)
-                        {
-                            penerima.Add(new ListItemViewModel
-                            {
-                                id = resit.Id,
-                                indek = 1,
-                                perihal = resit.Nama?.ToUpper()
-                            });
-                        }
-                        break;
+                    
+                    
                 }
 
                 return Json(new { result = "OK", record = penerima });

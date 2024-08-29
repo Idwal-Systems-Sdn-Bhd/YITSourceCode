@@ -75,6 +75,7 @@ namespace YIT._DataAccess.Data
         public DbSet<AkTerima> AkTerima { get; set; }
         public DbSet<AkTerimaCaraBayar> AkTerimaCaraBayar { get; set; }
         public DbSet<AkTerimaObjek> AkTerimaObjek { get; set; }
+        public DbSet<AkTerimaInvois> AkTerimaInvois { get; set; }
         //
 
         // 05Perolehan 

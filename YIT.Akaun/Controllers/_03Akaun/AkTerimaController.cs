@@ -16,6 +16,7 @@ using YIT.Akaun.Microservices;
 using YIT.Akaun.Models.ViewModels.Forms;
 using System.Drawing;
 using YIT._DataAccess.Services.Math;
+using YIT.__Domain.Entities.Models._01Jadual;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
@@ -119,6 +120,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
             EmptyCart();
+            ManipulateHiddenDiv(akTerima.EnJenisTerimaan, akTerima.EnKategoriDaftarAwam);
             PopulateCartAkTerimaFromDb(akTerima);
             return View(akTerima);
         }
@@ -137,6 +139,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
             EmptyCart();
+            ManipulateHiddenDiv(akTerima.EnJenisTerimaan, akTerima.EnKategoriDaftarAwam);
             PopulateCartAkTerimaFromDb(akTerima);
             return View(akTerima);
         }
@@ -165,6 +168,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             switch (enKategoriDaftarAwam)
             {
+                case EnKategoriDaftarAwam.Penghutang:
                 case EnKategoriDaftarAwam.DaftarAwam:
                     ViewBag.DivDaftarAwam = "";
                     ViewBag.DivPekerja = "hidden";
@@ -183,7 +187,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         private string GenerateRunningNumber(string initNoRujukan, string tahun)
         {
-            var maxRefNo = _unitOfWork.AkPVRepo.GetMaxRefNo(initNoRujukan, tahun);
+            var maxRefNo = _unitOfWork.AkTerimaRepo.GetMaxRefNo(initNoRujukan, tahun);
 
             var prefix = initNoRujukan + "/" + tahun + "/";
             return RunningNumberFormatter.GenerateRunningNumber(prefix, maxRefNo, "00000");
@@ -206,9 +210,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akTerima.DPekerjaMasukId = pekerjaId;
 
                     akTerima.NoRujukan = GenerateRunningNumber(EnInitNoRujukan.RR.GetDisplayName(), akTerima.Tahun ?? DateTime.Now.ToString("yyyy"));
-                    akTerima.AkTerimaObjek = _cart.akTerimaObjek.ToList();
+                    if (akTerima.EnJenisTerimaan == EnJenisTerimaan.Invois) akTerima.EnKategoriDaftarAwam = EnKategoriDaftarAwam.Penghutang;
+                    akTerima.AkTerimaObjek = _cart.AkTerimaObjek.ToList();
 
-                akTerima.AkTerimaCaraBayar = _cart.akTerimaCaraBayar.ToList();
+                akTerima.AkTerimaCaraBayar = _cart.AkTerimaCaraBayar.ToList();
+                akTerima.AkTerimaInvois = _cart.AkTerimaInvois.ToList();
+
 
                 _context.Add(akTerima);
                     _appLog.Insert("Tambah", akTerima.NoRujukan ?? "", akTerima.NoRujukan ?? "", 0, 0, pekerjaId, modul, syscode, namamodul, user);
@@ -295,6 +302,18 @@ namespace YIT.Akaun.Controllers._03Akaun
                         }
                     }
 
+                    if (objAsal.AkTerimaInvois != null && objAsal.AkTerimaInvois.Count > 0)
+                    {
+                        foreach (var item in objAsal.AkTerimaInvois)
+                        {
+                            var model = _context.AkTerimaInvois.FirstOrDefault(b => b.Id == item.Id);
+                            if (model != null)
+                            {
+                                _context.Remove(model);
+                            }
+                        }
+                    }
+
                     _context.Entry(objAsal).State = EntityState.Detached;
 
                     akTerima.UserIdKemaskini = user?.UserName ?? "";
@@ -302,9 +321,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                     akTerima.TarKemaskini = DateTime.Now;
                     akTerima.DPekerjaKemaskiniId = pekerjaId;
 
-                    akTerima.AkTerimaObjek = _cart.akTerimaObjek.ToList();
+                    akTerima.AkTerimaObjek = _cart.AkTerimaObjek.ToList();
 
-                    akTerima.AkTerimaCaraBayar = _cart.akTerimaCaraBayar.ToList();
+                    akTerima.AkTerimaCaraBayar = _cart.AkTerimaCaraBayar.ToList();
+
+                    akTerima.AkTerimaInvois = _cart.AkTerimaInvois.ToList();
+
                     _unitOfWork.AkTerimaRepo.Update(akTerima);
 
                     if (jumlahAsal != akTerima.Jumlah)
@@ -533,12 +555,12 @@ namespace YIT.Akaun.Controllers._03Akaun
         private void PopulateDropDownList(int JKWId)
         {
             ViewBag.JKW = _unitOfWork.JKWRepo.GetAll();
+            ViewBag.JKWPTJBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetails();
             ViewBag.JKWPTJBahagianByJKW = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsByJKWId(JKWId);
             ViewBag.AkBank = _unitOfWork.AkBankRepo.GetAllDetails();
             ViewBag.JNegeri = _unitOfWork.JNegeriRepo.GetAll();
             ViewBag.AkCarta = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             ViewBag.JCaraBayar = _unitOfWork.JCaraBayarRepo.GetAll();
-            ViewBag.JBahagian = _unitOfWork.JBahagianRepo.GetAll();
             ViewBag.JCawangan = _unitOfWork.JCawanganRepo.GetAll();
 
             ViewBag.EnJenisCek = EnumHelper<EnJenisCek>.GetList();
@@ -550,6 +572,9 @@ namespace YIT.Akaun.Controllers._03Akaun
             var kategoriDaftarAwam = EnumHelper<EnKategoriDaftarAwam>.GetList();
 
             ViewBag.EnKategoriDaftarAwam = kategoriDaftarAwam;
+
+            ViewBag.AkInvois = _unitOfWork.AkInvoisRepo.GetAllByStatus(EnStatusBorang.Lulus);
+
         }
 
         private void PopulateCartAkTerimaFromDb(AkTerima akTerima)
@@ -584,12 +609,22 @@ namespace YIT.Akaun.Controllers._03Akaun
                 }
             }
 
+            if (akTerima.AkTerimaInvois != null)
+            {
+                foreach (var item in akTerima.AkTerimaInvois)
+                {
+                    _cart.AddItemInvois(akTerima.Id,
+                                        item.AkInvoisId,
+                                        item.Amaun);
+                }
+            }
+
             PopulateListViewFromCart();
         }
 
         private void PopulateListViewFromCart()
         {
-            List<AkTerimaObjek> objek = _cart.akTerimaObjek.ToList();
+            List<AkTerimaObjek> objek = _cart.AkTerimaObjek.ToList();
 
             foreach (AkTerimaObjek item in objek)
             {
@@ -604,7 +639,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             ViewBag.akTerimaObjek = objek;
 
-            List<AkTerimaCaraBayar> caraBayar = _cart.akTerimaCaraBayar.ToList();
+            List<AkTerimaCaraBayar> caraBayar = _cart.AkTerimaCaraBayar.ToList();
 
             foreach (AkTerimaCaraBayar item in caraBayar)
             {
@@ -642,6 +677,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 
                 _cart.ClearObjek();
                 _cart.ClearCaraBayar();
+                _cart.ClearInvois();
 
                 return Json(new { result = "OK" });
             }
@@ -650,6 +686,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return Json(new { result = "ERROR", message = ex.Message });
             }
         }
+
 
         public JsonResult GetJBahagianAkCarta(int JKWPTJBahagianId, int AkCartaId)
         {
@@ -716,7 +753,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             try
             {
-                AkTerimaObjek data = _cart.akTerimaObjek.FirstOrDefault(x =>x.JKWPTJBahagianId == akTerimaObjek.JKWPTJBahagianId && x.AkCartaId == akTerimaObjek.AkCartaId) ?? new AkTerimaObjek();
+                AkTerimaObjek data = _cart.AkTerimaObjek.FirstOrDefault(x =>x.JKWPTJBahagianId == akTerimaObjek.JKWPTJBahagianId && x.AkCartaId == akTerimaObjek.AkCartaId) ?? new AkTerimaObjek();
 
                 return Json(new { result = "OK", record = data });
             }
@@ -732,7 +769,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             try
             {
 
-                var akTO = _cart.akTerimaObjek.FirstOrDefault(x => x.JKWPTJBahagianId == akTerimaObjek.JKWPTJBahagianId && x.AkCartaId == akTerimaObjek.AkCartaId);
+                var akTO = _cart.AkTerimaObjek.FirstOrDefault(x => x.JKWPTJBahagianId == akTerimaObjek.JKWPTJBahagianId && x.AkCartaId == akTerimaObjek.AkCartaId);
 
                 var user = _userManager.GetUserName(User);
 
@@ -759,20 +796,23 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             try
             {
-                List<AkTerimaObjek> objek = _cart.akTerimaObjek.ToList();
+                List<AkTerimaObjek> objek = _cart.AkTerimaObjek.ToList();
 
                 foreach (AkTerimaObjek item in objek)
                 {
-                    var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetById(item.JKWPTJBahagianId);
+                    var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetAllDetailsById(item.JKWPTJBahagianId);
 
                     item.JKWPTJBahagian = jkwPtjBahagian;
+
+                    item.JKWPTJBahagian.Kod = BelanjawanFormatter.ConvertToBahagian(jkwPtjBahagian.JKW?.Kod, jkwPtjBahagian.JPTJ?.Kod, jkwPtjBahagian.JBahagian?.Kod);
 
                     var akCarta = _unitOfWork.AkCartaRepo.GetById(item.AkCartaId);
 
                     item.AkCarta = akCarta;
+
                 }
 
-                List<AkTerimaCaraBayar> caraBayar = _cart.akTerimaCaraBayar.ToList();
+                List<AkTerimaCaraBayar> caraBayar = _cart.AkTerimaCaraBayar.ToList();
 
                 foreach (AkTerimaCaraBayar item in caraBayar)
                 {
@@ -782,7 +822,16 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 }
 
-                return Json(new { result = "OK", objek = objek.OrderBy(d => d.AkCarta?.Kod), caraBayar = caraBayar.OrderBy(d => d.JCaraBayar?.Kod) });
+                List<AkTerimaInvois> invois = _cart.AkTerimaInvois.ToList();
+
+                foreach (AkTerimaInvois item in invois)
+                {
+                    var AkInvois = _unitOfWork.AkInvoisRepo.GetDetailsById(item.AkInvoisId);
+
+                    item.AkInvois = AkInvois;
+                }
+
+                return Json(new { result = "OK", objek = objek.OrderBy(d => d.AkCarta?.Kod), invois = invois.OrderBy(i => i.AkInvois!.NoRujukan), caraBayar = caraBayar.OrderBy(d => d.JCaraBayar?.Kod) });
             }
             catch (Exception ex)
             {
@@ -859,7 +908,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
             try
             {
-                AkTerimaCaraBayar data = _cart.akTerimaCaraBayar.FirstOrDefault(x => x.JCaraBayarId == akTerimaCaraBayar.JCaraBayarId) ?? new AkTerimaCaraBayar();
+                AkTerimaCaraBayar data = _cart.AkTerimaCaraBayar.FirstOrDefault(x => x.JCaraBayarId == akTerimaCaraBayar.JCaraBayarId) ?? new AkTerimaCaraBayar();
 
                 return Json(new { result = "OK", record = data });
             }
@@ -875,7 +924,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             try
             {
 
-                var akCB = _cart.akTerimaCaraBayar.FirstOrDefault(x => x.JCaraBayarId == akTerimaCaraBayar.JCaraBayarId);
+                var akCB = _cart.AkTerimaCaraBayar.FirstOrDefault(x => x.JCaraBayarId == akTerimaCaraBayar.JCaraBayarId);
 
                 var user = _userManager.GetUserName(User);
 
@@ -903,5 +952,247 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
         //
+        public JsonResult GetAkInvois(int AkInvoisId)
+        {
+            try
+            {
+                if (AkInvoisId != 0)
+                {
+                    var data = _unitOfWork.AkInvoisRepo.GetDetailsById(AkInvoisId);
+
+                    if (data != null)
+                    {
+                        data = _unitOfWork.AkInvoisRepo.GetBalanceAdjustmentFromAkDebitKreditDikeluarkan(data);
+
+                        if (data.Jumlah <= 0)
+                        {
+                            return Json(new { result = "Error", message = "Amaun kurang dari RM 0.00" });
+                        }
+
+                        return Json(new { result = "OK", record = data });
+                    }
+                    else
+                    {
+                        return Json(new { result = "Error", message = "data tidak wujud!" });
+                    }
+                }
+                //EmptyCart();
+                else
+                {
+                    return Json(new { result = "None" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "Error", message = ex.Message });
+            }
+        }
+
+        public JsonResult SaveCartAkTerimaInvois(AkTerimaInvois akTerimaInvois)
+        {
+            try
+            {
+                var data = _unitOfWork.AkInvoisRepo.GetDetailsById(akTerimaInvois.AkInvoisId);
+
+                if (data != null)
+                {
+                    if (data.AkInvoisObjek != null)
+                    {
+                        foreach (var item in data.AkInvoisObjek)
+                        {
+
+                            var currentObjek = _cart.AkTerimaObjek.FirstOrDefault(i => i.JKWPTJBahagianId == item.JKWPTJBahagianId && i.AkCartaId == item.AkCartaId);
+                            if (currentObjek != null)
+                            {
+                                _cart.RemoveItemObjek(item.JKWPTJBahagianId, item.AkCartaId);
+
+                                decimal totalAmaun = currentObjek.Amaun;
+                                totalAmaun += akTerimaInvois.Amaun;
+
+                                _cart.AddItemObjek(
+                                    akTerimaInvois.AkTerimaId,
+                                    item.JKWPTJBahagianId,
+                                    item.AkCartaId,
+                                    totalAmaun);
+                            }
+                            else
+                            {
+                                _cart.AddItemObjek(
+                                    akTerimaInvois.AkTerimaId,
+                                    item.JKWPTJBahagianId,
+                                    item.AkCartaId,
+                                    akTerimaInvois.Amaun);
+                            }
+
+                        }
+
+                        _cart.AddItemInvois(
+                        akTerimaInvois.AkTerimaId,
+                        data.Id,
+                        akTerimaInvois.Amaun
+                        );
+
+                        return Json(new { result = "OK" });
+                    }
+                    else
+                    {
+                        return Json(new { result = "ERROR", message = "Objek invois tidak wujud!" });
+                    }
+
+                }
+                else
+                {
+                    return Json(new { result = "ERROR", message = "data tidak wujud!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        public JsonResult RemoveCartAkTerimaInvois(AkTerimaInvois akTerimaInvois)
+        {
+            try
+            {
+                var invois = _cart.AkTerimaInvois.FirstOrDefault(i => i.AkInvoisId == akTerimaInvois.AkInvoisId);
+
+                if (invois != null)
+                {
+                    _cart.RemoveItemInvois(invois.AkInvoisId);
+
+                    var data = _unitOfWork.AkInvoisRepo.GetDetailsById(invois.AkInvoisId);
+
+                    if (data != null)
+                    {
+                        if (data.AkInvoisObjek != null)
+                        {
+                            // akTerimaObjek
+                            foreach (var item in data.AkInvoisObjek)
+                            {
+
+                                var currentObjek = _cart.AkTerimaObjek.FirstOrDefault(i => i.JKWPTJBahagianId == item.JKWPTJBahagianId && i.AkCartaId == item.AkCartaId);
+                                // check if akInvoisObjek same with akTerimaObjek amount is greater or not
+                                if (currentObjek != null && currentObjek.Amaun > akTerimaInvois.Amaun)
+                                {
+                                    // if greater, minus amount, add new akTerimaObjek with new amount
+                                    _cart.RemoveItemObjek(item.JKWPTJBahagianId, item.AkCartaId);
+
+                                    decimal totalAmaun = currentObjek.Amaun;
+                                    totalAmaun -= akTerimaInvois.Amaun;
+
+                                    _cart.AddItemObjek(
+                                        invois.AkTerimaId,
+                                        item.JKWPTJBahagianId,
+                                        item.AkCartaId,
+                                        totalAmaun);
+                                }
+                                else
+                                {
+                                    // else, remove akTerimaObjek
+                                    _cart.RemoveItemObjek(item.JKWPTJBahagianId, item.AkCartaId);
+
+                                }
+
+                            }
+                            //
+
+                            // akTerimaInvois
+                            _cart.RemoveItemInvois(akTerimaInvois.AkInvoisId);
+                            //
+
+                            return Json(new { result = "OK" });
+                        }
+                        else
+                        {
+                            return Json(new { result = "ERROR", message = "Objek invois tidak wujud!" });
+                        }
+
+                    }
+                    else
+                    {
+                        return Json(new { result = "ERROR", message = "data tidak wujud!" });
+                    }
+                }
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        public JsonResult GetAnItemFromCartAkTerimaInvois(AkTerimaInvois akTerimaInvois)
+        {
+
+            try
+            {
+                AkTerimaInvois data = _cart.AkTerimaInvois.FirstOrDefault(x => x.AkInvoisId == akTerimaInvois.AkInvoisId) ?? new AkTerimaInvois();
+
+                return Json(new { result = "OK", record = data });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
+
+        public JsonResult SaveAnItemFromCartAkTerimaInvois(AkTerimaInvois akTerimaInvois)
+        {
+
+            try
+            {
+
+                var data = _cart.AkTerimaInvois.FirstOrDefault(x => x.AkInvoisId == akTerimaInvois.AkInvoisId);
+
+                if (data != null)
+                {
+
+                    var akInvois = _unitOfWork.AkInvoisRepo.GetDetailsById(akTerimaInvois.AkInvoisId);
+
+                    _cart.RemoveItemInvois(akTerimaInvois.AkInvoisId);
+
+                    _cart.AddItemInvois(
+                    data.AkTerimaId,
+                    data.AkInvoisId,
+                    akTerimaInvois.Amaun
+                    );
+
+                    // akTerimaObjek
+                    if (akInvois.AkInvoisObjek != null)
+                    {
+                        foreach (var item in akInvois.AkInvoisObjek)
+                        {
+
+                            var currentObjek = _cart.AkTerimaObjek.FirstOrDefault(i => i.JKWPTJBahagianId == item.JKWPTJBahagianId && i.AkCartaId == item.AkCartaId);
+                            // check if akInvoisObjek same with akTerimaObjek amount is greater or not
+                            if (currentObjek != null && currentObjek.Amaun != akTerimaInvois.Amaun)
+                            {
+                                // if greater, minus amount, add new akTerimaObjek with new amount
+                                _cart.RemoveItemObjek(item.JKWPTJBahagianId, item.AkCartaId);
+
+                                decimal totalAmaun = currentObjek.Amaun;
+                                totalAmaun = totalAmaun - data.Amaun + akTerimaInvois.Amaun;
+
+                                _cart.AddItemObjek(
+                                    currentObjek.AkTerimaId,
+                                    item.JKWPTJBahagianId,
+                                    item.AkCartaId,
+                                    totalAmaun);
+                            }
+
+                        }
+                    }
+                    //
+                }
+
+                return Json(new { result = "OK" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "ERROR", message = ex.Message });
+            }
+        }
     }
 }
