@@ -17,6 +17,20 @@ namespace YIT._DataAccess.Repositories.Implementations
             _context = context;
         }
 
+        public List<AkInvois> GetAllByStatus(EnStatusBorang enStatusBorang)
+        {
+            var result = _context.AkInvois.Where(pp => pp.EnStatusBorang == enStatusBorang && pp.FlPosting == 1 && pp.FlBatal != 1).ToList();
+
+            return result;
+        }
+
+        public List<AkInvois> GetAllByDDaftarAwamId(int dDaftarAwamId)
+        {
+            var result = _context.AkInvois.Where(pp => pp.DDaftarAwamId == dDaftarAwamId && pp.FlPosting == 1 && pp.FlBatal != 1).ToList();
+
+            return result;
+        }
+
         public string GetMaxRefNo(string initNoRujukan, string tahun)
         {
             var max = _context.AkInvois.Where(pp => pp.Tahun == tahun).OrderByDescending(pp => pp.NoRujukan).ToList();
@@ -431,7 +445,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                             Tarikh = akInvois.Tarikh,
                             AkCarta1Id = (int)akInvois.AkAkaunAkruId,
                             AkCarta2Id = item.AkCartaId,
-                            Debit = item.Amaun
+                            Kredit = item.Amaun
                         };
                         akAkaunList.Add(akAkaun1);
 
@@ -444,7 +458,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                             Tarikh = akInvois.Tarikh,
                             AkCarta1Id = item.AkCartaId,
                             AkCarta2Id = (int)akInvois.AkAkaunAkruId,
-                            Kredit = item.Amaun
+                            Debit = item.Amaun
                         };
 
                         akAkaunList.Add(akAkaun2);
@@ -454,6 +468,78 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                 _context.AkAkaun.AddRange(akAkaunList);
             }
+        }
+
+        public AkInvois GetBalanceAdjustmentFromAkDebitKreditDikeluarkan(AkInvois akInvois)
+        {
+            var akNotaDebitKreditDikeluarkanObjekAkInvoisObjekGrouped = new List<AkInvoisObjek>();
+
+            var akNotaDebitKreditDikeluarkan = _context.AkNotaDebitKreditDikeluarkan
+                .Include(t => t.AkNotaDebitKreditDikeluarkanObjek)!
+                    .ThenInclude(to => to.AkCarta)
+                .Include(t => t.AkNotaDebitKreditDikeluarkanObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkNotaDebitKreditDikeluarkanObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JPTJ)
+                .Include(t => t.AkNotaDebitKreditDikeluarkanObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
+                .FirstOrDefault(pp => pp.AkInvoisId == akInvois.Id);
+
+            if (akNotaDebitKreditDikeluarkan != null)
+            {
+                if (akNotaDebitKreditDikeluarkan.FlDebitKredit == 0)
+                {
+                    akInvois.Jumlah += akNotaDebitKreditDikeluarkan.Jumlah;
+                }
+                else
+                {
+                    akInvois.Jumlah -= akNotaDebitKreditDikeluarkan.Jumlah;
+                }
+
+                if (akNotaDebitKreditDikeluarkan.AkNotaDebitKreditDikeluarkanObjek != null && akNotaDebitKreditDikeluarkan.AkNotaDebitKreditDikeluarkanObjek.Count > 0 && akInvois.AkInvoisObjek != null && akInvois.AkInvoisObjek.Count > 0)
+                {
+
+                    foreach (var objek in akInvois.AkInvoisObjek)
+                    {
+                        akNotaDebitKreditDikeluarkanObjekAkInvoisObjekGrouped.Add(objek);
+                    }
+
+                    foreach (var objek in akNotaDebitKreditDikeluarkan.AkNotaDebitKreditDikeluarkanObjek)
+                    {
+                        var akNotaDebitKreditDikeluarkanObjek = new AkInvoisObjek
+                        {
+                            AkInvoisId = akInvois.Id,
+                            AkInvois = akInvois,
+                            JKWPTJBahagianId = objek.JKWPTJBahagianId,
+                            JKWPTJBahagian = objek.JKWPTJBahagian,
+                            AkCartaId = objek.AkCartaId,
+                            AkCarta = objek.AkCarta,
+                            Amaun = objek.Amaun
+                        };
+                        akNotaDebitKreditDikeluarkanObjekAkInvoisObjekGrouped.Add(akNotaDebitKreditDikeluarkanObjek);
+                    }
+
+                    akNotaDebitKreditDikeluarkanObjekAkInvoisObjekGrouped = akNotaDebitKreditDikeluarkanObjekAkInvoisObjekGrouped.GroupBy(b => new { b.AkCartaId, b.JKWPTJBahagianId }).Select(l => new AkInvoisObjek
+                    {
+                        Id = l.First().Id,
+                        AkInvoisId = l.First().AkInvoisId,
+                        AkInvois = l.First().AkInvois,
+                        JKWPTJBahagianId = l.First().JKWPTJBahagianId,
+                        JKWPTJBahagian = l.First().JKWPTJBahagian,
+                        AkCartaId = l.First().AkCartaId,
+                        AkCarta = l.First().AkCarta,
+                        Amaun = l.Sum(l => l.Amaun)
+                    }).ToList();
+                }
+
+                akInvois.AkInvoisObjek = akNotaDebitKreditDikeluarkanObjekAkInvoisObjekGrouped;
+
+            }
+
+            return akInvois;
         }
     }
 }

@@ -70,6 +70,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             LHDNUnitUkuranRepo = new LHDNUnitUkuranRepository(_context);
 
             AkNotaDebitKreditDiterimaRepo = new AkNotaDebitKreditDiterimaRepository(_context);
+            AkNotaDebitKreditDikeluarkanRepo = new AkNotaDebitKreditDikeluarkanRepository(_context);
         }
 
         public IJKWRepository JKWRepo { get; private set; }
@@ -149,6 +150,8 @@ namespace YIT._DataAccess.Repositories.Implementations
         public ILHDNUnitUkuranRepository LHDNUnitUkuranRepo { get; }
 
         public IAkNotaDebitKreditDiterimaRepository AkNotaDebitKreditDiterimaRepo { get; }
+
+        public IAkNotaDebitKreditDikeluarkanRepository AkNotaDebitKreditDikeluarkanRepo { get; }
 
         public void Dispose()
         {

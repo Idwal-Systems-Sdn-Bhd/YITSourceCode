@@ -14,6 +14,21 @@ namespace YIT._DataAccess.Repositories.Implementations
             _context = context;
         }
 
+        public string GetMaxRefNo(string initNoRujukan, string tahun)
+        {
+            var max = _context.AkTerima.Where(pp => pp.Tahun == tahun).OrderByDescending(pp => pp.NoRujukan).ToList();
+
+            if (max != null)
+            {
+                var refNo = max.FirstOrDefault()?.NoRujukan?.Substring(8, 5);
+                return refNo ?? "";
+            }
+            else
+            {
+                return "";
+            }
+        }
+
 
         public List<AkTerima> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy)
         {
@@ -37,17 +52,17 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.DDaftarAwam)
                 .Include(t => t.AkTerimaCaraBayar)!
                     .ThenInclude(tcb => tcb.JCaraBayar)
-                .Include(t => t.AkTerimaObjek)!
-                    .ThenInclude(to => to.AkCarta)
-                .Include(t => t.AkTerimaObjek)!
-                    .ThenInclude(to => to.JKWPTJBahagian)
-                        .ThenInclude(b => b!.JKW)
-                .Include(t => t.AkTerimaObjek)!
-                    .ThenInclude(to => to.JKWPTJBahagian)
-                        .ThenInclude(b => b!.JPTJ)
-                .Include(t => t.AkTerimaObjek)!
-                    .ThenInclude(to => to.JKWPTJBahagian)
-                        .ThenInclude(b => b!.JBahagian)
+                //.Include(t => t.AkTerimaObjek)!
+                //    .ThenInclude(to => to.AkCarta)
+                //.Include(t => t.AkTerimaObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JKW)
+                //.Include(t => t.AkTerimaObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JPTJ)
+                //.Include(t => t.AkTerimaObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JBahagian)
                 .ToList();
 
             // searchstring filters
@@ -114,6 +129,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkTerimaObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
                         .ThenInclude(b => b!.JBahagian)
+                .Include(t => t.AkTerimaInvois)!
+                    .ThenInclude(t => t.AkInvois)
                     .FirstOrDefault(t => t.Id == id) ?? new AkTerima();
         }
 
@@ -137,6 +154,8 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public void PostingToAkAkaun(AkTerima akTerima, string userId, int? dPekerjaMasukId)
         {
+            PostingToAkAnggarLejar(akTerima, userId, dPekerjaMasukId);
+
             List<AkAkaun> akaunList = new List<AkAkaun>();
             if (akTerima.AkTerimaObjek != null)
             {
@@ -207,6 +226,33 @@ namespace YIT._DataAccess.Repositories.Implementations
             akTerima.TarKemaskini = DateTime.Now;
 
             _context.AkTerima.Update(akTerima);
+        }
+
+        public void PostingToAkAnggarLejar(AkTerima akTerima, string userId, int? dPekerjaMasukId)
+        {
+            List<AkAnggarLejar> anggarList = new List<AkAnggarLejar>();
+            if (akTerima.AkTerimaObjek != null)
+            {
+                foreach (var t in akTerima.AkTerimaObjek)
+                {
+                    var akAnggarLejar = new AkAnggarLejar();
+
+                    akAnggarLejar.Tahun = akTerima.Tahun;
+                    akAnggarLejar.NoRujukan = akTerima.NoRujukan;
+                    akAnggarLejar.Tarikh = akTerima.Tarikh;
+                    akAnggarLejar.JKWPTJBahagianId = t.JKWPTJBahagianId;
+                    akAnggarLejar.AkCartaId = t.AkCartaId;
+                    akAnggarLejar.Amaun = t.Amaun;
+                    akAnggarLejar.Baki = -t.Amaun;
+
+                    anggarList.Add(akAnggarLejar);
+
+                }
+
+            }
+
+            _context.AkAnggarLejar.AddRange(anggarList);
+
         }
     }
 }

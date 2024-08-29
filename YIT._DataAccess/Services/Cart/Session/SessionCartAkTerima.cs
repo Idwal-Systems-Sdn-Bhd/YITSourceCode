@@ -89,14 +89,14 @@ namespace YIT._DataAccess.Services.Cart.Session
         //TerimaCaraBayar End
 
         //TerimaInvois
-        public override void AddItemInvois(int akTerimaId, bool isTanggungan, int akBelianId, int akInvoisId, decimal amaun)
+        public override void AddItemInvois(int akTerimaId, int akInvoisId, decimal amaun)
         {
-            base.AddItemInvois(akTerimaId, isTanggungan, akBelianId, akInvoisId, amaun);
+            base.AddItemInvois(akTerimaId, akInvoisId, amaun);
             Session?.SetJson("CartAkTerima", this);
         }
-        public override void RemoveItemInvois(int akBelianId)
+        public override void RemoveItemInvois(int akInvoisId)
         {
-            base.RemoveItemInvois(akBelianId);
+            base.RemoveItemInvois(akInvoisId);
             Session?.SetJson("CartAkTerima", this);
         }
         public override void ClearInvois()

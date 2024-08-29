@@ -41,7 +41,7 @@ namespace YIT._DataAccess.Services.Cart
 
         public virtual void ClearObjek() => collectionObjek.Clear();
 
-        public virtual IEnumerable<AkTerimaObjek> akTerimaObjek => collectionObjek;
+        public virtual IEnumerable<AkTerimaObjek> AkTerimaObjek => collectionObjek;
 
         //TerimaCaraBayar
 
@@ -85,7 +85,7 @@ namespace YIT._DataAccess.Services.Cart
 
         public virtual void ClearCaraBayar() => collectionCaraBayar.Clear();
 
-        public virtual IEnumerable<AkTerimaCaraBayar> akTerimaCaraBayar => collectionCaraBayar;
+        public virtual IEnumerable<AkTerimaCaraBayar> AkTerimaCaraBayar => collectionCaraBayar;
 
         //TerimaInvois
 
@@ -93,29 +93,25 @@ namespace YIT._DataAccess.Services.Cart
 
         public virtual void AddItemInvois(
             int akTerimaId,
-            bool isTanggungan,
-            int akBelianId,
             int akInvoisId,
             decimal amaun
             )
         {
-            AkTerimaInvois line = collectionInvois.FirstOrDefault(p => p.AkBelianId == akBelianId)!;
+            AkTerimaInvois line = collectionInvois.FirstOrDefault(p => p.AkInvoisId == akInvoisId)!;
 
             if (line == null)
             {
                 collectionInvois.Add(new AkTerimaInvois
                 {
                     AkTerimaId = akTerimaId,
-                    IsTanggungan = isTanggungan,
-                    AkBelianId = akBelianId,
                     AkInvoisId = akInvoisId,
                     Amaun = amaun
                 });
             }
         }
 
-        public virtual void RemoveItemInvois(int akBelianId) =>
-            collectionInvois.RemoveAll(l => l.AkBelianId == akBelianId);
+        public virtual void RemoveItemInvois(int akInvoisId) =>
+            collectionInvois.RemoveAll(l => l.AkInvoisId == akInvoisId);
 
 
         public virtual void ClearInvois() => collectionInvois.Clear();

@@ -14,5 +14,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public Task<bool> IsPostedAsync(int id, string noRujukan);
         public void PostingToAkAkaun(AkTerima akTerima,string userId, int? dPekerjaMasukId);
         public void RemovePostingFromAkAkaun(AkTerima akTerima,string userId);
+        string GetMaxRefNo(string initNoRujukan, string tahun);
     }
 }

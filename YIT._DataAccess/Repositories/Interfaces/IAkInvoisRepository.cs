@@ -12,6 +12,9 @@ namespace YIT._DataAccess.Repositories.Interfaces
     {
         void BatalLulus(int id, string? tindakan, string? userId);
         void BatalPos(int id, string? tindakan, string? userId);
+        List<AkInvois> GetAllByDDaftarAwamId(int dDaftarAwamId);
+        List<AkInvois> GetAllByStatus(EnStatusBorang enStatusBorang);
+        AkInvois GetBalanceAdjustmentFromAkDebitKreditDikeluarkan(AkInvois akInvois);
         public AkInvois GetDetailsById(int id);
         string GetMaxRefNo(string initNoRujukan, string tahun);
         List<AkInvois> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang);
