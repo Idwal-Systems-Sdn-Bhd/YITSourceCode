@@ -295,6 +295,15 @@ namespace YIT.Akaun.Infrastructure
                 opt.AddPolicy(Modules.kodAkNotaDebitKreditDikeluarkan + "R", policy => policy.RequireClaim(Modules.kodAkNotaDebitKreditDikeluarkan + "R"));
                 opt.AddPolicy(Modules.kodAkNotaDebitKreditDikeluarkan + "L", policy => policy.RequireClaim(Modules.kodAkNotaDebitKreditDikeluarkan + "L"));
                 opt.AddPolicy(Modules.kodAkNotaDebitKreditDikeluarkan + "BL", policy => policy.RequireClaim(Modules.kodAkNotaDebitKreditDikeluarkan + "BL"));
+
+                opt.AddPolicy(Modules.kodAkAnggar, policy => policy.RequireClaim(Modules.kodAkAnggar));
+                opt.AddPolicy(Modules.kodAkAnggar + "C", policy => policy.RequireClaim(Modules.kodAkAnggar + "C"));
+                opt.AddPolicy(Modules.kodAkAnggar + "E", policy => policy.RequireClaim(Modules.kodAkAnggar + "E"));
+                opt.AddPolicy(Modules.kodAkAnggar + "D", policy => policy.RequireClaim(Modules.kodAkAnggar + "D"));
+                opt.AddPolicy(Modules.kodAkAnggar + "R", policy => policy.RequireClaim(Modules.kodAkAnggar + "R"));
+                opt.AddPolicy(Modules.kodAkAnggar + "L", policy => policy.RequireClaim(Modules.kodAkAnggar + "L"));
+                opt.AddPolicy(Modules.kodAkAnggar + "BL", policy => policy.RequireClaim(Modules.kodAkAnggar + "BL"));
+
                 //
 
                 // Pemprosesan (PP)

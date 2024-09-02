@@ -11,6 +11,14 @@ namespace YIT.__Domain.Entities._Statics
     {
         public static List<Claim> claimList = new List<Claim>()
         {
+            // Akaun (AK)
+            new Claim(Modules.kodAkAnggar,Modules.namaAkAnggar),
+            new Claim(Modules.kodAkAnggar + "C",Modules.namaAkAnggar + " : Tambah"),
+            new Claim(Modules.kodAkAnggar + "E",Modules.namaAkAnggar + " : Ubah"),
+            new Claim(Modules.kodAkAnggar + "D",Modules.namaAkAnggar + " : Hapus"),
+            new Claim(Modules.kodAkAnggar + "R",Modules.namaAkAnggar + " : Rollback"),
+            new Claim(Modules.kodAkAnggar + "L",Modules.namaAkAnggar + " : Lulus"),
+            new Claim(Modules.kodAkAnggar + "BL",Modules.namaAkAnggar + " : Batal Lulus"),
             // Sistem (SI)
             
             //
