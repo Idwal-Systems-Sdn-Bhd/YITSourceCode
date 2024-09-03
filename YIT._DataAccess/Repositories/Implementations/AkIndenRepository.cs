@@ -131,6 +131,42 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akIndenList;
         }
 
+        public List<AkInden> GetResults1(DateTime? dateFrom, DateTime? dateTo)
+        {
+            if (dateFrom == null && dateTo == null)
+            {
+                return new List<AkInden>();
+            }
+
+            var akIndenList = _context.AkInden
+                .IgnoreQueryFilters()
+                .Include(t => t.JKW)
+                .Include(t => t.DDaftarAwam)
+                .Include(t => t.DPekerjaPosting)
+                .Include(t => t.AkPenilaianPerolehan)
+                .Include(t => t.DPengesah)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.DPenyemak)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.DPelulus)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.AkIndenObjek)!
+                    .ThenInclude(to => to.AkCarta)
+                .Include(t => t.AkIndenObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkIndenObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JPTJ)
+                .Include(t => t.AkIndenObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
+                        .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
+                .ToList();
+
+            return akIndenList;
+        }
+
         public List<AkInden> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan)
         {
 

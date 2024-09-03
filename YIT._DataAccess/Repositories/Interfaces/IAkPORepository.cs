@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YIT.__Domain.Entities._Enums;
+﻿using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT._DataAccess.Repositories.Interfaces
@@ -11,6 +6,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
     public interface IAkPORepository : _IGenericRepository<AkPO>
     {
         public List<AkPO> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang);
+        public List<AkPO> GetResults1(DateTime? date1, DateTime? date2, EnJenisPerolehan enJenisPerolehan);
         public List<AkPO> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan);
         public List<AkPO> FilterByComparingJBahagianAkPOObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AkPO> akPOPList);
         public AkPO GetDetailsById(int id);

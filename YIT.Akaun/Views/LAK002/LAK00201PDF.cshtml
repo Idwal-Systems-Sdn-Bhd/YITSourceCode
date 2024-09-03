@@ -1,12 +1,19 @@
-﻿@model dynamic
+﻿@model YIT.Akaun.Models.ViewModels.Forms.ReportViewModel
 
 @{
-    ViewData["Title"] = "LAK00201 Laporan Cek Yang Belum Tunai";
+    ViewData["Title"] = "LAK00201 Laporan Penunaian Cek";
     Layout = "~/Views/Shared/_PrintLayout.cshtml";
-    //decimal jumlahCek = 0;
-    decimal jumlahCekByDate = 0;
-    decimal jumlah = 0;
 }
+
+<style>
+    .bank-table-container {
+        page-break-inside: avoid;
+    }
+
+        .bank-table-container + .bank-table-container {
+            page-break-before: always;
+        }
+</style>
 
 <div class="row flexrow mb-1 text-left">
     <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
@@ -14,73 +21,110 @@
         <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
         <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
         <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
-        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
     </div>
 </div>
 
 <div>
     <p>
         <strong>
-            LAPORAN CEK YANG BELUM TUNAI DARI TARIKH : @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]
-            </strong>
+            LAPORAN PENUNAIAN CEK DARI TARIKH : @Model.TarikhDari HINGGA @Model.TarikhHingga<br>
+            TUNAI: @Model.Tunai
+        </strong>
     </p>
 </div>
 
-<table class="table table-bordered table-sm topic" id="myTable" data-order="NoRujukanCaraBayar">
-    <thead>
-        <tr class="bg-dark text-white">
-            <th colspan="11" class="text-center bg-dark text-white" style="line-height: 1.8rem;"><strong>CETAKAN LAPORAN CEK YANG BELUM DITUNAIKAN</strong></th>
-        </tr>
-        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+@foreach (var group in Model.GroupedReportModel)
+{
+    <div class="bank-table-container">
+        <div class="table-container">
+            <p class="bank">
+                <strong>
+                    BANK: @group.AkCarta1?.Kod - @group.AkCarta1?.Perihal
+                </strong>
+            </p>
+        </div>
 
-            <th class="NoRujukanCaraBayar">
-                No Cek
-            </th>
-            <th>
-                Tarikh Cek
-            </th>
-            <th class="text-right">
-                Amaun RM
-            </th>
-
-        </tr>
-    </thead>
-    <tbody id="tbodylak002">
-       
-        @foreach (var group in Model.reportModelGrouped)
-        {
-            // Reset jumlahCekByDate to 0 for each group
-            jumlahCekByDate = 0;
-
-            foreach (var akPV in group)
-            {
-                jumlahCekByDate += akPV.Amaun;
-                jumlah += akPV.Amaun;
-
-                <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
-
-                    <td class="text-uppercase">
-                        @akPV.NoRujukanCaraBayar
-                    </td>
-                    <td class="text-uppercase" id="TarikhCaraBayar">
-                        @Convert.ToDateTime(akPV.TarikhCaraBayar).ToString("dd/MM/yyyy")
-                    </td>
-
-                    <td class="text-right">
-                        @Convert.ToDecimal(akPV.Amaun).ToString("#,##0.00")
-                    </td>
-
+        <table class="table table-bordered table-sm topic" id="myTable" data-order="NoRujukanCaraBayar">
+            <thead>
+                <tr class="bg-dark text-white">
+                    <th colspan="11" class="text-center bg-dark text-white" style="line-height: 1.8rem;">
+                        <strong>CETAKAN LAPORAN PENUNAIAN CEK</strong>
+                    </th>
                 </tr>
-            }
-            <tr class="text-uppercase bg-secondary font-weight-bold text-black table-info">
-                <td colspan="2" style="padding-left: 20px"><strong>Jumlah Pada Tarikh @Convert.ToDateTime(group.Key).ToString("dd/MM/yyyy")</strong></td>
-                <td class="text-right">@Convert.ToDecimal(jumlahCekByDate).ToString("#,##0.00")</td>
-            </tr>
-        }
-        <tr class=" font-weight-bold">
-            <td colspan="2" class="text-right text-uppercase table-warning">Jumlah RM</td>
-            <td class="text-right">@Convert.ToDecimal(jumlah).ToString("#,##0.00")</td>
-        </tr>
-    </tbody>
-   
-</table>
+                <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+                    <th class="NoRujukanCaraBayar">No Cek</th>
+                    <th>Tarikh Cek</th>
+                    <th class="text-right">Amaun RM</th>
+                    @if (Model.Tunai == "SEMUA")
+                    {
+                        <th>Status Tunai</th>
+                    }
+                </tr>
+            </thead>
+            <tbody id="tbodylak002">
+                @{
+                    var akPVPenerimaList = group.AkPVPenerima;
+                    DateTime? currentDate = null;
+                    decimal jumlahCekByDate = 0;
+                    decimal jumlah = 0;
+                }
+
+                @foreach (var akPV in akPVPenerimaList)
+                {
+                    @if (currentDate != akPV.TarikhCaraBayar)
+                    {
+                        @if (currentDate != null)
+                        {
+                            <tr class="text-uppercase bg-secondary font-weight-bold text-black table-info">
+                                <td colspan="2" style="padding-left: 20px">
+                                    <strong>Jumlah Pada Tarikh @currentDate.Value.ToString("dd/MM/yyyy")</strong>
+                                </td>
+                                <td class="text-right">@jumlahCekByDate.ToString("#,##0.00")</td>
+                            </tr>
+                        }
+
+                        currentDate = akPV.TarikhCaraBayar;
+                        jumlahCekByDate = 0;
+                    }
+
+                    <tr class="table" style="line-height:0.8rem;">
+                        <td class="text-uppercase">
+                            @akPV.NoRujukanCaraBayar
+                        </td>
+                        <td class="text-uppercase" id="TarikhCaraBayar">
+                            @Convert.ToDateTime(akPV.TarikhCaraBayar).ToString("dd/MM/yyyy")
+                        </td>
+                        <td class="text-right">
+                            @akPV.Amaun.ToString("#,##0.00")
+                        </td>
+                        @if (Model.Tunai == "SEMUA")
+                        {
+                            <td>
+                                @(akPV.IsCekDitunaikan == true ? "Sudah" : "Belum")
+                            </td>
+                        }
+                    </tr>
+
+                    jumlah += akPV.Amaun;
+                    jumlahCekByDate += akPV.Amaun;
+                }
+
+                @if (currentDate != null)
+                {
+                    <tr class="text-uppercase bg-secondary font-weight-bold text-black table-info">
+                        <td colspan="2" style="padding-left: 20px">
+                            <strong>Jumlah Pada Tarikh @currentDate.Value.ToString("dd/MM/yyyy")</strong>
+                        </td>
+                        <td class="text-right">@jumlahCekByDate.ToString("#,##0.00")</td>
+                    </tr>
+                }
+
+                <tr class="font-weight-bold">
+                    <td colspan="2" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                    <td class="text-right">@jumlah.ToString("#,##0.00")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}

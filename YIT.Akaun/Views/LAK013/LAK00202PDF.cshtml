@@ -1,0 +1,83 @@
+﻿@model LAK013PrintModel
+
+@{
+    ViewData["Title"] = "LAK00202 Daftar Baucer Bayaran";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal jumlah = 0;
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+
+<div>
+    <p>
+        <strong>
+            DAFTAR BAUCER BAYARAN DARI @ViewBag.SearchString1.ToUpper() HINGGA @ViewBag.SearchString2.ToUpper()
+        </strong>
+    </p>
+</div>
+
+<table class="table table-bordered table-sm topic" id="mytable">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th colspan="6" class="text-center bg-dark text-white" style="line-height: 1.8rem;"><strong>CETAKAN DAFTAR BAUCER BAYARAN</strong></th>
+        </tr>
+        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+            <th>Bil</th>
+            <th>Nama Penerima / Alamat</th>
+            <th>No KP Baru</th>
+            <th>No Baucer / Tarikh</th>
+            <th>No Cek</th>
+            <th>Jumlah</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AkPV != null && Model.AkPV.Any())
+        {
+            int bil = 1;
+
+            foreach (var akPV in Model.AkPV)
+            {
+                if (akPV.AkPVPenerima != null && akPV.AkPVPenerima.Any())
+                {
+                    foreach (var akPVPenerima in akPV.AkPVPenerima)
+                    {
+                        <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                            <td class="text-uppercase">@bil</td>
+                            <td class="text-uppercase">
+                                @akPVPenerima.NamaPenerima <br> @akPVPenerima.Alamat1 <br> @akPVPenerima.Alamat2 <br> @akPVPenerima.Alamat3
+                                <br> Telefon: @akPVPenerima.DDaftarAwam?.Telefon1
+                            </td>
+                            <td class="text-uppercase">@akPVPenerima.NoPendaftaranPenerima</td>
+                            <td class="text-uppercase">
+                                @akPV.NoRujukan <br> <br> @akPV.Tarikh.ToString("dd/MM/yyyy")
+                            </td>
+                            <td class="text-uppercase">@akPVPenerima.NoRujukanCaraBayar</td>
+                            <td class="text-right">@akPVPenerima.Amaun.ToString("#,##0.00")</td>
+                        </tr>
+                        bil++;
+
+                        jumlah += akPVPenerima.Amaun;
+                    }
+                }
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center"></td>
+            </tr>
+        }
+        <tr class="font-weight-bold">
+            <td colspan="5" class="text-right text-uppercase table-warning">Jumlah Keseluruhan RM</td>
+            <td class="text-right">@jumlah.ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+</table>

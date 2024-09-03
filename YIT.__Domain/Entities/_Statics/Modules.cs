@@ -257,6 +257,18 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodLBelanjawanTerkini = "LAK004";
         public const string namaLBelanjawanTerkini = "Laporan Belanjawan";
 
+        public const string kodLDaftarPoInden = "LAK011";
+        public const string namaLDaftarPoInden = "Daftar Pesanan Tempatan Dan Inden Kerja";
+
+        public const string kodLPenyataAkaunPembekal = "LAK012";
+        public const string namaLPenyataAkaunPembekal = "Penyata Akaun Pembekal";
+
+        public const string kodLDaftarBaucerBayaran = "LAK013";
+        public const string namaLDaftarBaucerBayaran = "Daftar Baucer Bayaran";
+
+        public const string kodLWaranPeruntukan = "LAK018";
+        public const string namaLWaranPeruntukan = "Laporan Waran Peruntukan";
+
         //
     }
 }

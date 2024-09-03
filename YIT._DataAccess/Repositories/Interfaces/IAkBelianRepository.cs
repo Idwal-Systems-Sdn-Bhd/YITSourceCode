@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YIT.__Domain.Entities._Enums;
+﻿using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT._DataAccess.Repositories.Interfaces
@@ -11,6 +6,9 @@ namespace YIT._DataAccess.Repositories.Interfaces
     public interface IAkBelianRepository : _IGenericRepository<AkBelian>
     {
         public List<AkBelian> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang);
+        public List<AkBelian> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, int? dDaftarAwamId);
+        public Task<List<AkBelian>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId);
+        public Task<decimal> GetKredit(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId);
         public List<AkBelian> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan);
         public List<AkBelian> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AkBelian> akBelianList);
         public AkBelian GetDetailsById(int id);

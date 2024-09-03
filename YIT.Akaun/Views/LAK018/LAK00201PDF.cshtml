@@ -1,0 +1,104 @@
+﻿@model LAK018PrintModel
+
+@{
+    ViewData["Title"] = "LAK00201 Laporan Waran Peruntukan Mengikut PTJ Pada Tahun Tertentu";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal jumlah = 0;
+    decimal totalTambah = 0;
+    decimal totalPindah = 0;
+    decimal jumlahRecordTotal = 0;
+}
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0">@ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0">@ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan:  @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
+    </div>
+</div>
+<br />
+<table class="table table-bordered table-sm topic" id="mytable">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th colspan="11" class="text-center bg-dark text-white" style="line-height: 1.8rem;">
+                <strong>
+                    WARAN PERUNTUKAN MENGIKUT PTJ UNTUK TAHUN @ViewBag.Tahun
+                    <br />MENGIKUT KUMPULAN WANG @ViewBag.jKWKod - @ViewBag.jKWPerihal DAN PTJ @ViewBag.jBahagianKod - @ViewBag.jBahagianPerihal
+                </strong>
+            </th>
+        </tr>
+        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+            <th>Bil</th>
+            <th>No Rujukan</th>
+            <th>Tarikh</th>
+            <th>Objek</th>
+            <th>Nama Akaun</th>
+            <th>Asal RM</th>
+            <th>Tambah RM</th>
+            <th>Pindah RM</th>
+            <th>Jumlah RM</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AbWaran != null)
+        {
+            int bil = 0;
+
+            @foreach (var abWaran in Model.AbWaran)
+            {
+                if (abWaran != null)
+                {
+                    bil++;
+
+                    var firstObjek = abWaran.AbWaranObjek?.FirstOrDefault();
+                    decimal asal = 0;
+
+                    if (firstObjek != null)
+                    {
+                        asal = firstObjek.Amaun;
+                    }
+
+                    decimal tambah = 0;
+                    decimal pindah = 0;
+
+                    decimal jumlahRecord = asal + tambah + pindah;
+                    jumlah += asal;
+                    totalTambah += tambah;
+                    totalPindah += pindah;
+
+                    <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                        <td>@bil</td>
+                        <td class="text-uppercase">
+                            @abWaran.NoRujukan
+                        </td>
+                        <td>
+                            @abWaran.Tarikh.ToString("dd/MM/yyyy")
+                        </td>
+                        <td class="text-uppercase">@firstObjek?.AkCarta?.Kod</td>
+                        <td class="text-uppercase">
+                            @firstObjek?.AkCarta?.Perihal
+                        </td>
+                        <td class="text-right">@asal.ToString("#,##0.00")</td>
+                        <td class="text-right">@tambah.ToString("#,##0.00")</td>
+                        <td class="text-right">@pindah.ToString("#,##0.00")</td>
+                        <td class="text-right">
+                            @jumlahRecord.ToString("#,##0.00")
+                        </td>
+                    </tr>
+                }
+            }
+
+            jumlahRecordTotal = jumlah + totalTambah + totalPindah;
+        }
+
+        <tr class="font-weight-bold">
+            <td colspan="5" class="text-right text-uppercase table-warning">Jumlah RM</td>
+            <td class="text-right">@jumlah.ToString("#,##0.00")</td>
+            <td class="text-right">@totalTambah.ToString("#,##0.00")</td>
+            <td class="text-right">@totalPindah.ToString("#,##0.00")</td>
+            <td class="text-right">@jumlahRecordTotal.ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+</table>

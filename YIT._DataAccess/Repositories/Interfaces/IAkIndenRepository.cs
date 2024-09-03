@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YIT.__Domain.Entities._Enums;
+﻿using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT._DataAccess.Repositories.Interfaces
@@ -11,6 +6,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
     public interface IAkIndenRepository : _IGenericRepository<AkInden>
     {
         public List<AkInden> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang);
+        public List<AkInden> GetResults1(DateTime? dateFrom, DateTime? dateTo);
         public List<AkInden> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan);
         public List<AkInden> FilterByComparingJBahagianAkPenilaianObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AkInden> akPPList);
         public AkInden GetDetailsById(int id);

@@ -140,6 +140,97 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akBelianList;
         }
 
+        public List<AkBelian> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, int? dDaftarAwamId)
+        {
+            if (searchString == null && dateFrom == null && dateTo == null && dDaftarAwamId == null)
+            {
+                return new List<AkBelian>();
+            }
+
+            var akBelianList = _context.AkBelian
+                .IgnoreQueryFilters()
+                .Include(t => t.JKW)
+                .Include(t => t.DDaftarAwam)
+                .Include(t => t.DPekerjaPosting)
+                .Include(t => t.AkAkaunAkru)
+                .Include(t => t.AkInden)
+                .Include(t => t.AkPO)
+                .Include(t => t.AkNotaMinta)
+                .Include(t => t.DPengesah)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.DPenyemak)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.DPelulus)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.AkBelianObjek)!
+                    .ThenInclude(to => to.AkCarta)
+                .Include(t => t.AkBelianObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkBelianObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JPTJ)
+                .Include(t => t.AkBelianObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
+                        .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
+                .ToList();
+
+            if (searchString != null)
+            {
+                akBelianList = akBelianList.Where(t =>
+                t.NoRujukan!.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+                || t.DDaftarAwam!.Nama!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            if (dDaftarAwamId != null)
+            {
+                akBelianList = akBelianList.Where(p => p.DDaftarAwamId == dDaftarAwamId).ToList();
+            }
+
+            return akBelianList;
+        }
+
+        public async Task<List<AkBelian>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
+        {
+            if (tarikhDari == null || tarikhHingga == null || dDaftarAwamId == null)
+            {
+                return new List<AkBelian>();
+            }
+
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+
+            var akBelianList = await _context.AkBelian
+                .Include(a => a.AkBelianPerihal)
+                .Where(a => a.Tarikh >= date1 && a.Tarikh <= date2 && a.DDaftarAwamId == dDaftarAwamId)
+                .OrderBy(a => a.Tarikh)
+                .ThenBy(a => a.NoRujukan)
+                .ToListAsync();
+
+            var firstAkBelianList = akBelianList
+                .GroupBy(a => a.NoRujukan)
+                .Select(g => g.First())
+                .ToList();
+
+            return firstAkBelianList;
+        }
+
+        public async Task<decimal> GetKredit(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
+        {
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+
+            var sumKredit = await _context.AkBelian
+                .Where(a => a.Tarikh >= date1 && a.Tarikh <= date2 && a.DDaftarAwamId == dDaftarAwamId)
+                .SumAsync(a => a.Jumlah);
+
+            sumKredit = -sumKredit;
+
+            return sumKredit;
+        }
+
         public List<AkBelian> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan)
         {
 

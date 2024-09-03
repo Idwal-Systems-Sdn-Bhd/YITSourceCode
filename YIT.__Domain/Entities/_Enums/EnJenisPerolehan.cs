@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace YIT.__Domain.Entities._Enums
 {
@@ -16,6 +17,8 @@ namespace YIT.__Domain.Entities._Enums
         [Display(Name = "Perkhidmatan")]
         Perkhidmatan = 2,
         [Display(Name = "Kerja")]
-        Kerja = 3
+        Kerja = 3,
+        [Display(Name = "Semua")]
+        Semua = 99,
     }
 }

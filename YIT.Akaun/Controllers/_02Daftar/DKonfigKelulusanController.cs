@@ -296,7 +296,9 @@ namespace YIT.Akaun.Controllers._02Daftar
 
             ViewBag.EnKategoriKelulusan = kategoriKelulusan;
 
-            var jenisModulKelulusan = EnumHelper<EnJenisModulKelulusan>.GetList();
+            var jenisModulKelulusan = EnumHelper<EnJenisModulKelulusan>.GetList()
+                .OrderBy(e => e.perihal)
+                .ToList();
 
             ViewBag.EnJenisModulKelulusan = jenisModulKelulusan;
 

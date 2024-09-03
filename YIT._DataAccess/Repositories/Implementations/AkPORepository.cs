@@ -120,7 +120,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                         akPOList = akPOList.OrderBy(t => t.DDaftarAwam!.Nama).ToList();
                         break;
                     case "Tarikh":
-                        akPOList = akPOList.OrderBy(t => t.Tarikh).ToList(); break;
+                        akPOList = akPOList.OrderBy(t => t.Tarikh).ToList(); 
+                        break;
                     default:
                         akPOList = akPOList.OrderBy(t => t.NoRujukan).ToList();
                         break;
@@ -130,6 +131,79 @@ namespace YIT._DataAccess.Repositories.Implementations
             // order by filters end
 
             return akPOList;
+        }
+
+        public List<AkPO> GetResults1(DateTime? dateFrom, DateTime? dateTo, EnJenisPerolehan enJenisPerolehan)
+        {
+            if (dateFrom == null && dateTo == null)
+            {
+                return new List<AkPO>();
+            }
+
+            var akPOList = _context.AkPO
+                .IgnoreQueryFilters()
+                .Include(t => t.JKW)
+                .Include(t => t.DDaftarAwam)
+                .Include(t => t.DPekerjaPosting)
+                .Include(t => t.AkPenilaianPerolehan)
+                .Include(t => t.DPengesah)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.DPenyemak)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.DPelulus)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.AkPOObjek)!
+                    .ThenInclude(to => to.AkCarta)
+                .Include(t => t.AkPOObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkPOObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JPTJ)
+                .Include(t => t.AkPOObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
+                .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
+                .ToList();
+
+            switch (enJenisPerolehan)
+            {
+                case EnJenisPerolehan.Bekalan:
+                    akPOList = akPOList.Where(pp => pp.EnJenisPerolehan == EnJenisPerolehan.Bekalan).ToList();
+                    break;
+                case EnJenisPerolehan.Perkhidmatan:
+                    akPOList = akPOList.Where(pp => pp.EnJenisPerolehan == EnJenisPerolehan.Perkhidmatan).ToList();
+                    break;
+                case EnJenisPerolehan.Kerja:
+                    akPOList = akPOList.Where(pp => pp.EnJenisPerolehan == EnJenisPerolehan.Kerja).ToList();
+                    break;
+                case EnJenisPerolehan.Semua:
+                    break;
+            }
+
+            var results = akPOList
+                .SelectMany(p => p.AkPOObjek?.Select(o => new { AkPO = p, o.Amaun }))
+                .OrderBy(x => x.AkPO.NoRujukan)
+                .ToList();
+
+            var finalResults = results
+                .Select(x => new AkPO
+                {
+                    Id = x.AkPO.Id,
+                    NoRujukan = x.AkPO.NoRujukan,
+                    Tarikh = x.AkPO.Tarikh,
+                    EnJenisPerolehan = x.AkPO.EnJenisPerolehan,
+                    DDaftarAwam = new DDaftarAwam
+                    {
+                        Kod = x.AkPO.DDaftarAwam?.Kod,
+                        Nama = x.AkPO.DDaftarAwam?.Nama,
+                    },
+                    Jumlah = x.AkPO.Jumlah,
+                    AkPOObjek = x.AkPO?.AkPOObjek?.Where(o => o.Amaun == x.Amaun).ToList(),
+                })
+                .ToList();
+
+            return finalResults;
         }
 
         public List<AkPO> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan)
