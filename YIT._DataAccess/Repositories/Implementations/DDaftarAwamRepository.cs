@@ -107,6 +107,19 @@ namespace YIT._DataAccess.Repositories.Implementations
                 t.EnKategoriDaftarAwam!.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)
                 )
                 .ToList();
+
+                //                dDAList = dDAList.Where(t =>
+                //    t?.Kod?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true ||
+                //    t?.Nama?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true ||
+                //    t?.JBank?.Perihal?.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) == true ||
+                //    t?.Alamat1?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true ||
+                //    t?.NoAkaunBank?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true ||
+                //    t?.KodM2E?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true ||
+                //    t?.EnKategoriDaftarAwam.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase) == true
+                //)
+                //.ToList();
+
+
             }
             // searchString filters end
 

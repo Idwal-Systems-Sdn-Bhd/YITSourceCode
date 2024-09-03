@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
-using YIT.__Domain.Entities._Enums;
-using System.Runtime.Intrinsics.X86;
 
 namespace YIT._DataAccess.Repositories.Implementations
 {
@@ -119,6 +118,97 @@ namespace YIT._DataAccess.Repositories.Implementations
             // order by filters end
 
             return abWaranList;
+        }
+
+        public List<AbWaran> GetResults1(int? jKWId, int? jBahagianId, string? tahun, EnJenisPeruntukan? enJenisPeruntukan)
+        {
+            if (jKWId == null && jBahagianId == null && tahun == null)
+            {
+                return new List<AbWaran>();
+            }
+
+            var abWaranList = _context.AbWaran
+                .IgnoreQueryFilters()
+                .Include(t => t.JKW)
+                .Include(t => t.DPekerjaPosting)
+                .Include(t => t.DPengesah)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.DPenyemak)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.DPelulus)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.AbWaranObjek)!
+                    .ThenInclude(to => to.AkCarta)
+                .Include(t => t.AbWaranObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AbWaranObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JPTJ)
+                .Include(t => t.AbWaranObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
+                        //.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
+                        .ToList();
+
+            if (jKWId != null)
+            {
+                abWaranList = abWaranList.Where(wr => wr.JKWId == jKWId).ToList();
+            }
+
+            if (jBahagianId != null)
+            {
+                abWaranList = abWaranList.Where(wr => wr.AbWaranObjek!.Any(obj => obj.JKWPTJBahagian.JBahagianId == jBahagianId)).ToList();
+            }
+            if (tahun != null)
+            {
+                abWaranList = abWaranList.Where(wr => wr.Tahun == tahun).ToList();
+            }
+            if (enJenisPeruntukan != null)
+            {
+                abWaranList = abWaranList.Where(wr => wr.EnJenisPeruntukan == enJenisPeruntukan).ToList();
+            }
+
+            if (jBahagianId == 0)
+            {
+                abWaranList = _context.AbWaran
+                    .IgnoreQueryFilters()
+                    .Include(t => t.JKW)
+                    .Include(t => t.DPekerjaPosting)
+                    .Include(t => t.DPengesah)
+                        .ThenInclude(t => t!.DPekerja)
+                    .Include(t => t.DPenyemak)
+                        .ThenInclude(t => t!.DPekerja)
+                    .Include(t => t.DPelulus)
+                        .ThenInclude(t => t!.DPekerja)
+                    .Include(t => t.AbWaranObjek)!
+                        .ThenInclude(to => to.AkCarta)
+                    .Include(t => t.AbWaranObjek)!
+                        .ThenInclude(to => to.JKWPTJBahagian)
+                            .ThenInclude(b => b!.JKW)
+                    .Include(t => t.AbWaranObjek)!
+                        .ThenInclude(to => to.JKWPTJBahagian)
+                            .ThenInclude(b => b!.JPTJ)
+                    .Include(t => t.AbWaranObjek)!
+                        .ThenInclude(to => to.JKWPTJBahagian)
+                            .ThenInclude(b => b!.JBahagian)
+                        .Where(wr => wr.JKWId == jKWId && wr.Tahun == tahun && wr.EnJenisPeruntukan == enJenisPeruntukan)
+                        .ToList();
+            }
+
+            var finalResults = abWaranList
+                .SelectMany(wr => wr.AbWaranObjek
+                    .Select(obj => new AbWaran
+                    {
+                        Id = wr.Id,
+                        NoRujukan = wr.NoRujukan,
+                        Tarikh = wr.Tarikh,
+                        Jumlah = wr.Jumlah,
+                        AbWaranObjek = new List<AbWaranObjek> { obj }
+                    }))
+                .ToList();
+
+            return finalResults;
         }
 
         public List<AbWaran> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan)

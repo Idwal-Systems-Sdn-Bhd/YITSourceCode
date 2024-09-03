@@ -1,7 +1,7 @@
 ﻿@model YIT.Akaun.Models.ViewModels.Forms.PrintFormModel
 
 @{
-    ViewData["Title"] = "LAK002 Laporan Cek yang Berkaitan";
+    ViewData["Title"] = "LAK013 Daftar Baucer Bayaran";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     int year = DateTime.Now.Year;
@@ -14,24 +14,20 @@
 
         function toggleFields() {
             if ($('#LAK00202').is(':checked')) {
-                $('#tarikhContainer').show();
-                $('#tarikhDari').prop('required', true);
-                $('#tarikhHingga').prop('required', true);
-                $('#susunanContainer').show();
-                $('#akbankContainer').hide();
-                $('#tunaiContainer').hide();
-                $('#akBankId').prop('required', false);
-                $('#tunai').prop('required', false);
+                $('#tarikhContainer').hide();
+                $('#tarikhDari').prop('required', false);
+                $('#tarikhHingga').prop('required', false);
+                $('#searchStringContainer').show();
+                $('#searchString1').prop('required', true);
+                $('#searchString2').prop('required', true);
 
             } else {
                 $('#tarikhContainer').show();
                 $('#tarikhDari').prop('required', true);
                 $('#tarikhHingga').prop('required', true);
-                $('#akbankContainer').show();
-                $('#susunanContainer').show();
-                $('#tunaiContainer').show();  
-                $('#akBankId').prop('required', true);
-                $('#tunai').prop('required', true);
+                $('#searchStringContainer').hide();
+                $('#searchString1').prop('required', false);
+                $('#searchString2').prop('required', false);
             }
         }
 
@@ -48,20 +44,20 @@
             var kodLaporan = $("input[name='kodLaporan']:checked").val();
             var tarikhDari = $('#tarikhDari').val();
             var tarikhHingga = $('#tarikhHingga').val();
-            var susunan = $('#susunan').val();
-            var akBankId = $('#akBankId').val();
-            var tunai = $('#tunai').val();
+            var searchString1 = $('#searchString1').val();
+            var searchString2 = $('#searchString2').val();
+            var jKWId = $('#jKWId').val();
 
             if (kodLaporan != "") {
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("ExportExcel", "LAK002")',
-                    data: { kodLaporan: kodLaporan, tarikhDari: tarikhDari, tarikhHingga: tarikhHingga, susunan: susunan, akBankId: akBankId, tunai: tunai },
+                    url: '@Url.Action("ExportExcel", "LAK013")',
+                    data: { kodLaporan: kodLaporan, tarikhDari: tarikhDari, tarikhHingga: tarikhHingga, searchString1: searchString1, searchString2: searchString2, jKWId: jKWId },
                     dataType: "json",
                     success: function (r) {
                         window.location = "@Url.Action("Download", "Account")?fileGuid=" + r.fileGuid + "&filename=" + r.fileName;
                         toastr.success("Laporan berjaya dijana.", "Berjaya");
-                        toastr.options.timeOut = 5000; // 2s
+                        toastr.options.timeOut = 5000; // 5s
                         $("#btnExportExcel").prop('disabled', false);
                         $(".loading").css("display", "none");
                     }
@@ -89,13 +85,19 @@
                             <div class="custom-control custom-radio pb-2">
                                 <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00201" value="LAK00201" checked>
                                 <label class="custom-control-label" for="LAK00201">
-                                    01 - Laporan Penunaian Cek
+                                    Daftar Baucer Bayaran Dari Tarikh
                                 </label>
                             </div>
                             <div class="custom-control custom-radio pb-2">
                                 <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00202" value="LAK00202">
                                 <label class="custom-control-label" for="LAK00202">
-                                    02 - Laporan Cek Yang Dibatalkan
+                                    Daftar Baucer Bayaran Dari No Baucer
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio pb-2">
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00203" value="LAK00203">
+                                <label class="custom-control-label" for="LAK00203">
+                                    Laporan Baucer Bayaran Yang Dibatalkan
                                 </label>
                             </div>
                         </div>
@@ -124,25 +126,29 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="akbankContainer" class="form-group row g-3">
-                            <label for="Bank" class="col-sm-2 col-form-label">Bank</label>
+                        <div id="searchStringContainer" class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <label class="form-control-label">No Baucer</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input class="form-control form-control-sm" type="text" name="searchString1" value="@ViewBag.searchString1" id="searchString1" required />
+                                    <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input class="form-control form-control-sm" type="text" name="searchString2" value="@ViewBag.searchString2" id="searchString2" required />
+                                    <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="jkwContainer" class="form-group row g-3">
+                            <label for="JKW" class="col-sm-2 col-form-label">Kump. Wang</label>
                             <div class="col-sm-8">
-                                <select class="form-control form-control-sm select2" name="akBankId" asp-items="@ViewBag.AkBank" id="akBankId" required>
-                                </select>
-                            </div>
-                        </div>
-                        <div id="tunaiContainer" class="form-group row g-3">
-                            <label for="Tunai" class="col-sm-2 col-form-label">Tunai</label>
-                            <div class="col-sm-5">
-                                <select class="form-control form-control-sm input-group-sm" name="tunai" asp-items="@ViewBag.Tunai" id="tunai" required>
-                                </select>
-                            </div>
-                        </div>
-                        <div id="susunanContainer" class="form-group row g-3">
-                            <label for="Susunan" class="col-sm-2 col-form-label">Susunan</label>
-                            <div class="col-sm-5">
-                                <select class="form-control form-control-sm input-group-sm" id="susunan" asp-for="susunan" required>
-                                    <option value="1" selected>Tarikh Baucer</option>
+                                <select class="form-control form-control-sm select2" name="jKWId" asp-items="@ViewBag.JKW" id="jKWId" required>
                                 </select>
                             </div>
                         </div>
@@ -152,7 +158,7 @@
 
                 <div class="form-group text-right">
                     <input type="submit" value="Cetak" id="btnCetak" formtarget="_blank" class="btn ac-primary" />
-                    <button type="button"    formtarget="_blank" id="btnExportExcel" class="btn ac-info">Jana Excel</button>
+                    <button type="button" formtarget="_blank" id="btnExportExcel" class="btn ac-info">Jana Excel</button>
                     <span class="loading" style="padding-right:3px; padding-top: 3px; display:inline-block;">
                         <img src="~/img/Spinner.gif" style="height:40px;">
                     </span>

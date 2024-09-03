@@ -3,10 +3,9 @@
 
 namespace YIT.Akaun.Models.ViewModels.Prints
 {
-    public class LAK002PrintModel
+    public class LAK018PrintModel
     {
         public CommonPrintModel CommonModels { get; set; } = new CommonPrintModel();
-        public List<AkPV>? AkPV { get; set; }
-        public List<AkJurnal>? AkJurnal { get; set; }
+        public List<AbWaran>? AbWaran { get; set; }
     }
 }

@@ -1,6 +1,10 @@
 ﻿<li class="nav-item">
     <a class="nav-link collapsed text-truncate
      @Html.ActiveClass("LAK002PrintModel")
+     @Html.ActiveClass("LAK011PrintModel")
+     @Html.ActiveClass("LAK012PrintModel")
+     @Html.ActiveClass("LAK013PrintModel")
+     @Html.ActiveClass("LAK018PrintModel")
        " href="#submenuLaporan" data-toggle="collapse" data-target="#submenuLaporan"><img src="~/img/svg/laporan.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Laporan</span></a>
     <div class="collapse" id="submenuLaporan" aria-expanded="false">
         <ul class="flex-column ps-2 nav">
@@ -9,7 +13,26 @@
                     Laporan Cek yang Berkaitan
                 </a>
             </li>
-
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK011PrintModel")" asp-area="" asp-controller="LAK011" asp-action="Index">
+                   Daftar Pesanan Tempatan Dan Inden Kerja
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK012PrintModel")" asp-area="" asp-controller="LAK012" asp-action="Index">
+                    Penyata Akaun Pembekal
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK013PrintModel")" asp-area="" asp-controller="LAK013" asp-action="Index">
+                    Daftar Baucer Bayaran
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK018PrintModel")" asp-area="" asp-controller="LAK018" asp-action="Index">
+                    Laporan Waran Peruntukan
+                </a>
+            </li>
             
         </ul>
     </div>

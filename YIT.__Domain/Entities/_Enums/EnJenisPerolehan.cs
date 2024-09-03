@@ -9,8 +9,8 @@ namespace YIT.__Domain.Entities._Enums
 {
     public enum EnJenisPerolehan
     {
-        [Display(Name = "")]
-        None = 0,
+        [Display(Name = "Semua")]
+        Semua = 0,
         [Display(Name = "Bekalan")]
         Bekalan = 1,
         [Display(Name = "Perkhidmatan")]

@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._01Jadual;
 using YIT.__Domain.Entities.Models._02Daftar;
@@ -254,6 +246,103 @@ namespace YIT._DataAccess.Repositories.Implementations
             {
                 akPVList = akPVList.Where(pv => pv.AkBankId == akBankId).ToList();
             }
+            return akPVList;
+        }
+
+        public List<AkPV> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int? akBankId, int? tunai, int? jKWId, int? dDaftarAwamId)   
+        {
+            if (searchString == null && dateFrom == null && dateTo == null && akBankId == null && tunai == null && jKWId == null && dDaftarAwamId == null)
+            {
+                return new List<AkPV>();
+            }
+
+            var query = _context.AkPV
+                .IgnoreQueryFilters()
+                .Include(t => t.JKW)
+                .Include(t => t.AkBank)
+                    .ThenInclude(t => t!.JBank)
+                .Include(t => t.JCawangan)
+                .Include(t => t.DPekerjaPosting)
+                .Include(t => t.DPengesah)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.DPenyemak)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.DPelulus)
+                    .ThenInclude(t => t!.DPekerja)
+                .Include(t => t.AkPVPenerima)!
+                    .ThenInclude(pp => pp.JBank)
+                .Include(t => t.AkPVPenerima)!
+                    .ThenInclude(pp => pp.JCaraBayar)
+                .Include(t => t.AkPVPenerima)!
+                    .ThenInclude(pp => pp.DDaftarAwam)
+                .Include(t => t.AkPVPenerima)!
+                    .ThenInclude(pp => pp.DPekerja)
+                .AsQueryable();
+
+            if (dateFrom != null && dateTo != null)
+            {
+                query = query.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99));
+            }
+
+            if (searchString != null)
+            {
+                searchString = searchString.ToLower();
+                query = query.Where(t =>
+                    (t.NoRujukan != null && t.NoRujukan.ToLower().Contains(searchString)) ||
+                    (t.NamaPenerima != null && t.NamaPenerima.ToLower().Contains(searchString)));
+            }
+
+            switch (enStatusBorang)
+            {
+                case EnStatusBorang.None:
+                    query = query.Where(pp => pp.EnStatusBorang == EnStatusBorang.None);
+                    break;
+                case EnStatusBorang.Sah:
+                    query = query.Where(pp => pp.EnStatusBorang == EnStatusBorang.Sah);
+                    break;
+                case EnStatusBorang.Semak:
+                    query = query.Where(pp => pp.EnStatusBorang == EnStatusBorang.Semak);
+                    break;
+                case EnStatusBorang.Lulus:
+                    query = query.Where(pp => pp.EnStatusBorang == EnStatusBorang.Lulus);
+                    break;
+                case EnStatusBorang.Semua:
+                    break;
+            }
+
+            if (akBankId != null)
+            {
+                query = query.Where(pv => pv.AkBankId == akBankId);
+            }
+
+            if (jKWId != null)
+            {
+                query = query.Where(pv => pv.JKWId == jKWId);
+            }
+
+            if (dDaftarAwamId != null)
+            {
+                query = query.Where(a => a.AkPVPenerima.Any(p => p.DDaftarAwamId == dDaftarAwamId));
+            }
+
+            if (orderBy != null)
+            {
+                switch (orderBy)
+                {
+                    case "Nama":
+                        query = query.OrderBy(t => t.NamaPenerima);
+                        break;
+                    case "Tarikh":
+                        query = query.OrderBy(t => t.Tarikh);
+                        break;
+                    default:
+                        query = query.OrderBy(t => t.NoRujukan);
+                        break;
+                }
+            }
+
+            var akPVList = query.ToList();
+
             return akPVList;
         }
 
@@ -594,7 +683,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                     daftarAwamId = item.DDaftarAwamId;
                 }
             }
-            
+
             // Cash Basis (PV yang tiada invois atau PV yang ada Invois tanpa akruan)
             if (PVWithoutInvois(akPV) || PVWithOneInvoisNotAkru(akPV) || PVWithMultipleInvoisNotAkru(akPV))
             {
@@ -651,9 +740,9 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
 
             // PV yang ada Invois dengan tanggungan
-            if (PVWithOneInvoisAkruWithOnePOAndWithoutInden(akPV) || 
+            if (PVWithOneInvoisAkruWithOnePOAndWithoutInden(akPV) ||
                 PVWithOneInvoisAkruWithOneIndenAndWithoutPO(akPV) ||
-                PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneSameObjek(akPV) || 
+                PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneSameObjek(akPV) ||
                 PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneDifferentObjek(akPV))
             {
                 List<AkPOObjek> poList = new List<AkPOObjek>();
@@ -667,7 +756,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                     }
                 }
-               
+
                 if (poList != null && poList.Count > 0)
                 {
                     foreach (var item in poList)
@@ -865,13 +954,93 @@ namespace YIT._DataAccess.Repositories.Implementations
             return _context.AkPV.Any(pv => pv.AkJanaanProfilId == akJanaanProfilId);
         }
 
-        public async Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar(string? tarikhDari, string? tarikhHingga)
+        public async Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar(string? tarikhDari, string? tarikhHingga, int? akBankId, int? tunai)
         {
             List<AkPV> akPv = new List<AkPV>();
             List<AkPVPenerima> akPvResult = new List<AkPVPenerima>();
 
             List<AkPVPenerima> akPvPenerima = new List<AkPVPenerima>();
 
+            if (tarikhDari != null && tarikhHingga != null)
+            {
+                DateTime date1 = DateTime.Parse(tarikhDari).Date;
+                DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+
+                akPv = await _context.AkPV
+                .Include(b => b.AkPVPenerima)
+                .Where(b => b.Tarikh >= date1 && b.Tarikh <= date2 && (akBankId == 0 || b.AkBankId == akBankId))
+                .ToListAsync();
+
+                foreach (var a in akPv)
+                {
+                    if (a.AkPVPenerima != null && a.AkPVPenerima.Any())
+                    {
+                        foreach (var b in a.AkPVPenerima)
+                        {
+                            if (b != null && b.IsCekDitunaikan != true && tunai == 0) // 2 = cek
+
+                            {
+                                akPvResult.Add(new AkPVPenerima
+                                {
+                                    TarikhCaraBayar = b.TarikhCaraBayar,
+                                    NoRujukanCaraBayar = b.NoRujukanCaraBayar,
+                                    Amaun = b.Amaun,
+                                    AkPV = b.AkPV,
+                                    NamaPenerima = b.NamaPenerima,
+                                    IsCekDitunaikan = b.IsCekDitunaikan
+                                });
+                            }
+
+                            else if (b != null && b.IsCekDitunaikan == true && tunai == 1)
+                            {
+                                akPvResult.Add(new AkPVPenerima
+                                {
+                                    TarikhCaraBayar = b.TarikhCaraBayar,
+                                    NoRujukanCaraBayar = b.NoRujukanCaraBayar,
+                                    Amaun = b.Amaun,
+                                    AkPV = b.AkPV,
+                                    NamaPenerima = b.NamaPenerima,
+                                    IsCekDitunaikan = b.IsCekDitunaikan
+                                });
+                            }
+
+                            else if (b != null && tunai == 2)
+                            {
+                                akPvResult.Add(new AkPVPenerima
+                                {
+                                    TarikhCaraBayar = b.TarikhCaraBayar,
+                                    NoRujukanCaraBayar = b.NoRujukanCaraBayar,
+                                    Amaun = b.Amaun,
+                                    AkPV = b.AkPV,
+                                    NamaPenerima = b.NamaPenerima,
+                                    IsCekDitunaikan = b.IsCekDitunaikan
+                                });
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            return akPvResult.GroupBy(b => new { b.TarikhCaraBayar, b.NoRujukanCaraBayar, b.Amaun, b.NamaPenerima })
+            .Select(g => new AkPVPenerima
+            {
+                NoRujukanCaraBayar = g.First().NoRujukanCaraBayar,
+                TarikhCaraBayar = g.First().TarikhCaraBayar,
+                Amaun = g.Sum(b => b.Amaun),
+                AkPV = g.First().AkPV,
+                NamaPenerima = g.First().NamaPenerima,
+                IsCekDitunaikan = g.First().IsCekDitunaikan
+            }).OrderBy(b => b.TarikhCaraBayar)
+                .ThenBy(b => b.NoRujukanCaraBayar)
+                .ThenBy(b => b.AkPV?.Tarikh)
+                .ToList();
+        }
+
+        public async Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar1(string? tarikhDari, string? tarikhHingga)
+        {
+            List<AkPV> akPv = new List<AkPV>();
+            List<AkPVPenerima> akPvResult = new List<AkPVPenerima>();
 
             if (tarikhDari != null && tarikhHingga != null)
             {
@@ -882,12 +1051,13 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
 
             foreach (var a in akPv)
+            {
                 if (a.AkPVPenerima != null && a.AkPVPenerima.Any())
                 {
                     foreach (var b in a.AkPVPenerima)
                     {
-
-                        if (b.JCaraBayarId == 2 && b.IsCekDitunaikan != true) // 2 = cek
+                        if (b.JCaraBayarId == 2 && !b.IsCekDitunaikan && b.EnStatusEFT == EnStatusProses.Fail) // 2 = cek
+                        {
                             akPvResult.Add(new AkPVPenerima
                             {
                                 TarikhCaraBayar = b.TarikhCaraBayar,
@@ -895,22 +1065,136 @@ namespace YIT._DataAccess.Repositories.Implementations
                                 Amaun = b.Amaun,
                                 AkPV = b.AkPV
                             });
-
+                        }
                     }
                 }
+            }
 
-            return akPvResult.GroupBy(b => new { b.TarikhCaraBayar, b.NoRujukanCaraBayar, b.Amaun })
-            .Select(g => new AkPVPenerima
-            {
-                NoRujukanCaraBayar = g.First().NoRujukanCaraBayar,
-                TarikhCaraBayar = g.First().TarikhCaraBayar,
-                Amaun = g.Sum(b => b.Amaun),
-                AkPV = g.First().AkPV
-            }).OrderBy(b => b.TarikhCaraBayar)
+            var groupedResults = akPvResult
+                .GroupBy(b => new { b.TarikhCaraBayar, b.NoRujukanCaraBayar })
+                .Select(g => new AkPVPenerima
+                {
+                    NoRujukanCaraBayar = g.Key.NoRujukanCaraBayar,
+                    TarikhCaraBayar = g.Key.TarikhCaraBayar,
+                    Amaun = g.Sum(b => b.Amaun),
+                    AkPV = g.First().AkPV
+                })
+                .OrderBy(b => b.TarikhCaraBayar)
                 .ThenBy(b => b.AkPV?.Tarikh)
                 .ToList();
 
+            return groupedResults;
+        }
 
+        public async Task<List<AkPV>> GetResultsGroupByTarikh(string? tarikhDari, string? tarikhHingga, int? jKWId)
+        {
+            if (tarikhDari == null || tarikhHingga == null || jKWId == null)
+            {
+                return new List<AkPV>();
+            }
+
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+
+            var akPv = await _context.AkPV
+                .Include(b => b.AkPVPenerima)
+                .Where(b => b.Tarikh >= date1 && b.Tarikh <= date2 && b.JKWId == jKWId)
+                .ToListAsync();
+
+            var flattenedAndSortedPenerima = akPv
+                .SelectMany(pv => pv.AkPVPenerima.Select(pvp => new { AkPV = pv, AkPVPenerima = pvp }))
+                .OrderBy(item => item.AkPVPenerima.NoRujukanCaraBayar)
+                .ToList();
+
+            var groupedAndSortedResults = flattenedAndSortedPenerima
+                .GroupBy(item => item.AkPVPenerima.NoRujukanCaraBayar)
+                .Select(g => new AkPV
+                {
+                    Id = g.First().AkPV.Id,
+                    NoRujukan = g.First().AkPV.NoRujukan,
+                    Tarikh = g.First().AkPV.Tarikh,
+                    JKWId = g.First().AkPV.JKWId,
+                    NamaPenerima = g.First().AkPV.NamaPenerima,
+                    FlBatal = g.First().AkPV.FlBatal,
+                    AkPVPenerima = g.Select(x => x.AkPVPenerima).ToList()
+                })
+                .ToList();
+
+            return groupedAndSortedResults;
+        }
+
+        public async Task<List<AkPV>> GetResultsGroupBySearchString(int? jKWId, string? searchString1, string? searchString2)
+        {
+            if (jKWId == null || searchString1 == null || searchString2 == null)
+            {
+                return new List<AkPV>();
+            }
+
+            var lowerSearchString1 = searchString1.ToLower();
+            var lowerSearchString2 = searchString2.ToLower();
+
+            bool isOrderCorrect = string.Compare(lowerSearchString1, lowerSearchString2, StringComparison.Ordinal) <= 0;
+
+            if (!isOrderCorrect)
+            {
+                return new List<AkPV>();
+            }
+
+            var akPv = _context.AkPV
+                .Include(b => b.AkPVPenerima)
+                .Where(b => b.JKWId == jKWId &&
+                            b.NoRujukan.ToLower().CompareTo(lowerSearchString1) >= 0 &&
+                            b.NoRujukan.ToLower().CompareTo(lowerSearchString2) <= 0);
+
+            var akPvResults = await akPv.ToListAsync();
+
+            var flattenedPenerima = akPvResults
+                .SelectMany(pv => pv.AkPVPenerima.Select(pvp => new { AkPV = pv, AkPVPenerima = pvp }))
+                .OrderBy(item => item.AkPVPenerima.NoRujukanCaraBayar)
+                .ThenBy(item => item.AkPV.NoRujukan)
+                .ToList();
+
+            var groupedResults = flattenedPenerima
+                .GroupBy(item => new { item.AkPV.NoRujukan, item.AkPV.Id })
+                .Select(g => new AkPV
+                {
+                    Id = g.Key.Id,
+                    NoRujukan = g.Key.NoRujukan,
+                    Tarikh = g.First().AkPV.Tarikh,
+                    JKWId = g.First().AkPV.JKWId,
+                    NamaPenerima = g.First().AkPV.NamaPenerima,
+                    FlBatal = g.First().AkPV.FlBatal,
+                    AkPVPenerima = g.Select(x => x.AkPVPenerima).ToList()
+                })
+                .ToList();
+
+            return groupedResults;
+        }
+
+        public async Task<List<AkPV>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
+        {
+            if (tarikhDari == null || tarikhHingga == null || dDaftarAwamId == null)
+            {
+                return new List<AkPV>();
+            }
+
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+
+            var matchingPvIds = await _context.AkPVPenerima
+                .Where(p => p.DDaftarAwamId == dDaftarAwamId)
+                .Select(p => p.AkPVId)
+                .ToListAsync();
+
+            var akPvQuery = _context.AkPV
+                .Include(a => a.AkPVInvois)
+                .ThenInclude(b => b.AkBelian)
+                .Where(a => a.Tarikh >= date1 && a.Tarikh <= date2 && matchingPvIds.Contains(a.Id))
+                .Where(a => a.AkPVInvois.Any(b => b.AkBelian.DDaftarAwamId == dDaftarAwamId && b.AkBelian.NoRujukan != null));
+
+            var akPv = await akPvQuery.ToListAsync();
+
+            return akPv;
         }
 
         // functions
@@ -1186,5 +1470,3 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
     }
 }
-
-

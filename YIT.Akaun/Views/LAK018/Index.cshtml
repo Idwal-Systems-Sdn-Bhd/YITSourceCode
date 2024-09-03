@@ -1,0 +1,128 @@
+﻿@model YIT.Akaun.Models.ViewModels.Forms.PrintFormModel
+
+@{
+    ViewData["Title"] = "LAK018 Laporan Waran Peruntukan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int year = DateTime.Now.Year;
+    DateTime firstDay = new DateTime(year, 1, 1);
+    DateTime lastDay = new DateTime(year, 12, 31);
+}
+
+<script>
+    $(document).ready(function () {
+
+        $("body").on("click", "#btnExportExcel", function () {
+            $(".loading").css("display", "");
+            $("#btnExportExcel").prop('disabled', true);
+
+            var kodLaporan = $("input[name='kodLaporan']:checked").val();
+            var jKWId = $('#jKWId').val();
+            var jBahagianId = $('#jBahagianId').val();
+            var tahun = $('#tahun').val();
+
+            if (kodLaporan != "") {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ExportExcel", "LAK018")',
+                    data: { kodLaporan: kodLaporan, jKWId: jKWId, jBahagianId: jBahagianId, tahun: tahun },
+                    dataType: "json",
+                    success: function (r) {
+                        window.location = "@Url.Action("Download", "Account")?fileGuid=" + r.fileGuid + "&filename=" + r.fileName;
+                        toastr.success("Laporan berjaya dijana.", "Berjaya");
+                        toastr.options.timeOut = 5000; // 2s
+                        $("#btnExportExcel").prop('disabled', false);
+                        $(".loading").css("display", "none");
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<div class="container">
+    <div class="card box-shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <h5 class="text-uppercase text-info mb-0">@ViewData["Title"]</h5>
+                    <span class="ac-ref">Indeks</span>
+                </div>
+                <div class="col-4 text-right"></div>
+            </div>
+            <hr class="mt-2" />
+            <form asp-action="PRINT">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="form-group col-sm">
+                            <div class="custom-control custom-radio pb-2">
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00201" value="LAK00201" checked>
+                                <label class="custom-control-label" for="LAK00201">
+                                    LP026 B : Laporan Waran Peruntukan Mengikut PTJ Pada Tahun Tertentu
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio pb-2">
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00202" value="LAK00202">
+                                <label class="custom-control-label" for="LAK00202">
+                                    LP026 C : Laporan Pindahan Peruntukan
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <label class="form-control-label">Kump. Wang</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <select class="form-control form-control-sm select2" name="jKWId" id="jKWId" asp-items="@ViewBag.JKW"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <label class="form-control-label">Bahagian</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <select class="form-control form-control-sm select2" name="jBahagianId" id="jBahagianId" asp-items="@ViewBag.JBahagian"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <label class="form-control-label">Tahun</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <input class="form-control form-control-sm" type="text" name="tahun" id="tahun" value="@ViewData["tahun"]" required />
+                                    <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="form-group text-right">
+                    <input type="submit" value="Cetak" id="btnCetak" formtarget="_blank" class="btn ac-primary" />
+                    <button type="button" formtarget="_blank" id="btnExportExcel" class="btn ac-info">Jana Excel</button>
+                    <span class="loading" style="padding-right:3px; padding-top: 3px; display:inline-block;">
+                        <img src="~/img/Spinner.gif" style="height:40px;">
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

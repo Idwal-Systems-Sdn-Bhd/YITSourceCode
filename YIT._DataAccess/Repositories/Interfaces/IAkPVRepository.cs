@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YIT.__Domain.Entities._Enums;
+﻿using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT._DataAccess.Repositories.Interfaces
@@ -11,6 +6,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
     public interface IAkPVRepository : _IGenericRepository<AkPV>
     {
         public List<AkPV> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int? akBankId);
+        public List<AkPV> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int? akBankId, int? tunai, int? jKWId, int? dDaftarAwamId);
         public List<AkPV> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan);
         public List<AkPV> FilterByComparingJBahagianAkPVObjekWithJBahagianDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AkPV> akPVList);
         public List<AkPV> FilterByComparingJumlahAkPVWithMinAmountMaxAmountDKonfigKelulusan(int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan, List<AkPV> filterings);
@@ -35,8 +31,11 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public void BatalLulus(int id, string? tindakan, string? userId);
         public void BatalPos(int id, string? tindakan, string? userId);
         public bool HaveAkJanaanProfil(int akJanaanProfilId);
-        Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar(string? tarikhDari, string? tarikhHingga);
-
+        Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar(string? tarikhDari, string? tarikhHingga, int? akBankId, int? tunai);
+        Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar1(string? tarikhDari, string? tarikhHingga);
+        Task<List<AkPV>> GetResultsGroupByTarikh(string? tarikhDari, string? tarikhHingga, int? jKWId);
+        Task<List<AkPV>> GetResultsGroupBySearchString(int? jKWId, string? searchString1, string? searchString2);
+        Task<List<AkPV>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId);
         public bool PVWithoutInvois(AkPV akPV);
         bool PVWithOneInvoisNotAkru(AkPV akPV);
         bool PVWithOneInvoisAkruWithoutPOOrInden(AkPV akPV);

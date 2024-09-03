@@ -1,0 +1,109 @@
+﻿@model LAK011PrintModel
+
+@{
+    ViewData["Title"] = "LAK00201 Laporan Daftar Pesanan Tempatan";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal jumlah = 0;
+}
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0">@ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0">@ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan:  @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
+    </div>
+</div>
+<br />
+<table class="table table-bordered table-sm topic" id="mytable">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th colspan="11" class="text-center bg-dark text-white" style="line-height: 1.8rem;"><strong>DAFTAR PESANAN TEMPATAN DARI TARIKH : @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]</strong></th>
+        </tr>
+        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+            <th>Bil</th>
+            <th>No Pesanan</th>
+            <th>Tarikh</th>
+            <th>Pembekal</th>
+            <th>Jumlah RM</th>
+            <th>Vot</th>
+            <th>Amaun RM</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AkPO != null)
+        {
+            int bil = 0;
+            decimal totalAmaun = 0;
+            string previousNoRujukan = null;
+            bool isFirstRow = true;
+
+            @foreach (var akPO in Model.AkPO)
+            {
+                if (akPO != null)
+                {
+                    if (akPO.NoRujukan != previousNoRujukan)
+                    {
+                        bil++;
+                        jumlah += akPO.Jumlah;
+                        isFirstRow = true;
+                    }
+                    else
+                    {
+                        isFirstRow = false;
+                    }
+
+                    var firstObjek = akPO.AkPOObjek?.FirstOrDefault();
+                    decimal amaun = 0;
+
+                    if (firstObjek != null)
+                    {
+                        amaun = firstObjek.Amaun;
+                        totalAmaun += amaun;
+                    }
+
+                    <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                        <td>@(isFirstRow ? bil.ToString() : "")</td>
+                        <td class="text-uppercase">
+                            @if (isFirstRow)
+                            {
+                                @akPO.NoRujukan
+                            }
+                        </td>
+                        <td>
+                            @if (isFirstRow)
+                            {
+                                @akPO.Tarikh.ToString("dd/MM/yyyy")
+                            }
+                        </td>
+                        <td class="text-uppercase">
+                            @if (isFirstRow)
+                            {
+                                @(akPO.DDaftarAwam?.Kod + " " + akPO.DDaftarAwam?.Nama)
+                            } 
+                         </td>
+                        <td class="text-right">
+                            @if (isFirstRow)
+                            {
+                                @akPO.Jumlah.ToString("#,##0.00")
+                            }
+                         </td>
+                        <td class="text-uppercase">@firstObjek?.AkCarta?.Kod @firstObjek?.AkCarta?.Perihal</td>
+                        <td class="text-right">@firstObjek?.Amaun.ToString("#,##0.00")</td>
+                    </tr>
+
+                    previousNoRujukan = akPO.NoRujukan;
+                }
+            }
+
+            <tr class="font-weight-bold">
+                <td colspan="4" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                <td class="text-right">@jumlah.ToString("#,##0.00")</td>
+                <td colspan="1" class="text-right text-uppercase"></td>
+                <td class="text-right">@totalAmaun.ToString("#,##0.00")</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
