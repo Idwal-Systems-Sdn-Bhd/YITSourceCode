@@ -62,6 +62,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<AkJurnal>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkAnggar>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkNotaDebitKreditDikeluarkan>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<AkTerimaTunggal>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
 
             //
 
@@ -162,6 +163,30 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .HasOne(m => m.JCaraBayar)
                     .WithMany(t => t.AkTerimaCaraBayar)
                     .HasForeignKey(m => m.JCaraBayarId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkTerimaTunggal>()
+                    .HasOne(m => m.JCaraBayar)
+                    .WithMany(t => t.AkTerimaTunggal)
+                    .HasForeignKey(m => m.JCaraBayarId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkTerimaTunggalObjek>()
+                    .HasOne(m => m.AkTerimaTunggal)
+                    .WithMany(t => t.AkTerimaTunggalObjek)
+                    .HasForeignKey(m => m.AkTerimaTunggalId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkTerimaTunggalObjek>()
+                    .HasOne(m => m.AkCarta)
+                    .WithMany(t => t.AkTerimaTunggalObjek)
+                    .HasForeignKey(m => m.AkCartaId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkTerimaTunggalInvois>()
+                    .HasOne(m => m.AkTerimaTunggal)
+                    .WithMany(t => t.AkTerimaTunggalInvois)
+                    .HasForeignKey(m => m.AkTerimaTunggalId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
 
             modelBuilder.Entity<AbBukuVot>()

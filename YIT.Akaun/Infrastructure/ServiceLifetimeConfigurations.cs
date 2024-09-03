@@ -47,6 +47,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddScoped(ss => SessionCartAkNotaDebitKreditDiterima.GetCart(ss));
             services.AddScoped(ss => SessionCartAkInvois.GetCart(ss));
             services.AddScoped(ss => SessionCartAkNotaDebitKreditDikeluarkan.GetCart(ss));
+            services.AddScoped(ss => SessionCartAkTerimaTunggal.GetCart(ss));
 
 
             return services;

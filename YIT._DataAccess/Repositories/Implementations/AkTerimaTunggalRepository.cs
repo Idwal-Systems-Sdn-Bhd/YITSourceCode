@@ -1,0 +1,256 @@
+﻿using Microsoft.EntityFrameworkCore;
+using YIT.__Domain.Entities.Models._03Akaun;
+using YIT._DataAccess.Data;
+using YIT._DataAccess.Repositories.Interfaces;
+
+namespace YIT._DataAccess.Repositories.Implementations
+{
+    public class AkTerimaTunggalRepository : _GenericRepository<AkTerimaTunggal>, IAkTerimaTunggalRepository
+    {
+        private readonly ApplicationDbContext _context;
+
+        public AkTerimaTunggalRepository(ApplicationDbContext context) : base(context)
+        {
+            _context = context;
+        }
+
+        public string GetMaxRefNo(string initNoRujukan, string tahun)
+        {
+            var max = _context.AkTerimaTunggal.Where(pp => pp.Tahun == tahun).OrderByDescending(pp => pp.NoRujukan).ToList();
+
+            if (max != null)
+            {
+                var refNo = max.FirstOrDefault()?.NoRujukan?.Substring(8, 5);
+                return refNo ?? "";
+            }
+            else
+            {
+                return "";
+            }
+        }
+
+
+        public List<AkTerimaTunggal> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy)
+        {
+            if (searchString == null && dateFrom == null && dateTo == null && orderBy == null)
+            {
+                return new List<AkTerimaTunggal>();
+            }
+
+            var akTerimaTunggal = _context.AkTerimaTunggal
+                .IgnoreQueryFilters()
+                .Include(t => t.JKW)
+                .Include(t => t.DPekerjaPosting)
+                .Include(t => t.JNegeri)
+                .Include(t => t.JCawangan)
+                .Include(t => t.AkBank)
+                    .ThenInclude(b => b!.JBank)
+                .Include(t => t.AkBank)
+                    .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkBank)
+                    .ThenInclude(b => b!.AkCarta)
+                .Include(t => t.DDaftarAwam)
+                .Include(tcb => tcb.JCaraBayar)
+                //.Include(t => t.AkTerimaTunggalObjek)!
+                //    .ThenInclude(to => to.AkCarta)
+                //.Include(t => t.AkTerimaTunggalObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JKW)
+                //.Include(t => t.AkTerimaTunggalObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JPTJ)
+                //.Include(t => t.AkTerimaTunggalObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JBahagian)
+                .ToList();
+
+            // searchstring filters
+            if (searchString != null)
+            {
+                akTerimaTunggal = akTerimaTunggal.Where(t => 
+                t.Nama!.Contains(searchString, StringComparison.OrdinalIgnoreCase) 
+                || t.NoRujukan!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            // searchString filters end
+
+            // date filters
+            if (dateFrom != null && dateTo != null)
+            {
+                akTerimaTunggal = akTerimaTunggal.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99)).ToList();
+            }
+            // date filters end
+
+            // order by filters
+            if (orderBy != null)
+            {
+                switch (orderBy)
+                {
+                    case "Nama":
+                        akTerimaTunggal = akTerimaTunggal.OrderBy(t => t.Nama).ToList();
+                        break;
+                    case "Tarikh":
+                        akTerimaTunggal = akTerimaTunggal.OrderBy(t => t.Tarikh).ToList(); break;
+                    default:
+                        akTerimaTunggal = akTerimaTunggal.OrderBy(t => t.NoRujukan).ToList();
+                        break;
+                }
+                    
+            }
+            // order by filters end
+
+            return akTerimaTunggal;
+        }
+
+        public AkTerimaTunggal GetDetailsById(int id)
+        {
+            return _context.AkTerimaTunggal.Include(t => t.JKW)
+                .Include(t => t.DPekerjaPosting)
+                .Include(t => t.JNegeri)
+                .Include(t => t.JCawangan)
+                .Include(t => t.AkBank)
+                    .ThenInclude(b => b!.JBank)
+                .Include(t => t.AkBank)
+                    .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkBank)
+                    .ThenInclude(b => b!.AkCarta)
+                .Include(t => t.DDaftarAwam)
+                .Include(tcb => tcb.JCaraBayar)
+                .Include(t => t.AkTerimaTunggalObjek)!
+                    .ThenInclude(to => to.AkCarta)
+                .Include(t => t.AkTerimaTunggalObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkTerimaTunggalObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JPTJ)
+                .Include(t => t.AkTerimaTunggalObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                        .ThenInclude(b => b!.JBahagian)
+                .Include(t => t.AkTerimaTunggalInvois)!
+                    .ThenInclude(t => t.AkInvois)
+                    .FirstOrDefault(t => t.Id == id) ?? new AkTerimaTunggal();
+        }
+
+        public async Task<bool> IsPostedAsync(int id, string noRujukan)
+        {
+            bool isPosted = await _context.AkTerimaTunggal.AnyAsync(t => t.Id == id && t.FlPosting == 1);
+            if (isPosted)
+            {
+                return true;
+            }
+
+            bool isExistInAkAkaun = await _context.AkAkaun.AnyAsync(t => t.NoRujukan == noRujukan);
+
+            if (isExistInAkAkaun)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void PostingToAkAkaun(AkTerimaTunggal akTerimaTunggal, string userId, int? dPekerjaMasukId)
+        {
+            PostingToAkAnggarLejar(akTerimaTunggal, userId, dPekerjaMasukId);
+
+            List<AkAkaun> akaunList = new List<AkAkaun>();
+            if (akTerimaTunggal.AkTerimaTunggalObjek != null)
+            {
+                foreach (var t in akTerimaTunggal.AkTerimaTunggalObjek)
+                {
+                    var akAkaun1 = new AkAkaun();
+
+                    akAkaun1.JKWId = t.JKWPTJBahagian?.JKWId ?? akTerimaTunggal.JKWId;
+                    akAkaun1.JPTJId = t.JKWPTJBahagian!.JPTJId;
+                    akAkaun1.JBahagianId = t.JKWPTJBahagian.JBahagianId;
+                    akAkaun1.AkCarta1Id = akTerimaTunggal.AkBank!.AkCartaId;
+                    akAkaun1.AkCarta2Id = t.AkCartaId;
+                    akAkaun1.NoRujukan = akTerimaTunggal.NoRujukan;
+                    akAkaun1.Tarikh = akTerimaTunggal.Tarikh;
+                    akAkaun1.Debit = t.Amaun;
+                    akAkaun1.Kredit = 0;
+                    akAkaun1.UserId = userId;
+                    akAkaun1.DPekerjaMasukId = dPekerjaMasukId;
+                    akAkaun1.TarMasuk = DateTime.Now;
+
+                    akaunList.Add(akAkaun1);
+
+                    var akAkaun2 = new AkAkaun();
+
+                    akAkaun2.JKWId = t.JKWPTJBahagian?.JKWId ?? akTerimaTunggal.JKWId;
+                    akAkaun2.JPTJId = t.JKWPTJBahagian!.JPTJId;
+                    akAkaun2.JBahagianId = t.JKWPTJBahagian.JBahagianId;
+                    akAkaun2.AkCarta1Id = t.AkCartaId; 
+                    akAkaun2.AkCarta2Id = akTerimaTunggal.AkBank!.AkCartaId;
+                    akAkaun2.NoRujukan = akTerimaTunggal.NoRujukan;
+                    akAkaun2.Tarikh = akTerimaTunggal.Tarikh;
+                    akAkaun2.Debit = 0;
+                    akAkaun2.Kredit = t.Amaun;
+                    akAkaun2.UserId = userId;
+                    akAkaun2.DPekerjaMasukId = dPekerjaMasukId;
+                    akAkaun2.TarMasuk = DateTime.Now;
+
+                    akaunList.Add(akAkaun2);
+                }
+                
+            }
+
+            _context.AkAkaun.AddRange(akaunList);
+
+            // update akTerimaTunggal posting fields
+            akTerimaTunggal.DPekerjaPostingId = dPekerjaMasukId;
+            akTerimaTunggal.TarikhPosting = DateTime.Now;
+            akTerimaTunggal.FlPosting = 1;
+
+            _context.AkTerimaTunggal.Update(akTerimaTunggal);
+        }
+
+        public void RemovePostingFromAkAkaun(AkTerimaTunggal akTerimaTunggal, string userId)
+        {
+            List<AkAkaun> akaunList = _context.AkAkaun.Where(ak => ak.NoRujukan == akTerimaTunggal.NoRujukan).ToList();
+
+            if (akaunList.Count > 0)
+            {
+                _context.AkAkaun.RemoveRange(akaunList);
+            }
+
+            // update akTerimaTunggal posting fields
+            akTerimaTunggal.DPekerjaPostingId = null;
+            akTerimaTunggal.TarikhPosting = null;
+            akTerimaTunggal.FlPosting = 0;
+
+            akTerimaTunggal.UserIdKemaskini = userId;
+            akTerimaTunggal.TarKemaskini = DateTime.Now;
+
+            _context.AkTerimaTunggal.Update(akTerimaTunggal);
+        }
+
+        public void PostingToAkAnggarLejar(AkTerimaTunggal akTerimaTunggal, string userId, int? dPekerjaMasukId)
+        {
+            List<AkAnggarLejar> anggarList = new List<AkAnggarLejar>();
+            if (akTerimaTunggal.AkTerimaTunggalObjek != null)
+            {
+                foreach (var t in akTerimaTunggal.AkTerimaTunggalObjek)
+                {
+                    var akAnggarLejar = new AkAnggarLejar();
+
+                    akAnggarLejar.Tahun = akTerimaTunggal.Tahun;
+                    akAnggarLejar.NoRujukan = akTerimaTunggal.NoRujukan;
+                    akAnggarLejar.Tarikh = akTerimaTunggal.Tarikh;
+                    akAnggarLejar.JKWPTJBahagianId = t.JKWPTJBahagianId;
+                    akAnggarLejar.AkCartaId = t.AkCartaId;
+                    akAnggarLejar.Amaun = t.Amaun;
+                    akAnggarLejar.Baki = -t.Amaun;
+
+                    anggarList.Add(akAnggarLejar);
+
+                }
+
+            }
+
+            _context.AkAnggarLejar.AddRange(anggarList);
+
+        }
+    }
+}

@@ -219,7 +219,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 switch (jenis)
                 {
                     case "RR":
-                        AkTerima resit = await _unitOfWork.AkTerimaRepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
+                        AkTerimaTunggal resit = await _unitOfWork.AkTerimaTunggalRepo.GetByIdIgnoreQueryFiltersAsync(t => t.NoRujukan == noRujukan);
                         if (resit != null)
                         {
                             penerima.Add(new ListItemViewModel

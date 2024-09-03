@@ -34,6 +34,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public ICollection<AkAkaun>? AkAkaun1 { get; set; }
         public ICollection<AkAkaun>? AkAkaun2 { get; set; }
         public ICollection<AkTerimaObjek>? AkTerimaObjek { get; set; }
+        public ICollection<AkTerimaTunggalObjek>? AkTerimaTunggalObjek { get; set; }
         public ICollection<AbBukuVot>? AbBukuVot { get; set; }
         public ICollection<AbWaranObjek>? AbWaranObjek { get; set; }
         public ICollection<AkPenilaianPerolehanObjek>? AkPenilaianPerolehanObjek { get; set; }
