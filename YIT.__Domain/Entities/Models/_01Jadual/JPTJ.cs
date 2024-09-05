@@ -22,6 +22,7 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public ICollection<JKWPTJBahagian> JKWPTJBahagian { get; set; } = new List<JKWPTJBahagian>();
         public ICollection<AkAkaun> AkAkaun { get; set; } = new List<AkAkaun>();
         public ICollection<AbBukuVot> AbBukuVot { get; set; } = new List<AbBukuVot>();
+        public ICollection<AkPenyataPemungut>? AkPenyataPemungut { get; set; }
 
     }
 }

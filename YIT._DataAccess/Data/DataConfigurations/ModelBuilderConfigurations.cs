@@ -768,6 +768,42 @@ namespace YIT._DataAccess.Data.DataConfigurations
                     .WithMany(t => t.AkNotaDebitKreditDikeluarkan)
                     .HasForeignKey(m => m.JKWId)
                     .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenyataPemungut>()
+                    .HasOne(m => m.JCaraBayar)
+                    .WithMany(t => t.AkPenyataPemungut)
+                    .HasForeignKey(m => m.JCaraBayarId)
+                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenyataPemungut>()
+                   .HasOne(m => m.JCawangan)
+                   .WithMany(t => t.AkPenyataPemungut)
+                   .HasForeignKey(m => m.JCawanganId)
+                   .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenyataPemungut>()
+                   .HasOne(m => m.JPTJ)
+                   .WithMany(t => t.AkPenyataPemungut)
+                   .HasForeignKey(m => m.JPTJId)
+                   .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenyataPemungut>()
+                   .HasOne(m => m.AkBank)
+                   .WithMany(t => t.AkPenyataPemungut)
+                   .HasForeignKey(m => m.AkBankId)
+                   .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenyataPemungutObjek>()
+                   .HasOne(m => m.AkCarta)
+                   .WithMany(t => t.AkPenyataPemungutObjek)
+                   .HasForeignKey(m => m.AkCartaId)
+                   .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenyataPemungutObjek>()
+                   .HasOne(m => m.AkTerimaTunggal)
+                   .WithMany(t => t.AkPenyataPemungutObjek)
+                   .HasForeignKey(m => m.AkTerimaTunggalId)
+                   .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
         }
     }
 }

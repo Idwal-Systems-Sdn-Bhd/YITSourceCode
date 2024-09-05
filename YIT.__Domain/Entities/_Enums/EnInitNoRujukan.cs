@@ -55,6 +55,8 @@ namespace YIT.__Domain.Entities._Enums
         JP = 22, // Janaan Profil
         [Display(Name = "AH")]
         AH = 23, // Anggaran Hasil
+        [Display(Name = "PP")]
+        PP = 24, // Penyata Pemungut
 
     }
 }

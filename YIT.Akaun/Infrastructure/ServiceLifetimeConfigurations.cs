@@ -48,6 +48,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddScoped(ss => SessionCartAkInvois.GetCart(ss));
             services.AddScoped(ss => SessionCartAkNotaDebitKreditDikeluarkan.GetCart(ss));
             services.AddScoped(ss => SessionCartAkTerimaTunggal.GetCart(ss));
+            services.AddScoped(ss => SessionCartAkPenyataPemungut.GetCart(ss));
 
 
             return services;
@@ -304,6 +305,14 @@ namespace YIT.Akaun.Infrastructure
                 opt.AddPolicy(Modules.kodAkAnggar + "R", policy => policy.RequireClaim(Modules.kodAkAnggar + "R"));
                 opt.AddPolicy(Modules.kodAkAnggar + "L", policy => policy.RequireClaim(Modules.kodAkAnggar + "L"));
                 opt.AddPolicy(Modules.kodAkAnggar + "BL", policy => policy.RequireClaim(Modules.kodAkAnggar + "BL"));
+
+                opt.AddPolicy(Modules.kodAkPenyataPemungut, policy => policy.RequireClaim(Modules.kodAkPenyataPemungut));
+                opt.AddPolicy(Modules.kodAkPenyataPemungut + "C", policy => policy.RequireClaim(Modules.kodAkPenyataPemungut + "C"));
+                opt.AddPolicy(Modules.kodAkPenyataPemungut + "E", policy => policy.RequireClaim(Modules.kodAkPenyataPemungut + "E"));
+                opt.AddPolicy(Modules.kodAkPenyataPemungut + "D", policy => policy.RequireClaim(Modules.kodAkPenyataPemungut + "D"));
+                opt.AddPolicy(Modules.kodAkPenyataPemungut + "R", policy => policy.RequireClaim(Modules.kodAkPenyataPemungut + "R"));
+                opt.AddPolicy(Modules.kodAkPenyataPemungut + "L", policy => policy.RequireClaim(Modules.kodAkPenyataPemungut + "L"));
+                opt.AddPolicy(Modules.kodAkPenyataPemungut + "BL", policy => policy.RequireClaim(Modules.kodAkPenyataPemungut + "BL"));
 
                 //
 

@@ -444,6 +444,19 @@ namespace YIT.Akaun.Controllers._03Akaun
                                 return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
                             }
 
+                            // check is it linked with akPenyataPemungut
+                            if (akTerimaTunggal.AkTerimaTunggalObjek != null)
+                            {
+                                foreach (var item in akTerimaTunggal.AkTerimaTunggalObjek)
+                                {
+                                    if (_unitOfWork.AkTerimaTunggalRepo.IsLinkedWithAkPenyataPemungut(item))
+                                    {
+                                        
+                                        TempData[SD.Error] = "Data terkait dengan penyata pemungut";
+                                        return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
+                                    }
+                                }
+                            }
                             // posting start here
                             _unitOfWork.AkTerimaTunggalRepo.RemovePostingFromAkAkaun(akTerimaTunggal, user?.UserName ?? "");
 
@@ -648,7 +661,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 var jkwPtjBahagian = _unitOfWork.JKWPTJBahagianRepo.GetById(JKWPTJBahagianId);
                 if (jkwPtjBahagian == null)
                 {
-                    return Json(new { result = "Error", message = "Kod akaun tidak wujud" });
+                    return Json(new { result = "Error", message = "Kod tidak wujud" });
                 }
 
                 var akCarta = _unitOfWork.AkCartaRepo.GetById(AkCartaId);

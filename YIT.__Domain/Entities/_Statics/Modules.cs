@@ -130,6 +130,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodAkNotaDebitKreditDikeluarkan = "AK0022";
         public const string namaAkNotaDebitKreditDikeluarkan = "Pelarasan Nota Debit Kredit Dikeluarkan";
+
+        public const string kodAkPenyataPemungut = "AK0023";
+        public const string namaAkPenyataPemungut = "Terimaan Penyata Pemungut";
         //
 
         // Pemprosesan (PP)

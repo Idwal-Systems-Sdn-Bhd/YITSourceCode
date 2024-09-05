@@ -10,8 +10,6 @@ namespace YIT.__Domain.Entities._Enums
         Tempatan = 2,
         [Display(Name = "Luar")]
         Luar = 3,
-        [Display(Name = "Tiada")]
-        Tiada = 99,
         [Display(Name = "Lain-lain")]
         LainLain = 0
     }

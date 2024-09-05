@@ -53,6 +53,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         IAkNotaDebitKreditDiterimaRepository AkNotaDebitKreditDiterimaRepo { get; }
         IAkNotaDebitKreditDikeluarkanRepository AkNotaDebitKreditDikeluarkanRepo { get; }
         IAkTerimaTunggalRepository AkTerimaTunggalRepo { get; }
+        IAkPenyataPemungutRepository AkPenyataPemungutRepo { get; }
         Task<int> Save();
     }
 }

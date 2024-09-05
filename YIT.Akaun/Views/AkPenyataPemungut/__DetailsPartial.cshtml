@@ -1,0 +1,115 @@
+﻿@model AkPenyataPemungut
+
+<div class="row mb-2">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="NoRujukan" class="control-label"></label>
+            <input asp-for="NoRujukan" class="form-control form-control-sm" readonly />
+            <span asp-validation-for="NoRujukan" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="Tahun" class="control-label"></label>
+            <input class="form-control form-control-sm" asp-for="Tahun" readonly />
+            <span asp-validation-for="Tahun" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="Tarikh" class="control-label"></label>
+            <input asp-for="Tarikh" class="form-control form-control-sm" readonly />
+            <span asp-validation-for="Tarikh" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="NoSlip" class="control-label"></label>
+            <input asp-for="NoSlip" class="form-control form-control-sm" readonly />
+            <span asp-validation-for="NoRujukan" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="JPTJId" class="control-label"></label>
+            <input value="@Model.JPTJ?.Kod - @Model.JPTJ?.Perihal" class="form-control form-control-sm" readonly />
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="JCawanganId" class="control-label"></label>
+            <input value="@Model.JCawangan?.Kod - @Model.JCawangan?.Perihal" class="form-control form-control-sm" readonly />
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="AkBankId" class="control-label"></label>
+            <input value="@Model.AkBank?.Kod - @Model.AkBank?.Perihal" class="form-control form-control-sm" readonly />
+
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label asp-for="JCaraBayarId" class="control-label"></label>
+            <input value="@Model.JCaraBayar?.Kod - @Model.JCaraBayar?.Perihal" class="form-control form-control-sm" readonly />
+        </div>
+    </div>
+</div>
+<div class="form-group" id="divJenisCek" @ViewBag.DivJenisCek>
+    <label asp-for="EnJenisCek" class="control-label"></label>
+    <input value="@Model.EnJenisCek.GetDisplayName()" class="form-control form-control-sm text-uppercase" readonly />
+</div>
+<br />
+<br />
+
+@*table Objek*@
+<div class="card box-shadow mb-3">
+    <div class="card-header">
+        <h6>Objek</h6>
+    </div>
+    <div class="card-body">
+        <table id="tblObjek" class="table table-sm nowrap" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th width="10%">Bil</th>
+                    <th width="20%">Tarikh</th>
+                    <th width="20%">No Resit</th>
+                    <th style="width:20%">Bahagian</th>
+                    <th style="width:20%">Kod</th>
+                    <th style="width:10%">Amaun RM</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyObjek">
+                @if (ViewBag.akPenyataPemungutObjek != null)
+                {
+                    foreach (var item in ViewBag.akPenyataPemungutObjek)
+                    {
+                        <tr>
+                            <td>@item.Bil</td>
+                            <td>@item.AkTerimaTunggal.Tarikh.ToString("dd/MM/yyyy")</td>
+                            <td>@item.AkTerimaTunggal.NoRujukan</td>
+                            <td hidden>@item.JKWPTJBahagianId</td>
+                            <td class="text-uppercase">@item.JKWPTJBahagian.Kod - @item.JKWPTJBahagian.JBahagian?.Perihal (@item.JKWPTJBahagian.JPTJ?.Perihal)</td>
+                            <td hidden>@item.AkCartaId</td>
+                            <td class="text-uppercase">@item.AkCarta?.Kod</td>
+                            <td class="text-end">@Convert.ToDecimal(item.Amaun).ToString("#,##0.00")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer">
+        <div class="form-group">
+            <label asp-for="Jumlah" class="control-label">Jumlah RM</label>
+            <input asp-for="Jumlah" class="form-control form-control-sm" readonly />
+        </div>
+    </div>
+</div>
+@*table Objek end*@

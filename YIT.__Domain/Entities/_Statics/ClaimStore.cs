@@ -11,14 +11,6 @@ namespace YIT.__Domain.Entities._Statics
     {
         public static List<Claim> claimList = new List<Claim>()
         {
-            // Akaun (AK)
-            new Claim(Modules.kodAkAnggar,Modules.namaAkAnggar),
-            new Claim(Modules.kodAkAnggar + "C",Modules.namaAkAnggar + " : Tambah"),
-            new Claim(Modules.kodAkAnggar + "E",Modules.namaAkAnggar + " : Ubah"),
-            new Claim(Modules.kodAkAnggar + "D",Modules.namaAkAnggar + " : Hapus"),
-            new Claim(Modules.kodAkAnggar + "R",Modules.namaAkAnggar + " : Rollback"),
-            new Claim(Modules.kodAkAnggar + "L",Modules.namaAkAnggar + " : Lulus"),
-            new Claim(Modules.kodAkAnggar + "BL",Modules.namaAkAnggar + " : Batal Lulus"),
             // Sistem (SI)
             
             //
@@ -124,6 +116,14 @@ namespace YIT.__Domain.Entities._Statics
             //
 
             // Akaun (AK)
+            new Claim(Modules.kodAkAnggar,Modules.namaAkAnggar),
+            new Claim(Modules.kodAkAnggar + "C",Modules.namaAkAnggar + " : Tambah"),
+            new Claim(Modules.kodAkAnggar + "E",Modules.namaAkAnggar + " : Ubah"),
+            new Claim(Modules.kodAkAnggar + "D",Modules.namaAkAnggar + " : Hapus"),
+            new Claim(Modules.kodAkAnggar + "R",Modules.namaAkAnggar + " : Rollback"),
+            new Claim(Modules.kodAkAnggar + "L",Modules.namaAkAnggar + " : Lulus"),
+            new Claim(Modules.kodAkAnggar + "BL",Modules.namaAkAnggar + " : Batal Lulus"),
+
             new Claim(Modules.kodAbWaran,Modules.namaAbWaran),
             new Claim(Modules.kodAbWaran + "C",Modules.namaAbWaran + " : Tambah"),
             new Claim(Modules.kodAbWaran + "E",Modules.namaAbWaran + " : Ubah"),
@@ -259,6 +259,14 @@ namespace YIT.__Domain.Entities._Statics
             new Claim(Modules.kodAkNotaDebitKreditDikeluarkan + "R",Modules.namaAkNotaDebitKreditDikeluarkan + " : Rollback"),
             new Claim(Modules.kodAkNotaDebitKreditDikeluarkan + "L",Modules.namaAkNotaDebitKreditDikeluarkan + " : Lulus"),
             new Claim(Modules.kodAkNotaDebitKreditDikeluarkan + "BL",Modules.namaAkNotaDebitKreditDikeluarkan + " : Batal Lulus"),
+
+            new Claim(Modules.kodAkPenyataPemungut,Modules.namaAkPenyataPemungut),
+            new Claim(Modules.kodAkPenyataPemungut + "C",Modules.namaAkPenyataPemungut + " : Tambah"),
+            new Claim(Modules.kodAkPenyataPemungut + "E",Modules.namaAkPenyataPemungut + " : Ubah"),
+            new Claim(Modules.kodAkPenyataPemungut + "D",Modules.namaAkPenyataPemungut + " : Hapus"),
+            new Claim(Modules.kodAkPenyataPemungut + "R",Modules.namaAkPenyataPemungut + " : Rollback"),
+            new Claim(Modules.kodAkPenyataPemungut + "L",Modules.namaAkPenyataPemungut + " : Lulus"),
+            new Claim(Modules.kodAkPenyataPemungut + "BL",Modules.namaAkPenyataPemungut + " : Batal Lulus"),
             //
 
             // Pemprosesan (PP)

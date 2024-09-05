@@ -73,6 +73,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             AkNotaDebitKreditDikeluarkanRepo = new AkNotaDebitKreditDikeluarkanRepository(_context);
 
             AkTerimaTunggalRepo = new AkTerimaTunggalRepository(_context);
+            AkPenyataPemungutRepo = new AkPenyataPemungutRepository(_context);
 
         }
 
@@ -157,6 +158,8 @@ namespace YIT._DataAccess.Repositories.Implementations
         public IAkNotaDebitKreditDikeluarkanRepository AkNotaDebitKreditDikeluarkanRepo { get; }
 
         public IAkTerimaTunggalRepository AkTerimaTunggalRepo { get; }
+
+        public IAkPenyataPemungutRepository AkPenyataPemungutRepo { get; }
 
         public void Dispose()
         {

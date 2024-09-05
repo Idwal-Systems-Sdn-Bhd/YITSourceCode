@@ -74,5 +74,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
 
         public ICollection<AkTerimaTunggalObjek>? AkTerimaTunggalObjek { get; set; }
         public ICollection<AkTerimaTunggalInvois>? AkTerimaTunggalInvois { get; set; }
+        public ICollection<AkPenyataPemungutObjek>? AkPenyataPemungutObjek { get; set; }
     }
 }
