@@ -15,5 +15,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public void PostingToAkAkaun(AkTerimaTunggal akTerimaTunggal,string userId, int? dPekerjaMasukId);
         public void RemovePostingFromAkAkaun(AkTerimaTunggal akTerimaTunggal,string userId);
         string GetMaxRefNo(string initNoRujukan, string tahun);
+        bool IsLinkedWithAkPenyataPemungut(AkTerimaTunggalObjek objek);
     }
 }

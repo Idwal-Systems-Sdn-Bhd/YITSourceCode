@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
@@ -56,8 +57,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                 //.Include(t => t.AkTerimaTunggalObjek)!
                 //    .ThenInclude(to => to.JKWPTJBahagian)
                 //        .ThenInclude(b => b!.JKW)
-                //.Include(t => t.AkTerimaTunggalObjek)!
-                //    .ThenInclude(to => to.JKWPTJBahagian)
+                .Include(t => t.AkTerimaTunggalObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
                 //        .ThenInclude(b => b!.JPTJ)
                 //.Include(t => t.AkTerimaTunggalObjek)!
                 //    .ThenInclude(to => to.JKWPTJBahagian)
@@ -173,6 +174,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                     akAkaun1.UserId = userId;
                     akAkaun1.DPekerjaMasukId = dPekerjaMasukId;
                     akAkaun1.TarMasuk = DateTime.Now;
+                    akAkaun1.NoSlip = akTerimaTunggal.NoSlip;
+                    akAkaun1.TarikhSlip = akTerimaTunggal.TarikhSlip;
 
                     akaunList.Add(akAkaun1);
 
@@ -190,6 +193,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                     akAkaun2.UserId = userId;
                     akAkaun2.DPekerjaMasukId = dPekerjaMasukId;
                     akAkaun2.TarMasuk = DateTime.Now;
+                    akAkaun2.NoSlip = akTerimaTunggal.NoSlip;
+                    akAkaun2.TarikhSlip = akTerimaTunggal.TarikhSlip;
 
                     akaunList.Add(akAkaun2);
                 }
@@ -202,6 +207,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             akTerimaTunggal.DPekerjaPostingId = dPekerjaMasukId;
             akTerimaTunggal.TarikhPosting = DateTime.Now;
             akTerimaTunggal.FlPosting = 1;
+            akTerimaTunggal.EnStatusBorang = EnStatusBorang.Lulus;
 
             _context.AkTerimaTunggal.Update(akTerimaTunggal);
         }
@@ -219,6 +225,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             akTerimaTunggal.DPekerjaPostingId = null;
             akTerimaTunggal.TarikhPosting = null;
             akTerimaTunggal.FlPosting = 0;
+            akTerimaTunggal.EnStatusBorang = EnStatusBorang.None;
 
             akTerimaTunggal.UserIdKemaskini = userId;
             akTerimaTunggal.TarKemaskini = DateTime.Now;
@@ -251,6 +258,27 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             _context.AkAnggarLejar.AddRange(anggarList);
 
+        }
+
+
+        public bool IsLinkedWithAkPenyataPemungut(AkTerimaTunggalObjek objek)
+        {
+            var akPenyataPemungutObjek = _context.AkPenyataPemungutObjek
+                .Include(tto => tto.AkPenyataPemungut)
+                .Include(tto => tto.AkTerimaTunggal)
+                    .ThenInclude(tt => tt!.AkTerimaTunggalObjek)
+                .Where(o => o.AkTerimaTunggalId == objek.AkTerimaTunggalId && o.JKWPTJBahagianId == objek.JKWPTJBahagianId && o.AkCartaId == objek.AkCartaId 
+                && o.AkPenyataPemungut!.FlHapus == 0 && o.AkPenyataPemungut.FlBatal == 0)
+                .FirstOrDefault();
+
+            if (akPenyataPemungutObjek != null && akPenyataPemungutObjek.AkPenyataPemungut != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
