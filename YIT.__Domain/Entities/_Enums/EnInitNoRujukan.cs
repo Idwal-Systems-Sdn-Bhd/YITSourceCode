@@ -57,6 +57,8 @@ namespace YIT.__Domain.Entities._Enums
         AH = 23, // Anggaran Hasil
         [Display(Name = "PP")]
         PP = 24, // Penyata Pemungut
+        [Display(Name = "PB")]
+        PB = 25, // Penyesuaian Bank
 
     }
 }

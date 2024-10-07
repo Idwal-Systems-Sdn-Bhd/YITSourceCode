@@ -29,5 +29,17 @@ namespace YIT._DataAccess.Services
             }
             await Task.CompletedTask;
         }
+
+        public async Task BeforeSave(ITriggerContext<IGenericTransactionFields> context, CancellationToken cancellationToken)
+        {
+            if (context.ChangeType == ChangeType.Deleted)
+            {
+                var entry = _context.Entry(context.Entity);
+                context.Entity.TarHapus = DateTime.UtcNow;
+                context.Entity.FlHapus = 1;
+                entry.State = EntityState.Modified;
+            }
+            await Task.CompletedTask;
+        }
     }
 }

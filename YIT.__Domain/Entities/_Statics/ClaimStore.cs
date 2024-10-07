@@ -267,6 +267,14 @@ namespace YIT.__Domain.Entities._Statics
             new Claim(Modules.kodAkPenyataPemungut + "R",Modules.namaAkPenyataPemungut + " : Rollback"),
             new Claim(Modules.kodAkPenyataPemungut + "L",Modules.namaAkPenyataPemungut + " : Lulus"),
             new Claim(Modules.kodAkPenyataPemungut + "BL",Modules.namaAkPenyataPemungut + " : Batal Lulus"),
+
+            new Claim(Modules.kodAkPenyesuaianBank,Modules.namaAkPenyesuaianBank),
+            new Claim(Modules.kodAkPenyesuaianBank + "C",Modules.namaAkPenyesuaianBank + " : Tambah"),
+            new Claim(Modules.kodAkPenyesuaianBank + "E",Modules.namaAkPenyesuaianBank + " : Ubah"),
+            new Claim(Modules.kodAkPenyesuaianBank + "D",Modules.namaAkPenyesuaianBank + " : Hapus"),
+            new Claim(Modules.kodAkPenyesuaianBank + "R",Modules.namaAkPenyesuaianBank + " : Rollback"),
+            new Claim(Modules.kodAkPenyesuaianBank + "L",Modules.namaAkPenyesuaianBank + " : Lulus"),
+            new Claim(Modules.kodAkPenyesuaianBank + "BL",Modules.namaAkPenyesuaianBank + " : Batal Lulus"),
             //
 
             // Pemprosesan (PP)

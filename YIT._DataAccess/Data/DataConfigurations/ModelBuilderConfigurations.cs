@@ -63,6 +63,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
             modelBuilder.Entity<AkAnggar>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkNotaDebitKreditDikeluarkan>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
             modelBuilder.Entity<AkTerimaTunggal>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
+            modelBuilder.Entity<AkPenyesuaianBank>().HasQueryFilter(m => EF.Property<int>(m, "FlHapus") == 0);
 
             //
 
@@ -804,6 +805,37 @@ namespace YIT._DataAccess.Data.DataConfigurations
                    .WithMany(t => t.AkPenyataPemungutObjek)
                    .HasForeignKey(m => m.AkTerimaTunggalId)
                    .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenyesuaianBank>()
+                  .HasOne(m => m.AkBank)
+                  .WithMany(t => t.AkPenyesuaianBank)
+                  .HasForeignKey(m => m.AkBankId)
+                  .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkPenyesuaianBank>()
+                  .HasOne(m => m.AkBank)
+                  .WithMany(t => t.AkPenyesuaianBank)
+                  .HasForeignKey(m => m.AkBankId)
+                  .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+
+            modelBuilder.Entity<AkPenyesuaianBankPenyataBank>()
+                 .HasOne(m => m.AkPenyesuaianBank)
+                 .WithMany(t => t.AkPenyesuaianBankPenyataBank)
+                 .HasForeignKey(m => m.AkPenyesuaianBankId)
+                 .OnDelete(DeleteBehavior.ClientCascade).IsRequired(false);
+
+            modelBuilder.Entity<AkAkaunPenyataBank>()
+                  .HasOne(m => m.AkAkaun)
+                  .WithMany(t => t.AkAkaunPenyataBank)
+                  .HasForeignKey(m => m.AkAkaunId)
+                  .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
+
+            modelBuilder.Entity<AkAkaunPenyataBank>()
+                  .HasOne(m => m.JCaraBayar)
+                  .WithMany(t => t.AkAkaunPenyataBank)
+                  .HasForeignKey(m => m.JCaraBayarId)
+                  .OnDelete(DeleteBehavior.Restrict).IsRequired(false);
         }
     }
 }

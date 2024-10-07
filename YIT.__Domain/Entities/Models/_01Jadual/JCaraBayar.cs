@@ -23,6 +23,7 @@ namespace YIT.__Domain.Entities.Models._01Jadual
         public ICollection<AkEFTPenerima>? AkEFTPenerima { get; set; }
         public ICollection<DPenerimaCekGaji>? DPenerimaCekGaji {  get; set; }
         public ICollection<AkPenyataPemungut>? AkPenyataPemungut {  get; set; }
+        public ICollection<AkAkaunPenyataBank>? AkAkaunPenyataBank { get; set; }
 
     }
 }

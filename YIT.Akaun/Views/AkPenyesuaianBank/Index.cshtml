@@ -1,0 +1,142 @@
+﻿@model IEnumerable<AkPenyesuaianBank>
+
+@{
+    ViewData["Title"] = "Penyata Penyesuaian Bank";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<partial name="_JSIndex" />
+
+<div class="card box-shadow">
+    <div class="loading">
+        <img class="loading-image" src="~/img/loading.gif" alt="Loading..." />
+    </div>
+    <div class="card card-body border main-page" hidden>
+        <partial name="~/Views/Partials/Common/_TitleIndexPartial.cshtml" />
+
+        <partial name="~/Views/Partials/Common/_SearchTransaksiPartial.cshtml" />
+
+        @if (Model != null && Model.Count() > 0)
+        {
+            <div class="table-responsive">
+                <table id="table" class="table table-hover compact" width="100%">
+                    <caption>Rekod dipamerkan : @Model.Count()</caption>
+                    <thead class="table-secondary">
+                        <tr>
+                            <th width="5%">Bil</th>
+                            <th class="kod" width="10%">
+                                No Rujukan
+                            </th>
+                            <th>
+                                Tahun
+                            </th>
+                            <th>
+                                Bulan
+                            </th>
+                            <th>
+                                No Akaun
+                            </th>
+                            <th>
+                                Bank
+                            </th>
+                            <th>
+                                Baki Penyata RM
+                            </th>
+                            <th>
+                                Tarikh Kunci
+                            </th>
+                            <th width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var tabletype = item.FlHapus == 1 ? "table-danger" : null;
+                            <tr class="@tabletype text-uppercase">
+                                <td></td>
+                                <td class="text-uppercase">
+                                    @item.NoRujukan
+                                </td>
+                                <td class="text-uppercase">
+                                    @item.Tahun
+                                </td>
+                                <td class="text-uppercase">
+                                    @item.Bulan
+                                </td>
+                                <td class="text-uppercase">
+                                    @item.AkBank?.NoAkaun
+                                </td>
+                                <td class="text-uppercase">
+                                    @item.AkBank?.Kod - @item.AkBank?.Perihal
+                                </td>
+                                <td class="text-uppercase text-end">
+                                    @Convert.ToDecimal(item.BakiPenyata).ToString("#,##0.00")
+                                </td>
+                                <td class="text-uppercase text-end">
+                                    @item.TarikhKunci?.ToString("dd/MM/yyyy")
+                                </td>
+                                <td width="5%" class="text-center">
+                                    <div class="btn-group" role="group" aria-label="action">
+                                        @if (item.FlHapus == 0)
+                                        {
+                                            <a asp-action="Details" asp-route-id="@item.Id"
+                                               class="btn text-primary btn-sm bg-white" 
+                                               data-toggle="tooltip" data-placement="top"
+                                               title="Ubah/Papar"><i class="fas fa-edit"></i></a>
+                                            @if (item.IsKunci == false)
+                                            {
+                                                @if (item.IsMuatNaik == true)
+                                                {
+                                                    <a asp-action="Reconcile" asp-route-id="@item.Id" asp-route-syscode="SPPB"
+                                                       class="btn text-secondary btn-sm bg-white" 
+                                                       data-toggle="tooltip" data-placement="top"
+                                                       title="Penyesuaian Bank"><i class="fa-solid fa-clipboard-check"></i></a>
+                                                    <a asp-action="Locking" asp-route-id="@item.Id" asp-route-syscode="SPPB"
+                                                       class="btn text-success btn-sm bg-white" 
+                                                       data-toggle="tooltip" data-placement="top"
+                                                       title="Kunci Penyata"><i class="fa-solid fa-lock"></i></a>
+
+                                                }
+                                                else
+                                                {
+                                                    <a asp-action="Upload" asp-route-id="@item.Id" asp-route-syscode="SPPB"
+                                                       class="btn text-secondary btn-sm bg-white" 
+                                                       data-toggle="tooltip" data-placement="top"
+                                                       title="Muat Naik Fail"><i class="fas fa-upload"></i></a>
+                                                }
+
+
+                                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                                   class="btn text-danger btn-sm bg-white" 
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Hapus"><i class="fas fa-trash"></i></a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-action="Unlocking" asp-route-id="@item.Id" asp-route-syscode="SPPB"
+                                                   class="btn text-secondary btn-sm bg-white" 
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Buka Kunci"><i class="fa-solid fa-lock-open"></i></a>
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            if (User.IsInRole("Supervisor") || User.IsInRole("SuperAdmin"))
+                                            {
+                                                <a asp-action="Rollback" asp-route-id="@item.Id" asp-route-syscode="SPPB" class="btn text-info btn-sm bg-white" data-toggle="tooltip" data-placement="top" title="Rollback">
+                                                    <i class="fas fa-trash-restore"></i>
+                                                </a>
+
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </div>
+</div>

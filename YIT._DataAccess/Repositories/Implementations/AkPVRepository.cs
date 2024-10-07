@@ -667,6 +667,38 @@ namespace YIT._DataAccess.Repositories.Implementations
                         }
                     }
                 }
+                else
+                {
+                    foreach (var item in akPV.AkPVObjek)
+                    {
+                        AkAkaun akAkaun1 = new AkAkaun()
+                        {
+                            JKWId = akPV.JKWId,
+                            JPTJId = item.JKWPTJBahagian?.JPTJId,
+                            JBahagianId = item.JKWPTJBahagian?.JBahagianId,
+                            NoRujukan = akPV.NoRujukan,
+                            Tarikh = akPV.Tarikh,
+                            AkCarta1Id = akPV.AkBank!.AkCartaId,
+                            AkCarta2Id = item.AkCartaId,
+                            Kredit = item.Amaun
+                        };
+                        akAkaunList.Add(akAkaun1);
+
+                        AkAkaun akAkaun2 = new AkAkaun()
+                        {
+                            JKWId = akPV.JKWId,
+                            JPTJId = item.JKWPTJBahagian?.JPTJId,
+                            JBahagianId = item.JKWPTJBahagian?.JBahagianId,
+                            NoRujukan = akPV.NoRujukan,
+                            Tarikh = akPV.Tarikh,
+                            AkCarta1Id = item.AkCartaId,
+                            AkCarta2Id = akPV.AkBank?.AkCartaId,
+                            Debit = item.Amaun
+                        };
+
+                        akAkaunList.Add(akAkaun2);
+                    }
+                }
 
                 _context.AkAkaun.AddRange(akAkaunList);
             }
@@ -952,6 +984,13 @@ namespace YIT._DataAccess.Repositories.Implementations
         public bool HaveAkJanaanProfil(int akJanaanProfilId)
         {
             return _context.AkPV.Any(pv => pv.AkJanaanProfilId == akJanaanProfilId);
+        }
+
+        public List<AkPVPenerima> GetAkPVPenerimaByAkPVId(int Id)
+        {
+            List<AkPVPenerima> data = _context.AkPVPenerima.Include(ppo => ppo.JCaraBayar).Where(ppo => ppo.AkPVId == Id).ToList();
+
+            return data;
         }
 
         public async Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar(string? tarikhDari, string? tarikhHingga, int? akBankId, int? tunai)

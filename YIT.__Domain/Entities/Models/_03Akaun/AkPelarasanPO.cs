@@ -14,6 +14,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
     public class AkPelarasanPO : GenericTransactionFields
     {
         public int Id { get; set; }
+        [DisplayName("Tahun Belanjawan")]
         public string? Tahun { get; set; }
         [DisplayName("No Rujukan")]
         public string? NoRujukan { get; set; }

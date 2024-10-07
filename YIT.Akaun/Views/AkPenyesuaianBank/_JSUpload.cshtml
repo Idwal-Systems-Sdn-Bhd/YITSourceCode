@@ -1,0 +1,172 @@
+﻿<script type="text/javascript">
+    var tblPenyataBank;
+
+    $(document).ready(function () {
+        tblPenyataBank = $('#tblPenyataBank').DataTable({
+            "paging": false,
+            rowReorder: false,
+            columnDefs: [
+                { orderable: false, targets: '_all' }
+            ],
+            "scrollY": "30vh",
+            "scrollX": true,
+            "scrollCollapse": false,
+            "paging": false,
+            dom: 'lrt'
+        }).draw();
+
+        tblPenyataBank.on('order.dt search.dt', function () {
+            tblPenyataBank.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+                cell.innerHTML = i + 1;
+            });
+        }).draw();
+
+    });
+
+    function Upload() {
+        var fileInput = $('#NamaFail');
+        $("#loading").prop('hidden', false);
+        $("#upload").prop('hidden', true);
+        EmptyCart();
+
+        if (!window.FileReader) {
+            alert('Pelayar anda tidak disokong')
+        }
+        var input = fileInput.get(0);
+
+        // Create a reader object
+        var reader = new FileReader();
+        if (input.files.length) {
+            var textFile = input.files[0];
+            reader.readAsText(textFile);
+            $(reader).on('load', processFile);
+        } else {
+            alert('Sila muat naik fail dahulu')
+            $("#upload").prop('hidden', false);
+            $("#loading").prop('hidden', true);
+            
+        }
+    }
+
+    //empty cart
+    function EmptyCart() {
+        $.ajax({
+            type: "POST",
+            //url: "/AkPV/JsonEmptyCart",
+            url: '@Url.Action("EmptyCart", "AkPenyesuaianBank")',
+            dataType: "json",
+            success: function (msg) {
+                $("table tbody#tbodyPenyataBank").empty();
+            },
+            error: function (req, status, error) {
+                alert(error);
+                $("#upload").prop('hidden', false);
+                $("#loading").prop('hidden', true);
+            }
+        });
+    };
+    //empty cart end
+
+    function processFile(e) {
+
+        var id = $("#Id").val();
+        var akBankId = $("#AkBankId").val();
+        var sum = 0;
+        var bil = 1;
+
+        var file = e.target.result,
+            results;
+        if (file && file.length) {
+            results = file.split("\n");
+            //console.log(results);
+
+            arr = [];
+            $.each(results, function (i, item) {
+                if (results[i] != "") {
+                    item = item.replaceArray(["\r"], [""]);
+                    arr.push(item);
+                }
+            });
+
+            var jsonData = JSON.stringify(arr);
+
+            //console.log(arr);
+            $.ajax({
+                type: "POST",
+                //url: "/AkPV/JsonEmptyCart",
+                url: '@Url.Action("UploadBankStatement", "AkPenyesuaianBank")',
+                data: { jsonData, akPenyesuaianBankId: id, akBankId },
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.result == "OK") {
+                        // empty selection
+                        PopulateTablesFromCart();
+                    }
+                    else {
+                        toastr.error(msg.message);
+                        toastr.options.timeOut = 2000; // 2s
+                        $("#upload").prop('hidden', false);
+                        $("#loading").prop('hidden', true);
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                    $("#upload").prop('hidden', false);
+                    $("#loading").prop('hidden', true);
+                }
+            });
+        }
+    }
+
+    function PopulateTablesFromCart() {
+        var jumlah = $("#BakiPenyata");
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAllItemCartAkPenyesuaianBank", "AkPenyesuaianBank")',
+            data: {isPadan: false},
+            dataType: "json",
+            success: function (r) {
+
+                //refresh updated table penyata
+                $("table tbody#tbodyPenyataBank").empty();
+                var sum = 0;
+
+                if (r.penyataBank.length > 0) {
+                    for (var i = 0; i < r.penyataBank.length; i++) {
+                        var item1 = r.penyataBank[i];
+                        var str = "<tr><td>" + item1.bil +
+                            "</td><td class='text-uppercase'>" + item1.indeks +
+                            "</td><td class='text-uppercase'>" + item1.noAkaunBank +
+                            "</td><td >" + showDate(item1.tarikh) +
+                            "</td><td class='text-uppercase'>" + item1.kodTransaksi +
+                            "</td><td class='text-uppercase'>" + item1.perihalTransaksi +
+                            "</td><td class='text-uppercase'>" + item1.noDokumen +
+                            "</td><td class='text-end'>" + (item1.debit).toFixed(2) +
+                            "</td><td class='text-end'>" + (item1.kredit).toFixed(2) +
+                            "</td><td class='text-end'>" + (item1.baki).toFixed(2) +
+                            "</td><td>" + item1.signDebitKredit +
+                            "</td><tr>";
+                        $("table tbody#tbodyPenyataBank").append(str);
+                        sum = item1.baki;
+                    }
+                }
+
+                jumlah.val(sum.toFixed(2));
+                $("#upload").prop('hidden', false);
+                $("#loading").prop('hidden', true);
+                // refresh updated table penyata end
+            }
+        });
+
+    }
+
+    String.prototype.replaceArray = function (find, replace) {
+        var replaceString = this;
+        for (var i = 0; i < find.length; i++) {
+            replaceString = replaceString.replace(find[i], replace[i]);
+        }
+        return replaceString;
+    };
+
+</script>

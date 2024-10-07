@@ -3,6 +3,7 @@ using YIT.__Domain.Entities.Administrations;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Repositories.Implementations;
 using YIT._DataAccess.Repositories.Interfaces;
+using YIT._DataAccess.Services.Banking;
 using YIT._DataAccess.Services.Cart.Session;
 
 namespace YIT.Akaun.Infrastructure
@@ -22,6 +23,9 @@ namespace YIT.Akaun.Infrastructure
 
             services.AddTransient<IPenyataRepository, PenyataRepository>();
             services.AddTransient<IAkPanjarLejarRepository, AkPanjarLejarRepository>();
+            services.AddTransient<IAkAkaunPenyataBankRepository<AkAkaunPenyataBank>, AkAkaunPenyataBankRepository>();
+
+            services.AddTransient<_IBanking, Banking>();
 
             services.AddTransient<_IUnitOfWork, _UnitOfWork>();
 
@@ -49,6 +53,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddScoped(ss => SessionCartAkNotaDebitKreditDikeluarkan.GetCart(ss));
             services.AddScoped(ss => SessionCartAkTerimaTunggal.GetCart(ss));
             services.AddScoped(ss => SessionCartAkPenyataPemungut.GetCart(ss));
+            services.AddScoped(ss => SessionCartAkPenyesuaianBank.GetCart(ss));
 
 
             return services;
@@ -313,6 +318,14 @@ namespace YIT.Akaun.Infrastructure
                 opt.AddPolicy(Modules.kodAkPenyataPemungut + "R", policy => policy.RequireClaim(Modules.kodAkPenyataPemungut + "R"));
                 opt.AddPolicy(Modules.kodAkPenyataPemungut + "L", policy => policy.RequireClaim(Modules.kodAkPenyataPemungut + "L"));
                 opt.AddPolicy(Modules.kodAkPenyataPemungut + "BL", policy => policy.RequireClaim(Modules.kodAkPenyataPemungut + "BL"));
+
+                opt.AddPolicy(Modules.kodAkPenyesuaianBank, policy => policy.RequireClaim(Modules.kodAkPenyesuaianBank));
+                opt.AddPolicy(Modules.kodAkPenyesuaianBank + "C", policy => policy.RequireClaim(Modules.kodAkPenyesuaianBank + "C"));
+                opt.AddPolicy(Modules.kodAkPenyesuaianBank + "E", policy => policy.RequireClaim(Modules.kodAkPenyesuaianBank + "E"));
+                opt.AddPolicy(Modules.kodAkPenyesuaianBank + "D", policy => policy.RequireClaim(Modules.kodAkPenyesuaianBank + "D"));
+                opt.AddPolicy(Modules.kodAkPenyesuaianBank + "R", policy => policy.RequireClaim(Modules.kodAkPenyesuaianBank + "R"));
+                opt.AddPolicy(Modules.kodAkPenyesuaianBank + "L", policy => policy.RequireClaim(Modules.kodAkPenyesuaianBank + "L"));
+                opt.AddPolicy(Modules.kodAkPenyesuaianBank + "BL", policy => policy.RequireClaim(Modules.kodAkPenyesuaianBank + "BL"));
 
                 //
 

@@ -75,6 +75,8 @@ namespace YIT._DataAccess.Repositories.Implementations
             AkTerimaTunggalRepo = new AkTerimaTunggalRepository(_context);
             AkPenyataPemungutRepo = new AkPenyataPemungutRepository(_context);
 
+            AkPenyesuaianBankRepo = new AkPenyesuaianBankRepository(_context);
+
         }
 
         public IJKWRepository JKWRepo { get; private set; }
@@ -160,6 +162,8 @@ namespace YIT._DataAccess.Repositories.Implementations
         public IAkTerimaTunggalRepository AkTerimaTunggalRepo { get; }
 
         public IAkPenyataPemungutRepository AkPenyataPemungutRepo { get; }
+
+        public IAkPenyesuaianPenyataBankRepository AkPenyesuaianBankRepo { get; }
 
         public void Dispose()
         {

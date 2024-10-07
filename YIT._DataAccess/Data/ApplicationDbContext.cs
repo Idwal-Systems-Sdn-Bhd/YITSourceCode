@@ -65,6 +65,9 @@ namespace YIT._DataAccess.Data
         public DbSet<AkAnggar> AkAnggar { get; set; }
         public DbSet<AkAnggarObjek> AkAnggarObjek { get; set; }
         public DbSet<AkAnggarLejar> AkAnggarLejar { get; set; }
+        public DbSet<AkPenyesuaianBank> AkPenyesuaianBank { get; set; }
+        public DbSet<AkPenyesuaianBankPenyataBank> AkPenyesuaianBankPenyataBank { get; set; }
+        public DbSet<AkAkaunPenyataBank> AkAkaunPenyataBank { get; set; }
 
         //
 

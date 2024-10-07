@@ -1,0 +1,37 @@
+﻿@model AkPenyesuaianBank
+
+@{
+    ViewData["Title"] = "Penyata Penyesuaian Bank - Hapus";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card box-shadow">
+    <div class="card-body">
+        <partial name="~/Views/Partials/Common/_TitleDeleteTransaksiPartial.cshtml" />
+
+        <p class="text-danger">Anda pasti untuk menghapuskan maklumat berikut?</p>
+
+        <partial name="__DetailsPartial.cshtml" />
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input name="syscode" value="SPPB" hidden />
+            <div class="row mb-2">
+                <div class="form-group">
+                    <label class="control-label">Sebab Hapus</label>
+                    <input name="sebabHapus" class="form-control text-uppercase form-control-sm" required>
+                    <span class="text-danger">sila isi ruang ini untuk meneruskan operasi</span>
+                </div>
+            </div>
+            <input type="submit" value="Hapus" class="btn ac-danger btn-sm" />
+            <a asp-action="Index"
+               asp-route-searchString="@_http.HttpContext?.Session.GetString("searchString")"
+               asp-route-searchDate1="@_http.HttpContext?.Session.GetString("searchDate1")"
+               asp-route-searchDate2="@_http.HttpContext?.Session.GetString("searchDate2")"
+               class="btn ac-secondary btn-sm" style="width:auto">Batal</a>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

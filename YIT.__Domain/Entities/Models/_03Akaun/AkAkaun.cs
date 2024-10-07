@@ -30,6 +30,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public decimal Kredit { get; set; }
         public string? NoSlip { get; set; }
         public DateTime? TarikhSlip { get; set; }
+        public bool IsPadan { get; set; }
         public string? NoRujukanLama { get; set; } // dummy
+        public ICollection<AkAkaunPenyataBank>? AkAkaunPenyataBank { get; set; }
     }
 }

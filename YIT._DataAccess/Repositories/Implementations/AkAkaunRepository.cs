@@ -21,6 +21,16 @@ namespace YIT._DataAccess.Repositories.Implementations
         {
             _context = context;
         }
+        public async Task<AkAkaun> GetByNoRujukanAsync(string noRujukan)
+        {
+            return await _context.AkAkaun.FirstOrDefaultAsync(a => a.NoRujukan == noRujukan) ?? new AkAkaun();
+        }
+
+        public async Task<AkAkaun> GetByIdAsync(int id)
+        {
+            return await _context.AkAkaun.FindAsync(id) ?? new AkAkaun();
+        }
+
         public async Task<AkAkaun> GetPreviousBalanceByStartingDate(int? JKWId, int? JPTJId, int?AkCarta1Id, DateTime? startingDate)
         {
             AkAkaun bakiAwalAkAkaun = new AkAkaun();

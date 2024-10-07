@@ -156,50 +156,113 @@ namespace YIT._DataAccess.Repositories.Implementations
             PostingToAkAnggarLejar(akTerimaTunggal, userId, dPekerjaMasukId);
 
             List<AkAkaun> akaunList = new List<AkAkaun>();
-            if (akTerimaTunggal.AkTerimaTunggalObjek != null)
+
+            int? akAkaunPenghutangId = null;
+            if (akTerimaTunggal.AkTerimaTunggalInvois != null && akTerimaTunggal.AkTerimaTunggalInvois.Any())
             {
-                foreach (var t in akTerimaTunggal.AkTerimaTunggalObjek)
-                {
-                    var akAkaun1 = new AkAkaun();
-
-                    akAkaun1.JKWId = t.JKWPTJBahagian?.JKWId ?? akTerimaTunggal.JKWId;
-                    akAkaun1.JPTJId = t.JKWPTJBahagian!.JPTJId;
-                    akAkaun1.JBahagianId = t.JKWPTJBahagian.JBahagianId;
-                    akAkaun1.AkCarta1Id = akTerimaTunggal.AkBank!.AkCartaId;
-                    akAkaun1.AkCarta2Id = t.AkCartaId;
-                    akAkaun1.NoRujukan = akTerimaTunggal.NoRujukan;
-                    akAkaun1.Tarikh = akTerimaTunggal.Tarikh;
-                    akAkaun1.Debit = t.Amaun;
-                    akAkaun1.Kredit = 0;
-                    akAkaun1.UserId = userId;
-                    akAkaun1.DPekerjaMasukId = dPekerjaMasukId;
-                    akAkaun1.TarMasuk = DateTime.Now;
-                    akAkaun1.NoSlip = akTerimaTunggal.NoSlip;
-                    akAkaun1.TarikhSlip = akTerimaTunggal.TarikhSlip;
-
-                    akaunList.Add(akAkaun1);
-
-                    var akAkaun2 = new AkAkaun();
-
-                    akAkaun2.JKWId = t.JKWPTJBahagian?.JKWId ?? akTerimaTunggal.JKWId;
-                    akAkaun2.JPTJId = t.JKWPTJBahagian!.JPTJId;
-                    akAkaun2.JBahagianId = t.JKWPTJBahagian.JBahagianId;
-                    akAkaun2.AkCarta1Id = t.AkCartaId; 
-                    akAkaun2.AkCarta2Id = akTerimaTunggal.AkBank!.AkCartaId;
-                    akAkaun2.NoRujukan = akTerimaTunggal.NoRujukan;
-                    akAkaun2.Tarikh = akTerimaTunggal.Tarikh;
-                    akAkaun2.Debit = 0;
-                    akAkaun2.Kredit = t.Amaun;
-                    akAkaun2.UserId = userId;
-                    akAkaun2.DPekerjaMasukId = dPekerjaMasukId;
-                    akAkaun2.TarMasuk = DateTime.Now;
-                    akAkaun2.NoSlip = akTerimaTunggal.NoSlip;
-                    akAkaun2.TarikhSlip = akTerimaTunggal.TarikhSlip;
-
-                    akaunList.Add(akAkaun2);
-                }
                 
+                foreach (var item in akTerimaTunggal.AkTerimaTunggalInvois)
+                {
+                    akAkaunPenghutangId = item.AkInvois?.AkAkaunAkruId;
+                }
+
+                if (akTerimaTunggal.AkTerimaTunggalObjek != null)
+                {
+                    foreach (var t in akTerimaTunggal.AkTerimaTunggalObjek)
+                    {
+                        if (akAkaunPenghutangId != null)
+                        {
+                            var akAkaun1 = new AkAkaun();
+
+                            akAkaun1.JKWId = t.JKWPTJBahagian?.JKWId ?? akTerimaTunggal.JKWId;
+                            akAkaun1.JPTJId = t.JKWPTJBahagian!.JPTJId;
+                            akAkaun1.JBahagianId = t.JKWPTJBahagian.JBahagianId;
+                            akAkaun1.AkCarta1Id = akTerimaTunggal.AkBank!.AkCartaId;
+                            akAkaun1.AkCarta2Id = (int)akAkaunPenghutangId;
+                            akAkaun1.NoRujukan = akTerimaTunggal.NoRujukan;
+                            akAkaun1.Tarikh = akTerimaTunggal.Tarikh;
+                            akAkaun1.Debit = t.Amaun;
+                            akAkaun1.Kredit = 0;
+                            akAkaun1.UserId = userId;
+                            akAkaun1.DPekerjaMasukId = dPekerjaMasukId;
+                            akAkaun1.TarMasuk = DateTime.Now;
+                            akAkaun1.NoSlip = akTerimaTunggal.NoSlip;
+                            akAkaun1.TarikhSlip = akTerimaTunggal.TarikhSlip;
+
+                            akaunList.Add(akAkaun1);
+
+                            var akAkaun2 = new AkAkaun();
+
+                            akAkaun2.JKWId = t.JKWPTJBahagian?.JKWId ?? akTerimaTunggal.JKWId;
+                            akAkaun2.JPTJId = t.JKWPTJBahagian!.JPTJId;
+                            akAkaun2.JBahagianId = t.JKWPTJBahagian.JBahagianId;
+                            akAkaun2.AkCarta1Id = (int)akAkaunPenghutangId;
+                            akAkaun2.AkCarta2Id = akTerimaTunggal.AkBank!.AkCartaId;
+                            akAkaun2.NoRujukan = akTerimaTunggal.NoRujukan;
+                            akAkaun2.Tarikh = akTerimaTunggal.Tarikh;
+                            akAkaun2.Debit = 0;
+                            akAkaun2.Kredit = t.Amaun;
+                            akAkaun2.UserId = userId;
+                            akAkaun2.DPekerjaMasukId = dPekerjaMasukId;
+                            akAkaun2.TarMasuk = DateTime.Now;
+                            akAkaun2.NoSlip = akTerimaTunggal.NoSlip;
+                            akAkaun2.TarikhSlip = akTerimaTunggal.TarikhSlip;
+
+                            akaunList.Add(akAkaun2);
+                        }
+                        
+                    }
+
+                }
             }
+            else
+            {
+                if (akTerimaTunggal.AkTerimaTunggalObjek != null)
+                {
+                    foreach (var t in akTerimaTunggal.AkTerimaTunggalObjek)
+                    {
+                        var akAkaun1 = new AkAkaun();
+
+                        akAkaun1.JKWId = t.JKWPTJBahagian?.JKWId ?? akTerimaTunggal.JKWId;
+                        akAkaun1.JPTJId = t.JKWPTJBahagian!.JPTJId;
+                        akAkaun1.JBahagianId = t.JKWPTJBahagian.JBahagianId;
+                        akAkaun1.AkCarta1Id = akTerimaTunggal.AkBank!.AkCartaId;
+                        akAkaun1.AkCarta2Id = t.AkCartaId;
+                        akAkaun1.NoRujukan = akTerimaTunggal.NoRujukan;
+                        akAkaun1.Tarikh = akTerimaTunggal.Tarikh;
+                        akAkaun1.Debit = t.Amaun;
+                        akAkaun1.Kredit = 0;
+                        akAkaun1.UserId = userId;
+                        akAkaun1.DPekerjaMasukId = dPekerjaMasukId;
+                        akAkaun1.TarMasuk = DateTime.Now;
+                        akAkaun1.NoSlip = akTerimaTunggal.NoSlip;
+                        akAkaun1.TarikhSlip = akTerimaTunggal.TarikhSlip;
+
+                        akaunList.Add(akAkaun1);
+
+                        var akAkaun2 = new AkAkaun();
+
+                        akAkaun2.JKWId = t.JKWPTJBahagian?.JKWId ?? akTerimaTunggal.JKWId;
+                        akAkaun2.JPTJId = t.JKWPTJBahagian!.JPTJId;
+                        akAkaun2.JBahagianId = t.JKWPTJBahagian.JBahagianId;
+                        akAkaun2.AkCarta1Id = t.AkCartaId;
+                        akAkaun2.AkCarta2Id = akTerimaTunggal.AkBank!.AkCartaId;
+                        akAkaun2.NoRujukan = akTerimaTunggal.NoRujukan;
+                        akAkaun2.Tarikh = akTerimaTunggal.Tarikh;
+                        akAkaun2.Debit = 0;
+                        akAkaun2.Kredit = t.Amaun;
+                        akAkaun2.UserId = userId;
+                        akAkaun2.DPekerjaMasukId = dPekerjaMasukId;
+                        akAkaun2.TarMasuk = DateTime.Now;
+                        akAkaun2.NoSlip = akTerimaTunggal.NoSlip;
+                        akAkaun2.TarikhSlip = akTerimaTunggal.TarikhSlip;
+
+                        akaunList.Add(akAkaun2);
+                    }
+
+                }
+            }
+            
 
             _context.AkAkaun.AddRange(akaunList);
 

@@ -27,7 +27,8 @@ namespace YIT.__Domain.Entities._Enums
         SY = 12, // syarak
         KP = 13, // koperasi (caruman)
         GD = 14, // ar-Rahnu (gadaian)
-        LP = 99
+        AB = 15, // belanjawan
+        LP = 99 // laporan
 
     }
 }

@@ -133,6 +133,9 @@ namespace YIT.__Domain.Entities._Statics
 
         public const string kodAkPenyataPemungut = "AK0023";
         public const string namaAkPenyataPemungut = "Terimaan Penyata Pemungut";
+
+        public const string kodAkPenyesuaianBank = "AK0024";
+        public const string namaAkPenyesuaianBank = "Akaun Penyata Penyesuaian Bank";
         //
 
         // Pemprosesan (PP)

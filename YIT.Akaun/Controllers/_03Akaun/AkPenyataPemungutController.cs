@@ -470,7 +470,7 @@ namespace YIT.Akaun.Controllers._03Akaun
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = modul + "D")]
-        public async Task<IActionResult> DeleteConfirmed(int id, string syscode)
+        public async Task<IActionResult> DeleteConfirmed(int id, string sebabHapus, string syscode)
         {
             var akPenyataPemungut = _unitOfWork.AkPenyataPemungutRepo.GetById((int)id);
 
@@ -482,6 +482,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 akPenyataPemungut.UserIdKemaskini = user?.UserName ?? "";
                 akPenyataPemungut.TarKemaskini = DateTime.Now;
                 akPenyataPemungut.DPekerjaKemaskiniId = pekerjaId;
+                akPenyataPemungut.SebabHapus = sebabHapus;
 
                 _context.AkPenyataPemungut.Remove(akPenyataPemungut);
                 _appLog.Insert("Hapus", akPenyataPemungut.NoRujukan ?? "", akPenyataPemungut.NoRujukan ?? "", id, 0, pekerjaId, modul, syscode, namamodul, user);

@@ -12,5 +12,11 @@ namespace YIT.Akaun.Models.ViewModels.Common
         public string? perihal { get; set; }
         [NotMapped]
         public bool isGanda { get; set; }
+        [NotMapped]
+        public decimal debit { get; set; }
+        [NotMapped]
+        public decimal kredit { get; set; }
+        [NotMapped]
+        public bool isPV { get; set; }
     }
 }

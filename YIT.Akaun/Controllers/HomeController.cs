@@ -102,10 +102,10 @@ namespace YIT.Akaun.Controller
                 logger.UserName = HttpContext.User.Identity!.Name ?? "";
                 logger.TraceIdentifier = traceId;
                 logger.ControllerName = ControllerContext.ActionDescriptor.DisplayName ?? "";
-                logger.ExceptionMessage = contextException!.Error.Message;
-                logger.ExceptionStackTrace = contextException.Error.StackTrace ?? "";
-                logger.ExceptionType = contextException.Error.GetType().FullName ?? "";
-                logger.Source = contextException.Error.Source ?? "";
+                logger.ExceptionMessage = contextException?.Error.Message;
+                logger.ExceptionStackTrace = contextException?.Error.StackTrace ?? "";
+                logger.ExceptionType = contextException?.Error.GetType().FullName ?? "";
+                logger.Source = contextException?.Error.Source ?? "";
                 logger.UrlRequest = contextRequest!.RawTarget;
 
                 _context.Add(logger);
