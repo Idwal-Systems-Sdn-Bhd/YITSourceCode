@@ -761,6 +761,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                             DDaftarAwamId = daftarAwamId,
                             VotId = item.AkCartaId,
                             NoRujukan = akPV.NoRujukan,
+                            Debit = item.Amaun,
                             Liabiliti = -item.Amaun,
                             JumLiabiliti = -item.Amaun
                             // - BakiLiabiliti
@@ -803,7 +804,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                             DDaftarAwamId = daftarAwamId,
                             VotId = item.AkCartaId,
                             NoRujukan = akPV.NoRujukan,
-                            Tanggungan = -item.Amaun,
+                            Debit = item.Amaun,
+                            //Tanggungan = -item.Amaun,
                             Tbs = -item.Amaun,
                             Liabiliti = -item.Amaun,
                             JumLiabiliti = -item.Amaun

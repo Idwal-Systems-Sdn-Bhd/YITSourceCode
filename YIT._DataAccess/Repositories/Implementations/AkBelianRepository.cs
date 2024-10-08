@@ -545,7 +545,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                             DDaftarAwamId = akBelian.DDaftarAwamId,
                             VotId = item.AkCartaId,
                             NoRujukan = akBelian.NoRujukan,
-                            Debit = item.Amaun,
+                            //Debit = item.Amaun,
+                            Tanggungan = item.Amaun,
                             Tbs = -item.Amaun,
                             Liabiliti = item.Amaun,
                             Belanja = item.Amaun
@@ -568,7 +569,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                                 DDaftarAwamId = akBelian.DDaftarAwamId,
                                 VotId = item.AkCartaId,
                                 NoRujukan = akBelian.NoRujukan,
-                                Debit = item.Amaun,
+                                //Debit = item.Amaun,
                                 Liabiliti = item.Amaun,
                                 Belanja = item.Amaun,
                                 Baki = -item.Amaun

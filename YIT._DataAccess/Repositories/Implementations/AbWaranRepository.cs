@@ -158,7 +158,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             if (jBahagianId != null)
             {
-                abWaranList = abWaranList.Where(wr => wr.AbWaranObjek!.Any(obj => obj.JKWPTJBahagian.JBahagianId == jBahagianId)).ToList();
+                abWaranList = abWaranList.Where(wr => wr.AbWaranObjek!.Any(obj => obj.JKWPTJBahagian!.JBahagianId == jBahagianId)).ToList();
             }
             if (tahun != null)
             {
@@ -197,7 +197,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
 
             var finalResults = abWaranList
-                .SelectMany(wr => wr.AbWaranObjek
+                .SelectMany(wr => wr.AbWaranObjek!
                     .Select(obj => new AbWaran
                     {
                         Id = wr.Id,

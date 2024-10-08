@@ -252,8 +252,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                             DDaftarAwamId = akNotaDebitKreditDiterima.AkBelian?.DDaftarAwamId,
                             VotId = item.AkCartaId,
                             NoRujukan = akNotaDebitKreditDiterima.NoRujukan,
-                            Debit = amaunDebit,
-                            Kredit = amaunKredit,
+                            //Debit = amaunDebit,
+                            //Kredit = amaunKredit,
                             Tbs = amaunDebit - amaunKredit,
                             Liabiliti = amaunDebit - amaunKredit,
                             Belanja = amaunDebit - amaunKredit
@@ -276,8 +276,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                                 DDaftarAwamId = akNotaDebitKreditDiterima.AkBelian?.DDaftarAwamId,
                                 VotId = item.AkCartaId,
                                 NoRujukan = akNotaDebitKreditDiterima.NoRujukan,
-                                Debit = amaunDebit,
-                                Kredit = amaunKredit,
+                                //Debit = amaunDebit,
+                                //Kredit = amaunKredit,
                                 Liabiliti = amaunDebit - amaunKredit,
                                 Belanja = amaunDebit - amaunKredit,
                                 Baki = amaunDebit - amaunKredit
