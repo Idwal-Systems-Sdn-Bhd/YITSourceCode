@@ -29,7 +29,9 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public void BatalLulus(int id, string? tindakan, string? userId);
         public void BatalPos(int id, string? tindakan, string? userId);
         public string GetMaxRefNo(string initNoRujukan, string tahun);
-        //Task<List<LAK005PrintModel>> GetAkAnggarLejarToHasil(string? Tahun1, string? Bulan, int? JPTJId, int? JKWId, int? JbahagianId, int? JKWPTJBahagianId);
+        Task<List<LAK005PrintModel>> GetAkAnggarLejarToHasil(string? Tahun1, string? Bulan, int? JPTJId, int? JKWId, int? JbahagianId, int? JKWPTJBahagianId);
+        Task<decimal> GetHasilBulanan(string? Tahun1, string? Bulan, int? JPTJId, int? JKWId, int? JbahagianId, string? kod, string? perihal);
+        Task<decimal> GetHasilTerkumpul(string? Tahun1, string? Bulan, int? JPTJId, int? JKWId, int? JbahagianId, string? kod, string? perihal);
 
     }
 }

@@ -1,0 +1,237 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "LAK009 Laporan Pembayaran Mengikut Julat Tertentu";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    decimal jumlahEFT = 0;
+    decimal jumlahCek = 0;
+    decimal jumlah = 0;
+    decimal jumlahAkCarta = 0;
+
+    var bil = 1;
+
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN HARIAN BAUCER BAYARAN DARI TARIKH : @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]
+                    <br />
+                    MENGIKUT KUMPULAN WANG : @ViewData["NamaKW"] 
+                    <br /> 
+                    BANK : @ViewData["NamaBank"]
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+
+
+
+<table class="table table-bordered table-sm topic" id="myTable" data-order="NoRujukanPV">
+    <thead>
+        <tr style="line-height:0.8rem; text-align:center" class="bg-secondary text-black table-primary">
+
+            <th class="bil">
+                Bil
+            </th>
+            <th>
+                Tarikh Baucer
+            </th>
+            <th>
+                No Baucer
+            </th>
+            <th>
+                Perihal
+            </th>
+            <th>
+                Amaun Cek RM
+            </th>
+            <th>
+                No Cek
+            </th>
+            <th>
+                Penerima Cek
+            </th>
+
+        </tr>
+    </thead>
+    <tbody id="tbodylak010">
+       
+        @foreach (var group in Model.reportModelGrouped)
+        {
+            
+            DateTime? lastTarikhPV = null;
+            string? lastPerihal = null;
+            string? lastNoPV = null;
+
+
+            foreach (var akPV in group)
+            {
+                
+                if (akPV.Amaun != 0)
+                {
+                    jumlahCek += akPV.Amaun;
+                    jumlah += akPV.Amaun;
+
+                    <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                        <td>
+                            @bil
+                        </td>
+                        <td>
+                            @{
+                                // Check if TarikhPV is the same as the last shown date
+                                var currentDate = Convert.ToDateTime(akPV.TarikhPV);
+                                if (lastTarikhPV != currentDate)
+                                {
+                                    // Show date if it's different, and update lastTarikhPV
+                                    lastTarikhPV = currentDate;
+                                    @currentDate.ToString("dd/MM/yyyy")
+                                }
+                                else
+                                {
+                                    @string.Empty
+                                    ;
+                                }
+                            }
+                        </td>
+                        <td>
+                            @if (lastNoPV != akPV.NoRujukanPV)
+                            {
+                                
+                                @akPV.NoRujukanPV
+                                lastNoPV = akPV.NoRujukanPV; 
+                            }
+                        </td>
+                        <td class="text-uppercase">
+                            @if (lastPerihal != akPV.Perihal)
+                            {
+                                @akPV.Perihal
+                                lastPerihal = akPV.Perihal;
+                            }
+                        </td>
+                        <td class="text-right">
+                            @Convert.ToDecimal(akPV.Amaun).ToString("#,##0.00")
+                        </td>
+                        <td class="text-uppercase">
+                            @akPV.NoRujukanCek
+                        </td>
+                        <td class="text-uppercase">
+                            @akPV.PenerimaCek
+                        </td>
+                    </tr>
+
+                    bil++;
+                }
+            }
+        }
+         <tr class=" font-weight-bold">
+            <td colspan="4" class="text-right text-uppercase table-primary">JUMLAH KESELURUHAN</td>
+            <td colspan="2" class="text-right">@Convert.ToDecimal(jumlah).ToString("#,##0.00")</td>
+        </tr>
+        <tr class=" font-weight-bold">
+            <td colspan="4" class="text-right text-uppercase table-warning">JUMLAH PEMBAYARAN MENGGUNAKAN ELECTRONIC FUND TRANSFER (EFT)</td>
+            <td colspan="2" class="text-right">@Convert.ToDecimal(jumlahEFT).ToString("#,##0.00")</td>
+        </tr>
+        <tr class=" font-weight-bold">
+            <td colspan="4" class="text-right text-uppercase table-success">JUMLAH PEMBAYARAN MENGGUNAKAN CEK</td>
+            <td colspan="2" class="text-right">@Convert.ToDecimal(jumlahCek).ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+   
+</table>
+
+<div style="page-break-before: always;"></div>
+
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN HARIAN BAUCER BAYARAN DARI TARIKH : @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]
+                    <br />
+                    MENGIKUT KUMPULAN WANG : @ViewData["NamaKW"]
+                    <br />
+                    BANK : @ViewData["NamaBank"]
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+<br />
+<p style="text-align:left; font-size:large"><strong>RINGKASAN</strong></p>
+
+<table class="table table-bordered table-sm topic" id="myTable1">
+    <thead>
+        <tr style="line-height:0.8rem; text-align:center" class="bg-secondary text-black table-primary">
+
+            <th>
+                Akaun dan Perihalan
+            </th>
+            <th>
+                Jumlah RM
+            </th>
+           
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var group in Model.reportModelGrouped)
+        {
+            string? lastkodperihal = "";
+            decimal? lastJumlah = null;
+
+           
+            foreach (var akPV in group)
+            {
+                jumlahAkCarta += akPV.Jumlah;
+                // Skip this row if akCartaKod, akCartaPerihal, or Jumlah is null
+                if (akPV.akCartaKod != null && akPV.akCartaPerihal != null && akPV.Jumlah != null)
+                {
+                    var currentkodperihal = akPV.akCartaKod + " - " + akPV.akCartaPerihal;
+
+
+                    // Only output the row if this combination is new (i.e., not a duplicate)
+                    if (currentkodperihal != lastkodperihal || lastJumlah != akPV.Jumlah)
+                    {
+                        <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                            <td>
+                                @currentkodperihal
+                            </td>
+                            <td class="text-right">
+                                @Convert.ToDecimal(akPV.Jumlah).ToString("#,##0.00")
+                            </td>
+                        </tr>
+
+                        // Update the last seen values
+                        lastkodperihal = currentkodperihal;
+                        lastJumlah = akPV.Jumlah;
+                    }
+                }
+            }
+        }
+
+        <tr class=" font-weight-bold">
+            <td class="text-right text-uppercase table-success">JUMLAH</td>
+            <td colspan="2" class="text-right">@Convert.ToDecimal(jumlahAkCarta).ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+
+
+</table>
+
+
+

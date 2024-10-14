@@ -30,7 +30,8 @@ namespace YIT._DataAccess.Repositories.Interfaces
         List<AkPV> GetAllByStatus(EnStatusBorang enStatusBorang);
         public void BatalLulus(int id, string? tindakan, string? userId);
         public void BatalPos(int id, string? tindakan, string? userId);
-        public bool HaveAkJanaanProfil(int akJanaanProfilId);
+        public bool HaveAkJanaanProfil(int akJanaanProfilId);      
+        Task<List<LAK009PrintModel>> GetResultLAK009(DateTime? tarDari1, DateTime? tarHingga1, int? JKWId, int AkBankId);
         Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar(string? tarikhDari, string? tarikhHingga, int? akBankId, int? tunai);
         Task<List<AkPVPenerima>> GetResultsGroupByTarikhCaraBayar1(string? tarikhDari, string? tarikhHingga);
         Task<List<AkPV>> GetResultsGroupByTarikh(string? tarikhDari, string? tarikhHingga, int? jKWId);
@@ -45,6 +46,9 @@ namespace YIT._DataAccess.Repositories.Interfaces
         bool PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneSameObjek(AkPV akPV);
         bool PVWithMultipleInvoisAkruWithMultiplePOWithEachHaveOneDifferentObjek(AkPV akPV);
         bool PVWithMultipleInvoisAkruWithoutPOOrInden(AkPV akPV);
+        //Task<List<LAK003PrintModel>> GetAkBukuTunaiBasedOnBank(int akBankId, int? JKWId, int? JPTJId, DateTime? TarMula, DateTime? TarHingga, string? Tahun1);  
+
         List<AkPVPenerima> GetAkPVPenerimaByAkPVId(int Id);
     }
+
 }

@@ -179,19 +179,19 @@ namespace YIT.Akaun.Controllers._03Akaun
             List<AkAnggarLejar> akAnggarList = new List<AkAnggarLejar>();
 
 
-            if (form.JKWId != null && form.AkCartaId != null && form.tarDari1 != null && form.tarHingga1 != null)
+            if (form.jKWId != null && form.AkCartaId != null && form.tarDari1 != null && form.tarHingga1 != null)
             {
 
                 // insert list akaun
-                akAnggarList.AddRange(await _akAnggarLejarRepository.GetResults(form.JKWId, form.AkCartaId, form.tarDari1, form.tarHingga1));
+                akAnggarList.AddRange(await _akAnggarLejarRepository.GetResults(form.jKWId, form.AkCartaId, form.tarDari1, form.tarHingga1));
             }
 
             var carta = await _context.AkCarta.FirstOrDefaultAsync(x => x.Id == form.AkCartaId);
 
-            var jkw = await _context.JKW.FirstOrDefaultAsync(b => b.Id == form.JKWId);
+            var jkw = await _context.JKW.FirstOrDefaultAsync(b => b.Id == form.jKWId);
 
             var jptj = await _context.JPTJ.FirstOrDefaultAsync(ptj => ptj.Id == form.JPTJId);
-            var jbahagian = await _context.JBahagian.FirstOrDefaultAsync(jbahagian => jbahagian.Id == form.JBahagianId);
+            var jbahagian = await _context.JBahagian.FirstOrDefaultAsync(jbahagian => jbahagian.Id == form.jBahagianId);
 
 
             var company = await _userService.GetCompanyDetails();

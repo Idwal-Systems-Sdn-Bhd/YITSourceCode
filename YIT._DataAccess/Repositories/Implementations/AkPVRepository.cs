@@ -5,6 +5,8 @@ using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
+using YIT._DataAccess.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace YIT._DataAccess.Repositories.Implementations
 {
@@ -249,7 +251,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akPVList;
         }
 
-        public List<AkPV> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int? akBankId, int? tunai, int? jKWId, int? dDaftarAwamId)   
+        public List<AkPV> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int? akBankId, int? tunai, int? jKWId, int? dDaftarAwamId)
         {
             if (searchString == null && dateFrom == null && dateTo == null && akBankId == null && tunai == null && jKWId == null && dDaftarAwamId == null)
             {
@@ -1195,6 +1197,9 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .ThenBy(item => item.AkPV.NoRujukan)
                 .ToList();
 
+            
+        
+  
             var groupedResults = flattenedPenerima
                 .GroupBy(item => new { item.AkPV.NoRujukan, item.AkPV.Id })
                 .Select(g => new AkPV
@@ -1211,6 +1216,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             return groupedResults;
         }
+
 
         public async Task<List<AkPV>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
         {
@@ -1238,8 +1244,172 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akPv;
         }
 
-        // functions
-        public bool PVWithoutInvois(AkPV akPV)
+
+        public async Task<List<LAK009PrintModel>> GetResultLAK009(DateTime? tarDari1, DateTime? tarHingga1, int? JKWId, int AkBankId)
+        {
+            List<AkPV> akPv = new List<AkPV>();
+            List<LAK009PrintModel> akPvResult = new List<LAK009PrintModel>();
+
+            if (tarDari1 != null && tarHingga1 != null)
+            {
+                akPv = await _context.AkPV
+                .Include(b => b.AkPVObjek!)
+                .ThenInclude(b => b.AkCarta)
+                .Include(b => b.AkPVPenerima)
+                .Where(b => b.Tarikh >= tarDari1 && b.Tarikh <= tarHingga1 && (AkBankId == 0 || b.AkBankId == AkBankId))
+                .ToListAsync();
+            }
+
+            if (JKWId != null)
+            {
+                akPv = akPv.Where(ak => ak.JKWId == JKWId).ToList();
+            }
+
+
+            var akBank = await _context.AkBank.Include(b => b.AkCarta).FirstOrDefaultAsync(b => b.Id == AkBankId);
+            if (akBank != null)
+            {
+                akPv = akPv.Where(ak => ak.AkBankId == AkBankId).ToList();
+            }
+
+
+
+            var jumlahByAkCartaKod = new Dictionary<string, decimal>();
+
+            // accumulate the Jumlah for all AkPVObjek
+            foreach (var a in akPv)
+            {
+                if (a.AkPVObjek != null && a.AkPVObjek.Any())
+                {
+                    foreach (var obj in a.AkPVObjek)
+                    {
+                        var akCartaKod = obj.AkCarta?.Kod;
+                        var amaun = obj.Amaun;
+
+                        // Update dictionary with Jumlah based on akCartaKod
+                        if (akCartaKod != null)
+                        {
+                            if (!jumlahByAkCartaKod.ContainsKey(akCartaKod))
+                            {
+                                jumlahByAkCartaKod[akCartaKod] = 0;
+                            }
+                            jumlahByAkCartaKod[akCartaKod] += amaun;
+                        }
+                    }
+                }
+            }
+
+            var AkCartaKodList = new SortedSet<string>();
+
+            foreach (var a in akPv)
+            {
+                // Loop for AkPVPenerima without affecting Amaun
+                if (a.AkPVPenerima != null && a.AkPVPenerima.Any())
+                {
+                    foreach (var b in a.AkPVPenerima)
+                    {
+                        var akcartaResult = new LAK009PrintModel
+                        {
+                            TarikhPV = a.Tarikh,
+                            NoRujukanPV = a.NoRujukan,
+                            Perihal = a.Ringkasan,
+                            Amaun = b.Amaun,
+                            NoRujukanCek = b.NoRujukanCaraBayar,
+                            PenerimaCek = b.NamaPenerima
+                        };
+                        akPvResult.Add(akcartaResult);
+                    }
+                }
+
+                    // Loop for AkPVObjek to link akCartaKod and Jumlah without duplication
+                    if (a.AkPVObjek != null && a.AkPVObjek.Any())
+                    {
+                        var cartaObjek = a.AkPVObjek
+                            .Where(obj => obj.AkCarta?.Kod != null)
+                            .ToList();
+
+                        foreach (var obj in cartaObjek)
+                        {
+                            var akCartaKod = obj.AkCarta?.Kod;
+                            var akCartaPerihal = obj.AkCarta?.Perihal;
+
+                            if (akCartaKod != null && !AkCartaKodList.Contains(akCartaKod))
+                            {
+                                var jumlah = jumlahByAkCartaKod.GetValueOrDefault(akCartaKod, 0);
+
+                                // Find or create a matching entry in akPvResult based on NoRujukanPV, Perihal, and akCartaKod
+                                var CartaResult = akPvResult
+                                    .FirstOrDefault(x => x.NoRujukanPV == a.NoRujukan
+                                    && x.Perihal == a.Ringkasan
+                                    && x.akCartaKod == null);
+
+                                if (CartaResult != null)
+                                {
+                                    // Assign akCarta details to the matched entry
+                                    CartaResult.akCartaKod = akCartaKod;
+                                    CartaResult.akCartaPerihal = akCartaPerihal;
+                                    CartaResult.Jumlah = jumlah;
+
+                                    AkCartaKodList.Add(akCartaKod);
+
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                var PvResult = akPvResult
+                     .GroupBy(b => new { b.TarikhPV, b.NoRujukanPV, b.Perihal, b.Amaun, b.NoRujukanCek, b.akCartaKod })
+                     .Select(g => new LAK009PrintModel
+                     {
+                         TarikhPV = g.First().TarikhPV,
+                         NoRujukanPV = g.First().NoRujukanPV,
+                         Perihal = g.First().Perihal,
+                         Amaun = g.Sum(a => a.Amaun),
+                         NoRujukanCek = g.First().NoRujukanCek,
+                         PenerimaCek = g.First().PenerimaCek,
+                         akCartaKod = null,
+                         akCartaPerihal = null,
+                         Jumlah = 0
+                     })
+                     .OrderBy(b => b.TarikhPV)
+                     .ThenBy(b => b.NoRujukanPV)
+                     .ThenBy(b => b.Perihal)
+                     .ToList();
+
+
+                var akCartaResult = akPvResult
+                    .Where(b => b.akCartaKod != null)
+                    .GroupBy(b => new { b.akCartaKod, b.akCartaPerihal })
+                    .Select(g => new LAK009PrintModel
+                    {
+                        TarikhPV = null,
+                        NoRujukanPV = null,
+                        Perihal = null,
+                        Amaun = 0,
+                        NoRujukanCek = null,
+                        PenerimaCek = null,
+                        akCartaKod = g.Key.akCartaKod,
+                        akCartaPerihal = g.First().akCartaPerihal,
+                        Jumlah = g.Sum(a => a.Jumlah)
+                    })
+                    .OrderBy(g => g.akCartaKod)
+                    .ToList();
+
+
+
+                var finalPvResult = PvResult.Concat(akCartaResult)
+                    .ToList();
+
+
+                return finalPvResult;
+            }
+
+
+
+            // functions
+            public bool PVWithoutInvois(AkPV akPV)
         {
             if (akPV.IsInvois == false && akPV.IsTanggungan == false && akPV.IsAkru == false && akPV.AkPVInvois != null && akPV.AkPVInvois.Count == 0)
             {

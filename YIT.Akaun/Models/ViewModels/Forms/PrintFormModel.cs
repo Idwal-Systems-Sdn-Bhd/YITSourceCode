@@ -1,22 +1,37 @@
 ﻿using System.ComponentModel;
 using YIT.__Domain.Entities._Enums;
 
+using System.ComponentModel.DataAnnotations;
+using YIT.__Domain.Entities._Enums;
+using YIT.__Domain.Entities.Administrations;
+using YIT.__Domain.Entities.Models._03Akaun;
+using YIT.Akaun.Controllers._99Laporan;
+
 namespace YIT.Akaun.Models.ViewModels.Forms
 {
     public class PrintFormModel
     {
-        public int? JKWId { get; set; }
-        public int? JPTJId { get; set; }
-        public int? JBahagianId { get; set; }
-        public int? AkCartaId { get; set; }
         public string? kodLaporan { get; set; }
         public string? tahun1 { get; set; }
         public string? bulan1 { get; set; }
         public string? tarikhDari { get; set; }
         public string? tarikhHingga { get; set; }
-        public DateTime? tarDari1 { get; set; }
-        public DateTime? tarHingga1 { get; set; }
+        
         public string? susunan { get; set; }
+        public string? Username { get; set; }
+        public string? Tajuk1 { get; set; }
+        public string? Tajuk2 { get; set; }
+        public string? FormatLaporan { get; set; }
+
+        public CompanyDetails? CompanyDetails { get; set; }
+        [Display(Name = "PTJ")]
+        public int? JPTJId { get; set; } 
+        [Display(Name = "JKW/PTJ/Bahagian")]
+        public int? JKWPTJBahagianId { get; set; }
+        [Display(Name = "Tarikh Dari")]
+        public DateTime? tarDari1 { get; set; }
+        [Display(Name = "Tarikh Hingga")]
+        public DateTime? tarHingga1 { get; set; }
         public int? akBankId { get; set; }
         public int? tunai { get; set; }
         [DisplayName("Jenis Perolehan")]
@@ -31,5 +46,16 @@ namespace YIT.Akaun.Models.ViewModels.Forms
         public string? searchString1 { get; set; }
         public string? searchString2 { get; set; }
         public int? dDaftarAwamId { get; set; }
+        [Display(Name = "Kod Akaun")]
+        public int? AkCartaId { get; set; }
+        public string? Tahun1 { get; set; }
+        [RegularExpression(@"^\d{2}$")]
+        public string? Bulan { get; set; }
+        [Display(Name = "Bank")]
+        public int? AkBankId { get; set; }
+        [Display(Name = "Paras")]
+        public EnParas EnParas { get; set; }
+       
+       
     }
 }
