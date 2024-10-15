@@ -1,0 +1,175 @@
+﻿@model YIT.Akaun.Models.ViewModels.Forms.PrintFormModel
+
+@{
+    ViewData["Title"] = "LAK005 Hasil Bulanan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int year = DateTime.Now.Year;
+    DateTime firstDay = new DateTime(year, 1, 1);
+    DateTime lastDay = new DateTime(year, 12, 31);
+}
+
+<script>
+
+    // $(document).ready(function () {
+    //     // Enable or disable the "bulan" input based on radio button selection
+    //     $('#LAK00401').click(function () {
+    //         $('.bulan').attr('disabled', 'disabled');
+    //     });
+
+    //     $('#LAK00402').click(function () {
+    //         $('.bulan').removeAttr('disabled');
+    //     });
+
+    //     // Initial check when the page loads
+    //     if ($('#LAK00401').is(':checked')) {
+    //         $('.bulan').attr('disabled', 'disabled');
+    //     }
+
+    //     if ($('#LAK00402').is(':checked')) {
+    //         $('.bulan').removeAttr('disabled');
+    //     }
+
+        
+
+
+        //add tbl objek
+        $("body").on("click", "#btnExportExcel", function () {
+            $(".loading").css("display", "");
+            $("#btnExportExcel").prop('disabled', true);
+            var kodLaporan = "LAK005";
+            // if ($('#LAK005').is(':checked')) {
+            //     kodLaporan = "LAK005";
+
+            // }
+           
+
+            var JKWId = $('#jKWId').val();
+            var JPTJId = $('#JPTJId').val();
+            var JBahagianId = $('#jBahagianId').val();
+            var Tahun1 = $('#Tahun1').val();
+            var Bulan = $('#Bulan').val();
+
+            if (kodLaporan != "") {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ExportExcel", "LAK005")',
+                    data: { kodLaporan: kodLaporan, JKWId: JKWId, JPTJId: JPTJId, JBahagianId: JBahagianId, Tahun1: Tahun1, Bulan: Bulan},
+                    dataType: "json",
+                    success: function (r) {
+                        window.location = "@Url.Action("Download", "Account")?fileGuid=" + r.fileGuid
+                            + "&filename=" + r.fileName;
+                        toastr.success("laporan berjaya dijana.", "Berjaya");
+                        toastr.options.timeOut = 2000; // 2s
+                        $("#ExportExcel").prop('disabled', false);
+                        $(".loading").css("display", "none");
+                    }
+                })
+            }
+
+         });
+
+</script>
+
+<div class="container">
+    <div class="card box-shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <h5 class="text-uppercase text-info mb-0">@ViewData["Title"]</h5>
+                    <span class="ac-ref">Indeks</span>
+                </div>
+                <div class="col-4 text-right">
+                </div>
+
+                <hr class="mt-2" />
+                <form asp-action="PrintPDF">
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <div class="form-group col-sm">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="input-group mb-2 input-group-sm ">
+                                            <label class="form-control-label">Tahun</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+
+                                        <div class="input-group">
+                                            <input class="form-control form-control-sm" type="text" name="Tahun1" asp-for="Tahun1"
+                                                   onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="input-group mb-2 input-group-sm ">
+                                            <label class="form-control-label">Bulan</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="input-group">
+                                            <input class="form-control form-control-sm" type="text" name="Bulan" id="Bulan" maxlength="2"
+                                                   onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+
+                                        </div>
+                                    </div>
+                                  
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="input-group mb-2 input-group-sm ">
+                                            <label class="form-control-label">Kump. Wang</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+
+                                        <div class="input-group mb-2 input-group-sm ">
+                                            <select class="form-control form-control-sm select2" name="JKWId" asp-for="jKWId" asp-items="@ViewBag.JKW"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="input-group mb-2 input-group-sm ">
+                                            <label class="form-control-label">PTJ</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+
+                                        <div class="input-group mb-2 input-group-sm ">
+                                            <select class="form-control form-control-sm select2" name="JPTJId" asp-for="JPTJId" asp-items="@ViewBag.JPTJ"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="input-group mb-2 input-group-sm ">
+                                                <label class="form-control-label">Bahagian</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+
+                                            <div class="input-group mb-2 input-group-sm ">
+                                                <select class="form-control form-control-sm select2" name="JBahagianId" asp-for="jBahagianId" asp-items="@ViewBag.JBahagian"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+                                </div>
+                                </div>
+                                </div>
+                        </div>
+                    <hr />
+                    <div class="form-group text-right">
+                        <input type="submit" value="Cetak" formtarget="_blank" class="btn ac-primary" />
+                        <button type="button" formtarget="_blank" id="btnExportExcel" class="btn ac-info">Jana Excel</button>
+                        <span class="loading" style="padding-right:3px; padding-top: 3px; display:inline-block;">
+                            <img src="~/img/Spinner.gif" style="height:40px;">
+                        </span>
+                    </div>
+
+                </form>
+                
+            </div>
+        </div>
+
+        </div>
+    </div>

@@ -1,0 +1,110 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "Cetakan Laporan Hasil Bulanan";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal hasilBulanan = 0;
+    decimal hasilTerkumpul = 0;
+    decimal jumlahAnggar = 0;
+    decimal jumlahHasilBulanan = 0;
+    decimal jumlahHasilTerkumpul = 0;
+    decimal jumlahBaki = 0;
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+    </div>
+
+<table>
+    <thead>
+        <tr>
+
+            <td> LAPORAN HASIL BULANAN SEHINGGA </td><td>:</td><td> @ViewData["Bulan"]</td>
+
+        </tr>
+        <tr>
+            <td> TAHUN </td><td>:</td><td> @ViewData["Tahun"]</td>
+       </tr>
+        <tr>
+            <td>KUMP. WANG </td><td>:</td><td> @ViewData["NamaKW"]</td>
+        </tr>
+        <tr>
+            <td>PTJ </td><td>:</td><td> @ViewData["NamaPTJ"]</td>
+        </tr>
+        <tr>
+            <td>BAHAGIAN </td><td>:</td><td> @ViewData["NamaBahagian"]</td>
+        </tr>
+    </thead>
+</table>
+<br />
+<br />
+<div class="form-group">
+        <table class="table table-bordered" width="100%">
+            <thead>
+               
+            <tr>
+                <th>Kod</th>
+                <th>Perihal</th>
+                <th>Anggaran Hasil</th>
+                <th>Hasil Bulanan</th>
+                <th>Hasil Terkumpul</th>
+                <th>Baki Anggaran</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in Model.reportModelGrouped)
+            {
+                
+                foreach (var item in group)
+                {
+                    jumlahAnggar += item.AnggaranHasil;
+                    jumlahHasilBulanan += item.HasilBulanan;
+                    jumlahHasilTerkumpul += item.HasilTerkumpul;
+                    jumlahBaki += item.BakiAnggaran;
+
+                    <tr>
+                        <td>
+                            @item.Kod
+                            </td>
+                        <td>
+                            @item.Perihal
+                            </td>
+                        <td class="text-right">
+                            @item.AnggaranHasil.ToString("#,##0.00")
+                            </td>
+                        <td class="text-right">
+                            @Convert.ToDecimal(item.HasilBulanan).ToString("#,##0.00")
+                            </td>
+                        <td class="text-right">
+                            @Convert.ToDecimal(item.HasilTerkumpul).ToString("#,##0.00")
+                            </td>
+                        <td class="text-right">
+                            @item.BakiAnggaran.ToString("#,##0.00")
+                            </td>
+                       
+                    </tr>
+                   
+                }
+               
+            }
+
+            <tr>
+                <td colspan="2" class="text-right"><strong>JUMLAH BESAR</strong></td>
+                <td class="text-right"><strong>@jumlahAnggar.ToString("#,##0.00")</strong></td>
+                <td class="text-right"><strong>@jumlahHasilBulanan.ToString("#,##0.00")</strong></td>
+                <td class="text-right"><strong>@jumlahHasilTerkumpul.ToString("#,##0.00")</strong></td>
+                <td class="text-right"><strong>@jumlahBaki.ToString("#,##0.00")</strong></td>
+            </tr>
+        </tbody>
+
+
+           
+        </table>
+    </div>

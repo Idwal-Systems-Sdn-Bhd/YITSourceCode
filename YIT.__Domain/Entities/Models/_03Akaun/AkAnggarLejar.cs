@@ -24,5 +24,6 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public decimal Amaun { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Baki { get; set; }
+        public ICollection<AkAnggar>? AkAnggar { get; set; }
     }
 }

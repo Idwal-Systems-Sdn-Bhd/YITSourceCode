@@ -512,138 +512,182 @@ namespace YIT._DataAccess.Repositories.Implementations
         }
 
 
-        //public async Task<List<LAK005PrintModel>> GetAkAnggarLejarToHasil(string? Tahun1, string? Bulan, int? JPTJId, int? JKWId, int? JbahagianId, int? JKWPTJBahagianId)
-        //{
-        //    // Parse the year and month from the input strings
-        //    int year = int.Parse(Tahun1 ?? DateTime.Now.Year.ToString());
-        //    int month = string.IsNullOrEmpty(Bulan) ? 12 : int.Parse(Bulan); // Default to December if month is not specified
+        public async Task<List<LAK005PrintModel>> GetAkAnggarLejarToHasil(string? Tahun1, string? Bulan, int? JPTJId, int? JKWId, int? JbahagianId, int? JKWPTJBahagianId)
+        {
+            // Parse the year and month from the input strings
+            int year = int.Parse(Tahun1 ?? DateTime.Now.Year.ToString());
+            int month = string.IsNullOrEmpty(Bulan) ? 12 : int.Parse(Bulan); // Default to December if month is not specified
 
-        //    List<LAK005PrintModel> akAkaunResult = new List<LAK005PrintModel>();
+            List<LAK005PrintModel> akAkaunResult = new List<LAK005PrintModel>();
 
-        //    if (Tahun1 != null)
-        //    {
-        //        var results = await _context.AkAnggarLejar
-        //            .Include(b => b.AkAnggar)
-        //            .ThenInclude(b => b.AkAnggarObjek!)
-        //            .ThenInclude(b => b.AkCarta)
-        //            .Where(b => b.Tahun == Tahun1 && b.Tarikh.Month == int.Parse(Bulan!))
-        //            .ToListAsync();
+            if (Tahun1 != null)
+            {
+                var results = await _context.AkAnggarLejar
+                    .Include(b => b.AkAnggar!)
+                    .ThenInclude(b => b.AkAnggarObjek!)
+                    .Include(b => b.AkCarta)
+                    .Include(b => b.JKWPTJBahagian)
+                    .Where(b => b.Tahun == Tahun1 && b.Tarikh.Month == int.Parse(Bulan!))
+                    .ToListAsync();
 
-        //        if (JPTJId != null)
-        //        {
-        //            results = results.Where(ak => ak.JKWPTJBahagianId == JPTJId).ToList();
-        //        }
+                if (JPTJId != null)
+                {
+                    results = results.Where(ak => ak.JKWPTJBahagian?.JPTJId == JPTJId).ToList();
+                }
 
-        //        if (JKWId != null)
-        //        {
-        //            results = results.Where(ak => ak.JKWPTJBahagianId == JKWId).ToList();
-        //        }
+                if (JKWId != null)
+                {
+                    results = results.Where(ak => ak.JKWPTJBahagian?.JKWId == JKWId).ToList();
+                }
 
-        //        if (JbahagianId != null)
-        //        {
-        //            results = results.Where(ak => ak.JKWPTJBahagianId == JbahagianId).ToList();
-        //        }
-
-
-
-        //        var groupedResults = results
-        //            .GroupBy(r => new { r.AkCarta?.Kod, r.AkCarta?.Perihal })
-        //            .Select(g => new
-        //            {
-        //                Kod = g.Key.Kod,
-        //                Perihal = g.Key.Perihal,
-        //                akAnggarLejarList = g.ToList()
-        //            }).ToList();
-
-        //        int Bulan1 = int.Parse(Bulan);
-
-        //        foreach (var group in groupedResults)
-        //        {
-        //            decimal cumulativeSum = 0;
-        //            foreach (var akAnggarLejar in group.akAnggarLejarList)
-        //            {
-        //                decimal hasilBulanan = akAnggarLejar.Tarikh.Month == Bulan1 ? akAnggarLejar.Amaun : 0;
-        //                decimal bakiAnggaran = akAnggarLejar.Baki;
-
-        //                decimal hasilTerkumpul = 0;
-
-        //                // Calculate HasilTerkumpul based on the selected month
-        //                switch (Bulan1)
-        //                {
-        //                    case 1:
-        //                        hasilTerkumpul = hasilBulanan;
-        //                        break;
-        //                    case 2:
-        //                        hasilTerkumpul = group.akAnggarLejarList
-        //                            .Where(x => x.Tarikh.Month <= 2)
-        //                            .Sum(x => x.Amaun);  // Corrected to sum up 'Amaun'
-        //                        break;
-        //                    case 3:
-        //                        hasilTerkumpul = group.akAnggarLejarList
-        //                            .Where(x => x.Tarikh.Month <= 3)
-        //                            .Sum(x => x.Amaun);
-        //                        break;
-        //                    case 4:
-        //                        hasilTerkumpul = group.akAnggarLejarList
-        //                            .Where(x => x.Tarikh.Month <= 4)
-        //                            .Sum(x => x.Amaun);
-        //                        break;
-        //                    case 5:
-        //                        hasilTerkumpul = group.akAnggarLejarList
-        //                            .Where(x => x.Tarikh.Month <= 5)
-        //                            .Sum(x => x.Amaun);
-        //                        break;
-        //                    case 6:
-        //                        hasilTerkumpul = group.akAnggarLejarList
-        //                            .Where(x => x.Tarikh.Month <= 6)
-        //                            .Sum(x => x.Amaun);
-        //                        break;
-        //                        // Continue for other months as needed
-        //                }
+                if (JbahagianId != null)
+                {
+                    results = results.Where(ak => ak.JKWPTJBahagian?.JBahagianId == JbahagianId).ToList();
+                }
 
 
-        //                akAkaunResult.Add(new LAK005PrintModel
-        //                {
-        //                    Kod = akAnggarLejar.AkCarta?.Kod,
-        //                    Perihal = akAnggarLejar.AkCarta?.Perihal,
-        //                    AnggaranHasil = akAnggarLejar.Amaun,
-        //                    HasilBulanan = hasilBulanan,
-        //                    HasilTerkumpul = hasilTerkumpul,
-        //                    BakiAnggaran = bakiAnggaran
-        //                });
-        //            }
-        //        }
-        //    }
+                var groupedResults = results
+                   .GroupBy(r => new { r.Tahun, r.AkCarta?.Kod, r.AkCarta?.Perihal })
+                   .Select(g => new
+                   {
+                       g.Key.Tahun,
+                       Kod = g.Key.Kod,
+                       Perihal = g.Key.Perihal,
+                       akAnggarLejarList = g.ToList()
+                   }).ToList();
 
-                       
+                foreach (var group in groupedResults)
+                {
+                    decimal hasilTerkumpul = await GetHasilTerkumpul(Tahun1, Bulan, JPTJId, JKWId, JbahagianId, group.Kod, group.Perihal);
+                    decimal hasilBulanan = await GetHasilBulanan(Tahun1, Bulan, JPTJId, JKWId, JbahagianId, group.Kod, group.Perihal);
 
-        //         return akAkaunResult
-        //        .GroupBy(b => new { b.Kod, b.Perihal })
-        //        .Select(g =>
-        //        {
-        //            var firstItem = g.FirstOrDefault();
-        //            decimal anggar = (decimal)g.First().AnggaranHasil;
+                    foreach (var akAnggarLejar in group.akAnggarLejarList)
+                    {
+                        akAkaunResult.Add(new LAK005PrintModel
+                        {
+                            Kod = akAnggarLejar.AkCarta?.Kod,
+                            Perihal = akAnggarLejar.AkCarta?.Perihal,
+                            AnggaranHasil = akAnggarLejar.Amaun,
+                            HasilBulanan = hasilBulanan,
+                            HasilTerkumpul = hasilTerkumpul,
+                            BakiAnggaran = akAnggarLejar.Baki
+                        });
+                    }
+                }
+            }
 
-        //            decimal hasilBulanan = (decimal)g.Sum(x => x.HasilBulanan);
+            return akAkaunResult
+                .GroupBy(b => new { b.Kod, b.Perihal })
+                .Select(g =>
+                {
+                    var firstItem = g.First();
+                    decimal anggar = firstItem.AnggaranHasil ?? 0;
+                    //decimal hasilBulanan = firstItem.HasilBulanan ?? 0;
+                    decimal hasilTerkumpul = firstItem.HasilTerkumpul ?? 0;
 
-        //            decimal hasilTerkumpul = (decimal)g.First().HasilTerkumpul;
+                    return new LAK005PrintModel
+                    {
+                        Kod = g.Key.Kod,
+                        Perihal = g.Key.Perihal,
+                        AnggaranHasil = anggar,
+                        HasilBulanan = g.First().HasilBulanan,
+                        HasilTerkumpul = g.First().HasilTerkumpul,
+                        BakiAnggaran = anggar - hasilTerkumpul
+                    };
+                })
+                .OrderBy(b => b.Kod)
+                .ToList();   
+
+    }
+
+        public async Task<decimal> GetHasilBulanan(string? tahun1, string? bulan, int? jptjId, int? jkwId, int? jbahagianId, string? kod, string? perihal)
+        {
+            decimal jumlahHasil = 0;
+
+            if (tahun1 != null)
+            {
+                var results = await _context.AkAnggarLejar
+                    .Include(b => b.AkAnggar!)
+                    .ThenInclude(b => b.AkAnggarObjek!)
+                    .Include(b => b.AkCarta)
+                    .Include(b => b.JKWPTJBahagian)
+                    .Where(b => b.Tahun == tahun1 && b.Tarikh.Month == int.Parse(bulan!) && b.AkCarta!.Kod == kod && b.AkCarta!.Perihal == perihal)
+                    .ToListAsync();
+
+                if (jptjId != null)
+                {
+                    results = results.Where(ak => ak.JKWPTJBahagian?.JPTJId == jptjId).ToList();
+                }
+
+                if (jkwId != null)
+                {
+                    results = results.Where(ak => ak.JKWPTJBahagian?.JKWId == jkwId).ToList();
+                }
+
+                if (jbahagianId != null)
+                {
+                    results = results.Where(ak => ak.JKWPTJBahagian?.JBahagianId == jbahagianId).ToList();
+                }
 
 
+                var hasilBulanan = results
+                    .GroupBy(r => new { r.Tarikh.Month, Kod = r.AkCarta?.Kod, Perihal = r.AkCarta?.Perihal })
+                    .Select(g => new { Jumlah = g.Sum(l => l.Amaun) })
+                    .FirstOrDefault();
 
-        //            return new LAK005PrintModel
-        //            {
-        //                Kod = g.Key.Kod,
-        //                Perihal = g.Key.Perihal,
-        //                AnggaranHasil = anggar,
-        //                HasilBulanan = hasilBulanan,
-        //                HasilTerkumpul = hasilTerkumpul,
-        //                BakiAnggaran = anggar - hasilTerkumpul
-        //            };
-        //        }).OrderBy(b => b.Kod)
-        //        .ToList();
-        //   }
+                jumlahHasil = hasilBulanan?.Jumlah ?? 0;
+            }
+
+            return jumlahHasil;
+
+
+        }
+
+
+        public async Task<decimal> GetHasilTerkumpul(string? tahun1, string? bulan, int? jptjId, int? jkwId, int? jbahagianId, string? kod, string? perihal)
+        {
+            decimal jumlahHasil = 0;
+
+            if (tahun1 != null && bulan != null)
+            {
+                int targetBulan = int.Parse(bulan);
+
+               
+                var results = await _context.AkAnggarLejar
+                    .Include(b => b.AkAnggar!)
+                    .ThenInclude(b => b.AkAnggarObjek!)
+                    .Include(b => b.AkCarta)
+                    .Include(b => b.JKWPTJBahagian)
+                    .Where(b => b.Tahun == tahun1 && b.Tarikh.Month <= targetBulan && b.AkCarta!.Kod == kod && b.AkCarta.Perihal == perihal)
+                    .ToListAsync();
+
+                if (jptjId != null)
+                {
+                    results = results.Where(ak => ak.JKWPTJBahagian?.JPTJId == jptjId).ToList();
+                }
+
+                if (jkwId != null)
+                {
+                    results = results.Where(ak => ak.JKWPTJBahagian?.JKWId == jkwId).ToList();
+                }
+
+                if (jbahagianId != null)
+                {
+                    results = results.Where(ak => ak.JKWPTJBahagian?.JBahagianId == jbahagianId).ToList();
+                }
+
+                List<int> months = Enumerable.Range(1, int.Parse(bulan!)).ToList();
+
+                jumlahHasil = results.Sum(r => r.Amaun);
+            }
+
+            
+            return jumlahHasil;
         }
     }
+}
+
+
 
 
 
