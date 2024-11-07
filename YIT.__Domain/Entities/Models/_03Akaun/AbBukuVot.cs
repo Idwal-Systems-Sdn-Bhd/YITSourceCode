@@ -27,6 +27,9 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public DateTime Tarikh { get; set; }
         public int? DDaftarAwamId { get; set; }
         public DDaftarAwam? DDaftarAwam { get; set; }
+        public int? DPekerjaId { get; set; }
+        public DPekerja? DPekerja { get; set; }
+        public string? Perihal { get; set; }
         [DisplayName("Vot")]
         public int VotId { get; set; }
         public AkCarta? Vot { get; set; }
