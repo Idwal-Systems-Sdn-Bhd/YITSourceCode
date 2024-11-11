@@ -11,6 +11,7 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int Id { get; set; }
         [Display(Name = "No Janaan")]
         public string? NoRujukan { get; set; }
+        public string? NoRujukanLama { get; set; }
         [Display(Name = "Nama Fail")]
         public string? NamaFail { get; set; }
         [Display(Name = "Tarikh Jana")]
