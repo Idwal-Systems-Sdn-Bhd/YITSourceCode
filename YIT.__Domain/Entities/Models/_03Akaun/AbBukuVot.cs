@@ -31,6 +31,8 @@ namespace YIT.__Domain.Entities.Models._03Akaun
         public int VotId { get; set; }
         public AkCarta? Vot { get; set; }
         public string? NoRujukan { get; set; }
+        public string? NoRujukanLama { get; set; }
+
         [DisplayName("Debit RM")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Debit { get; set; }
