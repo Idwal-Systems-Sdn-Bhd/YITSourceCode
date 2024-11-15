@@ -87,7 +87,9 @@
     }
     else if (User.IsInRole("User"))
     {
-        navtype = "bg-light navbar-light";
+        <!-- navtype = "bg-light navbar-light"; -->
+        navtype = "bg-dark navbar-dark";
+        texttype = "text-light";
     }
     else
     {
@@ -119,10 +121,10 @@
         <div class="py-4 px-3 @navtype card-header">
             <div class="media d-flex align-items-center">
 
-                <img src="~/img/MainLogo_Syarikat.webp" alt="Logo syarikat" width="65" class="me-3 rounded-circle img-thumbnail shadow-sm">
+                <!--<img src="~/img/MainLogo_Syarikat.webp" alt="Logo syarikat" width="65" class="me-3 rounded-circle img-thumbnail shadow-sm">-->
                 <div class="media-body ms-2">
-                    <h6 class="@texttype">@namaUser?.Nama</h6>
-                    <p class="font-weight-light @texttype mb-0">@jawatan</p>
+                    <h7 class="font-weight-light text-gray fw-bold text-uppercase @texttype">@namaUser?.Nama</h7>
+                    <p class="font-weight-light text-gray text-capitalize small @texttype mb-0">@jawatan</p>
                 </div>
             </div>
         </div>
@@ -175,10 +177,12 @@
                         <p class="text-gray fw-bold text-uppercase px-3 small pb-2 mb-0">Menu Utama</p>
 
                         <ul class="nav flex-column l-bg-light mb-0">
+                            <!--<partial name="~/Views/Partials/NavBars/_01_Akaun/_SistemPartialNavbar.cshtml" /> -->
                             <partial name="~/Views/Partials/NavBars/_01_Akaun/_JadualPartialNavbar.cshtml" />
                             <partial name="~/Views/Partials/NavBars/_01_Akaun/_DaftarPartialNavbar.cshtml" />
                             <partial name="~/Views/Partials/NavBars/_01_Akaun/_BelanjawanPartialNavbar.cshtml" />
                             <partial name="~/Views/Partials/NavBars/_01_Akaun/_LejarPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_PenyesuaianPartialNavbar.cshtml" />
                             <partial name="~/Views/Partials/NavBars/_01_Akaun/_PerolehanPartialNavbar.cshtml" />
                             <partial name="~/Views/Partials/NavBars/_01_Akaun/_TanggunganPartialNavbar.cshtml" />
                             <partial name="~/Views/Partials/NavBars/_01_Akaun/_BaucerPartialNavbar.cshtml" />
@@ -186,6 +190,31 @@
                             <partial name="~/Views/Partials/NavBars/_01_Akaun/_PelarasanPartialNavbar.cshtml" />
                             <partial name="~/Views/Partials/NavBars/_01_Akaun/_PemprosesanPartialNavbar.cshtml" />
                             <partial name="~/Views/Partials/NavBars/_01_Akaun/_LaporanPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_PenyataKewanganPartialNavbar.cshtml" />
+
+                        </ul>
+                    </div>
+                }
+                else if (User.IsInRole("User"))
+                {
+                    <div class="form-group">
+                        <p class="text-gray fw-bold text-uppercase px-3 small pb-2 mb-0">Menu Utama</p>
+
+                        <ul class="nav flex-column l-bg-light mb-0">
+                            <!--<partial name="~/Views/Partials/NavBars/_01_Akaun/_SistemPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_JadualPartialNavbar.cshtml" />-->
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_DaftarPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_BelanjawanPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_LejarPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_PenyesuaianPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_PerolehanPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_TanggunganPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_BaucerPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_HasilPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_PelarasanPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_PemprosesanPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_LaporanPartialNavbar.cshtml" />
+                            <partial name="~/Views/Partials/NavBars/_01_Akaun/_PenyataKewanganPartialNavbar.cshtml" />
 
                         </ul>
                     </div>

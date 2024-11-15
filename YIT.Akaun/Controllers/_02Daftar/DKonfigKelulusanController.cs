@@ -14,7 +14,7 @@ using YIT.Akaun.Microservices;
 namespace YIT.Akaun.Controllers._02Daftar
 {
     
-    [Authorize(Roles = Init.superAdminSupervisorRole)]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class DKonfigKelulusanController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodDKonfigKelulusan;

@@ -375,7 +375,7 @@ namespace YIT._DataAccess.Data.DataConfigurations
                       {
                           Kod = "07",
                           Perihal = "AMBANK ISLAMIC",
-                          KodBNMEFT = "MFBBMYKL",
+                          KodBNMEFT = "ARBKMYKL",
                           Length1 = 13
                       },
                       new JBank

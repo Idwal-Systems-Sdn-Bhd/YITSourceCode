@@ -27,7 +27,7 @@ using YIT.Akaun.Models.ViewModels.Administrations;
 namespace YIT.Akaun.Controllers._02Daftar
 {
     
-    [Authorize(Roles = Init.superAdminSupervisorRole)]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class DPenerimaCekGajiController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodDPenerimaCekGaji;

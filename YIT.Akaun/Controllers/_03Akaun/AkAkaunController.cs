@@ -17,7 +17,7 @@ using YIT.Akaun.Models.ViewModels.Forms;
 
 namespace YIT.Akaun.Controllers._03Akaun
 {
-    [Authorize(Roles = Init.superAdminSupervisorRole)]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class AkAkaunController : Microsoft.AspNetCore.Mvc.Controller
     {
         private readonly _IUnitOfWork _unitOfWork;

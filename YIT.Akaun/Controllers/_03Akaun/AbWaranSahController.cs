@@ -16,8 +16,8 @@ namespace YIT.Akaun.Controllers._03Akaun
     [Authorize(Roles = Init.superAdminSupervisorRole)]
     public class AbWaranSahController : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = Modules.kodSahAbWaran;
-        public const string namamodul = Modules.namaSahAbWaran;
+        //public const string modul = Modules.kodSahAbWaran;
+        //public const string namamodul = Modules.namaSahAbWaran;
         private readonly ApplicationDbContext _context;
         private readonly _IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
@@ -76,6 +76,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                 {
                     abWaran = _unitOfWork.AbWaranRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.None, (int)dKonfigKelulusanId, EnKategoriKelulusan.Pengesah, EnJenisModulKelulusan.Waran);
 
+                    abWaran = _unitOfWork.AbWaranRepo.GetResultsByDPekerjaIdFromDKonfigKelulusan(searchString, date1, date2, searchColumn, EnStatusBorang.None,(int)dKonfigKelulusanId,EnKategoriKelulusan.Pengesah, EnJenisModul.Bajet);
+
                 }
             }
 
@@ -83,7 +85,6 @@ namespace YIT.Akaun.Controllers._03Akaun
 
         }
 
-        [Authorize(Policy = modul + "S")]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -91,16 +92,16 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
 
-            var abWaran = _unitOfWork.AbWaranRepo.GetDetailsById((int)id);
-            if (abWaran == null)
-            {
-                return NotFound();
-            }
-            EmptyCart();
-            ViewBag.DKonfigKelulusanId = HttpContext.Session.GetInt32("DPengesahId");
-            PopulateCartAbWaranFromDb(abWaran);
-            return View(abWaran);
-        }
+        //    //var abWaran = _unitOfWork.AbWaranRepo.GetDetailsById((int)id);
+        //    //if (abWaran == null)
+        //    //{
+        //    //    return NotFound();
+        //    //}
+        //    //EmptyCart();
+        //    //ViewBag.DKonfigKelulusanId = HttpContext.Session.GetInt32("DPengesahId");
+        //    //PopulateCartAbWaranFromDb(abWaran);
+        //    //return View(abWaran);
+        //}
 
         // jsonResults
         public JsonResult EmptyCart()

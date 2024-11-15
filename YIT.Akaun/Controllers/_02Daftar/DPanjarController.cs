@@ -19,7 +19,7 @@ using YIT.Akaun.Models.ViewModels.Prints;
 
 namespace YIT.Akaun.Controllers._02Daftar
 {
-    [Authorize(Roles = Init.superAdminSupervisorRole)]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class DPanjarController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodDPanjar;

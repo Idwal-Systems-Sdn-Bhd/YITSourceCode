@@ -15,7 +15,7 @@ using YIT.Akaun.Models.ViewModels.Common;
 namespace YIT.Akaun.Controllers._02Daftar
 {
     
-    [Authorize(Roles = Init.superAdminSupervisorRole)]
+    [Authorize(Roles = Init.allExceptAdminRole)]
     public class DDaftarAwamController : Microsoft.AspNetCore.Mvc.Controller
     {
         public const string modul = Modules.kodDDaftarAwam;
