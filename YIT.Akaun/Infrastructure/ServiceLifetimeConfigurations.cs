@@ -24,6 +24,7 @@ namespace YIT.Akaun.Infrastructure
             services.AddTransient<IPenyataRepository, PenyataRepository>();
             services.AddTransient<IAkPanjarLejarRepository, AkPanjarLejarRepository>();
             services.AddTransient<IAkAkaunPenyataBankRepository<AkAkaunPenyataBank>, AkAkaunPenyataBankRepository>();
+            services.AddTransient<ILaporanRepository, LaporanRepository>();
 
             services.AddTransient<_IBanking, Banking>();
 

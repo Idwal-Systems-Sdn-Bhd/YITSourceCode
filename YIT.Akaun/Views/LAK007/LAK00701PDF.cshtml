@@ -1,0 +1,137 @@
+﻿@model dynamic
+
+
+@{
+    ViewData["Title"] = "LAK00701 Penyata Pendapatan Bulanan Dengan Jumlah Terkumpul";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    decimal jumPendapatan = 0;
+    decimal jumBelanja = 0;
+
+
+    
+
+    string key = "";
+
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN PENDAPATAN DAN PERBELANJAAN TAHUN : @ViewData["Tahun"] BAGI BULAN @ViewData["Bulan"]
+                    <br /> 
+                    MENGIKUT KUMPULAN WANG : @ViewData["NamaKW"]
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+
+
+
+<table class="table table-bordered table-sm topic" id="myTable">
+    <thead>
+        <tr style="line-height:0.8rem; text-align:center" class="bg-secondary text-black table-primary">
+            <th>Akaun</th>
+            <th>Nama Akaun</th>
+            <th>Jumlah</th>
+           
+        </tr>
+    </thead>
+    <tbody id="tbodylak006">
+        @*Hasil*@
+       
+            @foreach (var group in Model.reportModelGrouped)
+            {
+                    if (group.Key == "H")
+                    {
+                        key = "PENDAPATAN";
+                    }
+                    else
+                    {
+                        key = "PERBELANJAAN";
+                    }
+
+                    jumBelanja = 0;
+                    jumPendapatan = 0;
+
+            <tr>
+
+                <td colspan="3"><strong>@key</strong></td>
+
+            </tr>
+
+                foreach (var item in group)
+                {
+                    if (item.Jenis == "H")
+                    {
+                       
+                        jumPendapatan += item.Jumlah;
+                   
+
+                        <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                            <td>@item.KodAkaun</td>
+                            <td>@item.NamaAkaun</td>
+                            <td class="text-right">@Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")</td>
+                            
+                        </tr>
+                    }
+                    else if (item.Jenis == "B")
+                    {
+                       
+                        jumBelanja += item.Jumlah;
+
+
+                        <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                            <td>@item.KodAkaun</td>
+                            <td>@item.NamaAkaun</td>
+                            <td class="text-right">@Convert.ToDecimal(item.Jumlah).ToString("#,##0.00")</td>
+                           
+                    </tr>
+                }
+            }
+           
+           
+           <tr class=" font-weight-bold">
+                        <td colspan="2" class="text-right text-uppercase table-success">Jumlah @key RM</td>
+                        @if (group.Key == "H")
+                        {
+                            <td class="text-right">@Convert.ToDecimal(jumPendapatan).ToString("#,##0.00")</td>
+                            
+
+                        }
+                          else if (group.Key == "B")
+                        {
+                            
+                            <td class="text-right">@Convert.ToDecimal(jumBelanja).ToString("#,##0.00")</td>
+                           
+                        }
+                        </tr>
+           
+        }
+          
+    </tbody>
+
+</table>
+
+@*Belanja*@
+
+
+
+
+   
+
+
+

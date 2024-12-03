@@ -1,0 +1,196 @@
+﻿@model dynamic
+
+
+@{
+    ViewData["Title"] = "LAK00702 Penyata Pendapatan Bulanan Ikut Paras";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    decimal jumThnLpsBulan = 0;
+    decimal jumThnSmsBulan = 0;
+    decimal jumThnLpsKumpul = 0;
+    decimal jumThnSmsKumpul = 0;
+    decimal jumThnSmsPeruntukan = 0;
+    decimal jumVarianKumpul = 0;
+    decimal jumVarianPeruntukan = 0;
+
+
+
+    string key = "";
+
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN PENDAPATAN DAN PERBELANJAAN TAHUN : @ViewData["Tahun"] BAGI BULAN @ViewData["Bulan"]
+                    <br />
+                    MENGIKUT KUMPULAN WANG : @ViewData["NamaKW"]
+                    <br />
+                    @ViewData["Paras"]
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+
+
+<table class="table table-bordered table-sm topic" id="myTable">
+    <thead>
+        <tr style="line-height:0.8rem; text-align:center; " class="bg-secondary text-black table-primary">
+            <th rowspan="2">Akaun</th>
+            <th rowspan="2">Nama Akaun</th>
+            <th colspan="2">BULAN SEMASA</th>
+            <th colspan="3">TERKUMPUL</th>
+            <th colspan="2">PERUNTUKAN</th>
+            </tr>
+            <tr>
+            <th class="text-right">Tahun Lepas</th>
+            <th class="text-right">Tahun Semasa</th>
+            <th class="text-right">Tahun Lepas</th>
+            <th class="text-right">Tahun Semasa</th>
+            <th class="text-right">Varian %</th>
+            <th class="text-right">Tahun Semasa</th>
+            <th class="text-right">Varian %</th>
+
+        </tr>
+    </thead>
+    <tbody id="tbodylak006" style="page-break-inside:avoid;">
+        @*Hasil*@
+       
+            @foreach (var group in Model.reportModelGrouped)
+            {
+                    if (group.Key == "H")
+                    {
+                        key = "PENDAPATAN";
+                    }
+                    else
+                    {
+                        key = "PERBELANJAAN";
+                    }
+
+                    jumThnLpsBulan = 0;
+                    jumThnSmsBulan = 0;
+                    jumThnLpsKumpul = 0;
+                    jumThnSmsKumpul = 0;
+                    jumThnSmsPeruntukan = 0;
+                    jumVarianKumpul = 0;
+                    jumVarianPeruntukan = 0;
+            <tr>
+
+                <td colspan="10"><strong>@key</strong></td>
+
+            </tr>
+
+            foreach (var item in group)
+            {
+                var tahunLpsKumpul = item.TahunLps_Kumpul;
+                var tahunSmsKumpul = item.TahunSms_Kumpul;
+                var tahunSmsPeruntukan = item.TahunSms_Peruntukan;
+
+                var TerkumpulPercentage = tahunLpsKumpul != 0 ? (tahunSmsKumpul - tahunLpsKumpul) / tahunLpsKumpul * 100 : 0;
+                var PeruntukanPercentage = tahunSmsPeruntukan != 0 ? (tahunSmsKumpul / tahunSmsPeruntukan) * 100 : 0;
+ 
+
+                if (item.Jenis == "H")
+                {
+                    jumThnLpsBulan += item.TahunLps_BulanSMS;
+                    jumThnSmsBulan += item.TahunSms_BulanSMS;
+                    jumThnLpsKumpul += item.TahunLps_Kumpul;
+                    jumThnSmsKumpul += item.TahunSms_Kumpul;
+                    jumThnSmsPeruntukan += item.TahunSms_Peruntukan;
+                    jumVarianKumpul += TerkumpulPercentage;
+                    jumVarianPeruntukan += PeruntukanPercentage;
+
+                   
+
+                        <tr class="table" style="line-height:0.8rem; page-break-inside:avoid; margin:0;">
+                            <td>@item.KodAkaun</td>
+                            <td>@item.NamaAkaun</td>
+                            <td class="text-right">@Convert.ToDecimal(item.TahunLps_BulanSMS).ToString("#,##0.00")</td>
+                            <td class="text-right">@Convert.ToDecimal(item.TahunSms_BulanSMS).ToString("#,##0.00")</td>
+                            <td class="text-right">@Convert.ToDecimal(item.TahunLps_Kumpul).ToString("#,##0.00")</td>
+                            <td class="text-right">@Convert.ToDecimal(item.TahunSms_Kumpul).ToString("#,##0.00")</td>
+                            <td class="text-right">@TerkumpulPercentage.ToString("#,##0.00") %</td>
+                            <td class="text-right">@Convert.ToDecimal(item.TahunSms_Peruntukan).ToString("#,##0.00")</td>
+                            <td class="text-right">@Convert.ToDecimal(PeruntukanPercentage).ToString("#,##0.00")</td>
+                           
+                        </tr>
+                    }
+                    else if (item.Jenis == "B")
+                    {
+                        jumThnLpsBulan += item.TahunLps_BulanSMS;
+                        jumThnSmsBulan += item.TahunSms_BulanSMS;
+                        jumThnLpsKumpul += item.TahunLps_Kumpul;
+                        jumThnSmsKumpul += item.TahunSms_Kumpul;
+                        jumThnSmsPeruntukan += item.TahunSms_Peruntukan;
+                        jumVarianKumpul += TerkumpulPercentage;
+                        jumVarianPeruntukan += PeruntukanPercentage;
+                    
+                        
+                        <tr class="table" style="line-height:0.8rem; page-break-inside:avoid; margin:0;">
+                            <td>@item.KodAkaun</td>
+                            <td>@item.NamaAkaun</td>
+                            <td class="text-right">@Convert.ToDecimal(item.TahunLps_BulanSMS).ToString("#,##0.00")</td>
+                            <td class="text-right">@Convert.ToDecimal(item.TahunSms_BulanSMS).ToString("#,##0.00")</td>
+                            <td class="text-right">@Convert.ToDecimal(item.TahunLps_Kumpul).ToString("#,##0.00")</td>
+                            <td class="text-right">@Convert.ToDecimal(item.TahunSms_Kumpul).ToString("#,##0.00")</td>
+                            <td class="text-right">@TerkumpulPercentage.ToString("#,##0.00") %</td>
+                            <td class="text-right">@Convert.ToDecimal(item.TahunSms_Peruntukan).ToString("#,##0.00")</td>
+                            <td class="text-right">@Convert.ToDecimal(PeruntukanPercentage).ToString("#,##0.00") %</td>
+                            
+                    </tr>
+                }              
+            }
+            <tr class=" font-weight-bold">
+                <td colspan="2" class="text-right text-uppercase table-success">Jumlah @key RM</td>
+                @if (group.Key == "H")
+                {
+                    <td class="text-right">@Convert.ToDecimal(jumThnLpsBulan).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumThnSmsBulan).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumThnLpsKumpul).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumThnSmsKumpul).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumVarianKumpul).ToString("#,##0.00") %</td>
+                    <td class="text-right">@Convert.ToDecimal(jumThnSmsPeruntukan).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumVarianPeruntukan).ToString("#,##0.00") %</td>
+
+
+                }
+                else if (group.Key == "B")
+                {
+
+                    <td class="text-right">@Convert.ToDecimal(jumThnLpsBulan).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumThnSmsBulan).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumThnLpsKumpul).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumThnSmsKumpul).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumVarianKumpul).ToString("#,##0.00") %</td>
+                    <td class="text-right">@Convert.ToDecimal(jumThnSmsPeruntukan).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumVarianPeruntukan).ToString("#,##0.00") %</td>
+
+                }
+            </tr>
+        }
+           
+
+    </tbody>
+
+</table>
+
+
+
+
+
+
+
+

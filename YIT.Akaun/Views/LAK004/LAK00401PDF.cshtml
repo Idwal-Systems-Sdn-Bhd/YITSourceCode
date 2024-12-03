@@ -1,0 +1,144 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "Cetakan Laporan Belanjawan Terkini";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal jumAsal = 0;
+    decimal jumTambahan = 0;
+    decimal jumPindahan = 0;
+    decimal jumJumlah = 0;
+    decimal jumtelahGuna = 0;
+    decimal jumtelahGunaPercent = 0;
+    decimal jumtbs = 0;
+    decimal jumtbsPercent = 0;
+    decimal jumbelanja = 0;
+    decimal jumbelanjaPercent = 0;
+    decimal jumbaki = 0;
+
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+    </div>
+
+<table>
+    <thead>
+        <tr>
+
+            <td> LAPORAN BELANJAWAN TERKINI SEHINGGA </td><td>:</td><td> @DateTime.Now.Date.ToString("dd/MM/yyyy")</td>
+
+        </tr>
+        <tr>
+            <td> TAHUN </td><td>:</td><td> @ViewData["Tahun"]</td>
+       </tr>
+        <tr>
+            <td>KUMP. WANG </td><td>:</td><td> @ViewData["NamaKW"]</td>
+        </tr>
+        <tr>
+            <td>PTJ </td><td>:</td><td> @ViewData["NamaPTJ"]</td>
+        </tr>
+         <tr>
+            <td>BAHAGIAN </td><td>:</td><td> @ViewData["NamaBahagian"]</td>
+        </tr>
+    </thead>
+</table>
+<br />
+<div class="form-group">
+        <table class="table table-bordered" width="100%">
+            <thead>
+                <tr>
+                    <th colspan="6" style="text-align :center">PERUNTUKAN</th>
+                <th colspan="8" style="text-align :center">PERBELANJAAN DAN TANGGUNGAN</th>
+                </tr>
+            <tr>
+                <th>Kod</th>
+                <th>Perihal</th>
+                <th>Peruntukan Asal</th>
+                <th>Peruntukan Tambahan</th>
+                <th>Pindahan Peruntukan</th>
+                <th>Jumlah Peruntukan</th>
+                <th>Peruntukan Telah Guna</th>
+                <th>%</th>
+                <th>Tanggungan Belum Selesai</th>
+                <th>%</th>
+                <th>Perbelanjaan Bersih</th>
+                <th>%</th>
+                <th>Baki</th>
+            </tr>
+        </thead>
+        <tbody id="tblBody">
+            @foreach (var group in Model.reportModelGrouped)
+            {
+                foreach (var item in group)
+                {
+                    var peruntukanAsal = item.PeruntukanAsal ?? 0;
+                    var peruntukanTambahan = item.PeruntukanTambahan ?? 0;
+                    var pindahanPeruntukan = item.PindahanPeruntukan;
+
+                    
+                    var jumlahPeruntukan = peruntukanAsal + peruntukanTambahan + pindahanPeruntukan;
+
+                    // Calculate percentages
+                    var telahGunaPercentage = jumlahPeruntukan != 0 ? ((item.PeruntukanTelahGuna ?? 0) / jumlahPeruntukan) * 100 : 0;
+                    var tbsPercentage = jumlahPeruntukan != 0 ? ((item.TBS ?? 0) / jumlahPeruntukan) * 100 : 0;
+                    var belanjaBersihPercentage = jumlahPeruntukan != 0 ? ((item.PerbelanjaanBersih ?? 0) / jumlahPeruntukan) * 100 : 0;
+
+                    jumAsal += peruntukanAsal;
+                    jumTambahan += peruntukanTambahan;
+                    jumPindahan += pindahanPeruntukan;
+                    jumJumlah += jumlahPeruntukan;
+                    jumtelahGuna += item.PeruntukanTelahGuna;
+                    jumtelahGunaPercent += telahGunaPercentage;
+                    jumtbs += item.TBS;
+                    jumtbsPercent += tbsPercentage;
+                    jumbelanja += item.PerbelanjaanBersih;
+                    jumbelanjaPercent += belanjaBersihPercentage;
+                    jumbaki += item.Baki;
+
+                   
+
+                    <tr>
+                        <td>@(item.Kod)</td>
+                        <td>@(item.Perihal)</td>
+                        <td>@peruntukanAsal.ToString("#,##0.00")</td>
+                        <td>@peruntukanTambahan.ToString("#,##0.00")</td>
+                        <td>@pindahanPeruntukan.ToString("#,##0.00")</td>
+                        <td>@jumlahPeruntukan.ToString("#,##0.00")</td>
+                        <td>@(item.PeruntukanTelahGuna?.ToString("#,##0.00") ?? "0.00")</td>
+                        <td>@telahGunaPercentage.ToString("#,##0.00")</td>
+                        <td>@(item.TBS?.ToString("#,##0.00") ?? "0.00")</td>
+                        <td>@tbsPercentage.ToString("#,##0.00")</td>
+                        <td>@(item.PerbelanjaanBersih?.ToString("#,##0.00") ?? "0.00")</td>
+                        <td>@belanjaBersihPercentage.ToString("#,##0.00")</td>
+                        <td>@(item.Baki?.ToString("#,##0.00") ?? "0.00")</td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td colspan="2" class="text-right text-uppercase table-success">JUMLAH BESAR</td>
+               
+                    <td class="text-right">@Convert.ToDecimal(jumAsal).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumTambahan).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumPindahan).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumJumlah).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumtelahGuna).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumtelahGunaPercent).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumtbs).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumtbsPercent).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumbelanja).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumbelanjaPercent).ToString("#,##0.00")</td>
+                    <td class="text-right">@Convert.ToDecimal(jumbaki).ToString("#,##0.00")</td>
+                    
+            </tr>
+        </tbody>
+
+           
+        </table>
+    </div>
+  

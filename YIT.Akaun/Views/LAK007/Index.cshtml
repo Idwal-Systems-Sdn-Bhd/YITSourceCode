@@ -1,0 +1,153 @@
+﻿@model YIT.Akaun.Models.ViewModels.Forms.PrintFormModel
+
+@{
+    ViewData["Title"] = "LAK007 Penyata Pendapatan Bulanan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int year = DateTime.Now.Year;
+    DateTime firstDay = new DateTime(year, 1, 1);
+    DateTime lastDay = new DateTime(year, 12, 31);
+}
+
+<script>
+    //add tbl objek
+    $("body").on("click", "#btnExportExcel", function () {
+        $(".loading").css("display", "");
+        $("#btnExportExcel").prop('disabled', true);
+
+        if ($('#LAK00701').is(':checked')) {
+            kodLaporan = "LAK00701";
+
+        }
+        if ($('#LAK00702').is(':checked')) {
+            kodLaporan = "LAK00702";
+        }
+       
+        
+        var Tahun1 = $('#Tahun1').val();
+        var JKWId = $('#jKWId').val();
+        var Bulan = $('#Bulan').val();
+        var EnParas = $('#EnParas').val();
+
+        if (kodLaporan != "") {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ExportExcel","LAK007")',
+                data: { kodLaporan: kodLaporan, Tahun1: Tahun1, Bulan: Bulan, JKWId: JKWId, EnParas: EnParas },
+                dataType: "json",
+                success: function (r) {
+                    window.location = "@Url.Action("Download","Account")?fileGuid=" + r.fileGuid
+                        + "&filename=" + r.fileName;
+                    toastr.success("laporan berjaya dijana.", "Berjaya");
+                    toastr.options.timeOut = 2000; // 2s
+                    $("#btnExportExcel").prop('disabled', false);
+                    $(".loading").css("display", "none");
+                   
+                }
+            })
+        } 
+    });
+
+
+</script>
+
+<div class="container">
+    <div class="card box-shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <h5 class="text-uppercase text-info mb-0">@ViewData["Title"]</h5>
+                    <span class="ac-ref">Indeks</span>
+                </div>
+                <div class="col-4 text-right">
+                </div>
+
+            </div>
+            <hr class="mt-2" />
+            <form asp-action="printPDF">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <label class="form-control-label">Tahun</label>
+                                </div>
+                            </div>
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <input class="form-control form-control-sm" type="text" name="Tahun1" asp-for="Tahun1"
+                                       onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                            </div>
+                        </div>
+                            <div class="col-md-1">
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <label class="form-control-label">Bulan</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                    <input class="form-control form-control-sm bulan" name="Bulan" id="Bulan" maxlength="2"
+                                           onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+
+                                </div>
+                            </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <label class="form-control-label">Kump. Wang</label>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <select class="form-control form-control-sm select2" name="JKWId" asp-for="jKWId" asp-items="@ViewBag.JKW"></select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                            </div>
+                       
+                    </div>
+                </div>
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="form-row col-sm" style="display:inline-block">
+                            <div class="d-flex align-items-center">
+                            <div class="custom-control custom-radio pb-2 col-8">
+
+                                <input class="custom-control-input" type="radio" name="KodLaporan" asp-for="kodLaporan" id="LAK00701" value="LAK00701" checked>
+                                <label class="custom-control-label" for="LAK00701">
+                                    01 - Dengan Jumlah Terkumpul
+                                </label>
+                            </div>
+                                <div class="col-8 d-flex align-items-center">
+                                <div class="custom-control custom-radio pb-2">
+                                    <input class="custom-control-input" type="radio" name="KodLaporan" asp-for="kodLaporan" id="LAK00702" value="LAK00702">
+                                    <label class="custom-control-label" for="LAK00702">
+                                        02 - Ringkasan Ikut Paras
+                                    </label>
+                                </div>
+                                <div class="col-md-6" style="margin-left: 20px" >
+                                    <div class="input-group input-group-sm">
+                                        <select class="form-control form-control-sm select2" name="EnParas" asp-for="EnParas" asp-items="@ViewBag.EnParas"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    
+                </div>
+                <hr />
+                <div class="form-group text-right">
+                    <input type="submit" value="Cetak" id="btnCetak" formtarget="_blank" class="btn ac-primary" />
+                    <button type="button" formtarget="_blank" id="btnExportExcel" class="btn ac-info">Jana Excel</button>
+                    <span class="loading" style="padding-right:3px; padding-top: 3px; display:inline-block;">
+                        <img src="~/img/Spinner.gif" style="height:40px;">
+                    </span>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
