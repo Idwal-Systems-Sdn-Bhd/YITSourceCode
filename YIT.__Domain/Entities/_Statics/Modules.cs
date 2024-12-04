@@ -263,8 +263,17 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodLBelanjawanTerkini = "LAK004";
         public const string namaLBelanjawanTerkini = "Laporan Belanjawan";
 
-        public const string kodLPembayaranIkutJulatTertentu = "LAK010";
-        public const string namaLPembayaranIkutJulatTertentu = "Laporan Belanjawan";
+        public const string kodLHasilBulanan = "LAK005";
+        public const string namaLHasilBulanan = "Laporan Hasil Bulanan";
+
+        public const string kodLPendapatanTahunan = "LAK006";
+        public const string namaLPendapatanTahunan = "Laporan Penyata Pendapatan Tahunan";
+
+        public const string kodLPendapatanBulanan = "LAK007";
+        public const string namaLPendapatanBulanan = "Laporan Penyata Pendapatan Bulanan";
+
+        public const string kodLPembayaranIkutJulatTertentu = "LAK009";
+        public const string namaLPembayaranIkutJulatTertentu = "Laporan Pembayaran Mengikut Julat Tertentu";
 
         public const string kodLDaftarPoInden = "LAK011";
         public const string namaLDaftarPoInden = "Daftar Pesanan Tempatan Dan Inden Kerja";

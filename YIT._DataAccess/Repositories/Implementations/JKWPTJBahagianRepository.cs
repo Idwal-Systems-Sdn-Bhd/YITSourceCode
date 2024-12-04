@@ -48,5 +48,14 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(b => b.JBahagian).Where(b => b.JPTJId == JPTJId)
                 .ToList();
         }
+
+        public List<JKWPTJBahagian> GetAllDetailsByJBahagianId(int JBahagianId)
+        {
+            return _context.JKWPTJBahagian
+                .Include(b => b.JKW)
+                .Include(b => b.JPTJ)
+                .Include(b => b.JBahagian).Where(b => b.JBahagianId == JBahagianId)
+                .ToList();
+        }
     }
 }

@@ -13,5 +13,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public List<JKWPTJBahagian> GetAllDetails();
         public List<JKWPTJBahagian> GetAllDetailsByJKWId(int JKWId);
         public List<JKWPTJBahagian> GetAllDetailsByJPTJId(int JPTJId);
+        public List<JKWPTJBahagian> GetAllDetailsByJBahagianId(int JBahagianId);
     }
 }

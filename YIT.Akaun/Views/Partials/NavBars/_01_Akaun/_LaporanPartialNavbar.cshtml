@@ -1,8 +1,11 @@
 ﻿<li class="nav-item">
     <a class="nav-link collapsed text-truncate
      @Html.ActiveClass("LAK002PrintModel")
+     @Html.ActiveClass("LAK003PrintModel")
      @Html.ActiveClass("LAK004PrintModel")
      @Html.ActiveClass("LAK005PrintModel")
+     @Html.ActiveClass("LAK006PrintModel")
+     @Html.ActiveClass("LAK007PrintModel")
      @Html.ActiveClass("LAK009PrintModel")
      @Html.ActiveClass("LAK011PrintModel")
      @Html.ActiveClass("LAK012PrintModel")
@@ -17,6 +20,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK003PrintModel")" asp-area="" asp-controller="LAK003" asp-action="Index">
+                    Laporan Penerimaan dan Pembayaran
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK004PrintModel")" asp-area="" asp-controller="LAK004" asp-action="Index">
                     Laporan Belanjawan yang Berkaitan
                 </a>
@@ -24,6 +32,16 @@
             <li class="nav-item">
                 <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK005PrintModel")" asp-area="" asp-controller="LAK005" asp-action="Index">
                     Laporan Hasil Bulanan dan Anggaran Hasil
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK006PrintModel")" asp-area="" asp-controller="LAK006" asp-action="Index">
+                    Penyata Pendapatan Tahunan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK007PrintModel")" asp-area="" asp-controller="LAK007" asp-action="Index">
+                    Penyata Pendapatan Bulan
                 </a>
             </li>
             <li class="nav-item">

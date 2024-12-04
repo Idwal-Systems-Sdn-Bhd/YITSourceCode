@@ -65,14 +65,14 @@ namespace YIT.Akaun.Controllers._99Laporan
         [HttpPost]
         public async Task<JsonResult> ExportExcel(PrintFormModel model)
         {
-            int akBankId = 0;
+            //int akBankId = 0;
             List<LAK009PrintModel> printModel = await PrepareData(model);
 
             // Generate a new unique identifier against which the file can be stored
             string handle = string.Format("attachment;" + model.kodLaporan + ".xlsx;", string.IsNullOrEmpty(model.kodLaporan) ? Guid.NewGuid().ToString() : WebUtility.UrlEncode(model.kodLaporan));
 
 
-            if (model.kodLaporan == "LAK010")
+            if (model.kodLaporan == "LAK009")
             {
                 // construct and insert data into dataTable 
                 var excelData = GenerateDataTableLAK009(printModel);
@@ -90,7 +90,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             List<LAK009PrintModel> reportModel = new List<LAK009PrintModel>();
 
 
-            if (form.kodLaporan == "LAK010")
+            if (form.kodLaporan == "LAK009")
             {
 
                 form.Tajuk1 = $"Laporan Pembayaran Mengikut Julat Tertentu Dari {@Convert.ToDateTime(form.tarDari1).ToString("dd/MM/yyyy")} Hingga {@Convert.ToDateTime(form.tarHingga1):dd/MM/yyyy}";

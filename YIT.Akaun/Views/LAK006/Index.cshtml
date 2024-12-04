@@ -1,7 +1,7 @@
 ﻿@model YIT.Akaun.Models.ViewModels.Forms.PrintFormModel
 
 @{
-    ViewData["Title"] = "LAK009 Laporan Pembayaran Mengikut Julat Tertentu";
+    ViewData["Title"] = "LAK006 Penyata Pendapatan Tahunan";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     int year = DateTime.Now.Year;
@@ -14,18 +14,18 @@
     $("body").on("click", "#btnExportExcel", function () {
         $(".loading").css("display", "");
         $("#btnExportExcel").prop('disabled', true);
-        var kodLaporan = "LAK009";
+        var kodLaporan = "LAK006";
        
-        var tarDari1 = $('#tarDari1').val();
-        var tarHingga1 = $('#tarHingga1').val();
+        
+        var Tahun1 = $('#Tahun1').val();
         var JKWId = $('#jKWId').val();
         var AkBankId = $('#AkBankId').val();
 
         if (kodLaporan != "") {
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("ExportExcel","LAK009")',
-                data: { kodLaporan: kodLaporan, tarDari1: tarDari1, tarHingga1: tarHingga1, JKWId: JKWId, AkBankId: AkBankId },
+                url: '@Url.Action("ExportExcel","LAK006")',
+                data: { kodLaporan: kodLaporan, Tahun1: Tahun1, JKWId: JKWId, AkBankId: AkBankId },
                 dataType: "json",
                 success: function (r) {
                     window.location = "@Url.Action("Download","Account")?fileGuid=" + r.fileGuid
@@ -59,13 +59,16 @@
             <form asp-action="printPDF">
                 <div class="card">
                     <div class="card-body">
-                        <div class="form-group row g-3">
-                            <label for="Tarikh" class="col-sm-2 col-form-label">Tarikh</label>
-                            <div class="col-sm-4">
-                                <input type="date" class="form-control form-control-sm" id="tarDari1" asp-for="tarDari1" value="@firstDay.ToString("yyyy-MM-dd")">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <label class="form-control-label">Tahun</label>
+                                </div>
                             </div>
-                            <div class="col-sm-4">
-                                <input type="date" class="form-control form-control-sm" id="tarHingga1" asp-for="tarHingga1" value="@lastDay.ToString("yyy-MM-dd")">
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                <input class="form-control form-control-sm" type="text" name="Tahun1" asp-for="Tahun1"
+                                       onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                             </div>
                         </div>
                         <div class="row">
@@ -75,12 +78,12 @@
                                 </div>
                             </div>
                             <div class="col-md-8">
-
                                 <div class="input-group mb-2 input-group-sm ">
                                     <select class="form-control form-control-sm select2" name="JKWId" asp-for="jKWId" asp-items="@ViewBag.JKW"></select>
                                 </div>
                             </div>
                         </div>
+                       
                         <div class="row">
                             <div class="col-md-2">
                                 <label class="form-control-label">Bank</label>
@@ -93,6 +96,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
                 <hr />
                 <div class="form-group text-right">

@@ -22,13 +22,16 @@ using System.Dynamic;
 using YIT.Akaun.Infrastructure;
 using DocumentFormat.OpenXml.Drawing.Spreadsheet;
 using System.ComponentModel;
+using YIT.__Domain.Entities._Statics;
 
 namespace YIT.Akaun.Controllers._99Laporan
 {
     [Authorize]
     public class LAK005Controller : Microsoft.AspNetCore.Mvc.Controller
     {
-        public const string modul = "LP0001";
+        public const string modul = Modules.kodLHasilBulanan;
+        public const string namamodul = Modules.namaLHasilBulanan;
+
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly _IUnitOfWork _unitOfWork;
