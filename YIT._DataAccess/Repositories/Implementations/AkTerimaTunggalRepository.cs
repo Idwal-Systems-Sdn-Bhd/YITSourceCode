@@ -103,6 +103,60 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akTerimaTunggal;
         }
 
+        public List<AkTerimaTunggal> GetResults1(DateTime? dateFrom, DateTime? dateTo, int? jCawanganId, int? jKWId)
+        {
+            if (dateFrom == null && dateTo == null && jCawanganId == null && jKWId == null)
+            {
+                return new List<AkTerimaTunggal>();
+            }
+
+            var akTerimaTunggal = _context.AkTerimaTunggal
+                .IgnoreQueryFilters()
+                .Include(t => t.JKW)
+                .Include(t => t.DPekerjaPosting)
+                .Include(t => t.JNegeri)
+                .Include(t => t.JCawangan)
+                .Include(t => t.AkBank)
+                    .ThenInclude(b => b!.JBank)
+                .Include(t => t.AkBank)
+                    .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkBank)
+                    .ThenInclude(b => b!.AkCarta)
+                .Include(t => t.DDaftarAwam)
+                .Include(tcb => tcb.JCaraBayar)
+                //.Include(t => t.AkTerimaTunggalObjek)!
+                //    .ThenInclude(to => to.AkCarta)
+                //.Include(t => t.AkTerimaTunggalObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JKW)
+                .Include(t => t.AkTerimaTunggalObjek)!
+                    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JPTJ)
+                //.Include(t => t.AkTerimaTunggalObjek)!
+                //    .ThenInclude(to => to.JKWPTJBahagian)
+                //        .ThenInclude(b => b!.JBahagian)
+                .ToList();
+
+            // date filters
+            if (dateFrom != null && dateTo != null)
+            {
+                akTerimaTunggal = akTerimaTunggal.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99)).ToList();
+            }
+            // date filters end
+
+            if (jCawanganId != null)
+            {
+                akTerimaTunggal = akTerimaTunggal.Where(p => p.JCawanganId == jCawanganId).ToList();
+            }
+
+            if (jKWId != null)
+            {
+                akTerimaTunggal = akTerimaTunggal.Where(p => p.JKWId == jKWId).ToList();
+            }
+
+            return akTerimaTunggal;
+        }
+
         public AkTerimaTunggal GetDetailsById(int id)
         {
             return _context.AkTerimaTunggal.Include(t => t.JKW)
@@ -131,6 +185,62 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Include(t => t.AkTerimaTunggalInvois)!
                     .ThenInclude(t => t.AkInvois)
                     .FirstOrDefault(t => t.Id == id) ?? new AkTerimaTunggal();
+        }
+
+        public async Task<List<_AkTerimaTunggalResult>> GetResultsGroupByTarikh(string? tarikhDari, string? tarikhHingga, int? jCawanganId)
+        {
+            if (tarikhDari == null || tarikhHingga == null || jCawanganId == null)
+            {
+                return new List<_AkTerimaTunggalResult>();
+            }
+
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+
+            var akTT = await _context.AkTerimaTunggal
+                .Where(b => b.Tarikh >= date1 && b.Tarikh <= date2 && b.JCawanganId == jCawanganId)
+                .OrderBy(a => a.Tarikh)
+                .ThenBy(a => a.NoRujukan)
+                .ToListAsync();
+
+            var akTerimaTunggalResults = new List<_AkTerimaTunggalResult>();
+
+            if (akTT.Any())
+            {
+                var result = new _AkTerimaTunggalResult
+                {
+                    FirstNoRujukan = akTT.FirstOrDefault()?.NoRujukan,
+                    LastNoRujukan = akTT.LastOrDefault()?.NoRujukan,
+                    ResitDibatalkan = akTT.Where(r => r.FlBatal == 1).ToList()
+                };
+
+                if (!string.IsNullOrWhiteSpace(result.FirstNoRujukan) || !string.IsNullOrWhiteSpace(result.LastNoRujukan) ||
+                    result.ResitDibatalkan.Any())
+                {
+                    akTerimaTunggalResults.Add(result);
+                }
+            }
+
+            return akTerimaTunggalResults;
+        }
+
+        public async Task<List<AkTerimaTunggal>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? jCawanganId, int? jKWId)
+        {
+            if (tarikhDari == null || tarikhHingga == null || jCawanganId == null || jKWId == null)
+            {
+                return new List<AkTerimaTunggal>();
+            }
+
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+
+            var akTT = await _context.AkTerimaTunggal
+                .Where(b => b.FlBatal == 1 && b.Tarikh >= date1 && b.Tarikh <= date2 && b.JCawanganId == jCawanganId && b.JKWId == jKWId)
+                .OrderBy(a => a.Tarikh)
+                .ThenBy(a => a.NoRujukan)
+                .ToListAsync();
+
+            return akTT;
         }
 
         public async Task<bool> IsPostedAsync(int id, string noRujukan)

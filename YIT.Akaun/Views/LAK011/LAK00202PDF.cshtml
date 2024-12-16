@@ -58,7 +58,7 @@
                         <td>@bil</td>
                         <td class="text-uppercase">@akInden.NoRujukan</td>
                         <td>@akInden.Tarikh.ToString("dd/MM/yyyy")</td>
-                        <td class="text-uppercase">@akInden.DDaftarAwam.Kod @akInden.DDaftarAwam.Nama</td>
+                        <td class="text-uppercase">@akInden.DDaftarAwam?.Kod @akInden.DDaftarAwam?.Nama</td>
                         <td class="text-right">@akInden.Jumlah.ToString("#,##0.00")</td>
                         <td class="text-uppercase">@firstObjek?.AkCarta?.Kod @firstObjek?.AkCarta?.Perihal</td>
                         <td class="text-right">@firstObjek?.Amaun.ToString("#,##0.00")</td>

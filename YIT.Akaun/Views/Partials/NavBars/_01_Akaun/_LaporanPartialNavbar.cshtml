@@ -7,10 +7,19 @@
      @Html.ActiveClass("LAK006PrintModel")
      @Html.ActiveClass("LAK007PrintModel")
      @Html.ActiveClass("LAK009PrintModel")
+     @Html.ActiveClass("LAK010PrintModel")
+     @Html.ActiveClass("LAK011PrintModel")
      @Html.ActiveClass("LAK011PrintModel")
      @Html.ActiveClass("LAK012PrintModel")
      @Html.ActiveClass("LAK013PrintModel")
+     @Html.ActiveClass("LAK014PrintModel")
+     @Html.ActiveClass("LAK015PrintModel")
+     @Html.ActiveClass("LAK016PrintModel")
+     @Html.ActiveClass("LAK017PrintModel")
      @Html.ActiveClass("LAK018PrintModel")
+     @Html.ActiveClass("LAK019PrintModel")
+     @Html.ActiveClass("LAK020PrintModel")
+     @Html.ActiveClass("LAK021PrintModel")
        " href="#submenuLaporan" data-toggle="collapse" data-target="#submenuLaporan"><img src="~/img/svg/laporan.svg" class="fa fa-pull-left fa-0 icon-bar"><span>&nbsp; Laporan</span></a>
     <div class="collapse" id="submenuLaporan" aria-expanded="false">
         <ul class="flex-column ps-2 nav">
@@ -50,6 +59,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK010PrintModel")" asp-area="" asp-controller="LAK010" asp-action="Index">
+                    Daftar Bil
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK011PrintModel")" asp-area="" asp-controller="LAK011" asp-action="Index">
                    Daftar Pesanan Tempatan Dan Inden Kerja
                 </a>
@@ -65,11 +79,45 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK014PrintModel")" asp-area="" asp-controller="LAK014" asp-action="Index">
+                    Laporan Pesanan Tempatan Belum Dibayar
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK015PrintModel")" asp-area="" asp-controller="LAK015" asp-action="Index">
+                    Laporan SiBerhutang
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK016PrintModel")" asp-area="" asp-controller="LAK016" asp-action="Index">
+                    Laporan Resit Yang Dibatalkan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK017PrintModel")" asp-area="" asp-controller="LAK017" asp-action="Index">
+                    Laporan Akaun Kena Bayar
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK018PrintModel")" asp-area="" asp-controller="LAK018" asp-action="Index">
                     Laporan Waran Peruntukan
                 </a>
             </li>
-            
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK019PrintModel")" asp-area="" asp-controller="LAK019" asp-action="Index">
+                    Laporan Electronic File Transfer (EFT) Ditolak
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK020PrintModel")" asp-area="" asp-controller="LAK020" asp-action="Index">
+                    Penyata Resit Yang Dikeluarkan Bagi Satu Jangkamasa
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link border-bottom p-1 text-truncate ps-4 @Html.ActiveSideBarClass("LAK021PrintModel")" asp-area="" asp-controller="LAK021" asp-action="Index">
+                    Laporan Perolehan Belum Bayar/Batal
+                </a>
+            </li>
         </ul>
     </div>
 </li>

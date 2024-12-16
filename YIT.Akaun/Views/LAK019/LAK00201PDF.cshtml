@@ -1,0 +1,107 @@
+﻿@model LAK019PrintModel
+
+@{
+    ViewData["Title"] = "LAK00201 Laporan Electronic File Transfer (EFT) Ditolak (Tarikh)";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal jumlah = 0;
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+
+<div>
+    <p>
+        <strong>
+            Laporan Electronic File Transfer (EFT) Ditolak Bagi Tarikh @ViewData["TarikhDari"] Hingga @ViewData["TarikhHingga"]<br>
+        </strong>
+    </p>
+</div>
+
+<table class="table table-bordered table-sm topic" id="mytable">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th colspan="6" class="text-center bg-dark text-white" style="line-height: 1.8rem;"><strong>CETAKAN LAPORAN ELECTRONIC FILE TRANSFER (EFT) DITOLAK</strong></th>
+        </tr>
+        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+            <th>Bil</th>
+            <th>No Rujukan</th>
+            <th>Tarikh</th>
+            <th>No Baucer</th>
+            <th>Nama Penerima</th>
+            <th>Jumlah</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AkEFT != null && Model.AkEFT.Any())
+        {
+            int bil = 1;
+
+            foreach (var akE in Model.AkEFT)
+            {
+                if (akE.AkEFTPenerima != null && akE.AkEFTPenerima.Any())
+                {
+                    foreach (var penerima in akE.AkEFTPenerima)
+                    {
+                        <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                            <td class="text-uppercase">@bil</td>
+                            <td class="text-uppercase">@akE.NoRujukan</td>
+                            <td class="text-uppercase">@akE.Tarikh.ToString("dd/MM/yyyy")</td>
+                            <td class="text-uppercase">@penerima.AkPV?.NoRujukan</td>
+                            <td class="text-uppercase">@penerima.NamaPenerima</td> 
+                            <td class="text-right">@penerima.Amaun.ToString("#,##0.00")</td>
+                        </tr>
+                        bil++;
+
+                        jumlah += penerima.Amaun;
+                    }
+                }
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center">No data available</td>
+            </tr>
+        }
+        <tr class="font-weight-bold">
+            <td colspan="5" class="text-right text-uppercase table-warning">Jumlah Keseluruhan RM</td>
+            <td class="text-right">@jumlah.ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="table-responsive-sm">
+    <table class="table table-sm topic table-bordered">
+        <thead class="table-dark">
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center" width="33%">Disedia </td>
+                <td class="text-center" width="33%">Disemak </td>
+                <td class="text-center" width="33%">Diluluskan </td>
+            </tr>
+            <tr>
+                <td class="text-center" height="50px"></td>
+                <td class="text-center" height="50px"></td>
+                <td class="text-center" height="50px"></td>
+            </tr>
+            <tr>
+                <td class="text-left">Nama: @ViewBag.NamaDisedia</td>
+                <td class="text-left">Nama: @ViewBag.NamaSemak</td>
+                <td class="text-left">Nama: @ViewBag.NamaDiluluskan</td>
+            </tr>
+            <tr>
+                <td class="text-left">Jawatan: @ViewBag.JawatanDisedia</td>
+                <td class="text-left">Jawatan: @ViewBag.JawatanSemak</td>
+                <td class="text-left">Jawatan: @ViewBag.JawatanDiluluskan</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

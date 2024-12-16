@@ -1,0 +1,202 @@
+﻿@model YIT.Akaun.Models.ViewModels.Forms.PrintFormModel
+
+@{
+    ViewData["Title"] = "LAK019 Laporan Electronic File Transfer (EFT) Ditolak";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int year = DateTime.Now.Year;
+    DateTime firstDay = new DateTime(year, 1, 1);
+    DateTime lastDay = new DateTime(year, 12, 31);
+}
+
+<script>
+    $(document).ready(function () {
+        function toggleFields() {
+            if ($('#LAK00202').is(':checked')) {
+                $('#tarikhContainer').hide();
+                $('#tarikhDari').prop('required', false);
+                $('#tarikhHingga').prop('required', false);
+                $('#searchStringContainer').show();
+                $('#searchString1').prop('required', true);
+                $('#searchString2').prop('required', true);
+            } else {
+                $('#tarikhContainer').show();
+                $('#tarikhDari').prop('required', true);
+                $('#tarikhHingga').prop('required', true);
+                $('#searchStringContainer').hide();
+                $('#searchString1').prop('required', false);
+                $('#searchString2').prop('required', false);
+            }
+        }
+
+        toggleFields();
+
+        $('input[name="kodLaporan"]').change(function () {
+            toggleFields();
+        });
+
+        $("body").on("click", "#btnExportExcel", function () {
+            $(".loading").css("display", "");
+            $("#btnExportExcel").prop('disabled', true);
+
+            var kodLaporan = $("input[name='kodLaporan']:checked").val();
+            var tarikhDari = $('#tarikhDari').val();
+            var tarikhHingga = $('#tarikhHingga').val();
+            var searchString1 = $('#searchString1').val();
+            var searchString2 = $('#searchString2').val();
+            var dPekerjaId1 = $('#dPekerjaId1').val();
+            var dPekerjaId2 = $('#dPekerjaId2').val();
+            var dPekerjaId3 = $('#dPekerjaId3').val();
+
+            if (kodLaporan != "") {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ExportExcel", "LAK019")',
+                    data: { kodLaporan: kodLaporan, tarikhDari: tarikhDari, tarikhHingga: tarikhHingga, searchString1: searchString1, searchString2: searchString2, dPekerjaId1: dPekerjaId1, dPekerjaId2: dPekerjaId2, dPekerjaId3: dPekerjaId3 },
+                    dataType: "json",
+                    success: function (r) {
+                        window.location = "@Url.Action("Download", "Account")?fileGuid=" + r.fileGuid + "&filename=" + r.fileName;
+                        toastr.success("Laporan berjaya dijana.", "Berjaya");
+                        toastr.options.timeOut = 5000; // 5s
+                        $("#btnExportExcel").prop('disabled', false);
+                        $(".loading").css("display", "none");
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<div class="container">
+    <div class="card box-shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <h5 class="text-uppercase text-info mb-0">@ViewData["Title"]</h5>
+                    <span class="ac-ref">Indeks</span>
+                </div>
+                <div class="col-4 text-right"></div>
+            </div>
+            <hr class="mt-2" />
+            <form asp-action="PRINT">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div class="form-group col-sm">
+                            <div class="custom-control custom-radio pb-2">
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00201" value="LAK00201" checked>
+                                <label class="custom-control-label" for="LAK00201">
+                                    Laporan Electronic File Transfer (EFT) Ditolak (Tarikh)
+                                </label>
+                            </div>
+                            <div class="custom-control custom-radio pb-2">
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00202" value="LAK00202">
+                                <label class="custom-control-label" for="LAK00202">
+                                    Laporan Electronic File Transfer (EFT) Ditolak (No Rujukan)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div id="tarikhContainer" class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <label class="form-control-label">Tarikh</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <div class="input-group-text">Dari</div>
+                                    <input class="form-control form-control-sm" type="date" name="tarikhDari" value="@ViewData["DateFrom"]" id="tarikhDari" required />
+                                    <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <div class="input-group-text">Hingga</div>
+                                    <input class="form-control form-control-sm" type="date" name="tarikhHingga" value="@ViewData["DateTo"]" id="tarikhHingga" required />
+                                    <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="searchStringContainer" class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <label class="form-control-label">No Rujukan</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input class="form-control form-control-sm" type="text" name="searchString1" value="@ViewBag.searchString1" id="searchString1" required />
+                                    <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input class="form-control form-control-sm" type="text" name="searchString2" value="@ViewBag.searchString2" id="searchString2" required />
+                                    <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <div id="sediaContainer" class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <label for="dPekerjaId1" class="form-control-label">Disedia</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <select class="form-control form-control-sm select2" name="dPekerjaId1" asp-items="@ViewBag.DPekerja1" id="dPekerjaId1"></select>
+                                    <label class="invalid-feedback">Sila pilih ruangan ini.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="semakContainer" class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <label for="dPekerjaId2" class="form-control-label">Disemak</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <select class="form-control form-control-sm select2" name="dPekerjaId2" asp-items="@ViewBag.DPekerja2" id="dPekerjaId2"></select>
+                                    <label class="invalid-feedback">Sila pilih ruangan ini.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sahContainer" class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <label for="dPekerjaId3" class="form-control-label">Disah</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <select class="form-control form-control-sm select2" name="dPekerjaId3" asp-items="@ViewBag.DPekerja3" id="dPekerjaId3"></select>
+                                    <label class="invalid-feedback">Sila pilih ruangan ini.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="form-group text-right">
+                    <input type="submit" value="Cetak" id="btnCetak" formtarget="_blank" class="btn ac-primary" />
+                    <button type="button" formtarget="_blank" id="btnExportExcel" class="btn ac-info">Jana Excel</button>
+                    <span class="loading" style="padding-right:3px; padding-top: 3px; display:inline-block;">
+                        <img src="~/img/Spinner.gif" style="height:40px;">
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

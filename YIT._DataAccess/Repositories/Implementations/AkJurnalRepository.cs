@@ -32,7 +32,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ThenInclude(jo => jo.JKWPTJBahagianKredit)
                 .Include(j => j.AkJurnalPenerimaCekBatal)!
                     .ThenInclude(jo => jo.AkPV)
-                .FirstOrDefault(j => j.Id.Equals(id)) ?? new AkJurnal();
+                .FirstOrDefault(j => j.Id == id) ?? new AkJurnal();
         }
 
         public List<AkJurnal> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang)
@@ -91,6 +91,177 @@ namespace YIT._DataAccess.Repositories.Implementations
             // order by filters end
 
             return akJurnalList;
+        }
+
+        public List<AkJurnal> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, string? tahun, int? jKWId)
+        {
+            if (searchString == null && dateFrom == null && dateTo == null && tahun == null && jKWId == null)
+            {
+                return new List<AkJurnal>();
+            }
+                
+            var akJurnalList = _context.AkJurnal
+                .IgnoreQueryFilters()
+                .Include(j => j.JKW)
+                .Include(j => j.AkJurnalObjek)!
+                    .ThenInclude(j => j.AkCartaDebit)
+                .Include(j => j.AkJurnalObjek)!
+                    .ThenInclude(j => j.AkCartaKredit)
+                .Where(j => j.Tarikh >= dateFrom && j.Tarikh <= dateTo!.Value.AddHours(23.99))
+                .ToList();
+
+            // searchstring filters
+            if (searchString != null)
+            {
+                akJurnalList = akJurnalList.Where(t =>
+                t.NoRujukan!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            // searchString filters end
+
+            // status borang filters
+            switch (enStatusBorang)
+            {
+                case EnStatusBorang.None:
+                    akJurnalList = akJurnalList.Where(pp => pp.EnStatusBorang == EnStatusBorang.None).ToList();
+                    break;
+                case EnStatusBorang.Sah:
+                    akJurnalList = akJurnalList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Sah).ToList();
+                    break;
+                case EnStatusBorang.Semak:
+                    akJurnalList = akJurnalList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Semak).ToList();
+                    break;
+                case EnStatusBorang.Lulus:
+                    akJurnalList = akJurnalList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Lulus).ToList();
+                    break;
+                case EnStatusBorang.Semua:
+                    break;
+            }
+            // status borang filters end
+
+            // order by filters
+            if (orderBy != null)
+            {
+                switch (orderBy)
+                {
+                    case "Tarikh":
+                        akJurnalList = akJurnalList.OrderBy(t => t.Tarikh).ToList(); break;
+                    default:
+                        akJurnalList = akJurnalList.OrderBy(t => t.NoRujukan).ToList();
+                        break;
+                }
+
+            }
+            // order by filters end
+
+            int year = int.Parse(tahun!);
+
+            if (jKWId != null)
+            {
+                akJurnalList = akJurnalList.Where(wr => wr.JKWId == jKWId).ToList();
+            }
+
+            return akJurnalList;
+        }
+
+        public async Task<List<_AkJurnalResult>> GetResultsGroupWithTanggungan(string? tahun, string? tarikhDari, string? tarikhHingga, int? jKWId)
+        {
+            if (string.IsNullOrEmpty(tahun) || string.IsNullOrEmpty(tarikhDari) || string.IsNullOrEmpty(tarikhHingga))
+            {
+                return new List<_AkJurnalResult>();
+            }
+
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+            int year = int.Parse(tahun);
+
+            var akJurnals = await _context.AkJurnal
+                .Where(j => j.Tarikh >= date1 && j.Tarikh <= date2 && j.JKWId == jKWId)
+                .OrderBy(j => j.NoRujukan)
+                .ToListAsync();
+
+            var akJurnalObjekList = akJurnals
+                .SelectMany(j => j.AkJurnalObjek!)
+                .Where(jo =>
+                    jo.AkJurnal != null &&
+                    (
+                        jo.AkJurnal.AkPVId == null ||
+                        (
+                            jo.AkJurnal.AkPV != null &&
+                            jo.AkJurnal.AkPV.AkPVInvois != null &&
+                            jo.AkJurnal.AkPV.AkPVInvois
+                                .Any(inv =>
+                                    inv.AkBelian != null &&
+                                    inv.AkBelian.AkPO != null &&
+                                    !string.IsNullOrEmpty(inv.AkBelian.AkPO.NoRujukanLama) &&
+                                    inv.AkBelian.AkPO.NoRujukanLama.Substring(0, 8) == inv.AkBelian.AkPO.NoRujukanLama.Substring(0, 8)
+                                )
+                        )
+                    ) &&
+                    jo.AkJurnal.AkPV?.AkPVInvois != null &&
+                    jo.AkJurnal.AkPV.AkPVInvois
+                        .Any(inv => inv.AkBelian?.AkPO != null)
+                )
+                .ToList();
+
+
+            var groupedResults = akJurnalObjekList
+                .GroupBy(obj => new
+                {
+                    NoRujukan = obj.AkJurnal!.NoRujukan,
+                    JKWId = obj.AkJurnal!.JKWId,
+                    Kod = obj.AkCartaDebit?.Kod ?? obj.AkCartaKredit?.Kod,
+                    Perihal = obj.AkCartaDebit?.Perihal ?? obj.AkCartaKredit?.Perihal
+                })
+                .Select(group => new _AkJurnalResult
+                {
+                    NoRujukan = group.Key.NoRujukan,
+                    JKWId = group.Key.JKWId,
+                    AkCartaKod = group.Key.Kod,
+                    AkCartaPerihal = group.Key.Perihal,
+                    Amaun = group.Sum(o => o.Amaun),
+                    Tarikh = group.FirstOrDefault()!.AkJurnal!.Tarikh
+                })
+                .ToList();
+
+            return groupedResults;
+        }
+
+        public async Task<List<_AkJurnalResult>> GetResultsGroupWithoutTanggungan(string? tahun, string? tarikhDari, string? tarikhHingga, int? jKWId)
+        {
+            if (string.IsNullOrEmpty(tahun) || string.IsNullOrEmpty(tarikhDari) || string.IsNullOrEmpty(tarikhHingga) || jKWId == null)
+            {
+                return new List<_AkJurnalResult>();
+            }
+
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+            int year = int.Parse(tahun);
+
+            var akJurnal = await _context.AkJurnal
+                .Include(b => b.AkJurnalObjek)!
+                    .ThenInclude(b => b.AkCartaDebit)
+                .Include(b => b.AkJurnalObjek)!
+                    .ThenInclude(b => b.AkCartaKredit)
+                .Where(b => b.Tarikh.Year == year && b.Tarikh >= date1 && b.Tarikh <= date2 && b.JKWId == jKWId && b.IsAKB == false &&
+                    !b.AkJurnalObjek!.Any(jo =>
+                        (jo.AkCartaDebit != null && jo.AkCartaDebit.Kod == "L14101") || (jo.AkCartaKredit != null && jo.AkCartaKredit.Kod == "L14101")
+                    ))
+                .OrderBy(b => b.NoRujukan)
+                .ToListAsync();
+
+            var results = akJurnal
+                .SelectMany(a => a.AkJurnalObjek!.Select(jo => new _AkJurnalResult
+                {
+                    NoRujukan = a.NoRujukan,
+                    Tarikh = a.Tarikh,
+                    AkCartaKod = jo.AkCartaDebit?.Kod ?? jo.AkCartaKredit?.Kod,
+                    AkCartaPerihal = jo.AkCartaDebit?.Perihal ?? jo.AkCartaKredit?.Perihal,
+                    Amaun = jo.Amaun
+                }))
+                .ToList();
+
+            return results;
         }
 
         public List<AkJurnal> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan)

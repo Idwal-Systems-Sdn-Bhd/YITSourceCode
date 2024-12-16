@@ -1,0 +1,74 @@
+﻿@model LAK014PrintModel
+
+@{
+    ViewData["Title"] = "LAK014 Laporan Pesanan Tempatan Belum Dibayar";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+    decimal jumlah = 0;
+    decimal amaun = 0;
+}
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0">@ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0">@ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan:  @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
+    </div>
+</div>
+<br />
+<table class="table table-bordered table-sm topic" id="mytable">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th colspan="7" class="text-center bg-dark text-white" style="line-height: 1.8rem;"><strong>LAPORAN PESANAN TEMPATAN BELUM DIBAYAR DARI TARIKH : @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]</strong></th>
+        </tr>
+        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+            <th>Bil</th>
+            <th>Tarikh</th>
+            <th>No Rujukan</th>
+            <th>Pembekal</th>
+            <th>Jumlah</th>
+            <th>Vot</th>
+            <th>Amaun</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AkPOResult != null && Model.AkPOResult.Any())
+        {
+            int bil = 1;
+
+            foreach (var akPO in Model.AkPOResult)
+            {
+                <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                    <td class="text-uppercase">@bil</td>
+                    <td class="text-uppercase">
+                        @akPO.Tarikh.ToString("dd/MM/yyyy")
+                    </td>
+                    <td class="text-uppercase">
+                        @akPO.NoRujukan
+                    </td>
+                    <td class="text-uppercase">@akPO.DNama</td>
+                    <td class="text-right">@akPO.Jumlah.ToString("#,##0.00")</td>
+                    <td class="text-uppercase">@akPO?.AkCartaKod @akPO?.AkCartaPerihal</td>
+                    <td class="text-right">@akPO!.Amaun.ToString("#,##0.00")</td>
+                </tr>
+                bil++;
+
+                jumlah += akPO.Jumlah;
+                amaun += akPO.Amaun;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center">No data available</td>
+            </tr>
+        }
+        <tr class="font-weight-bold">
+            <td colspan="4" class="text-right text-uppercase table-warning">Jumlah RM</td>
+            <td class="text-right">@jumlah.ToString("#,##0.00")</td>
+            <td colspan="1" class="text-right text-uppercase"></td>
+            <td class="text-right">@amaun.ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+</table>

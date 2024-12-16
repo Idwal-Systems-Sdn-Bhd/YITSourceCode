@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Rotativa.AspNetCore;
 using System.Data;
-using System.Globalization;
 using System.Net;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
@@ -57,8 +56,8 @@ namespace YIT.Akaun.Controllers._99Laporan
         [HttpPost]
         public async Task<JsonResult> ExportExcel(PrintFormModel model)
         {
-            string searchString1 = model.searchString1;
-            string searchString2 = model.searchString2;
+            string searchString1 = model.searchString1!;
+            string searchString2 = model.searchString2!;
 
             LAK013PrintModel printModel = await PrepareData(model.kodLaporan, model.tarikhDari, model.tarikhHingga, model.enStatusBorang, model.jKWId, searchString1, searchString2);
 
@@ -74,7 +73,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                 // insert dataTable into Workbook
                 RunWorkBookLAK00201(printModel, excelData, handle);
             }
-            if (model.kodLaporan == "LAK00202")
+            else if (model.kodLaporan == "LAK00202")
             {
                 // construct and insert data into dataTable 
                 var excelData1 = GenerateDataTableLAK00202(printModel, model.enStatusBorang, model.jKWId, searchString1, searchString2);
@@ -83,7 +82,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                 RunWorkBookLAK00202(printModel, excelData1, handle, searchString1, searchString2);
             }
             // save viewmodel into workbook
-            if (model.kodLaporan == "LAK00203")
+            else if (model.kodLaporan == "LAK00203")
             {
                 //construct and insert data into dataTable 
                 var excelData2 = GenerateDataTableLAK00203(printModel, model.tarikhDari, model.tarikhHingga, model.enStatusBorang, model.jKWId);
@@ -172,7 +171,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                     .ToList();
 
                 var allPenerima = akPvList
-                    .SelectMany(pv => pv.AkPVPenerima, (pv, penerima) => new
+                    .SelectMany(pv => pv.AkPVPenerima!, (pv, penerima) => new
                     {
                         AkPV = pv,
                         AkPVPenerima = penerima
@@ -272,13 +271,13 @@ namespace YIT.Akaun.Controllers._99Laporan
                     .ToList();
 
                 var allPenerima = akPvList
-                    .SelectMany(pv => pv.AkPVPenerima, (pv, penerima) => new
+                    .SelectMany(pv => pv.AkPVPenerima!, (pv, penerima) => new
                     {
                         AkPV = pv,
                         AkPVPenerima = penerima
                     })
-                    .Where(x => string.Compare(x.AkPV.NoRujukan.ToLower(), searchString1.ToLower()) >= 0 &&
-                                string.Compare(x.AkPV.NoRujukan.ToLower(), searchString2.ToLower()) <= 0)
+                    .Where(x => string.Compare(x.AkPV.NoRujukan!.ToLower(), searchString1!.ToLower()) >= 0 &&
+                                string.Compare(x.AkPV.NoRujukan!.ToLower(), searchString2!.ToLower()) <= 0)
                     .OrderBy(x => x.AkPVPenerima.NoRujukanCaraBayar)
                     .ToList();
 
@@ -383,7 +382,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                     .ToList();
 
                 var allPenerima = akPvList
-                    .SelectMany(pv => pv.AkPVPenerima, (pv, penerima) => new
+                    .SelectMany(pv => pv.AkPVPenerima!, (pv, penerima) => new
                     {
                         AkPV = pv,
                         AkPVPenerima = penerima
@@ -497,7 +496,6 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
 
             ViewBag.JKW = selectList;
-
         }
 
         // printing List of Laporan
@@ -529,8 +527,8 @@ namespace YIT.Akaun.Controllers._99Laporan
                     reportModel.AkPV = akpv;
 
                     viewName = "LAK00201PDF";
-                    var TarikhDariLAK00201 = DateTime.Parse(tarikhDari).ToString("dd/MM/yyyy");
-                    var TarikhHinggaLAK00201 = DateTime.Parse(tarikhHingga).ToString("dd/MM/yyyy");
+                    var TarikhDariLAK00201 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
+                    var TarikhHinggaLAK00201 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
                     viewDataDictionary["TarikhDari"] = TarikhDariLAK00201;
                     viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK00201;
                     break;
@@ -553,8 +551,8 @@ namespace YIT.Akaun.Controllers._99Laporan
                     reportModel.AkPV = akpv;
 
                     viewName = "LAK00203PDF";
-                    var TarikhDariLAK00203 = DateTime.Parse(tarikhDari).ToString("dd/MM/yyyy");
-                    var TarikhHinggaLAK00203 = DateTime.Parse(tarikhHingga).ToString("dd/MM/yyyy");
+                    var TarikhDariLAK00203 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
+                    var TarikhHinggaLAK00203 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
                     viewDataDictionary["TarikhDari"] = TarikhDariLAK00203;
                     viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK00203;
                     break;

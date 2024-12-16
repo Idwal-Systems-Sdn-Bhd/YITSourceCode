@@ -72,7 +72,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                 RunWorkBookLAK00201(printModel, excelData, handle);
             }
             // save viewmodel into workbook
-            if (model.kodLaporan == "LAK00202")
+            else if (model.kodLaporan == "LAK00202")
             {
                 //construct and insert data into dataTable
                 var excelData1 = GenerateDataTableLAK00202(printModel, model.jKWId, model.jBahagianId, model.tahun);
@@ -179,14 +179,14 @@ namespace YIT.Akaun.Controllers._99Laporan
 
                 if (jBahagianId != 0)
                 {
-                    abwaranList1 = abwaranList1.Where(w => w.AbWaranObjek.Any(obj => obj.JKWPTJBahagian.JBahagianId == jBahagianId));
+                    abwaranList1 = abwaranList1.Where(w => w.AbWaranObjek!.Any(obj => obj.JKWPTJBahagian!.JBahagianId == jBahagianId));
                 }
 
                 var abwaranList = abwaranList1.ToList();
 
                 var distinctObjeks = abwaranList
-                    .SelectMany(g => g.AbWaranObjek)
-                    .GroupBy(obj => new { obj.AbWaran.NoRujukan, obj.AbWaran.Tarikh, obj.AkCarta.Kod, obj.Amaun }) 
+                    .SelectMany(g => g.AbWaranObjek!)
+                    .GroupBy(obj => new { obj.AbWaran!.NoRujukan, obj.AbWaran.Tarikh, obj.AkCarta!.Kod, obj.Amaun }) 
                     .Select(g => g.First());
 
                 foreach (var objek in distinctObjeks)
@@ -196,7 +196,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                     decimal pindah = 0; 
                     decimal jumlahRecord = asal + tambah + pindah;
 
-                    string cleanedPerihal = objek.AkCarta?.Perihal.Trim();
+                    string cleanedPerihal = objek.AkCarta!.Perihal!.Trim();
 
                     dt.Rows.Add(
                         bil,
@@ -312,14 +312,14 @@ namespace YIT.Akaun.Controllers._99Laporan
 
                 if (jBahagianId != 0)
                 {
-                    abwaranList1 = abwaranList1.Where(w => w.AbWaranObjek.Any(obj => obj.JKWPTJBahagian.JBahagianId == jBahagianId));
+                    abwaranList1 = abwaranList1.Where(w => w.AbWaranObjek!.Any(obj => obj.JKWPTJBahagian!.JBahagianId == jBahagianId));
                 }
 
                 var abwaranList = abwaranList1.ToList();
 
                 var distinctObjeks = abwaranList
-                    .SelectMany(g => g.AbWaranObjek)
-                    .GroupBy(obj => new { obj.AbWaran.NoRujukan, obj.AbWaran.Tarikh, obj.AkCarta.Kod, obj.Amaun }) 
+                    .SelectMany(g => g.AbWaranObjek!)
+                    .GroupBy(obj => new { obj.AbWaran!.NoRujukan, obj.AbWaran.Tarikh, obj.AkCarta!.Kod, obj.Amaun }) 
                     .Select(g => g.First());
 
                 foreach (var objek in distinctObjeks)

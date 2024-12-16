@@ -1,0 +1,103 @@
+﻿@model YIT.Akaun.Models.ViewModels.Forms.PrintFormModel
+
+@{
+    ViewData["Title"] = "LAK014 Laporan Pesanan Tempatan Belum Dibayar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int year = DateTime.Now.Year;
+    DateTime firstDay = new DateTime(year, 1, 1);
+    DateTime lastDay = new DateTime(year, 12, 31);
+}
+
+<script>
+    $(document).ready(function () {
+
+        $('input[name="kodLaporan"]').change(function () {
+            toggleFields();
+        });
+
+        $("body").on("click", "#btnExportExcel", function () {
+            $(".loading").css("display", "");
+            $("#btnExportExcel").prop('disabled', true);
+
+            var kodLaporan = "LAK014";
+            var tarikhDari = $('#tarikhDari').val();
+            var tarikhHingga = $('#tarikhHingga').val();
+            var jKWId = $('#jKWId').val();
+
+            if (kodLaporan != "") {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("ExportExcel", "LAK014")',
+                    data: { kodLaporan: kodLaporan, tarikhDari: tarikhDari, tarikhHingga: tarikhHingga, jKWId: jKWId },
+                    dataType: "json",
+                    success: function (r) {
+                        window.location = "@Url.Action("Download", "Account")?fileGuid=" + r.fileGuid + "&filename=" + r.fileName;
+                        toastr.success("Laporan berjaya dijana.", "Berjaya");
+                        toastr.options.timeOut = 5000; // 5s
+                        $("#btnExportExcel").prop('disabled', false);
+                        $(".loading").css("display", "none");
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+<div class="container">
+    <div class="card box-shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <h5 class="text-uppercase text-info mb-0">@ViewData["Title"]</h5>
+                    <span class="ac-ref">Indeks</span>
+                </div>
+                <div class="col-4 text-right"></div>
+            </div>
+            <hr class="mt-2" />
+            <form asp-action="PRINT">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="tarikhContainer" class="row">
+                            <div class="col-md-2">
+                                <div class="input-group mb-2 input-group-sm">
+                                    <label class="form-control-label">Tarikh</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <div class="input-group-text">Dari</div>
+                                    <input class="form-control form-control-sm" type="date" name="tarikhDari" value="@ViewData["DateFrom"]" id="tarikhDari" required />
+                                    <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <div class="input-group-text">Hingga</div>
+                                    <input class="form-control form-control-sm" type="date" name="tarikhHingga" value="@ViewData["DateTo"]" id="tarikhHingga" required />
+                                    <label class="invalid-feedback">Sila isi ruangan ini.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="jkwContainer" class="form-group row g-3">
+                            <label for="JKW" class="col-sm-2 col-form-label">Kump. Wang</label>
+                            <div class="col-sm-8">
+                                <select class="form-control form-control-sm select2" name="jKWId" asp-items="@ViewBag.JKW" id="jKWId" required>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="form-group text-right">
+                    <input type="submit" value="Cetak" id="btnCetak" formtarget="_blank" class="btn ac-primary" />
+                    <button type="button" formtarget="_blank" id="btnExportExcel" class="btn ac-info">Jana Excel</button>
+                    <span class="loading" style="padding-right:3px; padding-top: 3px; display:inline-block;">
+                        <img src="~/img/Spinner.gif" style="height:40px;">
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

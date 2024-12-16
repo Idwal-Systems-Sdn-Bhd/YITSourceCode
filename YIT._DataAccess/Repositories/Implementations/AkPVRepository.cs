@@ -324,7 +324,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             if (dDaftarAwamId != null)
             {
-                query = query.Where(a => a.AkPVPenerima.Any(p => p.DDaftarAwamId == dDaftarAwamId));
+                query = query.Where(a => a.AkPVPenerima!.Any(p => p.DDaftarAwamId == dDaftarAwamId));
             }
 
             if (orderBy != null)
@@ -1145,7 +1145,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .ToListAsync();
 
             var flattenedAndSortedPenerima = akPv
-                .SelectMany(pv => pv.AkPVPenerima.Select(pvp => new { AkPV = pv, AkPVPenerima = pvp }))
+                .SelectMany(pv => pv.AkPVPenerima!.Select(pvp => new { AkPV = pv, AkPVPenerima = pvp }))
                 .OrderBy(item => item.AkPVPenerima.NoRujukanCaraBayar)
                 .ToList();
 
@@ -1185,21 +1185,17 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var akPv = _context.AkPV
                 .Include(b => b.AkPVPenerima)
-                .Where(b => b.JKWId == jKWId &&
-                            b.NoRujukan.ToLower().CompareTo(lowerSearchString1) >= 0 &&
-                            b.NoRujukan.ToLower().CompareTo(lowerSearchString2) <= 0);
+                .Where(b => b.JKWId == jKWId && b.NoRujukan!.ToLower().CompareTo(lowerSearchString1) >= 0 &&
+                            b.NoRujukan!.ToLower().CompareTo(lowerSearchString2) <= 0);
 
             var akPvResults = await akPv.ToListAsync();
 
             var flattenedPenerima = akPvResults
-                .SelectMany(pv => pv.AkPVPenerima.Select(pvp => new { AkPV = pv, AkPVPenerima = pvp }))
+                .SelectMany(pv => pv.AkPVPenerima!.Select(pvp => new { AkPV = pv, AkPVPenerima = pvp }))
                 .OrderBy(item => item.AkPVPenerima.NoRujukanCaraBayar)
                 .ThenBy(item => item.AkPV.NoRujukan)
                 .ToList();
 
-            
-        
-  
             var groupedResults = flattenedPenerima
                 .GroupBy(item => new { item.AkPV.NoRujukan, item.AkPV.Id })
                 .Select(g => new AkPV
@@ -1217,7 +1213,6 @@ namespace YIT._DataAccess.Repositories.Implementations
             return groupedResults;
         }
 
-
         public async Task<List<AkPV>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
         {
             if (tarikhDari == null || tarikhHingga == null || dDaftarAwamId == null)
@@ -1234,10 +1229,10 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .ToListAsync();
 
             var akPvQuery = _context.AkPV
-                .Include(a => a.AkPVInvois)
+                .Include(a => a.AkPVInvois)!
                 .ThenInclude(b => b.AkBelian)
                 .Where(a => a.Tarikh >= date1 && a.Tarikh <= date2 && matchingPvIds.Contains(a.Id))
-                .Where(a => a.AkPVInvois.Any(b => b.AkBelian.DDaftarAwamId == dDaftarAwamId && b.AkBelian.NoRujukan != null));
+                .Where(a => a.AkPVInvois!.Any(b => b.AkBelian!.DDaftarAwamId == dDaftarAwamId && b.AkBelian.NoRujukan != null));
 
             var akPv = await akPvQuery.ToListAsync();
 

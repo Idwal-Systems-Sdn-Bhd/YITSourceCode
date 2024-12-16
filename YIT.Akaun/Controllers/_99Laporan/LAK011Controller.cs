@@ -73,7 +73,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                 RunWorkBookLAK00201(printModel, excelData, handle);
             }
             // save viewmodel into workbook
-            if (model.kodLaporan == "LAK00202")
+            else if (model.kodLaporan == "LAK00202")
             {
                 //construct and insert data into dataTable 
                 var excelData1 = GenerateDataTableLAK00202(printModel, model.tarikhDari, model.tarikhHingga);
@@ -110,7 +110,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             if (kodLaporan == "LAK00201")
             {
                 reportModel.CommonModels.Tajuk1 = $"Daftar Pesanan Tempatan Dari {@Convert.ToDateTime(tarikhDari).ToString("dd/MM/yyyy")} Hingga {@Convert.ToDateTime(tarikhHingga):dd/MM/yyyy}";
-                reportModel.AkPO = _unitOfWork.AkPORepo.GetResults1(date1, date2, enJenisPerolehan);
+                reportModel.AkPO = _unitOfWork.AkPORepo.GetResults1(date1, date2, enJenisPerolehan, null);
             }
             else if (kodLaporan == "LAK00202")
             {
@@ -174,10 +174,10 @@ namespace YIT.Akaun.Controllers._99Laporan
                 {
                     bool isFirstRow = true;
 
-                    foreach (var akPOObjek in group.AkPOObjek)
+                    foreach (var akPOObjek in group.AkPOObjek!)
                     {
                         string combinedDDaftarAwam = isFirstRow ? $"{group.DDaftarAwam?.Kod} {group.DDaftarAwam?.Nama}" : "";
-                        string cleanedKodPerihal = akPOObjek.AkCarta?.Kod.Trim() + " " + akPOObjek.AkCarta?.Perihal.Trim();
+                        string cleanedKodPerihal = akPOObjek.AkCarta?.Kod!.Trim() + " " + akPOObjek.AkCarta?.Perihal!.Trim();
 
                         dt.Rows.Add(
                             isFirstRow ? bil.ToString() : "",
@@ -285,10 +285,10 @@ namespace YIT.Akaun.Controllers._99Laporan
 
                 foreach (var group in akinden)
                 {
-                    foreach (var akIndenObjek in group.AkIndenObjek)
+                    foreach (var akIndenObjek in group.AkIndenObjek!)
                     {
                         string combinedDDaftarAwam = $"{group.DDaftarAwam?.Kod} {group.DDaftarAwam?.Nama}";
-                        string cleanedKodPerihal = akIndenObjek.AkCarta?.Kod.Trim() + " " + akIndenObjek.AkCarta?.Perihal.Trim();
+                        string cleanedKodPerihal = akIndenObjek.AkCarta?.Kod!.Trim() + " " + akIndenObjek.AkCarta?.Perihal!.Trim();
 
                         dt.Rows.Add(bil,
                                     group.NoRujukan,
@@ -389,16 +389,16 @@ namespace YIT.Akaun.Controllers._99Laporan
             {
                 case "LAK00201":
                     viewName = "LAK00201PDF";
-                    var TarikhDariLAK00201 = DateTime.Parse(tarikhDari).ToString("dd/MM/yyyy");
-                    var TarikhHinggaLAK00201 = DateTime.Parse(tarikhHingga).ToString("dd/MM/yyyy");
+                    var TarikhDariLAK00201 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
+                    var TarikhHinggaLAK00201 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
                     viewDataDictionary["TarikhDari"] = TarikhDariLAK00201;
                     viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK00201;
                     break;
 
                 case "LAK00202":
                     viewName = "LAK00202PDF";
-                    var TarikhDariLAK00202 = DateTime.Parse(tarikhDari).ToString("dd/MM/yyyy");
-                    var TarikhHinggaLAK00202 = DateTime.Parse(tarikhHingga).ToString("dd/MM/yyyy");
+                    var TarikhDariLAK00202 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
+                    var TarikhHinggaLAK00202 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
                     viewDataDictionary["TarikhDari"] = TarikhDariLAK00202;
                     viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK00202;
                     break;

@@ -64,7 +64,7 @@ namespace YIT.Akaun.Controllers._99Laporan
 
             LAK002PrintModel printModel = await PrepareData(model.kodLaporan,model.tarikhDari,model.tarikhHingga,model.susunan,EnStatusBorang.Lulus,akBankId,tunai);
 
-            string handle = string.Format("{0}.xlsx", string.IsNullOrEmpty(model.kodLaporan)? Guid.NewGuid().ToString(): WebUtility.UrlEncode(model.kodLaporan));
+            string handle = string.Format("attachment;" + model.kodLaporan + ".xlsx;", string.IsNullOrEmpty(model.kodLaporan) ? Guid.NewGuid().ToString() : WebUtility.UrlEncode(model.kodLaporan));
 
             // Generate and save the Excel file based on the report type
             if (model.kodLaporan == "LAK00201")
@@ -156,7 +156,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                 int? tunaiValue = tunai;
 
                 var groupedAkPVPenerima = akpv
-                    .SelectMany(apv => apv.AkPVPenerima)
+                    .SelectMany(apv => apv.AkPVPenerima!)
                     .Where(apvp =>
                             (tunaiValue == 0 && apvp.IsCekDitunaikan != true) ||
                             (tunaiValue == 1 && apvp.IsCekDitunaikan == true) ||
@@ -474,7 +474,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             string TarikhDari = "";
             string TarikhHingga = "";
 
-            object modelToPass = null;
+            object? modelToPass = null;
 
             switch (model.kodLaporan)
             {
@@ -500,7 +500,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                                           .OrderBy(item => AkBank1.FirstOrDefault(b => b.Perihal == item.AkBank)?.AkCartaId)
                                           .ToList();
 
-                    var viewModel = new ReportViewModel
+                    var reportviewModel = new ReportViewModel
                     {
                         NamaSyarikat = company.NamaSyarikat,
                         AlamatSyarikat1 = company.AlamatSyarikat1,
@@ -510,6 +510,22 @@ namespace YIT.Akaun.Controllers._99Laporan
                         TarikhHingga = TarikhHingga,
                         Tunai = model.tunai == 1 ? "SUDAH" : model.tunai == 0 ? "BELUM" : "SEMUA",
                         GroupedReportModel = groupedAkpv
+                    };
+
+                    // Populate AkPV and AkJurnal
+                    var akPVList = new List<AkPV> { /* populate as needed */ };
+                    var akJurnalList = new List<AkJurnal> { /* populate as needed */ };
+
+                    // Initialize CommonPrintModel if needed
+                    var commonPrintModel = new CommonPrintModel { /* populate as needed */ };
+
+                    // Combine into LAK002PrintModel
+                    var viewModel = new LAK002PrintModel
+                    {
+                        ReportViewModel = reportviewModel,
+                        AkPV = akPVList,
+                        AkJurnal = akJurnalList,
+                        CommonModels = commonPrintModel
                     };
 
                     modelToPass = viewModel;
