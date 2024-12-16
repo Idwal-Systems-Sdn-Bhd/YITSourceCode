@@ -1,4 +1,4 @@
-﻿@model YIT.Akaun.Models.ViewModels.Forms.ReportViewModel
+﻿@model LAK002PrintModel
 
 @{
     ViewData["Title"] = "LAK00201 Laporan Penunaian Cek";
@@ -28,13 +28,13 @@
 <div>
     <p>
         <strong>
-            LAPORAN PENUNAIAN CEK DARI TARIKH : @Model.TarikhDari HINGGA @Model.TarikhHingga<br>
-            TUNAI: @Model.Tunai
+            LAPORAN PENUNAIAN CEK DARI TARIKH : @Model.ReportViewModel.TarikhDari HINGGA @Model.ReportViewModel.TarikhHingga<br>
+            TUNAI: @Model.ReportViewModel.Tunai
         </strong>
     </p>
 </div>
 
-@foreach (var group in Model.GroupedReportModel)
+@foreach (var group in Model.ReportViewModel.GroupedReportModel)
 {
     <div class="bank-table-container">
         <div class="table-container">
@@ -56,7 +56,7 @@
                     <th class="NoRujukanCaraBayar">No Cek</th>
                     <th>Tarikh Cek</th>
                     <th class="text-right">Amaun RM</th>
-                    @if (Model.Tunai == "SEMUA")
+                    @if (Model.ReportViewModel.Tunai == "SEMUA")
                     {
                         <th>Status Tunai</th>
                     }
@@ -70,7 +70,7 @@
                     decimal jumlah = 0;
                 }
 
-                @foreach (var akPV in akPVPenerimaList)
+                @foreach (var akPV in akPVPenerimaList!)
                 {
                     @if (currentDate != akPV.TarikhCaraBayar)
                     {
@@ -98,7 +98,7 @@
                         <td class="text-right">
                             @akPV.Amaun.ToString("#,##0.00")
                         </td>
-                        @if (Model.Tunai == "SEMUA")
+                        @if (Model.ReportViewModel.Tunai == "SEMUA")
                         {
                             <td>
                                 @(akPV.IsCekDitunaikan == true ? "Sudah" : "Belum")

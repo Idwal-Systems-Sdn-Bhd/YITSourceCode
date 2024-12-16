@@ -1,6 +1,5 @@
 ﻿using YIT.__Domain.Entities.Models._03Akaun;
 
-
 namespace YIT.Akaun.Models.ViewModels.Prints
 {
     public class LAK012PrintModel
@@ -17,9 +16,9 @@ namespace YIT.Akaun.Models.ViewModels.Prints
     public class CombinedData
     {
         public DateTime Tarikh { get; set; }
-        public string NoRujukan { get; set; }
-        public string Perihal { get; set; }
+        public string? NoRujukan { get; set; }
+        public string? Perihal { get; set; }
         public decimal Jumlah { get; set; }
-        public string Type { get; set; }
+        public string? Type { get; set; }
     }
 }

@@ -1,0 +1,99 @@
+﻿@model LAK010PrintModel
+
+@{
+    ViewData["Title"] = "LAK010 Daftar Bil";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+}
+
+<style>
+    .checkmark {
+        color: green;
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+</style>
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0">@ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0">@ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan:  @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
+    </div>
+</div>
+<br />
+
+<table class="table table-bordered table-sm topic" id="mytable">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th colspan="8" class="text-center bg-dark text-white" style="line-height: 1.8rem;">
+                <strong>
+                    DAFTAR BIL DARI TARIKH: @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]<br>
+                    JKW: @ViewBag.jKWKod - @ViewBag.jKWPerihal <br>
+                </strong>
+            </th>
+        </tr>
+        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+            <th>Bil</th>
+            <th width="8%">No Invois</th>
+            <th width="45%">Pembekal Perihal Bayaran Jumlah</th>
+            <th>
+                Pengesahan Kew. Tar Pengesahan Pembatalan
+            </th>
+            <th>Tarikh Baucer Disediakan, Objek, No Baucer, No Pesanan</th>
+            <th>No Cek, Tarikh Cek, Jumlah Tunggakan Hari</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AkBelianWithTunggakanList != null && Model.AkBelianWithTunggakanList.Any())
+        {
+            int bil = 1;
+
+            foreach (var item in Model.AkBelianWithTunggakanList)
+            {
+                <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                    <td class="text-uppercase">@bil</td>
+                    <td class="text-uppercase">@item.AkBelian?.NoRujukan
+                        <br><br>
+                        @item.TTerimaKewangan
+                    </td>
+                    <td class="text-uppercase">@item.AkBelian?.DDaftarAwam?.Kod @item.AkBelian?.DDaftarAwam?.Nama 
+                        <br><br>
+                        <div style="text-align: justify;">
+                            @item.akBPerihal
+                        </div>
+                        <br><br>
+                        @item.AkBelian?.Jumlah.ToString("#,##0.00")
+                    </td>
+                    <td class="text-uppercase">
+                        @Html.Raw(item.FormattedTAkuanKewangan)
+                    </td>
+                    <td class="text-uppercase">
+                        @item.TarikhPVInvois
+                        <br><br>
+                        @item.KodBelianObjek
+                        <br><br>
+                        @item.NoRujukanPVInvois
+                        <br><br>
+                        @item.NoRujukan
+                    </td>
+                    <td class="text-uppercase">
+                        @Html.Raw(item.Batal)
+                    </td>
+                </tr>
+                bil++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center">No data available</td>
+            </tr>
+        }
+        <tr class="font-weight-bold">
+            <td colspan="5" class="text-right text-uppercase table-warning">Jumlah Keseluruhan RM</td>
+            <td class="text-right">@Model.Jumlah.ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+</table>

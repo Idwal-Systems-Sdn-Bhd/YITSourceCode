@@ -16,7 +16,7 @@
             $(".loading").css("display", "");
             $("#btnExportExcel").prop('disabled', true);
 
-            var kodLaporan = $("input[name='kodLaporan']:checked").val();
+            var kodLaporan = "LAK012";
             var tarikhDari = $('#tarikhDari').val();
             var tarikhHingga = $('#tarikhHingga').val();
             var dDaftarAwamId = $('#dDaftarAwamId').val();
@@ -52,18 +52,6 @@
             </div>
             <hr class="mt-2" />
             <form asp-action="PRINT">
-                <div class="card mb-2">
-                    <div class="card-body">
-                        <div class="form-group col-sm">
-                            <div class="custom-control custom-radio pb-2">
-                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00201" value="LAK00201" checked>
-                                <label class="custom-control-label" for="LAK00201">
-                                    LP019 : Penyata Akaun Pembekal
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="card">
                     <div class="card-body">
                         <div class="row">

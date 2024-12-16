@@ -1,0 +1,107 @@
+﻿@model LAK015PrintModel
+
+@{
+    ViewData["Title"] = "LAK00201 Laporan SiBerhutang";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+}
+
+<style>
+    #mytable td, #mytable th {
+        font-size: 0.89rem; 
+        line-height: 1.5; 
+    }
+</style>
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0">@ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0">@ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan:  @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
+    </div>
+</div>
+<br />
+
+<table class="table table-bordered table-sm topic" id="mytable">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th colspan="18" class="text-center bg-dark text-white" style="line-height: 1.8rem;">
+                <strong>LAPORAN SIBERHUTANG PADA TAHUN @ViewBag.Tahun MENGIKUT KOD AKAUN @ViewBag.SelectedKod - @ViewBag.SelectedPerihal</strong>
+            </th>
+        </tr>
+        <tr style="line-height:0.8rem;" class="bg-secondary text-white">
+            <th style="width: 40px;">Kod</th>
+            <th style="width: 120px;">Nama Akaun</th>
+            <th style="width: 80px;">Baki Pada 01/01</th>
+            <th style="width: 80px;">Jan</th>
+            <th style="width: 80px;">Feb</th>
+            <th style="width: 80px;">Mac</th>
+            <th style="width: 80px;">Apr</th>
+            <th style="width: 80px;">Mei</th>
+            <th style="width: 80px;">Jun</th>
+            <th style="width: 80px;">Jul</th>
+            <th style="width: 80px;">Ogo</th>
+            <th style="width: 80px;">Sep</th>
+            <th style="width: 80px;">Okt</th>
+            <th style="width: 80px;">Nov</th>
+            <th style="width: 80px;">Dis</th>
+            <th style="width: 80px;">Jumlah</th>
+            <th style="width: 80px;">Baki Pada 31/12</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.AkCartaResult != null && Model.AkCartaResult.Any())
+        {
+            int bil = 1;
+
+            foreach (var akC in Model.AkCartaResult)
+            {
+                <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                    <td class="text-uppercase">@akC.Kod</td>
+                    <td class="text-uppercase">@akC.Perihal</td>
+                    <td>@akC.BakiAwal.ToString("N2")</td>
+                    <td>@akC.Jan.ToString("N2")</td>
+                    <td>@akC.Feb.ToString("N2")</td>
+                    <td>@akC.Mac.ToString("N2")</td>
+                    <td>@akC.Apr.ToString("N2")</td>
+                    <td>@akC.Mei.ToString("N2")</td>
+                    <td>@akC.Jun.ToString("N2")</td>
+                    <td>@akC.Jul.ToString("N2")</td>
+                    <td>@akC.Ogo.ToString("N2")</td>
+                    <td>@akC.Sep.ToString("N2")</td>
+                    <td>@akC.Okt.ToString("N2")</td>
+                    <td>@akC.Nov.ToString("N2")</td>
+                    <td>@akC.Dis.ToString("N2")</td>
+                    <td>@akC.Jumlah.ToString("N2")</td>
+                    <td>@akC.BakiAkhir.ToString("N2")</td>
+                </tr>
+                bil++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="18" class="text-center">No data available</td>
+            </tr>
+        }
+        <tr>
+            <td colspan="2" class="font-weight-bold text-right text-uppercase table-warning">Jumlah RM</td>
+            <td>@Model.JumlahBaki.ToString("#,##0.00")</td> 
+            <td>@Model.JumlahJan.ToString("#,##0.00")</td>
+            <td>@Model.JumlahFeb.ToString("#,##0.00")</td>
+            <td>@Model.JumlahMac.ToString("#,##0.00")</td>
+            <td>@Model.JumlahApr.ToString("#,##0.00")</td>
+            <td>@Model.JumlahMei.ToString("#,##0.00")</td>
+            <td>@Model.JumlahJun.ToString("#,##0.00")</td>
+            <td>@Model.JumlahJul.ToString("#,##0.00")</td>
+            <td>@Model.JumlahOgo.ToString("#,##0.00")</td>
+            <td>@Model.JumlahSep.ToString("#,##0.00")</td>
+            <td>@Model.JumlahOkt.ToString("#,##0.00")</td>
+            <td>@Model.JumlahNov.ToString("#,##0.00")</td>
+            <td>@Model.JumlahDis.ToString("#,##0.00")</td>
+            <td>@Model.JumlahAkhir.ToString("#,##0.00")</td>
+            <td colspan="15">@Model.Jumlah1.ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+</table>

@@ -275,6 +275,9 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodLPembayaranIkutJulatTertentu = "LAK009";
         public const string namaLPembayaranIkutJulatTertentu = "Laporan Pembayaran Mengikut Julat Tertentu";
 
+        public const string kodLDaftarBil = "LAK010";
+        public const string namaLDaftarBil = "Daftar Bil";
+
         public const string kodLDaftarPoInden = "LAK011";
         public const string namaLDaftarPoInden = "Daftar Pesanan Tempatan Dan Inden Kerja";
 
@@ -284,9 +287,29 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodLDaftarBaucerBayaran = "LAK013";
         public const string namaLDaftarBaucerBayaran = "Daftar Baucer Bayaran";
 
+        public const string kodLPoBelumDibayar = "LAK014";
+        public const string namaLPoBelumDibayar = "Laporan Pesanan Tempatan Belum Dibayar";
+
+        public const string kodLSiBerhutang = "LAK015";
+        public const string namaLSiBerhutang = "Laporan SiBerhutang";
+
+        public const string kodLResitDibatalkan = "LAK016";
+        public const string namaLResitDibatalkan = "Laporan Resit Yang Dibatalkan";
+
+        public const string kodLAkaunKenaBayar = "LAK017";
+        public const string namaLAkaunKenaBayar = "Laporan Akaun Kena Bayar";
+
         public const string kodLWaranPeruntukan = "LAK018";
         public const string namaLWaranPeruntukan = "Laporan Waran Peruntukan";
 
+        public const string kodLEFTDitolak = "LAK019";
+        public const string namaLEFTDitolak = "Laporan Electronic File Transfer (EFT) Ditolak";
+
+        public const string kodLPenyataResitDikeluarkan = "LAK020";
+        public const string namaLPenyataResitDikeluarkan = "Penyata Resit Yang Dikeluarkan Bagi Satu Jangkamasa";
+
+        public const string kodLPerolehanBelumBayarBatal = "LAK021";
+        public const string namaLPerolehanBelumBayarBatal = "Laporan Perolehan Belum Bayar/Batal";
         //
     }
 }

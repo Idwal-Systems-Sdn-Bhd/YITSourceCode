@@ -1,11 +1,7 @@
 ﻿using System.ComponentModel;
-using YIT.__Domain.Entities._Enums;
-
 using System.ComponentModel.DataAnnotations;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Administrations;
-using YIT.__Domain.Entities.Models._03Akaun;
-using YIT.Akaun.Controllers._99Laporan;
 
 namespace YIT.Akaun.Models.ViewModels.Forms
 {
@@ -16,13 +12,11 @@ namespace YIT.Akaun.Models.ViewModels.Forms
         public string? bulan1 { get; set; }
         public string? tarikhDari { get; set; }
         public string? tarikhHingga { get; set; }
-        
         public string? susunan { get; set; }
         public string? Username { get; set; }
         public string? Tajuk1 { get; set; }
         public string? Tajuk2 { get; set; }
         public string? FormatLaporan { get; set; }
-
         public CompanyDetails? CompanyDetails { get; set; }
         [Display(Name = "PTJ")]
         public int? JPTJId { get; set; } 
@@ -55,7 +49,10 @@ namespace YIT.Akaun.Models.ViewModels.Forms
         public int? AkBankId { get; set; }
         [Display(Name = "Paras")]
         public EnParas EnParas { get; set; }
-       
-       
+        public int? dPekerjaId1 { get; set; }
+        public int? dPekerjaId2 { get; set; }
+        public int? dPekerjaId3 { get; set; }
+        [DisplayName("Cawangan")]
+        public int? jCawanganId { get; set; }
     }
 }

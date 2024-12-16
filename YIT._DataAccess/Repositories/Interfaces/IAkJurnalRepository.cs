@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YIT.__Domain.Entities._Enums;
+﻿using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
 
 namespace YIT._DataAccess.Repositories.Interfaces
@@ -19,6 +14,9 @@ namespace YIT._DataAccess.Repositories.Interfaces
         AkJurnal GetDetailsById(int id);
         string GetMaxRefNo(string initNoRujukan, string tahun);
         List<AkJurnal> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang);
+        List<AkJurnal> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, string? tahun, int? jKWId);
+        Task<List<_AkJurnalResult>> GetResultsGroupWithTanggungan(string? tahun, string? tarikhDari, string? tarikhHingga, int? jKWId);
+        Task<List<_AkJurnalResult>> GetResultsGroupWithoutTanggungan(string? tahun, string? tarikhDari, string? tarikhHingga, int? jKWId);
         List<AkJurnal> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan);
         void HantarSemula(int id, string? tindakan, string? userId);
         Task<bool> IsBatalAsync(int id);

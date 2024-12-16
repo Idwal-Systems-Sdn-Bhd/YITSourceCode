@@ -140,9 +140,9 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akBelianList;
         }
 
-        public List<AkBelian> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, int? dDaftarAwamId)
+        public List<AkBelian> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, int? dDaftarAwamId, int? jKWId)
         {
-            if (searchString == null && dateFrom == null && dateTo == null && dDaftarAwamId == null)
+            if (searchString == null && dateFrom == null && dateTo == null && dDaftarAwamId == null && jKWId == null)
             {
                 return new List<AkBelian>();
             }
@@ -189,10 +189,15 @@ namespace YIT._DataAccess.Repositories.Implementations
                 akBelianList = akBelianList.Where(p => p.DDaftarAwamId == dDaftarAwamId).ToList();
             }
 
+            if (jKWId != null)
+            {
+                akBelianList = akBelianList.Where(p => p.JKWId == jKWId).ToList();
+            }
+
             return akBelianList;
         }
 
-        public async Task<List<AkBelian>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
+        public async Task<List<AkBelian>> GetResultsGroupByTarikh(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
         {
             if (tarikhDari == null || tarikhHingga == null || dDaftarAwamId == null)
             {
@@ -219,8 +224,8 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public async Task<decimal> GetKredit(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
         {
-            DateTime date1 = DateTime.Parse(tarikhDari).Date;
-            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+            DateTime date1 = DateTime.Parse(tarikhDari!).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga!).Date.AddDays(1).AddTicks(-1);
 
             var sumKredit = await _context.AkBelian
                 .Where(a => a.Tarikh >= date1 && a.Tarikh <= date2 && a.DDaftarAwamId == dDaftarAwamId)
@@ -229,6 +234,37 @@ namespace YIT._DataAccess.Repositories.Implementations
             sumKredit = -sumKredit;
 
             return sumKredit;
+        }
+
+        public async Task<List<AkBelian>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? jKWId)
+        {
+            if (tarikhDari == null || tarikhHingga == null || jKWId == null)
+            {
+                return new List<AkBelian>();
+            }
+
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+
+            var akBelianList = await _context.AkBelian
+                .Include(a => a.AkBelianObjek)!
+                    .ThenInclude(b => b.AkCarta)
+                .Include(a => a.AkBelianPerihal)
+                .Include(a => a.DDaftarAwam)
+                .Include(a => a.AkPVInvois)!
+                    .ThenInclude(f => f.AkPV)
+                        .ThenInclude(g => g!.AkPVPenerima)
+                .Where(a => a.Tarikh >= date1 && a.Tarikh <= date2 && a.JKWId == jKWId)
+                .OrderBy(a => a.Tarikh)
+                .ThenBy(a => a.NoRujukan)
+                .ToListAsync();
+
+            var firstAkBelianList = akBelianList
+                .GroupBy(a => a.NoRujukan)
+                .Select(g => g.First())
+                .ToList();
+
+            return firstAkBelianList;
         }
 
         public List<AkBelian> GetResultsByDPekerjaIdFromDKonfigKelulusan(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int dPekerjaId, EnKategoriKelulusan enKategoriKelulusan, EnJenisModulKelulusan enJenisModulKelulusan)

@@ -1,0 +1,93 @@
+﻿@model LAK020PrintModel
+
+@{
+    ViewData["Title"] = "LAK020 Penyata Resit Yang Dikeluarkan Bagi Satu Jangkamasa";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+}
+
+<div class="row flexrow mb-1 text-center">
+    <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0">@ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0">@ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan:  @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
+    </div>
+</div>
+<br />
+
+<table class="table table-bordered table-sm topic" id="mytable">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th colspan="4" class="text-center bg-dark text-white" style="line-height: 1.8rem;">
+                <strong>
+                    PENYATA RESIT YANG DIKELUARKAN UNTUK TARIKH @ViewData["TarikhDari"] Hingga @ViewData["TarikhHingga"] <br>
+                    BAGI CAWANGAN @ViewBag.jCWKod - @ViewBag.jCWPerihal
+                </strong>
+            </th>
+        </tr>
+        <tr class="bg-secondary text-white">
+            <th width="10%" rowspan="2" class="text-center align-middle">Perihal</th>
+            <th width="30%" colspan="2" class="text-center">Resit Dikeluarkan</th>
+            <th width="50%" rowspan="2" class="text-center align-middle">Resit Dibatalkan</th>
+        </tr>
+        <tr class="bg-secondary text-white">
+            <th width="15%" class="text-center">Dari</th>
+            <th width="15%" class="text-center">Hingga</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.HasValidEntries)
+        {
+            foreach (var akT in Model.AkTerimaTunggalResult!)
+            {
+                <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                    <td class="text-uppercase text-center">Resit Rasmi</td>
+                    <td class="text-uppercase text-center">@akT.FirstNoRujukan</td>
+                    <td class="text-uppercase text-center">@akT.LastNoRujukan</td>
+                    <td class="text-uppercase text-center">
+                        @if (!string.IsNullOrWhiteSpace(akT.CanceledReceipts))
+                        {
+                            @Html.Raw(akT.CanceledReceipts)
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">No data available</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="table-responsive-sm">
+    <table class="table table-sm topic table-bordered">
+        <thead class="table-dark">
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center" width="33%">Disedia </td>
+                <td class="text-center" width="33%">Disemak </td>
+                <td class="text-center" width="33%">Diluluskan </td>
+            </tr>
+            <tr>
+                <td class="text-center" height="50px"></td>
+                <td class="text-center" height="50px"></td>
+                <td class="text-center" height="50px"></td>
+            </tr>
+            <tr>
+                <td class="text-left">Nama: @ViewBag.NamaDisedia</td>
+                <td class="text-left">Nama: @ViewBag.NamaSemak</td>
+                <td class="text-left">Nama: @ViewBag.NamaDiluluskan</td>
+            </tr>
+            <tr>
+                <td class="text-left">Jawatan: @ViewBag.JawatanDisedia</td>
+                <td class="text-left">Jawatan: @ViewBag.JawatanSemak</td>
+                <td class="text-left">Jawatan: @ViewBag.JawatanDiluluskan</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

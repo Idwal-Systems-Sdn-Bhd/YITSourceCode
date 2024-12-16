@@ -133,9 +133,9 @@ namespace YIT._DataAccess.Repositories.Implementations
             return akPOList;
         }
 
-        public List<AkPO> GetResults1(DateTime? dateFrom, DateTime? dateTo, EnJenisPerolehan enJenisPerolehan)
+        public List<AkPO> GetResults1(DateTime? dateFrom, DateTime? dateTo, EnJenisPerolehan? enJenisPerolehan, int? jKWId)
         {
-            if (dateFrom == null && dateTo == null)
+            if (dateFrom == null && dateTo == null && jKWId == null)
             {
                 return new List<AkPO>();
             }
@@ -166,6 +166,11 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
                 .ToList();
 
+            if (jKWId != null)
+            {
+                akPOList = akPOList.Where(p => p.JKWId == jKWId).ToList();
+            }
+
             switch (enJenisPerolehan)
             {
                 case EnJenisPerolehan.Bekalan:
@@ -182,7 +187,7 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
 
             var results = akPOList
-                .SelectMany(p => p.AkPOObjek?.Select(o => new { AkPO = p, o.Amaun }))
+                .SelectMany(p => p.AkPOObjek!.Select(o => new { AkPO = p, o.Amaun }))
                 .OrderBy(x => x.AkPO.NoRujukan)
                 .ToList();
 
@@ -324,6 +329,64 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             return results.GroupBy(b => b.Id).Select(grp => grp.First()).ToList();
         }
+
+        public async Task<List<_AkPOResult>> GetResultsGroupByTarikh(string? tarikhDari, string? tarikhHingga, int? jKWId)
+        {
+            if (tarikhDari == null || tarikhHingga == null || jKWId == null)
+            {
+                return new List<_AkPOResult>();
+            }
+
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+
+            var groupedSums = await _context.AkPO
+                .GroupBy(p => p.NoRujukanLama!.Substring(0, 7)) 
+                .Select(g => new
+                {
+                    NOPO = g.Key,               
+                    nJumlah = g.Sum(x => x.Jumlah) 
+                })
+                .ToListAsync();
+
+            var akpoRecords = await _context.AkPO
+                .Where(a => a.Tarikh >= date1 && a.Tarikh <= date2 && a.JKWId == jKWId &&
+                    (!_context.AkBelian.Any(b => b.AkPOId == a.Id) ||
+                    (_context.AkBelian.Any(b => b.AkPOId == a.Id) && !_context.AkPVInvois.Any(v => v.AkBelian!.AkPOId == a.Id))))
+                .Select(a => new _AkPOResult 
+                {
+                    Tarikh = a.Tarikh,
+                    NoRujukan = a.NoRujukan,
+                    DNama = a.DDaftarAwam != null ? a.DDaftarAwam.Nama : null,
+                    Jumlah = a.Jumlah,
+                    AkCartaKod = a.AkPOObjek != null && a.AkPOObjek.Any() ? a.AkPOObjek.FirstOrDefault()!.AkCarta!.Kod : null,
+                    AkCartaPerihal = a.AkPOObjek != null && a.AkPOObjek.Any() ? a.AkPOObjek.FirstOrDefault()!.AkCarta!.Perihal : null,
+                    Amaun = a.AkPOObjek != null && a.AkPOObjek.Any() ? a.AkPOObjek.FirstOrDefault()!.Amaun : 0
+                })
+                .ToListAsync();
+
+            var result = new List<_AkPOResult>();
+
+            foreach (var akpo in akpoRecords)
+            {
+                var noRujukanPrefix = akpo.NoRujukan!.Substring(0, 7);
+
+                var group = groupedSums.FirstOrDefault(g => g.NOPO == noRujukanPrefix);
+
+                if (group != null && group.nJumlah != 0.00m)
+                {
+                    result.Add(akpo);
+                }
+            }
+
+            var finalResult = result
+                .OrderBy(r => r.NoRujukan)
+                .ThenBy(r => r.Tarikh)
+                .ToList();
+
+            return finalResult;
+        }
+
         public async Task<bool> IsSahAsync(int id)
         {
             bool isSah = await _context.AkPO.AnyAsync(t => t.Id == id && (t.EnStatusBorang == EnStatusBorang.Sah || t.EnStatusBorang == EnStatusBorang.Semak || t.EnStatusBorang == EnStatusBorang.Lulus));

@@ -1,48 +1,36 @@
 ﻿@model LAK012PrintModel
 
 @{
-    ViewData["Title"] = "LAK00201 Penyata Akaun Pembekal";
+    ViewData["Title"] = "LAK012 Penyata Akaun Pembekal";
     Layout = "~/Views/Shared/_PrintLayout.cshtml";
 
     decimal runningBalance = Model.Baki;
     decimal totalDebit = Model.Debit;
     decimal totalKredit = Model.Kredit;
 
-    int totalItems = Model.CombinedData.Count;
+    int totalItems = Model.CombinedData!.Count;
     int currentItem = 0;
 }
 
-<div class="row flexrow mb-1 text-left">
-    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+<div class="row flexrow mb-1 text-center">
     <div class="col-12 text-uppercase">
+        <img class="image-container mb-2" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
         <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
-        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
-        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
-        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+        <p class="mb-0">@ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0">@ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan:  @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("t")</p>
     </div>
 </div>
+<br />
 
-<div>
-    <p>
-        <strong>
-            PENYATA AKAUN PEMBEKAL DARI TARIKH : @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]<br>
-            KOD PEMBEKAL: @ViewBag.SelectedKod <br>
-        </strong>
-    </p>
-</div>
-
-<div>
-    <p>
-        <strong>
-            NAMA: @ViewBag.SelectedKod - @ViewBag.SelectedNama
-        </strong>
-    </p>
-</div>
-<table class="table table-bordered table-sm topic">
+<table class="table table-bordered table-sm topic" id="mytable">
     <thead>
         <tr class="bg-dark text-white">
-            <th colspan="11" class="text-center bg-dark text-white" style="line-height: 1.8rem;">
-                <strong>PENYATA AKAUN PEMBEKAL DARI TARIKH : @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]</strong>
+            <th colspan="8" class="text-center bg-dark text-white" style="line-height: 1.8rem;">
+                <strong>
+                    PENYATA AKAUN PEMBEKAL DARI TARIKH : @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]<br>
+                    KOD PEMBEKAL: @ViewBag.SelectedKod NAMA: @ViewBag.SelectedKod - @ViewBag.SelectedNama <br>
+                </strong>
             </th>
         </tr>
         <tr style="line-height:0.8rem;" class="bg-secondary text-white">
@@ -115,7 +103,7 @@
 
             @if (currentItem == totalItems)
             {
-                <tr style="line-height:0ac.8rem;">
+                <tr style="line-height:0.8rem;">
                     <td colspan="4" class="text-right"><strong></strong></td>
                     <td class="text-right"><strong>@totalDebit.ToString("F2")</strong></td>
                     <td class="text-right"><strong>@totalKredit.ToString("F2")</strong></td>

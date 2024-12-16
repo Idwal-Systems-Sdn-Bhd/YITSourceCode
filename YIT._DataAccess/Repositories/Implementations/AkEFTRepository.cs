@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
@@ -88,6 +87,51 @@ namespace YIT._DataAccess.Repositories.Implementations
             // order by filters end
 
             return akEFTList;
+        }
+
+        public async Task<List<AkEFT>> GetResultsGroupByTarikh(string? tarikhDari, string? tarikhHingga)
+        {
+            if (tarikhDari == null || tarikhHingga == null)
+            {
+                return new List<AkEFT>();
+            }
+
+            DateTime date1 = DateTime.Parse(tarikhDari).Date;
+            DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
+
+            var akEft = await _context.AkEFT
+                .Include(b => b.AkEFTPenerima)
+                .Where(b => b.Tarikh >= date1 && b.Tarikh <= date2)
+                .OrderBy(a => a.Tarikh)
+                .ThenBy(a => a.NoRujukan)
+                .ToListAsync();
+
+            return akEft;
+        }
+
+        public async Task<List<AkEFT>> GetResultsGroupBySearchString(string? searchString1, string? searchString2)
+        {
+            if (searchString1 == null || searchString2 == null)
+            {
+                return new List<AkEFT>();
+            }
+
+            var lowerSearchString1 = searchString1.ToLower();
+            var lowerSearchString2 = searchString2.ToLower();
+
+            bool isOrderCorrect = string.Compare(lowerSearchString1, lowerSearchString2, StringComparison.Ordinal) <= 0;
+
+            if (!isOrderCorrect)
+            {
+                return new List<AkEFT>();
+            }
+
+            var akEft = await _context.AkEFT
+                .Include(b => b.AkEFTPenerima)
+                .Where(b => b.NoRujukan!.ToLower().CompareTo(lowerSearchString1) >= 0 && b.NoRujukan!.ToLower().CompareTo(lowerSearchString2) <= 0)
+                .ToListAsync();
+
+            return akEft;
         }
     }
 }

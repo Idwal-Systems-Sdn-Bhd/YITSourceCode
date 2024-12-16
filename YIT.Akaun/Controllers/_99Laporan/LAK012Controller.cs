@@ -62,13 +62,13 @@ namespace YIT.Akaun.Controllers._99Laporan
             string handle = string.Format("attachment;" + model.kodLaporan + ".xlsx;", string.IsNullOrEmpty(model.kodLaporan) ? Guid.NewGuid().ToString() : WebUtility.UrlEncode(model.kodLaporan));
 
             // save viewmodel into workbook
-            if (model.kodLaporan == "LAK00201")
+            if (model.kodLaporan == "LAK012")
             {
                 // construct and insert data into dataTable 
-                var excelData = GenerateDataTableLAK00201(printModel, model.tarikhDari, model.tarikhHingga, model.dDaftarAwamId);
+                var excelData = GenerateDataTableLAK012(printModel, model.tarikhDari, model.tarikhHingga, model.dDaftarAwamId);
 
                 // insert dataTable into Workbook
-                RunWorkBookLAK00201(printModel, excelData, handle);
+                RunWorkBookLAK012(printModel, excelData, handle);
             }
             // save viewmodel into workbook
 
@@ -108,12 +108,12 @@ namespace YIT.Akaun.Controllers._99Laporan
                 }
             }
 
-            if (kodLaporan == "LAK00201")
+            if (kodLaporan == "LAK012")
             {
                 reportModel.CommonModels.Tajuk1 = $"Penyata Akaun Pembekal Dari Tarikh : {date1?.ToString("dd/MM/yyyy")} Hingga {date2?.ToString("dd/MM/yyyy")}, Kod Pembekal: {selectedKod}, Nama: {selectedKod} - {selectedNama}";
 
                 reportModel.AkPV = _unitOfWork.AkPVRepo.GetResults1("", date1, date2, null, EnStatusBorang.Semua, null, null, null, dDaftarAwamId);
-                reportModel.AkBelian = _unitOfWork.AkBelianRepo.GetResults1("", date1, date2, dDaftarAwamId);
+                reportModel.AkBelian = _unitOfWork.AkBelianRepo.GetResults1("", date1, date2, dDaftarAwamId, null);
 
                 var kredit = await _unitOfWork.AkBelianRepo.GetKredit(tarikhDari, tarikhHingga, dDaftarAwamId);
 
@@ -129,7 +129,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return reportModel;
         }
 
-        private DataTable GenerateDataTableLAK00201(LAK012PrintModel printModel, string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
+        private DataTable GenerateDataTableLAK012(LAK012PrintModel printModel, string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
         {
             DataTable dt = new DataTable();
             dt.TableName = "Penyata Akaun Pembekal";
@@ -177,10 +177,10 @@ namespace YIT.Akaun.Controllers._99Laporan
                 runningBalance += akBelian.Jumlah;
                 totalKredit += akBelian.Jumlah;
 
-                string perihal = akBelian.AkBelianPerihal.FirstOrDefault()?.Perihal?.Trim() ?? "Unknown Perihal";
+                string perihal = akBelian?.AkBelianPerihal?.FirstOrDefault()?.Perihal?.Trim() ?? "";
 
                 dt.Rows.Add(bil,
-                            akBelian.NoRujukan,
+                            akBelian!.NoRujukan,
                             akBelian.Tarikh,
                             perihal,
                             0m,
@@ -196,19 +196,19 @@ namespace YIT.Akaun.Controllers._99Laporan
                 .ToList();
 
             var akPvList = _context.AkPV
-                .Include(a => a.AkPVInvois)
+                .Include(a => a.AkPVInvois)!
                 .ThenInclude(b => b.AkBelian)
                 .Where(a => a.Tarikh >= date1 && a.Tarikh <= date2 && matchingPvIds.Contains(a.Id))
-                .Where(a => a.AkPVInvois.Any(b => b.AkBelian.DDaftarAwamId == dDaftarAwamId && b.AkBelian.NoRujukan != null))
+                .Where(a => a.AkPVInvois!.Any(b => b.AkBelian!.DDaftarAwamId == dDaftarAwamId && b.AkBelian.NoRujukan != null))
                 .ToList();
 
             foreach (var akPv in akPvList)
             {
-                decimal totalDebitEntry = akPv.AkPVInvois.Sum(x => x.AkBelian.Jumlah);
+                decimal totalDebitEntry = akPv.AkPVInvois!.Sum(x => x.AkBelian!.Jumlah);
                 runningBalance -= totalDebitEntry;
                 totalDebit += totalDebitEntry;
 
-                string cleanedRingkasan = akPv.Ringkasan.Trim();
+                string cleanedRingkasan = akPv.Ringkasan!.Trim();
 
                 dt.Rows.Add(bil,
                             akPv.NoRujukan,
@@ -229,7 +229,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void RunWorkBookLAK00201(LAK012PrintModel printModel, DataTable excelData, string handle)
+        private void RunWorkBookLAK012(LAK012PrintModel printModel, DataTable excelData, string handle)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -302,7 +302,7 @@ namespace YIT.Akaun.Controllers._99Laporan
 
             if (dDaftarAwamId.HasValue && dDaftarAwamId.Value != 0)
             {
-                var selectedItem = dDAList.FirstOrDefault(x => x.Id == dDaftarAwamId.Value);
+                var selectedItem = dDAList!.FirstOrDefault(x => x.Id == dDaftarAwamId.Value);
                 if (selectedItem != null)
                 {
                     ViewBag.SelectedKod = selectedItem.Kod;
@@ -325,96 +325,74 @@ namespace YIT.Akaun.Controllers._99Laporan
             var reportModel = await PrepareData(kodLaporan, tarikhDari, tarikhHingga, dDaftarAwamId);
             var company = await _userServices.GetCompanyDetails();
 
-            if (kodLaporan == "LAK00201")
+            var akpv = await _unitOfWork.AkPVRepo.GetResultsGroupByTarikh1(tarikhDari, tarikhHingga, dDaftarAwamId);
+            var akbelian = await _unitOfWork.AkBelianRepo.GetResultsGroupByTarikh(tarikhDari, tarikhHingga, dDaftarAwamId);
+
+            var kredit = await _unitOfWork.AkBelianRepo.GetKredit(tarikhDari, tarikhHingga, dDaftarAwamId);
+
+            if (kredit > 0)
             {
-                var akpv = await _unitOfWork.AkPVRepo.GetResultsGroupByTarikh1(tarikhDari, tarikhHingga, dDaftarAwamId);
-                var akbelian = await _unitOfWork.AkBelianRepo.GetResultsGroupByTarikh1(tarikhDari, tarikhHingga, dDaftarAwamId);
-
-                var kredit = await _unitOfWork.AkBelianRepo.GetKredit(tarikhDari, tarikhHingga, dDaftarAwamId);
-
-                if (kredit > 0)
-                {
-                    kredit = -kredit;
-                }
-
-                var baki = kredit;
-
-                var combinedData = akbelian
-                    .Select(ab => new CombinedData
-                    {
-                        Tarikh = ab.Tarikh,
-                        NoRujukan = ab.NoRujukan,
-                        Perihal = ab.AkBelianPerihal?.FirstOrDefault()?.Perihal ?? "",
-                        Jumlah = ab.Jumlah,
-                        Type = "Kredit"
-                    })
-                    .Concat(
-                        akpv.Select(apv => new CombinedData
-                        {
-                            Tarikh = apv.Tarikh,
-                            NoRujukan = apv.NoRujukan,
-                            Perihal = apv.Ringkasan,
-                            Jumlah = apv.Jumlah,
-                            Type = "Debit"
-                        })
-                    )
-                    .OrderBy(cd => cd.Tarikh)
-                    .ThenBy(cd => cd.NoRujukan)
-                    .ToList();
-
-                reportModel = new LAK012PrintModel
-                {
-                    AkPV = akpv.ToList(),
-                    AkBelian = akbelian.ToList(),
-                    CombinedData = combinedData,
-                    CommonModels = new CommonPrintModel
-                    {
-                        CompanyDetails = company,
-                    },
-                    Kredit = kredit,
-                    Baki = baki,
-                };
-
-                tarikhDari = DateTime.Parse(tarikhDari).ToString("dd/MM/yyyy");
-                tarikhHingga = DateTime.Parse(tarikhHingga).ToString("dd/MM/yyyy");
-
-                return new ViewAsPdf("LAK00201PDF", reportModel, new ViewDataDictionary(ViewData) {
-                    { "NamaSyarikat", company.NamaSyarikat },
-                    { "AlamatSyarikat1", company.AlamatSyarikat1 },
-                    { "AlamatSyarikat2", company.AlamatSyarikat2 },
-                    { "AlamatSyarikat3", company.AlamatSyarikat3 },
-                    { "TarikhDari", tarikhDari },
-                    { "TarikhHingga", tarikhHingga },
-                })
-                {
-                    PageMargins = { Left = 15, Bottom = 15, Right = 15, Top = 15 },
-                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
-                    CustomSwitches = "--footer-center \"[page]/[toPage]\"" +
-                        " --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
-                    PageSize = Rotativa.AspNetCore.Options.Size.A4,
-                };
+                kredit = -kredit;
             }
 
-            //string customSwitches = "--page-offset 0 --footer-center [page] / [toPage] --footer-font-size 6";
+            var baki = kredit;
 
-            return new ViewAsPdf(modul + EnJenisFail.PDF, reportModel,
-            new ViewDataDictionary(ViewData) {
-                    { "NamaSyarikat", company.NamaSyarikat },
-                    { "AlamatSyarikat1", company.AlamatSyarikat1 },
-                    { "AlamatSyarikat2", company.AlamatSyarikat2 },
-                    { "AlamatSyarikat3", company.AlamatSyarikat3 }
+            var combinedData = akbelian
+                .Select(ab => new CombinedData
+                {
+                    Tarikh = ab.Tarikh,
+                    NoRujukan = ab.NoRujukan!,
+                    Perihal = ab.AkBelianPerihal?.FirstOrDefault()?.Perihal ?? "",
+                    Jumlah = ab.Jumlah,
+                    Type = "Kredit"
+                })
+                .Concat(
+                    akpv.Select(apv => new CombinedData
+                    {
+                        Tarikh = apv.Tarikh,
+                        NoRujukan = apv.NoRujukan!,
+                        Perihal = apv.Ringkasan!,
+                        Jumlah = apv.Jumlah,
+                        Type = "Debit"
+                    })
+                )
+                .OrderBy(cd => cd.Tarikh)
+                .ThenBy(cd => cd.NoRujukan)
+                .ToList();
+
+            reportModel = new LAK012PrintModel
+            {
+                AkPV = akpv.ToList(),
+                AkBelian = akbelian.ToList(),
+                CombinedData = combinedData,
+                CommonModels = new CommonPrintModel
+                {
+                    CompanyDetails = company,
+                },
+                Kredit = kredit,
+                Baki = baki,
+            };
+
+            tarikhDari = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
+            tarikhHingga = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
+
+            return new ViewAsPdf("LAK012PDF", reportModel, new ViewDataDictionary(ViewData) {
+                { "NamaSyarikat", company.NamaSyarikat },
+                { "AlamatSyarikat1", company.AlamatSyarikat1 },
+                { "AlamatSyarikat2", company.AlamatSyarikat2 },
+                { "AlamatSyarikat3", company.AlamatSyarikat3 },
+                { "TarikhDari", tarikhDari },
+                { "TarikhHingga", tarikhHingga },
             })
-
             {
                 PageMargins = { Left = 15, Bottom = 15, Right = 15, Top = 15 },
-                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
-                CustomSwitches = "--footer-center \"[page]/[to  Page]\"" +
+                PageOrientation = Rotativa.AspNetCore.Options.Orientation.Landscape,
+                CustomSwitches = "--footer-center \"[page]/[toPage]\"" +
                     " --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
                 PageSize = Rotativa.AspNetCore.Options.Size.A4,
             };
         }
         // printing List of Laporan end
-
     }
 
 }
