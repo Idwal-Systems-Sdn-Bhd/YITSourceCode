@@ -17,5 +17,9 @@ namespace YIT._DataAccess.Repositories.Interfaces
         Task<List<LAK006PrintModel>> GetResultPendapatanTahunan(string? Tahun1, int? jKWId, int AkBankId);
         Task<List<LAK007PrintModel>> GetResultPendapatanBulananByJumlahTerkumpul(string? Tahun1, string? Bulan, int? jKWId);
         Task<List<LAK007PrintModel>> GetResultPendapatanBulananByParas(string? Tahun1, string? Bulan, int? jKWId, EnParas enParas);
+        Task<List<LAK008PrintModel>> AkterimaByTarikh(DateTime? tarDari, DateTime? tarHingga, int? jCawanganId, string? susunan, int? akbankId);
+        Task<List<LAK008PrintModel>> AkterimaByAkaun(DateTime? tarDari, DateTime? tarHingga, int? jCawanganId, string? susunan, int? akbankId);
+        Task<List<LAK008PrintModel>> AkTerimaByCawangan(DateTime? tarDari, DateTime? tarHingga, int? jCawanganId, int? akbankId);
+        Task<List<LAK008PrintModel>> AkTerimaByBank(DateTime? tarDari, DateTime? tarHingga, int? jCawanganId, int? akbankId);
     }
 }

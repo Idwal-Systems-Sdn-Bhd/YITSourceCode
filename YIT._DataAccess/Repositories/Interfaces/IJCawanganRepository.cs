@@ -10,5 +10,6 @@ namespace YIT._DataAccess.Repositories.Interfaces
     public interface IJCawanganRepository : _IGenericRepository<JCawangan>
     {
         public JCawangan GetAllDetailsById(int id);
+        public List<JCawangan> GetAllDetails();
     }
 }

@@ -272,6 +272,9 @@ namespace YIT.__Domain.Entities._Statics
         public const string kodLPendapatanBulanan = "LAK007";
         public const string namaLPendapatanBulanan = "Laporan Penyata Pendapatan Bulanan";
 
+        public const string kodLPenerimaanIkutJulatTertentu = "LAK008";
+        public const string namaLPenerimaanIkutJulatTertentu = "Laporan Penerimaan Mengikut Julat Tertentu";
+
         public const string kodLPembayaranIkutJulatTertentu = "LAK009";
         public const string namaLPembayaranIkutJulatTertentu = "Laporan Pembayaran Mengikut Julat Tertentu";
 
