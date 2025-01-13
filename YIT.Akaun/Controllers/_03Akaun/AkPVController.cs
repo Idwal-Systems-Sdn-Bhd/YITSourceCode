@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
@@ -11,6 +12,7 @@ using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
 using YIT.__Domain.Entities.Administrations;
 using YIT.__Domain.Entities.Models._01Jadual;
+using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
@@ -19,6 +21,8 @@ using YIT._DataAccess.Services.Cart;
 using YIT._DataAccess.Services.Math;
 using YIT.Akaun.Infrastructure;
 using YIT.Akaun.Microservices;
+using YIT.Akaun.Models.ViewModels.Administrations;
+using YIT.Akaun.Models.ViewModels.Forms;
 using YIT.Akaun.Views.AkCarta;
 
 namespace YIT.Akaun.Controllers._03Akaun
@@ -223,7 +227,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             return RedirectToAction(nameof(Index), new { searchString = HttpContext.Session.GetString("searchString"), searchDate1 = HttpContext.Session.GetString("searchDate1"), searchDate2 = HttpContext.Session.GetString("searchDate2") });
         }
 
-        
+
         [Authorize(Policy = modul + "BL")]
         public IActionResult BatalPos(int? id)
         {
@@ -367,7 +371,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                         PopulateDropDownList(akPV.JKWId);
                         PopulateListViewFromCart();
                         ManipulateHiddenDiv(akPV.EnJenisBayaran);
-                        
+
                         return View(akPV);
                     }
                 }
@@ -399,7 +403,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             if (_cart.AkPVInvois != null && _cart.AkPVInvois.Count() > 0)
             {
                 akPV.IsInvois = true;
-                
+
 
                 foreach (var item in _cart.AkPVInvois)
                 {
@@ -417,8 +421,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                             akPV.IsAkru = true;
                         }
                     }
-                    
-                    
+
+
                 }
             }
             //
@@ -551,7 +555,7 @@ namespace YIT.Akaun.Controllers._03Akaun
             {
 
                 if (_cart.AkPVPenerima.Count() > 1) akPV.IsGanda = true;
-                
+
                 foreach (var item in _cart.AkPVPenerima)
                 {
                     if (item.JCaraBayarId == 0)
@@ -951,13 +955,13 @@ namespace YIT.Akaun.Controllers._03Akaun
                     var dDaftarAwam = _unitOfWork.DDaftarAwamRepo.GetAllDetailsById((int)item.DDaftarAwamId);
                     item.DDaftarAwam = dDaftarAwam;
                 }
-                
+
                 if (item.DPekerjaId != null)
                 {
                     var dPekerja = _unitOfWork.DPekerjaRepo.GetAllDetailsById((int)item.DPekerjaId);
                     item.DPekerja = dPekerja;
                 }
-                
+
             }
             ViewBag.akPVPenerima = penerima;
         }
@@ -1112,7 +1116,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     {
                         foreach (var item in data.AkBelianObjek)
                         {
-                            
+
                             var currentObjek = _cart.AkPVObjek.FirstOrDefault(i => i.JKWPTJBahagianId == item.JKWPTJBahagianId && i.AkCartaId == item.AkCartaId);
                             if (currentObjek != null)
                             {
@@ -1137,7 +1141,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                                     null,
                                     akPVInvois.Amaun);
                             }
-                            
+
                         }
 
                         if (data.AkPOId != null)
@@ -1233,7 +1237,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                                               bil,
                                               data.DDaftarAwam?.EnJenisId ?? EnJenisId.None);
                         }
-                        
+
 
                         return Json(new { result = "OK" });
                     }
@@ -1241,7 +1245,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                     {
                         return Json(new { result = "ERROR", message = "Objek invois tidak wujud!" });
                     }
-                        
+
                 }
                 else
                 {
@@ -1273,7 +1277,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                             // akPVObjek
                             foreach (var item in data.AkBelianObjek)
                             {
-                                
+
                                 var currentObjek = _cart.AkPVObjek.FirstOrDefault(i => i.JKWPTJBahagianId == item.JKWPTJBahagianId && i.AkCartaId == item.AkCartaId);
                                 // check if akBelianObjek same with akPVObjek amount is greater or not
                                 if (currentObjek != null && currentObjek.Amaun > akPVInvois.Amaun)
@@ -1600,7 +1604,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                                                 continue;
                                             }
                                         }
-                                        
+
                                     }
 
                                     var objek = new AkPVObjek()
@@ -1620,7 +1624,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                                         SaveCartAkPVObjek(objek);
                                     }
                                 }
-                                
+
                             }
                             // tambah / kurangkan had limit pemegang
                             else
@@ -1669,7 +1673,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                         {
 
                             // check if carabayar bypass limit or not
-                            if(caraBayar.IsLimit == true)
+                            if (caraBayar.IsLimit == true)
                             {
                                 if (akPVPenerima.Amaun > caraBayar.MaksAmaun)
                                 {
@@ -1688,13 +1692,13 @@ namespace YIT.Akaun.Controllers._03Akaun
                         {
                             return Json(new { result = "ERROR", message = "Cara bayar tidak wujud" });
                         }
-                        
+
                     }
                     else
                     {
                         return Json(new { result = "ERROR", message = "Sila pilih cara bayar" });
                     }
-                    
+
 
                 }
 
@@ -1745,7 +1749,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 var user = _userManager.GetUserName(User);
 
-                if (akPV != null && akPVPenerima.Bil != null )
+                if (akPV != null && akPVPenerima.Bil != null)
                 {
                     switch (akPVPenerima.EnKategoriDaftarAwam)
                     {
@@ -1926,7 +1930,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                         return Json(new { result = "ERROR", message = "Sila pilih cara bayar" });
                     }
 
-                    
+
                 }
 
                 return Json(new { result = "OK" });
@@ -1969,7 +1973,7 @@ namespace YIT.Akaun.Controllers._03Akaun
 
                 List<AkPVInvois> invois = _cart.AkPVInvois.ToList();
 
-                foreach(AkPVInvois pv in invois)
+                foreach (AkPVInvois pv in invois)
                 {
                     var AkBelian = _unitOfWork.AkBelianRepo.GetDetailsById(pv.AkBelianId);
 
@@ -1986,8 +1990,31 @@ namespace YIT.Akaun.Controllers._03Akaun
             }
         }
 
+
+       
+
+        public async Task<IActionResult> DetailsSedia(string userId, UserManager<ApplicationUser> userManager)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return NotFound();
+            }
+
+            var user = await userManager.Users
+                .Include(u => u.DPekerja)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+
         // printing akPV
-        public async Task<IActionResult> PrintPDFById(int id)
+        public async Task<IActionResult> PrintPDFById(int id, int?dPekerjaId1)
         {
             AkPV akPV = _unitOfWork.AkPVRepo.GetDetailsById(id);
 
@@ -1996,13 +2023,38 @@ namespace YIT.Akaun.Controllers._03Akaun
             PopulateCartAkPVFromDb(akPV);
             //string customSwitches = "--page-offset 0 --footer-center [page] / [toPage] --footer-font-size 6";
 
+
+            var dPekerja = await _context.DPekerja.FirstOrDefaultAsync(d => d.Id == akPV.DPekerjaMasukId);
+
+            if (dPekerja != null)
+            {
+                ViewBag.dPekerjaNama = dPekerja.Nama;
+                ViewBag.dPekerjaJawatan = dPekerja.Jawatan;
+               
+            }
+
+            var akCartaDetails = await _context.AkCarta
+                                     .Where(j => j.Id == akPV.AkBank!.AkCartaId)
+                                     .Select(j => new { j.Kod, j.Perihal })
+                                     .FirstOrDefaultAsync();
+
+            if (akCartaDetails != null)
+            {
+                ViewBag.akCartaKod = akCartaDetails.Kod;
+                ViewBag.akCartaPerihal = akCartaDetails.Perihal;
+            }
+
+
             return new ViewAsPdf(modul + EnJenisFail.PDF, akPV,
-                new ViewDataDictionary(ViewData) {
-                    { "NamaSyarikat", company.NamaSyarikat },
-                    { "AlamatSyarikat1", company.AlamatSyarikat1 },
-                    { "AlamatSyarikat2", company.AlamatSyarikat2 },
-                    { "AlamatSyarikat3", company.AlamatSyarikat3 }
-                })
+            new ViewDataDictionary(ViewData)
+            {
+                { "NamaSyarikat", company.NamaSyarikat },
+                { "AlamatSyarikat1", company.AlamatSyarikat1 },
+                { "AlamatSyarikat2", company.AlamatSyarikat2 },
+                { "AlamatSyarikat3", company.AlamatSyarikat3 },
+
+            })
+
             {
                 PageMargins = { Left = 15, Bottom = 10, Right = 15, Top = 10 },
                 PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait,
@@ -2010,8 +2062,8 @@ namespace YIT.Akaun.Controllers._03Akaun
                 //        " --footer-line --footer-font-size \"7\" --footer-spacing 1 --footer-font-name \"Segoe UI\"",
                 PageSize = Rotativa.AspNetCore.Options.Size.A4,
             };
-        }
-        // printing akPenilaianPerolehan end
+            // printing akPenilaianPerolehan end
 
+        }
     }
 }

@@ -1,0 +1,127 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "LAK008 Laporan Penerimaan Mengikut Tarikh";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    // decimal jumlahEFT = 0;
+    // decimal jumlahCek = 0;
+    // decimal jumlah = 0;
+    // decimal jumlahAkCarta = 0;
+
+    var bil = 1;
+
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN PENERIMAAN DARI TARIKH : @ViewData["TarDari"] HINGGA @ViewData["TarHingga"]
+                    <br />
+                    BANK : @ViewData["NamaBank"]
+                    
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+
+
+
+<table class="table table-bordered table-sm topic" id="myTable" data-order="NoRujukanPV">
+    <thead>
+        <tr style="line-height:0.8rem; text-align:center" class="bg-secondary text-black table-primary">
+
+            <th class="bil">
+                Bil
+            </th>
+            <th>
+                Tarikh
+            </th>
+            <th>
+                No Resit
+            </th>
+            <th>
+                Daripada
+            </th>
+            <th>
+                Tunai
+            </th>
+            <th>
+                Cek
+            </th>
+            <th>
+                Maklumat Kredit
+            </th>
+            <th>
+                Jumlah
+            </th>
+            <th>
+                Posting
+            </th>
+
+        </tr>
+    </thead>
+    <tbody id="tbodylak008">
+
+        @foreach (var group in Model.reportModelGrouped)
+        {
+
+            foreach (var terima in group)
+            {
+
+                    <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                        <td>
+                            @bil
+                        </td>
+                        <td>
+                            @terima.Tarikh.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                           @terima.NoRujukan
+                        </td>
+                         <td>
+                        @terima.Daripada
+                        <br />
+                        DR - @terima.akCartaDR
+                        <br />
+                        @Html.Raw(terima.akCartaKR)
+                        </td>
+                        <td class="text-uppercase">
+                        @Convert.ToDecimal(terima.Tunai).ToString("#,##0.00")
+                        </td>
+                        <td class="text-right">
+                            @Convert.ToDecimal(terima.Cek).ToString("#,##0.00")
+                        </td>
+                        <td class="text-uppercase">
+                        @Convert.ToDecimal(terima.MaklumatKredit).ToString("#,##0.00")
+                        </td>
+                        <td class="text-uppercase">
+                        @Convert.ToDecimal(terima.Jumlah).ToString("#,##0.00")
+                        </td>
+
+                        <td>@(terima.FlPosting == 1 ? "SUDAH" : "BELUM")</td>
+
+                    </tr>
+
+                    bil++;
+                }
+            }
+    </tbody>
+
+</table>
+
+
+

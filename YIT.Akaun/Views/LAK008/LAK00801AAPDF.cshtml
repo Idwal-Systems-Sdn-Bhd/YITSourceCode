@@ -1,0 +1,268 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "LAK008 Laporan Penerimaan Mengikut Tarikh";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    // decimal jumlahEFT = 0;
+    // decimal jumlahCek = 0;
+    // decimal jumlah = 0;
+    decimal jumlahAkCarta = 0;
+
+    var bil = 1;
+
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN PENERIMAAN DARI TARIKH : @ViewData["TarDari"] HINGGA @ViewData["TarHingga"]
+                    <br />
+                    MENGIKUT DAERAH : @ViewData["NamaCawangan"] &nbsp; BANK : @ViewData["NamaBank"]
+
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+
+
+
+<table class="table table-bordered table-sm topic" id="myTable" data-order="NoRujukanPV">
+    <thead>
+        <tr style="line-height:0.8rem; text-align:center" class="bg-secondary text-black table-primary">
+
+            <th class="bil">
+                Bil
+            </th>
+            <th>
+                Akaun
+            </th>
+            <th>
+                Perihal Akaun
+            </th>
+            <th>
+                No Resit
+            </th>
+            <th>
+                Tarikh
+            </th>
+            <th>
+                Amaun
+            </th>
+            <th>
+                Daripada
+            </th>
+           
+
+        </tr>
+    </thead>
+    <tbody id="tbodylak008">
+
+        @foreach (var group in Model.reportModelGrouped)
+        {
+            string? lastPerihal = null;
+            string? lastKod = null;
+            string? lastNoRujukan = null;
+            decimal kodTotal = 0;
+
+            foreach (var terima in group)
+            {
+                
+                if (lastKod != null && lastKod != terima.Kod)
+                {
+                    <tr class="table" style="font-weight:bold; background-color:#f5f5f5;">
+                        <td colspan="5" class="text-end">Total for Kod @lastKod:</td>
+                        <td class="text-uppercase">
+                            @kodTotal.ToString("#,##0.00")
+                        </td>
+                        <td></td>
+                    </tr>
+
+                    kodTotal = 0;
+                }
+
+                <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                    <td>
+                        @if (lastKod != terima.Kod)
+                        {
+                            @bil
+                            bil++;
+                        }
+                    </td>
+                    <td>
+                        @if (lastKod != terima.Kod)
+                        {
+                            @terima.Kod
+                            lastKod = terima.Kod;
+                        }
+                    </td>
+                    <td class="text-uppercase">
+                        @if (lastPerihal != terima.Perihal)
+                        {
+                            @terima.Perihal
+                            lastPerihal = terima.Perihal;
+                        }
+                    </td>
+                    <td class="text-uppercase">
+                        @if (lastNoRujukan != terima.NoRujukan)
+                        {
+                            @terima.NoRujukan
+                            lastNoRujukan = terima.NoRujukan;
+                        }
+                    </td>
+                    <td>
+                        @terima.Tarikh.ToString("dd/MM/yyyy")
+                    </td>
+
+                    <td class="text-uppercase">
+                        @Convert.ToDecimal(terima.Amaun).ToString("#,##0.00")
+                    </td>
+
+                    <td>
+                        @terima.Daripada
+                    </td>
+                </tr>
+
+                kodTotal += Convert.ToDecimal(terima.Amaun);
+            }
+
+            if (lastKod != null)
+            {
+                <tr class="table" style="font-weight:bold; background-color:#f5f5f5;">
+                    <td colspan="5" class="text-end"></td>
+                    <td class="text-uppercase">
+                        @kodTotal.ToString("#,##0.00")
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        }
+    </tbody>
+
+
+</table>
+
+<div style="page-break-before: always;"></div>
+
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN PENERIMAAN DARI TARIKH : @ViewData["TarDari"] HINGGA @ViewData["TarHingga"]
+                    <br />
+                    MENGIKUT DAERAH : @ViewData["NamaCawangan"] &nbsp; BANK : @ViewData["NamaBank"]
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+<br />
+<p style="text-align:left; font-size:large"><strong>RINGKASAN</strong></p>
+
+<table class="table table-bordered table-sm topic" id="myTable1">
+    <thead>
+        <tr style="line-height:0.8rem; text-align:center" class="bg-secondary text-black table-primary">
+
+            <th>
+                Akaun dan Perihalan
+            </th>
+            <th>
+                Jumlah RM
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var group in Model.reportModelGrouped)
+        {
+            string? lastkodperihal = "";
+
+            foreach (var terima in group)
+            {
+                jumlahAkCarta += terima.Amaun;
+
+                if (terima.Kod != null && terima.Perihal != null && terima.Amaun != null)
+                {
+                    var currentkodperihal = terima.Kod + " - " + terima.Perihal;
+
+                    if (currentkodperihal != lastkodperihal)
+                    {
+                        <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                            <td>
+                                @currentkodperihal
+                            </td>
+                            <td class="text-right">
+                                @Convert.ToDecimal(terima.Amaun).ToString("#,##0.00")
+                            </td>
+                        </tr>
+
+                        // Update the last seen Kod and Perihal
+                        lastkodperihal = currentkodperihal;
+                    }
+                }
+            }
+        }
+
+        <tr class="font-weight-bold">
+            <td class="text-right text-uppercase table-success">JUMLAH KESELURUHAN</td>
+            <td colspan="2" class="text-right">@Convert.ToDecimal(jumlahAkCarta).ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="table-responsive-sm">
+    <table class="table table-sm topic table-bordered">
+        <thead class="table-dark">
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center" width="33%">Disedia </td>
+                <td class="text-center" width="33%">Disemak </td>
+                <td class="text-center" width="33%">Diluluskan </td>
+            </tr>
+            <tr>
+                <td class="text-center" height="50px"></td>
+
+                <td class="text-center" height="50px"></td>
+                <td class="text-center" height="50px"></td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Tarikh: @DateTime.Now</td>
+                <td class="text-left">Tarikh:</td>
+                <td class="text-left">Tarikh:</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+

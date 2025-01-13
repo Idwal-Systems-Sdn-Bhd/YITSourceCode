@@ -26,5 +26,13 @@ namespace YIT._DataAccess.Repositories.Implementations
                 .Where(jc => jc.Id == id).FirstOrDefault() ?? new JCawangan();
         }
 
+        public List<JCawangan> GetAllDetails()
+        {
+            return _context.JCawangan
+                .Include(jc => jc.DPenyelia)
+                .Include(jc => jc.AkBank)
+                .ToList();
+        }
+
     }
 }

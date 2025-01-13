@@ -12,6 +12,7 @@ using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
 using YIT._DataAccess.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace YIT._DataAccess.Repositories.Implementations
 {
@@ -551,7 +552,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                                     pindahanPeruntukan = -b.Amaun;
                                 }
 
-                                
+
 
                                 switch (a.EnJenisPeruntukan)
                                 {
@@ -697,7 +698,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
                             if (b?.AkCarta != null && b.AbWaran != null)
                             {
-                              
+
                                 switch (b.AbWaran?.EnJenisPeruntukan)
                                 {
 
@@ -1402,19 +1403,19 @@ namespace YIT._DataAccess.Repositories.Implementations
                   var tahunSmsKumpul = l.Sum(b => b.TahunSms_Kumpul);
                   var tahunSmsPeruntukan = l.Sum(b => b.TahunSms_Peruntukan);
 
-                return new LAK007PrintModel
-                {
-                    Jenis = l.First().Jenis,
-                    KodAkaun = l.First().KodAkaun,
-                    NamaAkaun = l.First().NamaAkaun,
-                    TahunLps_BulanSMS = l.Sum(b => b.TahunLps_BulanSMS),
-                    TahunSms_BulanSMS = l.Sum(b => b.TahunSms_BulanSMS),
-                    TahunLps_Kumpul = l.Sum(b => b.TahunLps_Kumpul),
-                    TahunSms_Kumpul = l.Sum(b => b.TahunSms_Kumpul),
-                    TerKumpulPercentage = tahunLpsKumpul != 0 ? (tahunSmsKumpul - tahunLpsKumpul) / tahunLpsKumpul * 100 : 0,
-                    TahunSms_Peruntukan = l.Sum(b => b.TahunSms_Peruntukan),
-                    PeruntukanPercentage = tahunSmsPeruntukan != 0 ? (tahunSmsKumpul / tahunSmsPeruntukan) * 100 : 0
-                };
+                  return new LAK007PrintModel
+                  {
+                      Jenis = l.First().Jenis,
+                      KodAkaun = l.First().KodAkaun,
+                      NamaAkaun = l.First().NamaAkaun,
+                      TahunLps_BulanSMS = l.Sum(b => b.TahunLps_BulanSMS),
+                      TahunSms_BulanSMS = l.Sum(b => b.TahunSms_BulanSMS),
+                      TahunLps_Kumpul = l.Sum(b => b.TahunLps_Kumpul),
+                      TahunSms_Kumpul = l.Sum(b => b.TahunSms_Kumpul),
+                      TerKumpulPercentage = tahunLpsKumpul != 0 ? (tahunSmsKumpul - tahunLpsKumpul) / tahunLpsKumpul * 100 : 0,
+                      TahunSms_Peruntukan = l.Sum(b => b.TahunSms_Peruntukan),
+                      PeruntukanPercentage = tahunSmsPeruntukan != 0 ? (tahunSmsKumpul / tahunSmsPeruntukan) * 100 : 0
+                  };
               })
               .OrderBy(b => b.KodAkaun)
               .ToList();
@@ -1517,7 +1518,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
 
                         decimal tahunSmsPeruntukan = 0;
-                       
+
 
                         if (akaun.AkCarta1?.AbBukuVot != null)
                         {
@@ -1580,7 +1581,339 @@ namespace YIT._DataAccess.Repositories.Implementations
               .ToList();
 
         }
+
+        public async Task<List<LAK008PrintModel>> AkterimaByTarikh(DateTime? tarDari, DateTime? tarHingga, int? jCawanganId, string? susunan, int? akbankId)
+        {
+            List<LAK008PrintModel> akTerimaResult = new List<LAK008PrintModel>();
+
+            if (tarDari != null && tarHingga != null)
+            {
+                List<AkTerimaTunggal> akaun = await _context.AkTerimaTunggal
+                    .Include(ak => ak.AkTerimaTunggalObjek!)
+                    .ThenInclude(ak => ak.AkCarta)
+                    .Include(ak => ak.AkBank)
+                    .ThenInclude(ak => ak!.AkCarta)
+                    .Where(t => t.Tarikh >= tarDari && t.Tarikh <= tarHingga && (akbankId == null || t.AkBankId == akbankId))
+                    .ToListAsync();
+
+
+                //if (jCawanganId != null)
+                //{
+                //    akaun = akaun.Where(a => a.JCawanganId == jCawanganId).ToList();
+                //}
+
+
+                if (akaun != null)
+                {
+                    var groupedResult = new List<LAK008PrintModel>();
+
+                    foreach (var a in akaun)
+                    {
+                        if (a != null && a.AkBank?.AkCarta != null)
+                        {
+                            var bankKod = a.AkBank.AkCarta.Kod;
+                            var bankPerihal = a.AkBank.AkCarta.Perihal;
+
+                            var akCartaKRList = new List<string>();
+                            decimal jumTunai = 0;
+                            decimal jumCek = 0;
+                            decimal jumMaklumatKredit = 0;
+
+                            foreach (var akcarta in a.AkTerimaTunggalObjek!)
+                            {
+                                var akCartaKR = akcarta.AkCarta?.Kod + " - " + akcarta.AkCarta?.Perihal;
+                                if (!string.IsNullOrEmpty(akCartaKR))
+                                {
+                                    akCartaKRList.Add("KR - " + akCartaKR);
+                                }
+
+                                switch (a.JCaraBayarId)
+                                {
+                                    case 1: 
+                                        jumTunai += akcarta.Amaun;
+                                        break;
+
+                                    case 2: 
+                                        jumCek += akcarta.Amaun;
+                                        break;
+
+                                    case 3: 
+                                        jumMaklumatKredit += akcarta.Amaun;
+                                        break;
+                                }
+                            }
+
+                            if (jumTunai > 0 || jumCek > 0 || jumMaklumatKredit > 0)
+                            {
+                                var existingGroup = groupedResult.FirstOrDefault(grp =>
+                                    grp.NoRujukan == a.NoRujukan && grp.Tarikh == a.Tarikh && grp.Daripada == a.Nama);
+
+                                if (existingGroup != null)
+                                {
+                                    existingGroup.akCartaKR += "<br />" + string.Join("<br />", akCartaKRList);
+                                    existingGroup.Tunai += jumTunai;
+                                    existingGroup.Cek += jumCek;
+                                    existingGroup.MaklumatKredit += jumMaklumatKredit;
+                                    existingGroup.Jumlah += a.Jumlah;
+                                }
+                                else
+                                {
+                                    groupedResult.Add(new LAK008PrintModel
+                                    {
+                                        Tarikh = a.Tarikh,
+                                        NoRujukan = a.NoRujukan,
+                                        akCartaDR = bankKod + " - " + bankPerihal,
+                                        akCartaKR = string.Join("<br />", akCartaKRList),
+                                        Daripada = a.Nama,
+                                        Tunai = jumTunai,
+                                        Cek = jumCek,
+                                        MaklumatKredit = jumMaklumatKredit,
+                                        Jumlah = a.Jumlah,
+                                        FlPosting = a.FlPosting
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    akTerimaResult = groupedResult;
+                }
+            }
+
+            return akTerimaResult!
+                .GroupBy(b => new { b.Tarikh, b.NoRujukan, b.Daripada, b.akCartaDR })
+                .Select(l => new LAK008PrintModel
+                {
+                    Tarikh = l.First().Tarikh,
+                    NoRujukan = l.First().NoRujukan,
+                    akCartaDR = l.First().akCartaDR,
+                    akCartaKR = string.Join("<br />", l.Select(x => x.akCartaKR).Distinct()),
+                    Daripada = l.First().Daripada,
+                    Tunai = l.Sum(x => x.Tunai), 
+                    Cek = l.Sum(x => x.Cek), 
+                    MaklumatKredit = l.Sum(x => x.MaklumatKredit), 
+                    Jumlah = l.First().Jumlah, 
+                    FlPosting = l.First().FlPosting
+                })
+                .OrderBy(b => b.Tarikh)
+                .ThenBy(b => b.NoRujukan)
+                .ToList();
+        }
+
+
+            public async Task<List<LAK008PrintModel>> AkterimaByAkaun(DateTime? tarDari, DateTime? tarHingga, int? jCawanganId, string? susunan, int? akbankId)
+            {
+            List<LAK008PrintModel> akaunResult = new List<LAK008PrintModel>();
+
+            var akBank = await _context.AkBank.Where(b => b.Id == akbankId).FirstOrDefaultAsync();
+
+            if (tarDari != null && tarHingga != null)
+            {
+                List<AkTerimaTunggal> akaun = await _context.AkTerimaTunggal
+                    .Include(ak => ak.AkTerimaTunggalObjek!)
+                    .ThenInclude(t => t.AkCarta)
+                    .Where(ak => ak.Tarikh >= tarDari && ak.Tarikh <= tarHingga && (akbankId == null || ak.AkBankId == akbankId))
+                    .ToListAsync();
+
+                if (jCawanganId != null)
+                {
+                    akaun = akaun.Where(a => a.JCawanganId == jCawanganId).ToList();
+                }
+
+                if (akaun != null && akaun.Any())
+                {
+                    foreach (var a in akaun)
+                    {
+                        
+                        if (a.AkTerimaTunggalObjek != null && a.AkTerimaTunggalObjek.Any())
+                        {
+                            foreach (var b in a.AkTerimaTunggalObjek)
+                            {
+                                akaunResult.Add(new LAK008PrintModel
+                                {
+                                    Kod = b.AkCarta?.Kod,
+                                    Perihal = b.AkCarta?.Perihal,
+                                    NoRujukan = a.NoRujukan,
+                                    Tarikh = a.Tarikh,
+                                    Amaun = b.Amaun,
+                                    Daripada = a.Nama
+
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+           
+            return akaunResult!.GroupBy(b => new { b.Kod, b.Perihal, b.NoRujukan, b.Amaun })
+           .Select(l => new LAK008PrintModel
+           {
+               Kod = l.First().Kod,
+               Perihal = l.First().Perihal,
+               NoRujukan = l.First().NoRujukan,
+               Tarikh = l.First().Tarikh,
+               Amaun = l.First().Amaun,
+               Daripada = l.First().Daripada,
+           }).OrderBy(b => b.Kod)
+           .ToList();
+        }
+
+        public async Task<List<LAK008PrintModel>> AkTerimaByCawangan(DateTime? tarDari, DateTime? tarHingga, int? jCawanganId, int? akbankId)
+        {
+
+            List<LAK008PrintModel> cawanganResult = new List<LAK008PrintModel>();
+
+            if (tarDari != null && tarHingga != null)
+            {
+                List<AkTerimaTunggal> terima = await _context.AkTerimaTunggal
+                    .Include(t => t.AkTerimaTunggalObjek!)
+                    .Include(t => t.AkBank)
+                    .ThenInclude(t => t!.AkCarta)
+                    .Include(t => t.JCaraBayar)
+                    .Where(t => t.Tarikh >= tarDari && t.Tarikh <= tarHingga && (akbankId == null || t.AkBankId == akbankId))
+                    .ToListAsync();
+
+
+                if (jCawanganId != null)
+                {
+                    terima = terima.Where(a => a.JCawanganId == jCawanganId).ToList();
+                }
+
+
+
+                if (terima != null && terima.Any())
+                {
+                    foreach (var a in terima)
+                    {
+                        if (a != null && a.AkBank?.AkCarta != null)
+                        {
+                            var bankKod = a.AkBank.AkCarta.Kod;
+
+                            if (a != null && a.JCaraBayar != null)
+                            {
+                                var carabayar = a.JCaraBayar.Perihal;
+
+                                if (a.AkTerimaTunggalObjek != null && a.AkTerimaTunggalObjek.Any())
+                                {
+                                    foreach (var b in a.AkTerimaTunggalObjek)
+                                    {
+                                        cawanganResult.Add(new LAK008PrintModel
+                                        {
+                                            Tarikh = a.Tarikh,
+                                            NoRujukan = a.NoRujukan,
+                                            Daripada = a.Nama,
+                                            NoDokumen = !string.IsNullOrEmpty(a.NoCekMK) ? a.NoCekMK : string.Equals(carabayar, "MAKLUMAN KREDIT", StringComparison.OrdinalIgnoreCase) ? "MK" : carabayar,
+                                            NoSlip = a.NoSlip,
+                                            TarikhSlip = a.TarikhSlip,
+                                            Amaun = b.Amaun,
+                                            Bank = bankKod,
+                                            Jumlah = a.Jumlah
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return cawanganResult.GroupBy(b => new { b.Tarikh, b.NoRujukan, b.Jumlah })
+              .Select(l => new LAK008PrintModel
+              {
+                  Tarikh = l.First().Tarikh,
+                  NoRujukan = l.First().NoRujukan,
+                  Daripada = l.First().Daripada,
+                  NoDokumen = l.First().NoDokumen,
+                  NoSlip = l.First().NoSlip,
+                  TarikhSlip = l.First().TarikhSlip,
+                  Amaun = l.Sum(b => b.Amaun),
+                  Bank = l.First().Bank,
+                  Jumlah = l.First().Jumlah,
+              }).OrderBy(b => b.Tarikh)
+              .ThenBy(b => b.NoRujukan)
+              .ToList();
+        }
+
+        public async Task<List<LAK008PrintModel>> AkTerimaByBank(DateTime? tarDari, DateTime? tarHingga, int? jCawanganId, int? akbankId)
+        { 
+            List<LAK008PrintModel> bankResult = new List<LAK008PrintModel>();
+
+            if (tarDari != null && tarHingga != null)
+            {
+                var query = _context.AkTerimaTunggal
+                    .Include(t => t.AkTerimaTunggalObjek!)
+                    .Include(t => t.AkBank)
+                    .ThenInclude(t => t!.AkCarta)
+                    .Include(t => t.JCaraBayar)
+                    .Include(t => t.DPekerja)
+                    .Where(t => t.TarikhSlip >= tarDari && t.TarikhSlip <= tarHingga);
+
+
+                if (akbankId.HasValue && akbankId.Value != 0)
+                {
+                    query = query.Where(t => t.AkBankId == akbankId.Value);
+                }
+
+                if (jCawanganId.HasValue)
+                {
+                    query = query.Where(t => t.JCawanganId == jCawanganId.Value);
+                }
+
+                // Execute the query
+                var terimaBank = await query.ToListAsync();
+
+
+                if (terimaBank != null && terimaBank.Any())
+                {
+                    foreach (var a in terimaBank)
+                    {
+                        if (a != null && a.AkBank?.AkCarta != null)
+                        {
+                            var bankPerihal = a.AkBank.AkCarta.Perihal;
+
+                            if (a != null && a.JCaraBayar != null)
+                            {
+                                var carabayar = a.JCaraBayar.Perihal;
+
+                                if (a.AkTerimaTunggalObjek != null && a.AkTerimaTunggalObjek.Any())
+                                {
+                                    foreach (var b in a.AkTerimaTunggalObjek)
+                                    {
+                                        bankResult.Add(new LAK008PrintModel
+                                        {
+
+                                            NoDokumen = a.NoCekMK,
+                                            NoSlip = a.NoSlip,
+                                            TarikhSlip = a.TarikhSlip,
+                                            Amaun = b.Amaun,
+                                            Bank = bankPerihal,
+                                            Jumlah = b.Amaun
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        
+
+            return bankResult.GroupBy(b => new { b.NoDokumen, b.NoSlip, b.TarikhSlip })
+              .Select(l => new LAK008PrintModel
+              {
+                  NoDokumen = l.First().NoDokumen,
+                  NoSlip = l.First().NoSlip,
+                  TarikhSlip = l.First().TarikhSlip,
+                  Amaun = l.Sum(b => b.Amaun),
+                  Bank = l.First().Bank,
+                  Jumlah = l.Sum(b => b.Jumlah),
+              }).OrderBy(b => b.NoSlip)
+              .ThenBy(b => b.NoDokumen)
+              .ToList();
+        }
     }
 }
+
+
+           
 
 

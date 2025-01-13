@@ -1,0 +1,199 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "LAK008 Laporan Penerimaan Mengikut Julat Tertentu";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    decimal jumlahTunai = 0;
+    decimal jumlahMK = 0;
+    decimal jumlahCek = 0;
+
+    var bil = 1;
+
+}
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.Date.ToString("dd/MM/yyyy") @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+    </div>
+</div>
+
+<table class="table table-bordered table-sm topic">
+    <thead>
+        <tr class="bg-dark text-white">
+            <th class="text-center bg-dark text-white">
+                <strong>
+                    LAPORAN PENERIMAAN DARI TARIKH : @ViewData["TarDari"] HINGGA @ViewData["TarHingga"]
+                    <br />
+                    MENGIKUT DAERAH : @ViewData["NamaCawangan"] &nbsp; BANK : @ViewData["NamaBank"]
+
+                </strong>
+            </th>
+        </tr>
+    </thead>
+</table>
+
+
+
+<table class="table table-bordered table-sm topic" id="myTable" data-order="NoRujukanPV">
+    <thead>
+        <tr style="line-height:0.8rem; text-align:center" class="bg-secondary text-black table-primary">
+
+            <th class="bil">
+                Bil
+            </th>
+            <th>
+                Tarikh
+            </th>
+            <th>
+                No Resit
+            </th>
+            <th>
+                Daripada
+            </th>
+            <th>
+                No Dokumen
+            </th>
+            <th>
+                No Slip
+            </th>
+            <th>
+                Tarikh Slip
+            </th>
+            <th>
+                Amaun
+            </th>
+            <th>
+                Bank
+            </th>
+            <th>
+                Jumlah
+            </th>
+
+        </tr>
+    </thead>
+    <tbody id="tbodylak008">
+
+        @foreach (var group in Model.reportModelGrouped)
+        {
+            
+            foreach (var terima in group)
+            {
+                
+                switch (terima.NoDokumen)
+                {
+                   
+                    case "MK":
+                        jumlahMK += terima.Amaun;
+                        break;
+
+                    case "TUNAI":
+                        jumlahTunai += terima.Amaun;
+                        break;
+
+                    default:
+                        jumlahCek += terima.Amaun;
+                        break;
+                }
+
+                <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
+                    <td>
+                        @bil
+                    </td>
+                    <td>
+                        @terima.Tarikh.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @terima.NoRujukan
+                    </td>
+                    <td>
+                        @terima.Daripada
+                    </td>
+                    <td class="text-uppercase">
+                       
+                     @terima.NoDokumen
+                        
+                    </td>
+                    <td class="text-uppercase">
+                        @terima.NoSlip
+                    </td>
+                    <td class="text-uppercase">
+                        @terima.TarikhSlip.ToString("dd/MM/yyyy")
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(terima.Amaun).ToString("#,##0.00")
+                    </td>
+                    <td class="text-uppercase">
+                        @terima.Bank
+                    </td>
+                    <td class="text-right">
+                        @Convert.ToDecimal(terima.Jumlah).ToString("#,##0.00")
+                    </td>
+                </tr>
+
+                bil++;
+            }
+        }
+
+        <tr class=" font-weight-bold">
+            <td colspan="5" class="text-right text-uppercase table-primary">JUMLAH TUNAI</td>
+            <td colspan="5" class="text-right">@Convert.ToDecimal(jumlahTunai).ToString("#,##0.00")</td>
+        </tr>
+        <tr class=" font-weight-bold">
+            <td colspan="5" class="text-right text-uppercase table-warning">JUMLAH MAKLUMAT KREDIT</td>
+            <td colspan="5" class="text-right">@Convert.ToDecimal(jumlahMK).ToString("#,##0.00")</td>
+        </tr>
+        <tr class=" font-weight-bold">
+            <td colspan="5" class="text-right text-uppercase table-success">JUMLAH CEK</td>
+            <td colspan="5" class="text-right">@Convert.ToDecimal(jumlahCek).ToString("#,##0.00")</td>
+        </tr>
+    </tbody>
+
+</table>
+
+<div class="table-responsive-sm">
+    <table class="table table-sm topic table-bordered">
+        <thead class="table-dark">
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center" width="33%">Disedia </td>
+                <td class="text-center" width="33%">Disemak </td>
+                <td class="text-center" width="33%">Diluluskan </td>
+            </tr>
+            <tr>
+                <td class="text-center" height="50px"></td>
+
+                <td class="text-center" height="50px"></td>
+                <td class="text-center" height="50px"></td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+                <td class="text-left">Nama:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+                <td class="text-left">Jawatan:</td>
+
+            </tr>
+            <tr>
+                <td class="text-left">Tarikh: @DateTime.Now</td>
+                <td class="text-left">Tarikh:</td>
+                <td class="text-left">Tarikh:</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
