@@ -2,7 +2,34 @@
 
 @{
     decimal jumlahPerihal = 0;
+    var statusColor = "";
 }
+
+@switch (Model.EnStatusBorang)
+{
+    case EnStatusBorang.Lulus:
+        statusColor = "text-success";
+        break;
+    case EnStatusBorang.Sah:
+        statusColor = "text-secondary";
+        break;
+    case EnStatusBorang.Semak:
+        statusColor = "text-primary";
+        break;
+    case EnStatusBorang.Batal:
+        statusColor = "text-danger";
+        break;
+    case EnStatusBorang.Kemaskini:
+        statusColor = "text-warning";
+        break;
+    default:
+        break;
+
+}
+
+<div class="form-group">
+    <label class="control-label">Status Dokumen : <strong class="@statusColor">@Model.EnStatusBorang.GetDisplayName()</strong></label>
+</div>
 
 @*maklumat umum*@
 <div class="row mb-2">

@@ -50,41 +50,46 @@ namespace YIT.Akaun.Controllers._99Laporan
         }
         public IActionResult Index(PrintFormModel model)
         {
-            PopulateSelectList(model.jKWId, model.jBahagianId);
+            if (model.Tahun1 == null)
+            {
+                model.Tahun1 = DateTime.Now.Year.ToString();
+            }
+
+            PopulateSelectList(model.jKWId, model.jBahagianId, model.Tahun1);
             return View(model);
         }
 
         [HttpPost]
         public async Task<JsonResult> ExportExcel(PrintFormModel model)
         {
-            LAK018PrintModel printModel = await PrepareData(model.kodLaporan, model.jKWId, model.jBahagianId, model.tahun, model.enJenisPeruntukan);
+            LAK018PrintModel printModel = await PrepareData(model.kodLaporan, model.jKWId, model.jBahagianId, model.tahun1, model.enJenisPeruntukan);
 
             // Generate a new unique identifier against which the file can be stored
             string handle = string.Format("attachment;" + model.kodLaporan + ".xlsx;", string.IsNullOrEmpty(model.kodLaporan) ? Guid.NewGuid().ToString() : WebUtility.UrlEncode(model.kodLaporan));
 
             // save viewmodel into workbook
-            if (model.kodLaporan == "LAK00201")
+            if (model.kodLaporan == "LAK01801")
             {
                 // construct and insert data into dataTable 
-                var excelData = GenerateDataTableLAK00201(printModel, model.jKWId, model.jBahagianId, model.tahun);
+                var excelData = GenerateDataTableLAK01801(printModel, model.jKWId, model.jBahagianId, model.Tahun1);
 
                 // insert dataTable into Workbook
-                RunWorkBookLAK00201(printModel, excelData, handle);
+                RunWorkBookLAK01801(printModel, excelData, handle);
             }
             // save viewmodel into workbook
-            else if (model.kodLaporan == "LAK00202")
+            else if (model.kodLaporan == "LAK01802")
             {
                 //construct and insert data into dataTable
-                var excelData1 = GenerateDataTableLAK00202(printModel, model.jKWId, model.jBahagianId, model.tahun);
+                var excelData1 = GenerateDataTableLAK01802(printModel, model.jKWId, model.jBahagianId, model.Tahun1);
 
                 //insert dataTable into Workbook
-                RunWorkBookLAK00202(printModel, excelData1, handle);
+                RunWorkBookLAK01802(printModel, excelData1, handle);
             }
 
             return Json(new { FileGuid = handle, FileName = model.kodLaporan + ".xlsx" });
         }
 
-        private async Task<LAK018PrintModel> PrepareData(string? kodLaporan, int? jKWId, int? jBahagianId, string? tahun, EnJenisPeruntukan? enJenisPeruntukan)
+        private async Task<LAK018PrintModel> PrepareData(string? kodLaporan, int? jKWId, int? jBahagianId, string? tahun1, EnJenisPeruntukan? enJenisPeruntukan)
         {
             LAK018PrintModel reportModel = new LAK018PrintModel();
 
@@ -131,21 +136,21 @@ namespace YIT.Akaun.Controllers._99Laporan
                 }
             }
 
-            if (kodLaporan == "LAK00201")
+            if (kodLaporan == "LAK01801")
             {
-                reportModel.CommonModels.Tajuk1 = $"LAPORAN WARAN PERUNTUKAN PADA TAHUN {tahun} MENGIKUT KUMPULAN WANG {jKWKod} - {jKWPerihal} DAN PTJ {jBahagianKod} - {jBahagianPerihal} ";
-                reportModel.AbWaran = _unitOfWork.AbWaranRepo.GetResults1(jKWId, jBahagianId, tahun, enJenisPeruntukan);
+                reportModel.CommonModels.Tajuk1 = $"LAPORAN WARAN PERUNTUKAN PADA TAHUN {tahun1} MENGIKUT KUMPULAN WANG {jKWKod} - {jKWPerihal} DAN PTJ {jBahagianKod} - {jBahagianPerihal} ";
+                reportModel.AbWaran = _unitOfWork.AbWaranRepo.GetResults1(jKWId, jBahagianId, tahun1, enJenisPeruntukan);
             }
-            else if (kodLaporan == "LAK00202")
+            else if (kodLaporan == "LAK01802")
             {
-                reportModel.CommonModels.Tajuk1 = $"LAPORAN PINDAHAN PERUNTUKAN PADA TAHUN {tahun} MENGIKUT KUMPULAN WANG {jKWKod} - {jKWPerihal} DAN PTJ {jBahagianKod} - {jBahagianPerihal} ";
-                reportModel.AbWaran = _unitOfWork.AbWaranRepo.GetResults1(jKWId, jBahagianId, tahun, EnJenisPeruntukan.Viremen);
+                reportModel.CommonModels.Tajuk1 = $"LAPORAN PINDAHAN PERUNTUKAN PADA TAHUN {tahun1} MENGIKUT KUMPULAN WANG {jKWKod} - {jKWPerihal} DAN PTJ {jBahagianKod} - {jBahagianPerihal} ";
+                reportModel.AbWaran = _unitOfWork.AbWaranRepo.GetResults1(jKWId, jBahagianId, tahun1, EnJenisPeruntukan.Viremen);
             }
 
             return reportModel;
         }
 
-        private DataTable GenerateDataTableLAK00201(LAK018PrintModel printModel, int? jKWId, int? jBahagianId, string? tahun)
+        private DataTable GenerateDataTableLAK01801(LAK018PrintModel printModel, int? jKWId, int? jBahagianId, string? Tahun1)
         {
             DataTable dt = new DataTable();
             dt.TableName = "Laporan Waran Peruntukan";
@@ -170,7 +175,7 @@ namespace YIT.Akaun.Controllers._99Laporan
 
                 var abwaranList1 = _context.AbWaran
                     .Include(t => t.AbWaranObjek)
-                     .Where(w => w.Tahun == tahun);
+                     .Where(w => w.Tahun == Tahun1);
 
                 if (jKWId != 0)
                 {
@@ -230,7 +235,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void RunWorkBookLAK00201(LAK018PrintModel printModel, DataTable excelData, string handle)
+        private void RunWorkBookLAK01801(LAK018PrintModel printModel, DataTable excelData, string handle)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -278,7 +283,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
         }
 
-        private DataTable GenerateDataTableLAK00202(LAK018PrintModel printModel, int? jKWId, int? jBahagianId, string? tahun)
+        private DataTable GenerateDataTableLAK01802(LAK018PrintModel printModel, int? jKWId, int? jBahagianId, string? Tahun1)
         {
             DataTable dt = new DataTable();
             dt.TableName = "Laporan Pindahan Peruntukan";
@@ -303,7 +308,7 @@ namespace YIT.Akaun.Controllers._99Laporan
 
                 var abwaranList1 = _context.AbWaran
                     .Include(t => t.AbWaranObjek)
-                     .Where(w => w.Tahun == tahun && w.EnJenisPeruntukan == EnJenisPeruntukan.Viremen);
+                     .Where(w => w.Tahun == Tahun1 && w.EnJenisPeruntukan == EnJenisPeruntukan.Viremen);
 
                 if (jKWId != 0)
                 {
@@ -361,7 +366,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void RunWorkBookLAK00202(LAK018PrintModel printModel, DataTable excelData1, string handle)
+        private void RunWorkBookLAK01802(LAK018PrintModel printModel, DataTable excelData1, string handle)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -408,7 +413,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                 }
             }
         }
-        private void PopulateSelectList(int? jKWId, int? jBahagianId)
+        private void PopulateSelectList(int? jKWId, int? jBahagianId, string? tahun1)
         {
             var jKWList = _unitOfWork.JKWRepo.GetAllDetails();
             var kwSelect = new List<SelectListItem>
@@ -489,18 +494,27 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
 
             ViewBag.JBahagian = selectList1;
+
+            if (String.IsNullOrWhiteSpace(tahun1))
+            {
+                ViewData["Tahun1"] = DateTime.Now.Year.ToString();
+            }
+            else
+            {
+                ViewData["Tahun1"] = tahun1;
+            }
         }
 
         // printing List of Laporan
         [AllowAnonymous]
-        public async Task<IActionResult> Print(string? kodLaporan, int? jKWId, int? jBahagianId, string? tahun, EnJenisPeruntukan enJenisPeruntukan)
+        public async Task<IActionResult> Print(string? kodLaporan, int? jKWId, int? jBahagianId, string? tahun1, EnJenisPeruntukan enJenisPeruntukan)
         {
             var abwaran = new List<AbWaran>();
 
-            var reportModel = await PrepareData(kodLaporan, jKWId, jBahagianId, tahun, enJenisPeruntukan);
+            var reportModel = await PrepareData(kodLaporan, jKWId, jBahagianId, tahun1, enJenisPeruntukan);
             var company = await _userServices.GetCompanyDetails();
 
-            ViewBag.Tahun = tahun;
+            ViewBag.Tahun = tahun1;
 
             if (jKWId.HasValue)
             {
@@ -530,24 +544,24 @@ namespace YIT.Akaun.Controllers._99Laporan
                 }
             }
 
-            if (kodLaporan == "LAK00201")
+            if (kodLaporan == "LAK01801")
             {
-                var reportModel1 = await PrepareData(kodLaporan, jKWId, jBahagianId, tahun, null);
+                var reportModel1 = await PrepareData(kodLaporan, jKWId, jBahagianId, tahun1, null);
                 
                 if (jKWId == 0)
                 {
-                    reportModel1 = await PrepareData(kodLaporan, null, jBahagianId, tahun, null);
+                    reportModel1 = await PrepareData(kodLaporan, null, jBahagianId, tahun1, null);
                 }
                 if (jBahagianId == 0)
                 {
-                    reportModel1 = await PrepareData(kodLaporan, jKWId, null, tahun, null);
+                    reportModel1 = await PrepareData(kodLaporan, jKWId, null, tahun1, null);
                 }
                 if (jKWId == 0 && jBahagianId == 0)
                 {
-                    reportModel1 = await PrepareData(kodLaporan, null, null, tahun, null);
+                    reportModel1 = await PrepareData(kodLaporan, null, null, tahun1, null);
                 }
 
-                return new ViewAsPdf("LAK00201PDF", reportModel1, new ViewDataDictionary(ViewData)
+                return new ViewAsPdf("LAK01801PDF", reportModel1, new ViewDataDictionary(ViewData)
                 {
                     { "NamaSyarikat", company.NamaSyarikat },
                     { "AlamatSyarikat1", company.AlamatSyarikat1 },
@@ -562,24 +576,24 @@ namespace YIT.Akaun.Controllers._99Laporan
                     PageSize = Rotativa.AspNetCore.Options.Size.A4,
                 };
             }
-            else if (kodLaporan == "LAK00202")
+            else if (kodLaporan == "LAK01802")
             {
-                var reportModel2 = await PrepareData(kodLaporan, jKWId, jBahagianId, tahun, EnJenisPeruntukan.Viremen);
+                var reportModel2 = await PrepareData(kodLaporan, jKWId, jBahagianId, tahun1, EnJenisPeruntukan.Viremen);
                 
                 if (jKWId == 0)
                 {
-                    reportModel2 = await PrepareData(kodLaporan, null, jBahagianId, tahun, EnJenisPeruntukan.Viremen);
+                    reportModel2 = await PrepareData(kodLaporan, null, jBahagianId, tahun1, EnJenisPeruntukan.Viremen);
                 }
                 if (jBahagianId == 0)
                 {
-                    reportModel2 = await PrepareData(kodLaporan, jKWId, null, tahun, EnJenisPeruntukan.Viremen);
+                    reportModel2 = await PrepareData(kodLaporan, jKWId, null, tahun1, EnJenisPeruntukan.Viremen);
                 }
                 if (jKWId == 0 && jBahagianId == 0)
                 {
-                    reportModel2 = await PrepareData(kodLaporan, null, null, tahun, EnJenisPeruntukan.Viremen);
+                    reportModel2 = await PrepareData(kodLaporan, null, null, tahun1, EnJenisPeruntukan.Viremen);
                 }
 
-                return new ViewAsPdf("LAK00202PDF", reportModel2, new ViewDataDictionary(ViewData)
+                return new ViewAsPdf("LAK01802PDF", reportModel2, new ViewDataDictionary(ViewData)
                 {
                     { "NamaSyarikat", company.NamaSyarikat },
                     { "AlamatSyarikat1", company.AlamatSyarikat1 },

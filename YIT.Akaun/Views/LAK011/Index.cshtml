@@ -13,7 +13,7 @@
     $(document).ready(function () {
 
         function toggleFields() {
-            if ($('#LAK00202').is(':checked')) {
+            if ($('#LAK01102').is(':checked')) {
                 $('#tarikhContainer').show();
                 $('#enJenisPerolehanContainer').hide();
 
@@ -73,14 +73,14 @@
                     <div class="card-body">
                         <div class="form-group col-sm">
                             <div class="custom-control custom-radio pb-2">
-                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00201" value="LAK00201" checked>
-                                <label class="custom-control-label" for="LAK00201">
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK01101" value="LAK01101" checked>
+                                <label class="custom-control-label" for="LAK01101">
                                     PO
                                 </label>
                             </div>
                             <div class="custom-control custom-radio pb-2">
-                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00202" value="LAK00202">
-                                <label class="custom-control-label" for="LAK00202">
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK01102" value="LAK01102">
+                                <label class="custom-control-label" for="LAK01102">
                                     Inden Kerja
                                 </label>
                             </div>
@@ -111,9 +111,9 @@
                             </div>
                         </div>
                         <div id="enJenisPerolehanContainer" class="form-group row g-3">
-                            <label asp-for="enJenisPerolehan" class="col-sm-2 col-form-label">Jenis Perolehan</label>
+                            <label for="EnJenisPerolehan" class="col-sm-2 col-form-label">Jenis Perolehan</label>
                             <div class="col-sm-8">
-                                <select class="form-control form-control-sm select2" asp-for="enJenisPerolehan" asp-items="ViewBag.EnJenisPerolehan" id="enJenisPerolehan" required>
+                                <select class="form-control form-control-sm select2" name="enJenisPerolehan" asp-items="@ViewBag.EnJenisPerolehan" id="enJenisPerolehan" required>
                                 </select>
                             </div>
                         </div>
@@ -132,4 +132,3 @@
         </div>
     </div>
 </div>
-

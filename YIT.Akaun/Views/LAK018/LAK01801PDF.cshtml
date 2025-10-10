@@ -1,11 +1,11 @@
 ﻿@model LAK018PrintModel
 
 @{
-    ViewData["Title"] = "LAK00202 Laporan Pindahan Peruntukan";
+    ViewData["Title"] = "LAK01801 Laporan Waran Peruntukan Mengikut PTJ Pada Tahun Tertentu";
     Layout = "~/Views/Shared/_PrintLayout.cshtml";
     decimal jumlah = 0;
     decimal totalTambah = 0;
-    decimal totalAsal = 0;
+    decimal totalPindah = 0;
     decimal jumlahRecordTotal = 0;
 }
 
@@ -24,7 +24,7 @@
         <tr class="bg-dark text-white">
             <th colspan="11" class="text-center bg-dark text-white" style="line-height: 1.8rem;">
                 <strong>
-                    PINDAHAN PERUNTUKAN MENGIKUT PTJ UNTUK TAHUN @ViewBag.Tahun
+                    WARAN PERUNTUKAN MENGIKUT PTJ UNTUK TAHUN @ViewBag.Tahun
                     <br />MENGIKUT KUMPULAN WANG @ViewBag.jKWKod - @ViewBag.jKWPerihal DAN PTJ @ViewBag.jBahagianKod - @ViewBag.jBahagianPerihal
                 </strong>
             </th>
@@ -42,7 +42,7 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.AbWaran != null)
+        @if (Model.AbWaran != null && Model.AbWaran.Any())
         {
             int bil = 0;
 
@@ -53,20 +53,20 @@
                     bil++;
 
                     var firstObjek = abWaran.AbWaranObjek?.FirstOrDefault();
-                    decimal pindah = 0;
+                    decimal asal = 0;
 
                     if (firstObjek != null)
                     {
-                        pindah = firstObjek.Amaun;
+                        asal = firstObjek.Amaun;
                     }
 
                     decimal tambah = 0;
-                    decimal asal = 0;
+                    decimal pindah = 0;
 
                     decimal jumlahRecord = asal + tambah + pindah;
-                    jumlah += pindah;
+                    jumlah += asal;
                     totalTambah += tambah;
-                    totalAsal += asal;
+                    totalPindah += pindah;
 
                     <tr class="table" style="line-height:0.8rem; page-break-before:avoid;">
                         <td>@bil</td>
@@ -90,15 +90,30 @@
                 }
             }
 
-            jumlahRecordTotal = jumlah + totalTambah + totalAsal;
+            jumlahRecordTotal = jumlah + totalTambah + totalPindah;
+
+            <tr class="font-weight-bold">
+                <td colspan="5" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                <td class="text-right">@jumlah.ToString("#,##0.00")</td>
+                <td class="text-right">@totalTambah.ToString("#,##0.00")</td>
+                <td class="text-right">@totalPindah.ToString("#,##0.00")</td>
+                <td class="text-right">@jumlahRecordTotal.ToString("#,##0.00")</td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td colspan="9" class="text-center">Tiada data</td>
+            </tr>
+
+            <tr class="font-weight-bold">
+                <td colspan="5" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                <td class="text-right">@jumlah.ToString("#,##0.00")</td>
+                <td class="text-right">@totalTambah.ToString("#,##0.00")</td>
+                <td class="text-right">@totalPindah.ToString("#,##0.00")</td>
+                <td class="text-right">@jumlahRecordTotal.ToString("#,##0.00")</td>
+            </tr>
         }
 
-        <tr class="font-weight-bold">
-            <td colspan="5" class="text-right text-uppercase table-warning">Jumlah RM</td>
-            <td class="text-right">@totalAsal.ToString("#,##0.00")</td>
-            <td class="text-right">@totalTambah.ToString("#,##0.00")</td>
-            <td class="text-right">@jumlah.ToString("#,##0.00")</td>
-            <td class="text-right">@jumlahRecordTotal.ToString("#,##0.00")</td>
-        </tr>
     </tbody>
 </table>

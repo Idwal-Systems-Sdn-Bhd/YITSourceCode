@@ -4,6 +4,7 @@
 
         <div class="form-actions no-color mb-2">
             <form asp-action="Index" method="post">
+                <input name="isInSession" value="@ViewBag.IsInSession" hidden />
                 <div class="row g-3">
                     <div class="col-sm-9 mb-2">
                         <div class="row g-3">
@@ -14,9 +15,13 @@
                                 <select class="form-control form-control-sm select2" type="text" name="dKonfigKelulusanId">
                                     <option value="">- Pilih Pengguna -</option>
                                     @foreach (var item in ViewBag.DKonfigKelulusan)
+                                    {
+                                        if (item.Id == ViewBag.dKonfigKelulusanId)
                                         {
-                                    <option value="@item.Id">@item.DPekerja?.NoGaji - @item.DPekerja?.Nama?.ToUpper()</option>
+                                            <option value="@item.Id" selected>@item.DPekerja?.NoGaji - @item.DPekerja?.Nama?.ToUpper()</option>
                                         }
+                                        <option value="@item.Id">@item.DPekerja?.NoGaji - @item.DPekerja?.Nama?.ToUpper()</option>
+                                    }
                                 </select>
                             </div>
                             <div class="col-2">

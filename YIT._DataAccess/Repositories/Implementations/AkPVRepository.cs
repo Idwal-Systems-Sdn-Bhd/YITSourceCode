@@ -5,9 +5,6 @@ using YIT.__Domain.Entities.Models._02Daftar;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
-using YIT._DataAccess.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace YIT._DataAccess.Repositories.Implementations
 {
     public class AkPVRepository : _GenericRepository<AkPV>, IAkPVRepository
@@ -116,6 +113,12 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ThenInclude(t => t.JCukai)
                 .Include(t => t.AkPVInvois)!
                     .ThenInclude(t => t.AkBelian)
+                        .ThenInclude(to => to!.AkPO)
+                            .ThenInclude(to => to!.AkPOObjek)
+                .Include(t => t.AkPVInvois)!
+                    .ThenInclude(t => t.AkBelian)
+                        .ThenInclude(to => to!.AkInden)
+                            .ThenInclude(to => to!.AkIndenObjek)
                 .Include(t => t.AkPVPenerima)!
                     .ThenInclude(t => t.DDaftarAwam)
                 .Include(t => t.AkPVPenerima)!
@@ -174,35 +177,15 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ThenInclude(pp => pp.DDaftarAwam)
                 .Include(t => t.AkPVPenerima)!
                     .ThenInclude(pp => pp.DPekerja)
-                    //.Include(t => t.SuGajiBulanan)
-                    //    .ThenInclude(t => t!.SuGajiBulananPekerja)!
-                    //        .ThenInclude(t => t.SuGajiElaunPotongan)!
-                    //            .ThenInclude(t => t.JElaunPotongan)
-                    //.Include(t => t.AkPVObjek)!
-                    //    .ThenInclude(to => to.AkCarta)
-                    //.Include(t => t.AkPVObjek)!
-                    //    .ThenInclude(to => to.JKWPTJBahagian)
-                    //        .ThenInclude(b => b!.JKW)
-                    //.Include(t => t.AkPVObjek)!
-                    //    .ThenInclude(to => to.JKWPTJBahagian)
-                    //        .ThenInclude(b => b!.JPTJ)
-                    //.Include(t => t.AkPVObjek)!
-                    //    .ThenInclude(to => to.JKWPTJBahagian)
-                    //        .ThenInclude(b => b!.JBahagian)
-                    //.Include(t => t.AkPVObjek)!
-                    //    .ThenInclude(t => t.JCukai)
-                    //.Include(t => t.AkPVInvois)!
-                    //    .ThenInclude(t => t.AkBelian)
-                    .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
-                .ToList();
+                .Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo!.Value.AddHours(23.99))
+                .AsQueryable();
 
             // searchstring filters
-            if (searchString != null)
+            if (!string.IsNullOrEmpty(searchString))
             {
                 akPVList = akPVList.Where(t =>
-                t.NoRujukan!.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-                || t.NamaPenerima!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                (t.NoRujukan ?? "").Contains(searchString) ||
+                (t.NamaPenerima ?? "").Contains(searchString));
             }
             // searchString filters end
 
@@ -210,16 +193,16 @@ namespace YIT._DataAccess.Repositories.Implementations
             switch (enStatusBorang)
             {
                 case EnStatusBorang.None:
-                    akPVList = akPVList.Where(pp => pp.EnStatusBorang == EnStatusBorang.None).ToList();
+                    akPVList = akPVList.Where(pp => pp.EnStatusBorang == EnStatusBorang.None);
                     break;
                 case EnStatusBorang.Sah:
-                    akPVList = akPVList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Sah).ToList();
+                    akPVList = akPVList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Sah);
                     break;
                 case EnStatusBorang.Semak:
-                    akPVList = akPVList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Semak).ToList();
+                    akPVList = akPVList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Semak);
                     break;
                 case EnStatusBorang.Lulus:
-                    akPVList = akPVList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Lulus).ToList();
+                    akPVList = akPVList.Where(pp => pp.EnStatusBorang == EnStatusBorang.Lulus);
                     break;
                 case EnStatusBorang.Semua:
                     break;
@@ -232,28 +215,30 @@ namespace YIT._DataAccess.Repositories.Implementations
                 switch (orderBy)
                 {
                     case "Nama":
-                        akPVList = akPVList.OrderBy(t => t.NamaPenerima).ToList();
+                        akPVList = akPVList.OrderBy(t => t.NamaPenerima);
                         break;
                     case "Tarikh":
-                        akPVList = akPVList.OrderBy(t => t.Tarikh).ToList(); break;
+                        akPVList = akPVList.OrderBy(t => t.Tarikh);
+                        break;
                     default:
-                        akPVList = akPVList.OrderBy(t => t.NoRujukan).ToList();
+                        akPVList = akPVList.OrderBy(t => t.NoRujukan);
                         break;
                 }
-
             }
             // order by filters end
 
             if (akBankId != null)
             {
-                akPVList = akPVList.Where(pv => pv.AkBankId == akBankId).ToList();
+                akPVList = akPVList.Where(pv => pv.AkBankId == akBankId);
             }
-            return akPVList;
+
+            return akPVList.ToList();
         }
 
-        public List<AkPV> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int? akBankId, int? tunai, int? jKWId, int? dDaftarAwamId)
+
+        public List<AkPV> GetResults1(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy, EnStatusBorang enStatusBorang, int? akBankId, int? tunai, int? jKWId, int? dDaftarAwamId, int? dDaftarAwamId1)
         {
-            if (searchString == null && dateFrom == null && dateTo == null && akBankId == null && tunai == null && jKWId == null && dDaftarAwamId == null)
+            if (searchString == null && dateFrom == null && dateTo == null && akBankId == null && tunai == null && jKWId == null && dDaftarAwamId == null && dDaftarAwamId1 == null)
             {
                 return new List<AkPV>();
             }
@@ -325,6 +310,11 @@ namespace YIT._DataAccess.Repositories.Implementations
             if (dDaftarAwamId != null)
             {
                 query = query.Where(a => a.AkPVPenerima!.Any(p => p.DDaftarAwamId == dDaftarAwamId));
+            }
+
+            if (dDaftarAwamId1 != null)
+            {
+                query = query.Where(a => a.AkPVPenerima!.Any(p => p.DDaftarAwamId == dDaftarAwamId1));
             }
 
             if (orderBy != null)
@@ -1213,9 +1203,9 @@ namespace YIT._DataAccess.Repositories.Implementations
             return groupedResults;
         }
 
-        public async Task<List<AkPV>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
+        public async Task<List<AkPV>> GetResultsGroupByTarikh1(string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId, int? dDaftarAwamId1)
         {
-            if (tarikhDari == null || tarikhHingga == null || dDaftarAwamId == null)
+            if (tarikhDari == null || tarikhHingga == null || dDaftarAwamId == null || dDaftarAwamId1 == null)
             {
                 return new List<AkPV>();
             }
@@ -1224,15 +1214,18 @@ namespace YIT._DataAccess.Repositories.Implementations
             DateTime date2 = DateTime.Parse(tarikhHingga).Date.AddDays(1).AddTicks(-1);
 
             var matchingPvIds = await _context.AkPVPenerima
-                .Where(p => p.DDaftarAwamId == dDaftarAwamId)
+                .Include(p => p.DDaftarAwam)
+                .Where(p => p.DDaftarAwamId >= dDaftarAwamId && p.DDaftarAwamId <= dDaftarAwamId1)
                 .Select(p => p.AkPVId)
                 .ToListAsync();
 
             var akPvQuery = _context.AkPV
+                .Include(a => a.AkPVPenerima)!
+                    .ThenInclude(a => a.DDaftarAwam)
                 .Include(a => a.AkPVInvois)!
                 .ThenInclude(b => b.AkBelian)
                 .Where(a => a.Tarikh >= date1 && a.Tarikh <= date2 && matchingPvIds.Contains(a.Id))
-                .Where(a => a.AkPVInvois!.Any(b => b.AkBelian!.DDaftarAwamId == dDaftarAwamId && b.AkBelian.NoRujukan != null));
+                .Where(a => a.AkPVInvois!.Any(b => b.AkBelian!.DDaftarAwamId >= dDaftarAwamId && b.AkBelian!.DDaftarAwamId <= dDaftarAwamId1 && b.AkBelian.NoRujukan != null));
 
             var akPv = await akPvQuery.ToListAsync();
 

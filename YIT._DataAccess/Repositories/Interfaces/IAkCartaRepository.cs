@@ -9,7 +9,7 @@ namespace YIT._DataAccess.Repositories.Interfaces
         public List<AkCarta> GetResultsByJenis(EnJenisCarta jenis, EnParas paras);
         public List<AkCarta> GetResultsByParas(EnParas paras);
         string GetSetOfCartaStringList(bool isPukal, string? enJenisCartaList, bool isKecuali, string? kodList);
-        public Task<List<_AkCartaResult>> GetResults(int? akCartaId, string? tahun);
+        public Task<List<_AkCartaResult>> GetResults(int? akCartaId, int? akCartaId1, string? tahun);
 
     }
 }

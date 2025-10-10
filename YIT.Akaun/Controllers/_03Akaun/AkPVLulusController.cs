@@ -47,13 +47,12 @@ namespace YIT.Akaun.Controllers._03Akaun
                 string searchDate2,
                 string searchColumn,
                 int? dKonfigKelulusanId,
-                string password)
+                string? password,
+                int isInSession)
         {
             // load data
-            DateTime? date1 = null;
-            DateTime? date2 = null;
-
-            PopulateFormFields(searchString, password, searchDate1, searchDate2);
+            DateTime date1 = DateTime.Now;
+            DateTime date2 = DateTime.Now;
 
             List<AkPV> akPV = new List<AkPV>();
             if (!string.IsNullOrEmpty(searchDate1) && !string.IsNullOrEmpty(searchDate2))
@@ -62,15 +61,28 @@ namespace YIT.Akaun.Controllers._03Akaun
                 date2 = DateTime.Parse(searchDate2);
             }
 
-            if (dKonfigKelulusanId != null)
+            if (isInSession == 1)
+            {
+                if (dKonfigKelulusanId == null) dKonfigKelulusanId = HttpContext.Session.GetInt32("dKonfigKelulusanId") ?? null;
+                if (password == null) password = HttpContext.Session.GetString("password") ?? null;
+            }
+            else
+            {
+                HttpContext.Session.Clear();
+            }
+
+            if (dKonfigKelulusanId != null && !string.IsNullOrEmpty(password))
             {
                 // cek is user and password valid or not
-                HttpContext.Session.SetInt32("DPelulusId", (int)dKonfigKelulusanId);
+                HttpContext.Session.SetInt32("dKonfigKelulusanId", (int)dKonfigKelulusanId);
+                HttpContext.Session.SetString("password", password ?? "");
+                HttpContext.Session.SetString("searchString", searchString ?? "");
+                HttpContext.Session.SetString("searchDate1", date1.ToString("yyyy-MM-dd"));
+                HttpContext.Session.SetString("searchDate2", date2.ToString("yyyy-MM-dd"));
 
-                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password, EnJenisModulKelulusan.PV, EnKategoriKelulusan.Pelulus) == false)
+                if (_unitOfWork.DKonfigKelulusanRepo.IsValidUser((int)dKonfigKelulusanId, password ?? "", EnJenisModulKelulusan.PV, EnKategoriKelulusan.Pelulus) == false)
                 {
                     TempData[SD.Error] = "Katalaluan Tidak Sah";
-                    return View();
                 }
                 else
                 {
@@ -81,15 +93,19 @@ namespace YIT.Akaun.Controllers._03Akaun
                 }
             }
 
+            PopulateFormFields(dKonfigKelulusanId, searchString ?? "", password ?? "", searchDate1, searchDate2, isInSession);
+
             return View(akPV);
         }
 
-        private void PopulateFormFields(string searchString, string password, string searchDate1, string searchDate2)
+        private void PopulateFormFields(int? dKonfigKelulusanId, string searchString, string password, string searchDate1, string searchDate2, int isInSession)
         {
-            ViewBag.searchString = searchString;
-            ViewBag.password = password;
-            ViewBag.searchDate1 = searchDate1 ?? DateTime.Now.ToString("dd/MM/yyyy");
-            ViewBag.searchDate2 = searchDate2 ?? DateTime.Now.ToString("dd/MM/yyyy");
+            ViewBag.isInSession = isInSession;
+            ViewBag.dKonfigKelulusanId = HttpContext.Session.GetInt32("dKonfigKelulusanId") ?? dKonfigKelulusanId;
+            ViewBag.searchString = HttpContext.Session.GetString("searchString") ?? searchString;
+            ViewBag.password = HttpContext.Session.GetString("password") ?? password;
+            ViewBag.searchDate1 = HttpContext.Session.GetString("searchDate1") ?? DateTime.Now.ToString("yyyy-MM-dd");
+            ViewBag.searchDate2 = HttpContext.Session.GetString("searchDate2") ?? DateTime.Now.ToString("yyyy-MM-dd");
             ViewBag.DKonfigKelulusan = _unitOfWork.DKonfigKelulusanRepo.GetResultsByCategoryGroupByDPekerja(EnKategoriKelulusan.Pelulus, EnJenisModulKelulusan.PV);
         }
 
@@ -107,7 +123,7 @@ namespace YIT.Akaun.Controllers._03Akaun
                 return NotFound();
             }
             EmptyCart();
-            ViewBag.DKonfigKelulusanId = HttpContext.Session.GetInt32("DPelulusId");
+            ViewBag.dKonfigKelulusanId = HttpContext.Session.GetInt32("dKonfigKelulusanId");
             ManipulateHiddenDiv(akPV.EnJenisBayaran);
             PopulateCartAkPVFromDb(akPV);
             return View(akPV);
@@ -305,10 +321,18 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Data tidak wujud.";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new
+            {
+                searchString = HttpContext.Session.GetString("searchString") ?? "",
+                searchDate1 = HttpContext.Session.GetString("searchDate1") ?? DateTime.Now.ToString("yyyy-MM-dd"),
+                searchDate2 = HttpContext.Session.GetString("searchDate2") ?? DateTime.Now.ToString("yyyy-MM-dd"),
+                isInSession = 1
+
+            });
         }
 
         [Authorize(Policy = modul + "E")]
+        [ActionName("HantarSemula")]
         public async Task<IActionResult> HantarSemulaAsync(int id, string? tindakan, string syscode)
         {
             var akPV = _unitOfWork.AkPVRepo.GetById((int)id);
@@ -329,7 +353,14 @@ namespace YIT.Akaun.Controllers._03Akaun
                 TempData[SD.Error] = "Data tidak wujud.";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new
+            {
+                searchString = HttpContext.Session.GetString("searchString") ?? "",
+                searchDate1 = HttpContext.Session.GetString("searchDate1") ?? DateTime.Now.ToString("yyyy-MM-dd"),
+                searchDate2 = HttpContext.Session.GetString("searchDate2") ?? DateTime.Now.ToString("yyyy-MM-dd"),
+                isInSession = 1
+
+            });
         }
     }
 }

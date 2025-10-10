@@ -1,9 +1,14 @@
 ﻿@model LAK011PrintModel
 
 @{
-    ViewData["Title"] = "LAK00201 Laporan Daftar Pesanan Tempatan";
+    ViewData["Title"] = "LAK01101 Laporan Daftar Pesanan Tempatan";
     Layout = "~/Views/Shared/_PrintLayout.cshtml";
     decimal jumlah = 0;
+
+    int bil = 0;
+    decimal totalAmaun = 0;
+    string? previousNoRujukan = null;
+    bool isFirstRow = true;
 }
 
 <div class="row flexrow mb-1 text-center">
@@ -32,13 +37,8 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.AkPO != null)
+        @if (Model.AkPO != null && Model.AkPO.Any())
         {
-            int bil = 0;
-            decimal totalAmaun = 0;
-            string? previousNoRujukan = null;
-            bool isFirstRow = true;
-
             @foreach (var akPO in Model.AkPO)
             {
                 if (akPO != null)
@@ -82,13 +82,13 @@
                             {
                                 @(akPO.DDaftarAwam?.Kod + " " + akPO.DDaftarAwam?.Nama)
                             } 
-                         </td>
+                        </td>
                         <td class="text-right">
                             @if (isFirstRow)
                             {
                                 @akPO.Jumlah.ToString("#,##0.00")
                             }
-                         </td>
+                        </td>
                         <td class="text-uppercase">@firstObjek?.AkCarta?.Kod @firstObjek?.AkCarta?.Perihal</td>
                         <td class="text-right">@firstObjek?.Amaun.ToString("#,##0.00")</td>
                     </tr>
@@ -104,6 +104,18 @@
                 <td class="text-right">@totalAmaun.ToString("#,##0.00")</td>
             </tr>
         }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center">Tiada data</td>
+            </tr>
 
+            <tr class="font-weight-bold">
+                <td colspan="4" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                <td class="text-right">@jumlah.ToString("#,##0.00")</td>
+                <td colspan="1" class="text-right text-uppercase"></td>
+                <td class="text-right">@totalAmaun.ToString("#,##0.00")</td>
+            </tr>
+        }
     </tbody>
 </table>

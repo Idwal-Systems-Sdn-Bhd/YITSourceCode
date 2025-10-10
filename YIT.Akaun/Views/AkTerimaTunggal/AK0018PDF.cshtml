@@ -1,0 +1,369 @@
+﻿@model AkTerimaTunggal
+
+@{
+    ViewData["Title"] = "Cetakan Resit Rasmi";
+    Layout = "~/Views/Shared/_PrintLayout.cshtml";
+
+    bool isFirstRow = true, isFirstRow1 = true;
+    string? previousKod = "", previousKod1 = "";
+    string? kodList = "", kodList1 = "";
+
+    var jawatan = "SuperAdmin";
+
+    var user = UserManager.GetUserAsync(User);
+    var namaUser = new ApplicationUser();
+    var pekerja = new DPekerja();
+    var namaPekerja = "";
+    if (user.Result != null)
+    {
+        namaUser = _context.ApplicationUsers.FirstOrDefault(x => x.Email == user.Result.Email);
+        pekerja = _context.DPekerja.FirstOrDefault(x => x.Id == namaUser!.DPekerjaId);
+        namaPekerja = namaUser?.Nama;
+        if (pekerja != null)
+        {
+            jawatan = pekerja.Jawatan;
+        }
+    }
+}
+
+<style>
+    #table2 {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+        border: none;
+    }
+
+        #table2 td {
+            vertical-align: top;
+            border: none;
+        }
+
+        #table2 .left-column,
+        #table2 .right-column {
+            width: 50%;
+            border: none;
+        }
+
+    .table-bordered {
+        width: 100%;
+        border: 1px solid black !important;
+        border-collapse: collapse;
+    }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid black !important;
+            padding: 4px;
+            vertical-align: top;
+        }
+
+        .table-bordered th {
+            text-align: center;
+        }
+
+    #table2 .right-column .table-bordered tr td:nth-child(2) {
+        border-left: 1px solid black;
+    }
+</style>
+
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+        <p style="margin-top:2px">Kod Laporan: @Modules.kodAkTerima - @Modules.namaAkTerima</p>
+    </div>
+
+    <div class="form-group" align="right" style="margin-right: 15px">
+        <p align="right" style="line-height:4px; padding-top:1px; margin-bottom:6%"><strong>--Salinan Pelanggan--</strong></p>
+
+        <table id="table1" width="100%" align="right">
+            <tr>
+                <td align="right" width="70%" style="font-size:14px"><strong>No. Resit</strong> </td>
+                <td align="right" style="font-size:14px"><strong>:</strong></td>
+                <td align="left" style="padding-left:5px; font-size:14px" width="85%"> @Model.NoRujukan</td>
+            </tr>
+            <tr>
+                <td align="right" width="70%" style="padding-right: 21px;"><strong>Tarikh</strong></td>
+                <td align="right"><strong>:</strong></td>
+                <td align="left" style="padding-left:5px"> @Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td>
+            </tr>
+            <tr>
+                <td colspan="3" align="right" style="font-size:12px; padding-top:2px; padding-right:45px">
+                    Cukai Setem Dikecualikan
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<hr style="border:1px solid black; margin: 20px 0; padding: 0;" />
+
+<table id="table2" class="table">
+    <tr>
+        <td class="left-column">
+            <div class="inner-content">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>DITERIMA DARIPADA</th>
+                    </tr>
+                    <tr>
+                        <td class="text-uppercase">
+                            @Model.Nama
+                            @if (!string.IsNullOrEmpty(Model.Alamat1))
+                            {
+                                <br>
+
+                                @Model.Alamat1
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Alamat2))
+                            {
+                                <br>
+
+                                @Model.Alamat2
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Alamat3))
+                            {
+                                <br>
+
+                                @Model.Alamat3
+                            }
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <th>RINGGIT MALAYSIA</th>
+                    </tr>
+                    <tr>
+                        <td class="text-uppercase">
+                            @PriceFormatter.JumlahDalamPerkataan(Model.Jumlah)
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <th>CARA BAYARAN</th>
+                    </tr>
+                    <tr>
+                        <td class="text-uppercase">
+                            @Model.JCaraBayar?.Perihal; Bank : @Model.AkBank?.Kod - @Model.AkBank?.Perihal
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+
+        <td class="right-column">
+            <div class="inner-content">
+                <table class="table table-bordered">
+                    <colgroup>
+                        <col style="width: 70%;">
+                        <col style="width: 30%;">
+                    </colgroup>
+                    <tr align="center">
+                        <th>MAKLUMAT PEMBAYARAN</th>
+                        <th>AMAUN RM</th>
+                    </tr>
+                    @if (ViewBag.akTerimaTunggalObjek != null)
+                    {
+                        <tr class="row1">
+                            <td>@Model.Ringkasan</td>
+                            <td class="text-right">@Convert.ToDecimal(Model.Jumlah).ToString("#,##0.00")</td>
+                        </tr>
+                        <tr class="row2">
+                            <td class="text-uppercase">
+                                @foreach (var item in ViewBag.akTerimaTunggalObjek)
+                                {
+                                    if (isFirstRow)
+                                    {
+                                        <text>Kod Hasil</text> @(" " + item.AkCarta?.Kod + " " + @item.AkCarta?.Perihal)
+                                        previousKod = item.AkCarta?.Kod;
+                                        isFirstRow = false;
+                                    }
+                                    else
+                                    {
+                                        if (item.AkCarta?.Kod != previousKod)
+                                        {
+                                            kodList += (string.IsNullOrEmpty(kodList) ? "" : " , ") + item.AkCarta?.Kod;
+                                            previousKod = item.AkCarta?.Kod;
+                                        }
+                                    }
+                                }
+                                @kodList
+                            </td>
+                            <td></td>
+                        </tr>
+                    }
+                    <tr>
+                        <th class="text-right"><strong>Jumlah RM</strong></th>
+                        <th class="text-right">@Convert.ToDecimal(Model.Jumlah).ToString("#,##0.00")</th>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
+<div style="width: 100%; position: relative;">
+    <p style="float: left; margin: 0; width: 40%;">@namaUser; @DateTime.Now.ToString("dd/MM/yyyy; hh:mm:ss tt") </p>
+    <p style="float: right; margin: 0; width: 60%;">Cetakan berkomputer tidak perlu ditandatangan.</p>
+</div>
+
+<p style="font-size:14px; margin-top: 180px; margin-bottom: 80px; display: block; width: 100%; text-align: center; margin-left: auto; margin-right: auto;">
+    ---------------------------------------------------------- Potong Di Sini -----------------------------------------------------------
+</p>
+
+<div class="row flexrow mb-1 text-left">
+    <img class="image-container mb-2" style="margin-left: 15px" src="~/img/@ViewData["CompanyLogoPrintPDF"]" alt="Logo syarikat" />
+    <div class="col-12 text-uppercase">
+        <h5 class="mb-1"><strong>@ViewData["NamaSyarikat"]</strong></h5>
+        <p class="mb-0"> @ViewData["AlamatSyarikat1"], @ViewData["AlamatSyarikat2"]</p>
+        <p class="mb-0"> @ViewData["AlamatSyarikat3"]</p>
+        <p class="mb-0">Tarikh Cetakan: @DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt")</p>
+        <p style="margin-top:2px">Kod Laporan: @Modules.kodAkTerima - @Modules.namaAkTerima</p>
+    </div>
+
+    <div class="form-group" align="right" style="margin-right: 15px">
+        <p align="right" style="line-height:4px; padding-top:1px; margin-bottom:6%"><strong>--Salinan Pejabat--</strong></p>
+
+        <table id="table1" width="100%" align="right">
+            <tr>
+                <td align="right" width="70%" style="font-size:14px"><strong>No. Resit</strong> </td>
+                <td align="right" style="font-size:14px"><strong>:</strong></td>
+                <td align="left" style="padding-left:5px; font-size:14px" width="85%"> @Model.NoRujukan</td>
+            </tr>
+            <tr>
+                <td align="right" width="70%" style="padding-right: 21px;"><strong>Tarikh</strong></td>
+                <td align="right"><strong>:</strong></td>
+                <td align="left" style="padding-left:5px"> @Convert.ToDateTime(Model.Tarikh).ToString("dd/MM/yyyy")</td>
+            </tr>
+            <tr>
+                <td colspan="3" align="right" style="font-size:12px; padding-top:2px; padding-right:45px">
+                    Cukai Setem Dikecualikan
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<hr style="border:1px solid black; margin: 20px 0; padding: 0;" />
+
+<table id="table2" class="table">
+    <tr>
+        <td class="left-column">
+            <div class="inner-content">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>DITERIMA DARIPADA</th>
+                    </tr>
+                    <tr>
+                        <td class="text-uppercase">
+                            @Model.Nama
+                            @if (!string.IsNullOrEmpty(Model.Alamat1))
+                            {
+                                <br>
+
+                                @Model.Alamat1
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Alamat2))
+                            {
+                                <br>
+
+                                @Model.Alamat2
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Alamat3))
+                            {
+                                <br>
+
+                                @Model.Alamat3
+                            }
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <th>RINGGIT MALAYSIA</th>
+                    </tr>
+                    <tr>
+                        <td class="text-uppercase">
+                            @PriceFormatter.JumlahDalamPerkataan(Model.Jumlah)
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <th>CARA BAYARAN</th>
+                    </tr>
+                    <tr>
+                        <td class="text-uppercase">
+                            @Model.JCaraBayar?.Perihal; Bank : @Model.AkBank?.Kod - @Model.AkBank?.Perihal
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+
+        <td class="right-column">
+            <div class="inner-content">
+                <table class="table table-bordered">
+                    <colgroup>
+                        <col style="width: 70%;">
+                        <col style="width: 30%;">
+                    </colgroup>
+                    <tr align="center">
+                        <th>MAKLUMAT PEMBAYARAN</th>
+                        <th>AMAUN RM</th>
+                    </tr>
+                    @if (ViewBag.akTerimaTunggalObjek != null)
+                    {
+                        <tr class="row1">
+                            <td>@Model.Ringkasan</td>
+                            <td class="text-right">@Convert.ToDecimal(Model.Jumlah).ToString("#,##0.00")</td>
+                        </tr>
+                        <tr class="row2">
+                            <td class="text-uppercase">
+                                @foreach (var item in ViewBag.akTerimaTunggalObjek)
+                                {
+                                    if (isFirstRow1)
+                                    {
+                                        <text>Kod Hasil</text> @(" " + item.AkCarta?.Kod + " " + @item.AkCarta?.Perihal)
+                                        previousKod1 = item.AkCarta?.Kod;
+                                        isFirstRow1 = false;
+                                    }
+                                    else
+                                    {
+                                        if (item.AkCarta?.Kod != previousKod1)
+                                        {
+                                            kodList1 += (string.IsNullOrEmpty(kodList1) ? "" : " , ") + item.AkCarta?.Kod;
+                                            previousKod1 = item.AkCarta?.Kod;
+                                        }
+                                    }
+                                }
+                                @kodList1
+                            </td>
+                            <td></td>
+                        </tr>
+                    }
+                    <tr>
+                        <th class="text-right"><strong>Jumlah RM</strong></th>
+                        <th class="text-right">@Convert.ToDecimal(Model.Jumlah).ToString("#,##0.00")</th>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
+<div style="width: 100%; position: relative;">
+    <p style="float: left; margin: 0; width:40%">@namaUser; @DateTime.Now.ToString("dd/MM/yyyy; hh:mm:ss tt")</p>
+    <p style="float: right; margin: 0; width:60%">Cetakan berkomputer tidak perlu ditandatangan.</p>
+</div>

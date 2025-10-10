@@ -53,7 +53,13 @@ namespace YIT.Akaun.Controllers._99Laporan
             model.dPekerjaId2 = null; 
             model.dPekerjaId3 = 606; 
 
-            PopulateSelectList(model.dPekerjaId1, model.dPekerjaId2, model.dPekerjaId3,
+            if (model.tarDari1 == null && model.tarHingga1 == null)
+            {
+                model.tarDari1 = new DateTime(DateTime.Now.Year, 1, 1);
+                model.tarHingga1 = DateTime.Now;
+            }
+
+            PopulateSelectList(model.tarDari1, model.tarHingga1, model.dPekerjaId1, model.dPekerjaId2, model.dPekerjaId3,
             new List<string> { }, new List<string> { "Kew" }, new List<string> { "Pelaburan"},                                       
             new List<string> { }, new List<string> { "Kew" }, new List<string> { "Pelaburan" },                                      
             new List<string> { }, new List<string> { "Pengarah", "KPP" }, new List<string> { },                                      
@@ -79,25 +85,25 @@ namespace YIT.Akaun.Controllers._99Laporan
             string handle = string.Format("attachment;" + model.kodLaporan + ".xlsx;", string.IsNullOrEmpty(model.kodLaporan) ? Guid.NewGuid().ToString() : WebUtility.UrlEncode(model.kodLaporan));
 
             // save viewmodel into workbook
-            if (model.kodLaporan == "LAK00201")
+            if (model.kodLaporan == "LAK01901")
             {
                 // construct and insert data into dataTable 
-                var excelData = GenerateDataTableLAK00201(printModel, model.tarikhDari, model.tarikhHingga);
+                var excelData = GenerateDataTableLAK01901(printModel, model.tarikhDari, model.tarikhHingga);
 
                 var additionalInfoData = GenerateAdditionalInfoTable(printModel, model.dPekerjaId1, model.dPekerjaId2, model.dPekerjaId3);
 
                 // insert dataTable into Workbook
-                RunWorkBookLAK00201(printModel, excelData, additionalInfoData, handle, model.dPekerjaId1, model.dPekerjaId2, model.dPekerjaId3);
+                RunWorkBookLAK01901(printModel, excelData, additionalInfoData, handle, model.dPekerjaId1, model.dPekerjaId2, model.dPekerjaId3);
             }
-            else if (model.kodLaporan == "LAK00202")
+            else if (model.kodLaporan == "LAK01902")
             {
                 //construct and insert data into dataTable
-                var excelData = GenerateDataTableLAK00202(printModel, searchString1, searchString2);
+                var excelData = GenerateDataTableLAK01902(printModel, searchString1, searchString2);
 
                 var additionalInfoData = GenerateAdditionalInfoTable(printModel, model.dPekerjaId1, model.dPekerjaId2, model.dPekerjaId3);
 
                 // insert dataTable into Workbook
-                RunWorkBookLAK00202(printModel, excelData, additionalInfoData, handle, searchString1, searchString2, model.dPekerjaId1, model.dPekerjaId2, model.dPekerjaId3);
+                RunWorkBookLAK01902(printModel, excelData, additionalInfoData, handle, searchString1, searchString2, model.dPekerjaId1, model.dPekerjaId2, model.dPekerjaId3);
             }
 
             return Json(new { FileGuid = handle, FileName = model.kodLaporan + ".xlsx" });
@@ -146,12 +152,12 @@ namespace YIT.Akaun.Controllers._99Laporan
                 reportModel.JawatanDiluluskan = pekerja3?.Jawatan;
             }
 
-            if (kodLaporan == "LAK00201")
+            if (kodLaporan == "LAK01901")
             {
                 reportModel.CommonModels.Tajuk1 = $"Laporan Electronic File Transfer (EFT) Ditolak Bagi Tarikh {Convert.ToDateTime(tarikhDari):dd/MM/yyyy} Hingga {Convert.ToDateTime(tarikhHingga):dd/MM/yyyy}";
                 reportModel.AkEFT = _unitOfWork.AkEFTRepo.GetResults("", date1, date2, null);
             }
-            else if (kodLaporan == "LAK00202")
+            else if (kodLaporan == "LAK01902")
             {
                 var upperSearchString1 = searchString1?.ToUpper() ?? string.Empty;
                 var upperSearchString2 = searchString2?.ToUpper() ?? string.Empty;
@@ -165,7 +171,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return reportModel;
         }
 
-        private DataTable GenerateDataTableLAK00201(LAK019PrintModel printModel, string? tarikhDari, string? tarikhHingga)
+        private DataTable GenerateDataTableLAK01901(LAK019PrintModel printModel, string? tarikhDari, string? tarikhHingga)
         {
             DataTable dt = new DataTable();
             dt.TableName = "Laporan EFT Ditolak (Tarikh)";
@@ -193,7 +199,7 @@ namespace YIT.Akaun.Controllers._99Laporan
 
                 var akEft = _context.AkEFT
                     .Include(b => b.AkEFTPenerima)
-                    .Where(b => b.Tarikh >= date1 && b.Tarikh <= date2)
+                    .Where(b => b.Tarikh >= date1 && b.Tarikh <= date2 && b.EnStatusEFT == EnStatusProses.Pending)
                     .OrderBy(a => a.Tarikh)
                     .ThenBy(a => a.NoRujukan)
                     .ToList();
@@ -230,7 +236,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void RunWorkBookLAK00201(LAK019PrintModel printModel, DataTable excelData, DataTable additionalInfoData, string handle, int? dPekerjaId1, int? dPekerjaId2, int? dPekerjaId3)
+        private void RunWorkBookLAK01901(LAK019PrintModel printModel, DataTable excelData, DataTable additionalInfoData, string handle, int? dPekerjaId1, int? dPekerjaId2, int? dPekerjaId3)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -297,10 +303,10 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
         }
 
-        private DataTable GenerateDataTableLAK00202(LAK019PrintModel printModel, string? searchString1, string? searchString2)
+        private DataTable GenerateDataTableLAK01902(LAK019PrintModel printModel, string? searchString1, string? searchString2)
         {
             DataTable dt = new DataTable();
-            dt.TableName = "Laporan EFT Ditolak (No Rujukan)";
+            dt.TableName = "Laporan EFT Tolak (No Rujukan)";
             dt.Columns.Add("Bil", typeof(int));
             dt.Columns.Add("No Rujukan", typeof(string));
             dt.Columns.Add("Tarikh", typeof(string));
@@ -352,11 +358,11 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void RunWorkBookLAK00202(LAK019PrintModel printModel, DataTable excelData, DataTable additionalInfoData, string handle, string? searchString1, string? searchString2, int? dPekerjaId1, int? dPekerjaId2, int? dPekerjaId3)
+        private void RunWorkBookLAK01902(LAK019PrintModel printModel, DataTable excelData, DataTable additionalInfoData, string handle, string? searchString1, string? searchString2, int? dPekerjaId1, int? dPekerjaId2, int? dPekerjaId3)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
-                var ws = wb.AddWorksheet("Laporan EFT Ditolak (No Rujukan)");
+                var ws = wb.AddWorksheet("Laporan EFT Tolak (No Rujukan)");
 
                 ws.Cell("A1").Value = printModel.CommonModels.CompanyDetails?.NamaSyarikat;
                 ws.Cell("A1").Style.Font.Bold = true;
@@ -449,7 +455,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void PopulateSelectList(int? dPekerjaId1, int? dPekerjaId2, int? dPekerjaId3,
+        private void PopulateSelectList(DateTime? tarDari1, DateTime? tarHingga1, int? dPekerjaId1, int? dPekerjaId2, int? dPekerjaId3,
         List<string>? namaKeywords1 = null, List<string>? jawatanKeywords1 = null, List<string>? bahagianKeywords1 = null,
         List<string>? namaKeywords2 = null, List<string>? jawatanKeywords2 = null, List<string>? bahagianKeywords2 = null,
         List<string>? namaKeywords3 = null, List<string>? jawatanKeywords3 = null, List<string>? bahagianKeywords3 = null,
@@ -457,6 +463,13 @@ namespace YIT.Akaun.Controllers._99Laporan
         List<string>? excludeNama2 = null,  List<string>? excludeJawatan2 = null, List<string>? excludeBahagian2 = null,
         List<string>? excludeNama3 = null,  List<string>? excludeJawatan3 = null, List<string>? excludeBahagian3 = null)
         {
+
+            if (tarDari1 != null && tarHingga1 != null) 
+            {
+                ViewData["DateFrom"] = tarDari1?.ToString("yyyy-MM-dd");
+                ViewData["DateTo"] = tarHingga1?.ToString("yyyy-MM-dd");
+            }
+
             var dPList = _unitOfWork.DPekerjaRepo.GetAllDetails();
             var dropdownParams = new[]
             {
@@ -545,26 +558,26 @@ namespace YIT.Akaun.Controllers._99Laporan
 
             switch (kodLaporan)
             {
-                case "LAK00201":
+                case "LAK01901":
 
                     var akeft = await _unitOfWork.AkEFTRepo.GetResultsGroupByTarikh(tarikhDari, tarikhHingga);
 
                     reportModel.AkEFT = akeft;
 
-                    viewName = "LAK00201PDF";
-                    var TarikhDariLAK00201 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
-                    var TarikhHinggaLAK00201 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
-                    viewDataDictionary["TarikhDari"] = TarikhDariLAK00201;
-                    viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK00201;
+                    viewName = "LAK01901PDF";
+                    var TarikhDariLAK01901 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
+                    var TarikhHinggaLAK01901 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
+                    viewDataDictionary["TarikhDari"] = TarikhDariLAK01901;
+                    viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK01901;
                     break;
 
-                case "LAK00202":
+                case "LAK01902":
 
                     akeft = await _unitOfWork.AkEFTRepo.GetResultsGroupBySearchString(searchString1, searchString2);
 
                     reportModel.AkEFT = akeft;
 
-                    viewName = "LAK00202PDF";
+                    viewName = "LAK01902PDF";
                     break;
 
                 default:

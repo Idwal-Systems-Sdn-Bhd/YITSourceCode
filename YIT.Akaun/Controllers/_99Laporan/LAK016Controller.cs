@@ -52,7 +52,13 @@ namespace YIT.Akaun.Controllers._99Laporan
             model.dPekerjaId2 = null; 
             model.dPekerjaId3 = 606; 
 
-            PopulateSelectList(model.jCawanganId, model.jKWId, model.dPekerjaId1, model.dPekerjaId2, model.dPekerjaId3,
+            if (model.tarDari1 == null && model.tarHingga1 == null)
+            {
+                model.tarDari1 = new DateTime(DateTime.Now.Year, 1, 1);
+                model.tarHingga1 = DateTime.Now;
+            }
+
+            PopulateSelectList(model.tarDari1, model.tarHingga1, model.jCawanganId, model.jKWId, model.dPekerjaId1, model.dPekerjaId2, model.dPekerjaId3,
             new List<string> { }, new List<string> { "Kew" }, new List<string> { "Pelaburan"},                                       
             new List<string> { }, new List<string> { "Kew" }, new List<string> { "Pelaburan" },                                      
             new List<string> { }, new List<string> { "Pengarah", "KPP" }, new List<string> { },                                      
@@ -64,7 +70,6 @@ namespace YIT.Akaun.Controllers._99Laporan
 
             return View(model);
         }
-
 
         [HttpPost]
         public async Task<JsonResult> ExportExcel(PrintFormModel model)
@@ -338,7 +343,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void PopulateSelectList(int? jCawanganId, int? jKWId, int? dPekerjaId1, int? dPekerjaId2, int? dPekerjaId3,
+        private void PopulateSelectList(DateTime? tarDari1, DateTime? tarHingga1, int? jCawanganId, int? jKWId, int? dPekerjaId1, int? dPekerjaId2, int? dPekerjaId3,
         List<string>? namaKeywords1 = null, List<string>? jawatanKeywords1 = null, List<string>? bahagianKeywords1 = null,
         List<string>? namaKeywords2 = null, List<string>? jawatanKeywords2 = null, List<string>? bahagianKeywords2 = null,
         List<string>? namaKeywords3 = null, List<string>? jawatanKeywords3 = null, List<string>? bahagianKeywords3 = null,
@@ -346,6 +351,12 @@ namespace YIT.Akaun.Controllers._99Laporan
         List<string>? excludeNama2 = null,  List<string>? excludeJawatan2 = null, List<string>? excludeBahagian2 = null,
         List<string>? excludeNama3 = null,  List<string>? excludeJawatan3 = null, List<string>? excludeBahagian3 = null)
         {
+
+            if (tarDari1 != null && tarHingga1 != null)
+            {
+                ViewData["DateFrom"] = tarDari1?.ToString("yyyy-MM-dd");
+                ViewData["DateTo"] = tarHingga1?.ToString("yyyy-MM-dd");
+            }
 
             var jcawanganList = _unitOfWork.JCawanganRepo.GetAll();
             var cwSelect = new List<SelectListItem>();
@@ -367,19 +378,21 @@ namespace YIT.Akaun.Controllers._99Laporan
                 });
             }
 
-            var selectList = new SelectList(cwSelect, "Value", "Text");
+            var defaultVal = cwSelect.FirstOrDefault(item => item.Text.Contains("IBUPEJABAT", StringComparison.OrdinalIgnoreCase));
+
+            var selectList = defaultVal != null ? new SelectList(cwSelect, "Value", "Text", defaultVal.Value) : new SelectList(cwSelect, "Value", "Text");
 
             if (jCawanganId.HasValue && jCawanganId.Value != 0)
             {
                 var selectedItem = selectList.FirstOrDefault(x => x.Value == jCawanganId.ToString());
                 if (selectedItem != null)
                 {
-                    selectedItem.Selected = true;
+                    selectList = new SelectList(cwSelect, "Value", "Text", selectedItem.Value);
                 }
             }
-            else if (cwSelect.Any())
+            else if (defaultVal == null && cwSelect.Any())
             {
-                cwSelect.First().Selected = true;
+                selectList = new SelectList(cwSelect, "Value", "Text", cwSelect.First().Value);
             }
 
             ViewBag.JCawangan = selectList;

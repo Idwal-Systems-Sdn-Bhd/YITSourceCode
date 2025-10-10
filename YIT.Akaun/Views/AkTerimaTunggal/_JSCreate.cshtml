@@ -98,6 +98,55 @@
         }
     });
 
+    $("body").on('change', "#EnKategoriDaftarAwam", function () {
+        var EnKategoriDaftarAwam = $("#EnKategoriDaftarAwam").val();
+        EmptyCart();
+        EmptyCommonFields();
+        ResetHiddenDiv();
+        $("#DDaftarAwamId").val("").trigger('change');
+        $("#DPekerjaId").val("").trigger('change');
+        switch (EnKategoriDaftarAwam) {
+            case "@EnKategoriDaftarAwam.DaftarAwam.GetDisplayCode()":
+                 $("#divDDaftarAwam").prop("hidden", false);
+                 break;
+            case "@EnKategoriDaftarAwam.Pekerja.GetDisplayCode()":
+                 $("#divDPekerja").prop("hidden", false);
+                 break;
+            default:
+                break;
+        }
+    });
+
+    $("body").on('change', "#DPekerjaId", function() {
+        var DPekerjaId = $("#DPekerjaId").val();
+        EmptyCommonFields();
+        GetDPekerjaDetails(DPekerjaId);
+    });
+
+    function GetDPekerjaDetails(id, EnKategoriDaftarAwam) {
+        if (id != null) {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetDPekerja", "DPekerja")',
+                data: { DPekerjaId: id },
+                dataType: "json",
+                success: function (msg) {
+                    $("#Nama").val(msg?.record?.nama);
+                    $("#Alamat1").val(msg?.record?.alamat1);
+                    $("#Alamat2").val(msg?.record?.alamat2);
+                    $("#Alamat3").val(msg?.record?.alamat3);
+                    $("#JNegeriId").val(msg?.record?.jNegeriId).trigger('change');
+                    $("#Telefon1").val(msg?.record?.telefon1);
+                    $("#Emel").val(msg?.record?.emel);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
+    }
+
+
     $("body").on('change', "#DDaftarAwamId", function () {
         var DDaftarAwamId = $("#DDaftarAwamId").val();
         EmptyCommonFields();
