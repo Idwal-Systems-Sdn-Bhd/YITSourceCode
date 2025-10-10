@@ -40,8 +40,10 @@ namespace YIT.Akaun.Models.ViewModels.Forms
         public string? searchString1 { get; set; }
         public string? searchString2 { get; set; }
         public int? dDaftarAwamId { get; set; }
+        public int? dDaftarAwamId1 { get; set; }
         [Display(Name = "Kod Akaun")]
         public int? AkCartaId { get; set; }
+        public int? AkCartaId1 { get; set; }
         public string? Tahun1 { get; set; }
         [RegularExpression(@"^\d{2}$")]
         public string? Bulan { get; set; }

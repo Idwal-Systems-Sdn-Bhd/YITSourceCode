@@ -49,7 +49,13 @@ namespace YIT.Akaun.Controllers._99Laporan
         }
         public IActionResult Index(PrintFormModel model)
         {
-            PopulateSelectList(model.jKWId);
+            if (model.tarDari1 == null && model.tarHingga1 == null)
+            {
+                model.tarDari1 = new DateTime(DateTime.Now.Year, 1, 1);
+                model.tarHingga1 = DateTime.Now;
+            }
+
+            PopulateSelectList(model.tarDari1, model.tarHingga1, model.jKWId);
             return View(model);
         }
 
@@ -62,22 +68,22 @@ namespace YIT.Akaun.Controllers._99Laporan
             string handle = string.Format("attachment;" + model.kodLaporan + ".xlsx;", string.IsNullOrEmpty(model.kodLaporan) ? Guid.NewGuid().ToString() : WebUtility.UrlEncode(model.kodLaporan));
 
             // save viewmodel into workbook
-            if (model.kodLaporan == "LAK00201")
+            if (model.kodLaporan == "LAK02101")
             {
                 // construct and insert data into dataTable 
-                var excelData = GenerateDataTableLAK00201(printModel, model.tarikhDari, model.tarikhHingga, model.enStatusBorang, model.jKWId);
+                var excelData = GenerateDataTableLAK02101(printModel, model.tarikhDari, model.tarikhHingga, model.enStatusBorang, model.jKWId);
 
                 // insert dataTable into Workbook
-                RunWorkBookLAK00201(printModel, excelData, handle);
+                RunWorkBookLAK02101(printModel, excelData, handle);
             }
             // save viewmodel into workbook
-            else if (model.kodLaporan == "LAK00202")
+            else if (model.kodLaporan == "LAK02102")
             {
                 //construct and insert data into dataTable 
-                var excelData = GenerateDataTableLAK00202(printModel, model.tarikhDari, model.tarikhHingga, model.enStatusBorang, model.jKWId);
+                var excelData = GenerateDataTableLAK02102(printModel, model.tarikhDari, model.tarikhHingga, model.enStatusBorang, model.jKWId);
 
                 //insert dataTable into Workbook
-                RunWorkBookLAK00202(printModel, excelData, handle);
+                RunWorkBookLAK02102(printModel, excelData, handle);
             }
 
             return Json(new { FileGuid = handle, FileName = model.kodLaporan + ".xlsx" });
@@ -121,13 +127,13 @@ namespace YIT.Akaun.Controllers._99Laporan
                 }
             }
 
-            if (kodLaporan == "LAK00201")
+            if (kodLaporan == "LAK02101")
             {
                 reportModel.CommonModels.Tajuk1 = $"Laporan Perolehan Belum Bayar Dari {Convert.ToDateTime(tarikhDari):dd/MM/yyyy} Hingga {Convert.ToDateTime(tarikhHingga):dd/MM/yyyy}";
                 reportModel.CommonModels.Tajuk2 = $"JKW: {jKWKod} - {jKWPerihal}";
                 reportModel.AkPenilaianPerolehan = _unitOfWork.AkPenilaianPerolehanRepo.GetResults1("", date1, date2, null, EnStatusBorang.Semua, jKWId);
             }
-            else if (kodLaporan == "LAK00202")
+            else if (kodLaporan == "LAK02102")
             {
                 reportModel.CommonModels.Tajuk1 = $"Laporan Perolehan Batal Dari {Convert.ToDateTime(tarikhDari):dd/MM/yyyy} Hingga {Convert.ToDateTime(tarikhHingga):dd/MM/yyyy}";
                 reportModel.CommonModels.Tajuk2 = $"JKW: {jKWKod} - {jKWPerihal}";
@@ -139,7 +145,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return reportModel;
         }
 
-        private DataTable GenerateDataTableLAK00201(LAK021PrintModel printModel, string? tarikhDari, string? tarikhHingga, EnStatusBorang enStatusBorang, int? jKWId)
+        private DataTable GenerateDataTableLAK02101(LAK021PrintModel printModel, string? tarikhDari, string? tarikhHingga, EnStatusBorang enStatusBorang, int? jKWId)
         {
             DataTable dt = new DataTable();
             dt.TableName = "Laporan Perolehan Batal";
@@ -226,7 +232,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void RunWorkBookLAK00201(LAK021PrintModel printModel, DataTable excelData, string handle)
+        private void RunWorkBookLAK02101(LAK021PrintModel printModel, DataTable excelData, string handle)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -262,7 +268,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
         }
 
-        private DataTable GenerateDataTableLAK00202(LAK021PrintModel printModel, string? tarikhDari, string? tarikhHingga, EnStatusBorang enStatusBorang, int? jKWId)
+        private DataTable GenerateDataTableLAK02102(LAK021PrintModel printModel, string? tarikhDari, string? tarikhHingga, EnStatusBorang enStatusBorang, int? jKWId)
         {
             DataTable dt = new DataTable();
             dt.TableName = "Laporan Perolehan Batal";
@@ -345,7 +351,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void RunWorkBookLAK00202(LAK021PrintModel printModel, DataTable excelData, string handle)
+        private void RunWorkBookLAK02102(LAK021PrintModel printModel, DataTable excelData, string handle)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -380,8 +386,14 @@ namespace YIT.Akaun.Controllers._99Laporan
                 }
             }
         }
-        private void PopulateSelectList(int? jKWId)
+        private void PopulateSelectList(DateTime? tarDari1, DateTime? tarHingga1, int? jKWId)
         {
+            if (tarDari1 != null && tarHingga1 != null)
+            {
+                ViewData["DateFrom"] = tarDari1?.ToString("yyyy-MM-dd");
+                ViewData["DateTo"] = tarHingga1?.ToString("yyyy-MM-dd");
+            }
+
             var jKWList = _unitOfWork.JKWRepo.GetAllDetails();
             var kwSelect = new List<SelectListItem>();
 
@@ -454,30 +466,30 @@ namespace YIT.Akaun.Controllers._99Laporan
 
             switch (kodLaporan)
             {
-                case "LAK00201":
+                case "LAK02101":
 
                     var akpp = await _unitOfWork.AkPenilaianPerolehanRepo.GetResultsGroupByBelumBayar(tarikhDari, tarikhHingga, jKWId);
 
                     reportModel.AkPenilaianPerolehanResult = akpp;
 
-                    viewName = "LAK00201PDF";
-                    var TarikhDariLAK00201 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
-                    var TarikhHinggaLAK00201 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
-                    viewDataDictionary["TarikhDari"] = TarikhDariLAK00201;
-                    viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK00201;
+                    viewName = "LAK02101PDF";
+                    var TarikhDariLAK02101 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
+                    var TarikhHinggaLAK02101 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
+                    viewDataDictionary["TarikhDari"] = TarikhDariLAK02101;
+                    viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK02101;
                     break;
 
-                case "LAK00202":
+                case "LAK02102":
 
                     akpp = await _unitOfWork.AkPenilaianPerolehanRepo.GetResultsGroupByBatal(tarikhDari, tarikhHingga, jKWId);
 
                     reportModel.AkPenilaianPerolehanResult = akpp;
 
-                    viewName = "LAK00202PDF";
-                    var TarikhDariLAK00203 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
-                    var TarikhHinggaLAK00203 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
-                    viewDataDictionary["TarikhDari"] = TarikhDariLAK00203;
-                    viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK00203;
+                    viewName = "LAK02102PDF";
+                    var TarikhDariLAK02102 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
+                    var TarikhHinggaLAK02102 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
+                    viewDataDictionary["TarikhDari"] = TarikhDariLAK02102;
+                    viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK02102;
                     break;
 
                 default:

@@ -166,7 +166,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
         public async Task<List<_AkJurnalResult>> GetResultsGroupWithTanggungan(string? tahun, string? tarikhDari, string? tarikhHingga, int? jKWId)
         {
-            if (string.IsNullOrEmpty(tahun) || string.IsNullOrEmpty(tarikhDari) || string.IsNullOrEmpty(tarikhHingga))
+            if (string.IsNullOrEmpty(tahun) || string.IsNullOrEmpty(tarikhDari) || string.IsNullOrEmpty(tarikhHingga) || jKWId == null)
             {
                 return new List<_AkJurnalResult>();
             }

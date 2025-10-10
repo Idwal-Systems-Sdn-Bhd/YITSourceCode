@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities.Models._03Akaun;
 using YIT._DataAccess.Data;
 using YIT._DataAccess.Repositories.Interfaces;
@@ -101,7 +103,7 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var akEft = await _context.AkEFT
                 .Include(b => b.AkEFTPenerima)
-                .Where(b => b.Tarikh >= date1 && b.Tarikh <= date2)
+                .Where(b => b.Tarikh >= date1 && b.Tarikh <= date2 && b.EnStatusEFT == EnStatusProses.Pending)
                 .OrderBy(a => a.Tarikh)
                 .ThenBy(a => a.NoRujukan)
                 .ToListAsync();
@@ -116,19 +118,17 @@ namespace YIT._DataAccess.Repositories.Implementations
                 return new List<AkEFT>();
             }
 
-            var lowerSearchString1 = searchString1.ToLower();
-            var lowerSearchString2 = searchString2.ToLower();
-
-            bool isOrderCorrect = string.Compare(lowerSearchString1, lowerSearchString2, StringComparison.Ordinal) <= 0;
+            bool isOrderCorrect = string.Compare(searchString1, searchString2, StringComparison.OrdinalIgnoreCase) <= 0;
 
             if (!isOrderCorrect)
-            {
+            { 
                 return new List<AkEFT>();
             }
 
+            var akEftFilter = _context.AkEFT.Where(b => b.EnStatusEFT == EnStatusProses.Pending);
+
             var akEft = await _context.AkEFT
-                .Include(b => b.AkEFTPenerima)
-                .Where(b => b.NoRujukan!.ToLower().CompareTo(lowerSearchString1) >= 0 && b.NoRujukan!.ToLower().CompareTo(lowerSearchString2) <= 0)
+                .Where(b => b.NoRujukan!.CompareTo(searchString1) >= 0 && b.NoRujukan!.CompareTo(searchString2) <= 0 && b.EnStatusEFT == EnStatusProses.Pending)
                 .ToListAsync();
 
             return akEft;

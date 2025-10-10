@@ -227,8 +227,8 @@
                         <tfoot>
                             <tr>
                                 <td>
-                                    <select class="form-control form-control-sm text-uppercase" id="objekJKWPTJBahagianId">
-                                        <option value="" class="text-lowercase" disabled selected>-- Pilih Bahagian --</option>
+                                    <select class="form-control form-control-sm select2 text-uppercase" id="objekJKWPTJBahagianId">
+                                        <option value="" disabled selected>-- Pilih Bahagian --</option>
                                         @foreach (var s in ViewBag.JKWPTJBahagian)
                                         {
                                             <option value="@s.Id">@s.Kod - @s.JBahagian?.Perihal (@s.JPTJ?.Perihal) </option>

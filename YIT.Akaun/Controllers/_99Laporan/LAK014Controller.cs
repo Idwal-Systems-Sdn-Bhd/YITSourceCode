@@ -50,7 +50,13 @@ namespace YIT.Akaun.Controllers._99Laporan
         }
         public IActionResult Index(PrintFormModel model)
         {
-            PopulateSelectList(model.jKWId);
+            if (model.tarDari1 == null && model.tarHingga1 == null)
+            {
+                model.tarDari1 = new DateTime(DateTime.Now.Year, 1, 1);
+                model.tarHingga1 = DateTime.Now;
+            }
+
+            PopulateSelectList(model.tarDari1, model.tarHingga1, model.jKWId);
             return View(model);
         }
 
@@ -267,8 +273,15 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
         }
 
-        private void PopulateSelectList(int? jKWId)
+        private void PopulateSelectList(DateTime? tarDari1, DateTime? tarHingga1, int? jKWId)
         {
+
+            if (tarDari1 != null && tarHingga1 != null)
+            {
+                ViewData["DateFrom"] = tarDari1?.ToString("yyyy-MM-dd");
+                ViewData["DateTo"] = tarHingga1?.ToString("yyyy-MM-dd");
+            }
+
             var jKWList = _unitOfWork.JKWRepo.GetAllDetails();
             var kwSelect = new List<SelectListItem>();
 

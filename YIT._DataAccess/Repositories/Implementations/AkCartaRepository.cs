@@ -148,9 +148,9 @@ namespace YIT._DataAccess.Repositories.Implementations
             return sentences;
         }
 
-        public async Task<List<_AkCartaResult>> GetResults(int? akCartaId, string? tahun)
+        public async Task<List<_AkCartaResult>> GetResults(int? akCartaId, int? akCartaId1, string? tahun)
         {
-            if (akCartaId == null || string.IsNullOrEmpty(tahun))
+            if (akCartaId == null || akCartaId1 == null || string.IsNullOrEmpty(tahun))
             {
                 return new List<_AkCartaResult>();
             }
@@ -159,87 +159,160 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             var akCartaList = await _context.AkCarta
                 .Include(a => a.AkAkaun1)
-                .Where(a => a.Id == akCartaId)
+                .Where(a => a.Id >= akCartaId && a.Id <= akCartaId1 && a.EnParas == EnParas.Paras4)
                 .ToListAsync();
 
             var akCartaResults = akCartaList.Select(a =>
             {
-                var akAkaun1List = a.AkAkaun1!.ToList();
+                var akAkaun1List = a.AkAkaun1?.ToList() ?? new List<AkAkaun>();
+                var akAkaun2List = a.AkAkaun2?.ToList() ?? new List<AkAkaun>();
 
-                var bakiAwal = akAkaun1List
-                    .Where(b => b.Tarikh.Year < year)
-                    .Sum(b => b.Debit - b.Kredit);
+                decimal totalBakiAwal = 0;
+                decimal totalJumlah = 0;
+                decimal totalBakiAwalH2 = 0;
+                decimal totalJumlahH1 = 0;
+                decimal totalJumlahH2 = 0;
 
-                var bakiAwalH2 = akAkaun1List
-                .Where(b => (b.Tarikh.Year == year && b.Tarikh.Month >= 1 && b.Tarikh.Month <= 6) || 
-                 b.Tarikh.Year < year) 
-                .Sum(b => b.Debit - b.Kredit);
+                decimal jan = 0, feb = 0, mac = 0, apr = 0, mei = 0, jun = 0;
+                decimal jul = 0, ogo = 0, sep = 0, okt = 0, nov = 0, dis = 0;
 
-                var jumlah = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year)
-                    .Sum(b => b.Debit - b.Kredit);
+                foreach (var b in akAkaun1List)
+                {
+                    int month = b.Tarikh.Month;
 
-                var jumlahH1 = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month >= 1 && b.Tarikh.Month <= 6)
-                    .Sum(b => b.Debit - b.Kredit);
+                    if (b.Tarikh.Year < year)
+                    {
+                        totalBakiAwal += b.Debit - b.Kredit;
+                        totalBakiAwalH2 += b.Debit - b.Kredit;
+                    }
+                    else if (b.Tarikh.Year == year)
+                    {
+                        totalJumlah += b.Debit - b.Kredit;
 
-                var jumlahH2 = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month >= 7 && b.Tarikh.Month <= 12)
-                    .Sum(b => b.Debit - b.Kredit);
+                        if (month >= 1 && month <= 6)
+                        {
+                            totalBakiAwalH2 += b.Debit - b.Kredit;
+                            totalJumlahH1 += b.Debit - b.Kredit;
+                        }
 
-                var jan = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 1)
-                    .Sum(b => b.Debit - b.Kredit);
+                        if (month >= 7 && month <= 12)
+                        {
+                            totalJumlahH2 += b.Debit - b.Kredit;
+                        }
 
-                var feb = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 2)
-                    .Sum(b => b.Debit - b.Kredit);
+                        switch (month)
+                        {
+                            case 1:
+                                jan += b.Debit - b.Kredit;
+                                break;
+                            case 2:
+                                feb += b.Debit - b.Kredit;
+                                break;
+                            case 3:
+                                mac += b.Debit - b.Kredit;
+                                break;
+                            case 4:
+                                apr += b.Debit - b.Kredit;
+                                break;
+                            case 5:
+                                mei += b.Debit - b.Kredit;
+                                break;
+                            case 6:
+                                jun += b.Debit - b.Kredit;
+                                break;
+                            case 7:
+                                jul += b.Debit - b.Kredit;
+                                break;
+                            case 8:
+                                ogo += b.Debit - b.Kredit;
+                                break;
+                            case 9:
+                                sep += b.Debit - b.Kredit;
+                                break;
+                            case 10:
+                                okt += b.Debit - b.Kredit;
+                                break;
+                            case 11:
+                                nov += b.Debit - b.Kredit;
+                                break;
+                            case 12:
+                                dis += b.Debit - b.Kredit;
+                                break;
+                        }
+                    }
+                }
 
-                var mac = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 3)
-                    .Sum(b => b.Debit - b.Kredit);
+                foreach (var b in akAkaun2List)
+                {
+                    int month = b.Tarikh.Month;
 
-                var apr = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 4)
-                    .Sum(b => b.Debit - b.Kredit);
+                    if (b.Tarikh.Year < year)
+                    {
+                        totalBakiAwal += b.Debit - b.Kredit;
+                        totalBakiAwalH2 += b.Debit - b.Kredit;
+                    }
+                    else if (b.Tarikh.Year == year)
+                    {
+                        totalJumlah += b.Debit - b.Kredit;
 
-                var mei = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 5)
-                    .Sum(b => b.Debit - b.Kredit);
+                        if (month >= 1 && month <= 6)
+                        {
+                            totalBakiAwalH2 += b.Debit - b.Kredit;
+                            totalJumlahH1 += b.Debit - b.Kredit;
+                        }
 
-                var jun = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 6)
-                    .Sum(b => b.Debit - b.Kredit);
+                        if (month >= 7 && month <= 12)
+                        {
+                            totalJumlahH2 += b.Debit - b.Kredit;
+                        }
 
-                var jul = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 7)
-                    .Sum(b => b.Debit - b.Kredit);
-
-                var ogo = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 8)
-                    .Sum(b => b.Debit - b.Kredit);
-
-                var sep = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 9)
-                    .Sum(b => b.Debit - b.Kredit);
-
-                var okt = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 10)
-                    .Sum(b => b.Debit - b.Kredit);
-
-                var nov = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 11)
-                    .Sum(b => b.Debit - b.Kredit);
-
-                var dis = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 12)
-                    .Sum(b => b.Debit - b.Kredit);
+                        switch (month)
+                        {
+                            case 1:
+                                jan += b.Debit - b.Kredit;
+                                break;
+                            case 2:
+                                feb += b.Debit - b.Kredit;
+                                break;
+                            case 3:
+                                mac += b.Debit - b.Kredit;
+                                break;
+                            case 4:
+                                apr += b.Debit - b.Kredit;
+                                break;
+                            case 5:
+                                mei += b.Debit - b.Kredit;
+                                break;
+                            case 6:
+                                jun += b.Debit - b.Kredit;
+                                break;
+                            case 7:
+                                jul += b.Debit - b.Kredit;
+                                break;
+                            case 8:
+                                ogo += b.Debit - b.Kredit;
+                                break;
+                            case 9:
+                                sep += b.Debit - b.Kredit;
+                                break;
+                            case 10:
+                                okt += b.Debit - b.Kredit;
+                                break;
+                            case 11:
+                                nov += b.Debit - b.Kredit;
+                                break;
+                            case 12:
+                                dis += b.Debit - b.Kredit;
+                                break;
+                        }
+                    }
+                }
 
                 var akCartaResult = new _AkCartaResult
                 {
                     Kod = a.Kod,
                     Perihal = a.Perihal,
-                    BakiAwal = bakiAwal,
+                    BakiAwal = totalBakiAwal,
                     Jan = jan,
                     Feb = feb,
                     Mac = mac,
@@ -252,13 +325,13 @@ namespace YIT._DataAccess.Repositories.Implementations
                     Okt = okt,
                     Nov = nov,
                     Dis = dis,
-                    Jumlah = jumlah,
-                    JumlahH1 = jumlahH1, 
-                    JumlahH2 = jumlahH2, 
-                    BakiAwalH2 = bakiAwalH2,
-                    BakiAkhir = bakiAwal + jumlah,
-                    BakiAkhirH1 = bakiAwal + jumlahH1,
-                    BakiAkhirH2 = bakiAwal + jumlahH1 + jumlahH2,
+                    Jumlah = totalJumlah,
+                    JumlahH1 = totalJumlahH1,
+                    JumlahH2 = totalJumlahH2,
+                    BakiAwalH2 = totalBakiAwalH2,
+                    BakiAkhir = totalBakiAwal + totalJumlah,
+                    BakiAkhirH1 = totalBakiAwal + totalJumlahH1,
+                    BakiAkhirH2 = totalBakiAwal + totalJumlahH1 + totalJumlahH2,
                 };
 
                 return akCartaResult;
@@ -266,6 +339,5 @@ namespace YIT._DataAccess.Repositories.Implementations
 
             return akCartaResults;
         }
-
     }
 }

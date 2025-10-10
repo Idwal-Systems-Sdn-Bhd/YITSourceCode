@@ -30,7 +30,6 @@ namespace YIT._DataAccess.Repositories.Implementations
             }
         }
 
-
         public List<AkTerimaTunggal> GetResults(string? searchString, DateTime? dateFrom, DateTime? dateTo, string? orderBy)
         {
             if (searchString == null && dateFrom == null && dateTo == null && orderBy == null)
@@ -38,7 +37,7 @@ namespace YIT._DataAccess.Repositories.Implementations
                 return new List<AkTerimaTunggal>();
             }
 
-            var akTerimaTunggal = _context.AkTerimaTunggal
+            var query = _context.AkTerimaTunggal
                 .IgnoreQueryFilters()
                 .Include(t => t.JKW)
                 .Include(t => t.DPekerjaPosting)
@@ -52,55 +51,39 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ThenInclude(b => b!.AkCarta)
                 .Include(t => t.DDaftarAwam)
                 .Include(tcb => tcb.JCaraBayar)
-                //.Include(t => t.AkTerimaTunggalObjek)!
-                //    .ThenInclude(to => to.AkCarta)
-                //.Include(t => t.AkTerimaTunggalObjek)!
-                //    .ThenInclude(to => to.JKWPTJBahagian)
-                //        .ThenInclude(b => b!.JKW)
                 .Include(t => t.AkTerimaTunggalObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
-                //        .ThenInclude(b => b!.JPTJ)
-                //.Include(t => t.AkTerimaTunggalObjek)!
-                //    .ThenInclude(to => to.JKWPTJBahagian)
-                //        .ThenInclude(b => b!.JBahagian)
-                .ToList();
+                .AsQueryable();
 
-            // searchstring filters
-            if (searchString != null)
+            if (!string.IsNullOrEmpty(searchString))
             {
-                akTerimaTunggal = akTerimaTunggal.Where(t => 
-                t.Nama!.Contains(searchString, StringComparison.OrdinalIgnoreCase) 
-                || t.NoRujukan!.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                query = query.Where(t =>
+                (t.Nama ?? "").Contains(searchString) ||
+                (t.NoRujukan ?? "").Contains(searchString));
             }
-            // searchString filters end
 
-            // date filters
-            if (dateFrom != null && dateTo != null)
+            if (dateFrom.HasValue && dateTo.HasValue)
             {
-                akTerimaTunggal = akTerimaTunggal.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99)).ToList();
+                query = query.Where(t => t.Tarikh >= dateFrom && t.Tarikh <= dateTo.Value.AddHours(23.99));
             }
-            // date filters end
 
-            // order by filters
-            if (orderBy != null)
+            if (!string.IsNullOrEmpty(orderBy))
             {
                 switch (orderBy)
                 {
                     case "Nama":
-                        akTerimaTunggal = akTerimaTunggal.OrderBy(t => t.Nama).ToList();
+                        query = query.OrderBy(t => t.Nama);
                         break;
                     case "Tarikh":
-                        akTerimaTunggal = akTerimaTunggal.OrderBy(t => t.Tarikh).ToList(); break;
+                        query = query.OrderBy(t => t.Tarikh);
+                        break;
                     default:
-                        akTerimaTunggal = akTerimaTunggal.OrderBy(t => t.NoRujukan).ToList();
+                        query = query.OrderBy(t => t.NoRujukan);
                         break;
                 }
-                    
             }
-            // order by filters end
 
-            return akTerimaTunggal;
+            return query.ToList();
         }
 
         public List<AkTerimaTunggal> GetResults1(DateTime? dateFrom, DateTime? dateTo, int? jCawanganId, int? jKWId)
@@ -124,17 +107,8 @@ namespace YIT._DataAccess.Repositories.Implementations
                     .ThenInclude(b => b!.AkCarta)
                 .Include(t => t.DDaftarAwam)
                 .Include(tcb => tcb.JCaraBayar)
-                //.Include(t => t.AkTerimaTunggalObjek)!
-                //    .ThenInclude(to => to.AkCarta)
-                //.Include(t => t.AkTerimaTunggalObjek)!
-                //    .ThenInclude(to => to.JKWPTJBahagian)
-                //        .ThenInclude(b => b!.JKW)
                 .Include(t => t.AkTerimaTunggalObjek)!
                     .ThenInclude(to => to.JKWPTJBahagian)
-                //        .ThenInclude(b => b!.JPTJ)
-                //.Include(t => t.AkTerimaTunggalObjek)!
-                //    .ThenInclude(to => to.JKWPTJBahagian)
-                //        .ThenInclude(b => b!.JBahagian)
                 .ToList();
 
             // date filters

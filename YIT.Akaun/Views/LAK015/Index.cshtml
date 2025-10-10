@@ -18,13 +18,14 @@
 
             var kodLaporan = $("input[name='kodLaporan']:checked").val();
             var AkCartaId = $('#AkCartaId').val();
-            var tahun = $('#tahun').val();
+            var AkCartaId1 = $('#AkCartaId1').val();
+            var Tahun1 = $('#Tahun1').val();
 
             if (kodLaporan != "") {
                 $.ajax({
                     type: "POST",
                     url: '@Url.Action("ExportExcel", "LAK015")',
-                    data: { kodLaporan: kodLaporan, AkCartaId: AkCartaId, tahun: tahun },
+                    data: { kodLaporan: kodLaporan, AkCartaId: AkCartaId, AkCartaId1: AkCartaId1, Tahun1: Tahun1 },
                     dataType: "json",
                     success: function (r) {
                         window.location = "@Url.Action("Download", "Account")?fileGuid=" + r.fileGuid + "&filename=" + r.fileName;
@@ -55,20 +56,20 @@
                     <div class="card-body">
                         <div class="form-group col-sm">
                             <div class="custom-control custom-radio pb-2">
-                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00201" value="LAK00201" checked>
-                                <label class="custom-control-label" for="LAK00201">
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK01501" value="LAK01501" checked>
+                                <label class="custom-control-label" for="LAK01501">
                                     Laporan SiBerhutang (Setahun)
                                 </label>
                             </div>
                             <div class="custom-control custom-radio pb-2">
-                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00202" value="LAK00202">
-                                <label class="custom-control-label" for="LAK00202">
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK01502" value="LAK01502">
+                                <label class="custom-control-label" for="LAK01502">
                                     Laporan SiBerhutang (Setengah Tahun Pertama)
                                 </label>
                             </div>
                             <div class="custom-control custom-radio pb-2">
-                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK00203" value="LAK00203">
-                                <label class="custom-control-label" for="LAK00203">
+                                <input class="custom-control-input" type="radio" asp-for="kodLaporan" id="LAK01503" value="LAK01503">
+                                <label class="custom-control-label" for="LAK01503">
                                     Laporan SiBerhutang (Setengah Tahun Kedua)
                                 </label>
                             </div>
@@ -83,10 +84,14 @@
                                     <label class="form-control-label">Kod Akaun</label>
                                 </div>
                             </div>
-                            <div class="col-md-8">
-
+                            <div class="col-md-4">
                                 <div class="input-group mb-2 input-group-sm ">
                                     <select class="form-control form-control-sm select2" name="AkCartaId" id="AkCartaId" asp-items="@ViewBag.AkCarta"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group mb-2 input-group-sm ">
+                                    <select class="form-control form-control-sm select2" name="AkCartaId1" id="AkCartaId1" asp-items="@ViewBag.AkCarta"></select>
                                 </div>
                             </div>
                         </div>
@@ -98,7 +103,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="input-group mb-2 input-group-sm ">
-                                    <input class="form-control form-control-sm" type="text" name="tahun" id="tahun" value="@ViewData["tahun"]" required />
+                                    <input class="form-control form-control-sm" type="text" name="Tahun1" id="Tahun1" value="@ViewData["Tahun1"]" pattern="^\d{4}" required />
                                     <label class="invalid-feedback">Sila isi ruangan ini.</label>
                                 </div>
                             </div>

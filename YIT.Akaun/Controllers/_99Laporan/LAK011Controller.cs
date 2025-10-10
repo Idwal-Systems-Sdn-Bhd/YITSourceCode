@@ -51,7 +51,13 @@ namespace YIT.Akaun.Controllers._99Laporan
         }
         public IActionResult Index(PrintFormModel model)
         {
-            PopulateSelectList(model.enJenisPerolehan);
+            if (model.tarDari1 == null && model.tarHingga1 == null)
+            {
+                model.tarDari1 = new DateTime(DateTime.Now.Year, 1, 1);
+                model.tarHingga1 = DateTime.Now;
+            }
+
+            PopulateSelectList(model.tarDari1, model.tarHingga1, model.enJenisPerolehan);
             return View(model);
         }
 
@@ -64,22 +70,22 @@ namespace YIT.Akaun.Controllers._99Laporan
             string handle = string.Format("attachment;" + model.kodLaporan + ".xlsx;", string.IsNullOrEmpty(model.kodLaporan) ? Guid.NewGuid().ToString() : WebUtility.UrlEncode(model.kodLaporan));
 
             // save viewmodel into workbook
-            if (model.kodLaporan == "LAK00201")
+            if (model.kodLaporan == "LAK01101")
             {
                 // construct and insert data into dataTable 
-                var excelData = GenerateDataTableLAK00201(printModel, model.tarikhDari, model.tarikhHingga, model.enJenisPerolehan);
+                var excelData = GenerateDataTableLAK01101(printModel, model.tarikhDari, model.tarikhHingga, model.enJenisPerolehan);
 
                 // insert dataTable into Workbook
-                RunWorkBookLAK00201(printModel, excelData, handle);
+                RunWorkBookLAK01101(printModel, excelData, handle);
             }
             // save viewmodel into workbook
-            else if (model.kodLaporan == "LAK00202")
+            else if (model.kodLaporan == "LAK01102")
             {
                 //construct and insert data into dataTable 
-                var excelData1 = GenerateDataTableLAK00202(printModel, model.tarikhDari, model.tarikhHingga);
+                var excelData1 = GenerateDataTableLAK01102(printModel, model.tarikhDari, model.tarikhHingga);
 
                 //insert dataTable into Workbook
-                RunWorkBookLAK00202(printModel, excelData1, handle);
+                RunWorkBookLAK01102(printModel, excelData1, handle);
             }
 
             return Json(new { FileGuid = handle, FileName = model.kodLaporan + ".xlsx" });
@@ -107,12 +113,12 @@ namespace YIT.Akaun.Controllers._99Laporan
                 date2 = DateTime.Parse(tarikhHingga);
             }
 
-            if (kodLaporan == "LAK00201")
+            if (kodLaporan == "LAK01101")
             {
                 reportModel.CommonModels.Tajuk1 = $"Daftar Pesanan Tempatan Dari {@Convert.ToDateTime(tarikhDari).ToString("dd/MM/yyyy")} Hingga {@Convert.ToDateTime(tarikhHingga):dd/MM/yyyy}";
                 reportModel.AkPO = _unitOfWork.AkPORepo.GetResults1(date1, date2, enJenisPerolehan, null);
             }
-            else if (kodLaporan == "LAK00202")
+            else if (kodLaporan == "LAK01102")
             {
                 reportModel.CommonModels.Tajuk1 = $"Daftar Inden Kerja Dari {@Convert.ToDateTime(tarikhDari).ToString("dd/MM/yyyy")} Hingga {@Convert.ToDateTime(tarikhHingga):dd/MM/yyyy}";
                 reportModel.AkInden = _unitOfWork.AkIndenRepo.GetResults1(date1, date2);
@@ -121,7 +127,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return reportModel;
         }
 
-        private DataTable GenerateDataTableLAK00201(LAK011PrintModel printModel, string? tarikhDari, string? tarikhHingga, EnJenisPerolehan enJenisPerolehan)
+        private DataTable GenerateDataTableLAK01101(LAK011PrintModel printModel, string? tarikhDari, string? tarikhHingga, EnJenisPerolehan enJenisPerolehan)
         {
             DataTable dt = new DataTable();
             dt.TableName = "Daftar Pesanan Tempatan";
@@ -211,7 +217,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void RunWorkBookLAK00201(LAK011PrintModel printModel, DataTable excelData, string handle)
+        private void RunWorkBookLAK01101(LAK011PrintModel printModel, DataTable excelData, string handle)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -249,7 +255,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
         }
 
-        private DataTable GenerateDataTableLAK00202(LAK011PrintModel printModel, string? tarikhDari, string? tarikhHingga)
+        private DataTable GenerateDataTableLAK01102(LAK011PrintModel printModel, string? tarikhDari, string? tarikhHingga)
         {
             DataTable dt = new DataTable();
             dt.TableName = "Daftar Inden Kerja";
@@ -316,7 +322,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return dt;
         }
 
-        private void RunWorkBookLAK00202(LAK011PrintModel printModel, DataTable excelData1, string handle)
+        private void RunWorkBookLAK01102(LAK011PrintModel printModel, DataTable excelData1, string handle)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -352,22 +358,32 @@ namespace YIT.Akaun.Controllers._99Laporan
                                 new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(10)));
                 }
             }
-        }
-        private void PopulateSelectList(EnJenisPerolehan? selectedValue = null)
+        } 
+        private void PopulateSelectList(DateTime? tarDari1, DateTime? tarHingga1, EnJenisPerolehan enJenisPerolehan)
         {
-            var enumValues = Enum.GetValues(typeof(EnJenisPerolehan)).Cast<EnJenisPerolehan>();
+
+            if (tarDari1 != null & tarHingga1 != null)
+            {
+                ViewData["DateFrom"] = tarDari1?.ToString("yyyy-MM-dd");
+                ViewData["DateTo"] = tarHingga1?.ToString("yyyy-MM-dd");
+            }
+
+            var enumValues = Enum.GetValues(typeof(EnJenisPerolehan)).Cast<EnJenisPerolehan>().Where(e => e != EnJenisPerolehan.None);
+
+            var selectedValue = enumValues.ElementAtOrDefault(3);
 
             var selectList = enumValues.Select(e => new SelectListItem
             {
                 Text = e.GetDisplayName(),
-                Value = ((int)e).ToString(),
+                Value = ((int) e).ToString(),
                 Selected = e == selectedValue
             }).ToList();
 
-            ViewBag.EnJenisPerolehan = new SelectList(selectList, "Value", "Text", selectedValue);
+            ViewBag.EnJenisPerolehan = new SelectList(selectList, "Value", "Text", ((int)selectedValue).ToString());
         }
 
         // printing List of Laporan
+
         [AllowAnonymous]
         public async Task<IActionResult> Print(string? kodLaporan, string? tarikhDari, string? tarikhHingga, EnJenisPerolehan enJenisPerolehan)
         {
@@ -387,20 +403,20 @@ namespace YIT.Akaun.Controllers._99Laporan
             string viewName;
             switch (kodLaporan)
             {
-                case "LAK00201":
-                    viewName = "LAK00201PDF";
-                    var TarikhDariLAK00201 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
-                    var TarikhHinggaLAK00201 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
-                    viewDataDictionary["TarikhDari"] = TarikhDariLAK00201;
-                    viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK00201;
+                case "LAK01101":
+                    viewName = "LAK01101PDF";
+                    var TarikhDariLAK01101 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
+                    var TarikhHinggaLAK01101 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
+                    viewDataDictionary["TarikhDari"] = TarikhDariLAK01101;
+                    viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK01101;
                     break;
 
-                case "LAK00202":
-                    viewName = "LAK00202PDF";
-                    var TarikhDariLAK00202 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
-                    var TarikhHinggaLAK00202 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
-                    viewDataDictionary["TarikhDari"] = TarikhDariLAK00202;
-                    viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK00202;
+                case "LAK01102":
+                    viewName = "LAK01102PDF";
+                    var TarikhDariLAK01102 = DateTime.Parse(tarikhDari!).ToString("dd/MM/yyyy");
+                    var TarikhHinggaLAK01102 = DateTime.Parse(tarikhHingga!).ToString("dd/MM/yyyy");
+                    viewDataDictionary["TarikhDari"] = TarikhDariLAK01102;
+                    viewDataDictionary["TarikhHingga"] = TarikhHinggaLAK01102;
                     break;
 
                 default:

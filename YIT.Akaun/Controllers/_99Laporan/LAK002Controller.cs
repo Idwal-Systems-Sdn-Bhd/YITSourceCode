@@ -121,7 +121,7 @@ namespace YIT.Akaun.Controllers._99Laporan
                 date2 = DateTime.Parse(tarikhHingga);
             }
 
-            reportModel.AkPV = _unitOfWork.AkPVRepo.GetResults1("", date1, date2, susunan, enStatusBorang, akBankId, tunai, null, null);
+            reportModel.AkPV = _unitOfWork.AkPVRepo.GetResults1("", date1, date2, susunan, enStatusBorang, akBankId, tunai, null, null, null);
 
             return reportModel;
         }

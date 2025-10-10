@@ -49,7 +49,13 @@ namespace YIT.Akaun.Controllers._99Laporan
         }
         public IActionResult Index(PrintFormModel model)
         {
-            PopulateSelectList(model.jKWId);
+            if (model.tarDari1 == null && model.tarHingga1 == null)
+            {
+                model.tarDari1 = new DateTime(DateTime.Now.Year, 1, 1);
+                model.tarHingga1 = DateTime.Now;
+            }
+
+            PopulateSelectList(model.tarDari1, model.tarHingga1, model.jKWId);
             return View(model);
         }
 
@@ -116,7 +122,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             {
                 reportModel.CommonModels.Tajuk1 = $"Daftar Bil Dari Tarikh : {date1?.ToString("dd/MM/yyyy")} Hingga {date2?.ToString("dd/MM/yyyy")}";
                 reportModel.CommonModels.Tajuk2 = $"JKW: {jKWKod} - {jKWPerihal}";
-                reportModel.AkBelian = _unitOfWork.AkBelianRepo.GetResults1("", date1, date2, null, jKWId);
+                reportModel.AkBelian = _unitOfWork.AkBelianRepo.GetResults1("", date1, date2, null, null, jKWId);
             }
 
             return reportModel;
@@ -243,8 +249,15 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
         }
 
-        private void PopulateSelectList(int? jKWId)
+        private void PopulateSelectList(DateTime? tarDari1, DateTime? tarHingga1, int? jKWId)
         {
+
+            if (tarDari1 != null && tarHingga1 != null)
+            {
+                ViewData["DateFrom"] = tarDari1?.ToString("yyyy-MM-dd");
+                ViewData["DateTo"] = tarHingga1?.ToString("yyyy-MM-dd");
+            }
+
             var jKWList = _unitOfWork.JKWRepo.GetAllDetails();
             var kwSelect = new List<SelectListItem>();
 
@@ -351,8 +364,6 @@ namespace YIT.Akaun.Controllers._99Laporan
         [AllowAnonymous]
         public async Task<IActionResult> Print(string? kodLaporan, string? tarikhDari, string? tarikhHingga, int? jKWId)
         {
-            PopulateSelectList(jKWId);
-
             var reportModel = await PrepareData(kodLaporan, tarikhDari, tarikhHingga, jKWId);
             var company = await _userServices.GetCompanyDetails();
 

@@ -152,6 +152,44 @@ namespace YIT._DataAccess.Repositories.Implementations
                 _context.Update(data);
 
                 PostingToAkPanjarLejar(data);
+                PostingToAkAkaun(data);
+            }
+        }
+
+        private void PostingToAkAkaun(AkCV data)
+        {
+            if (data.AkCVObjek != null && data.AkCVObjek.Any())
+            {
+                List<AkAkaun> akAkaunList = new List<AkAkaun>();
+                foreach (var item in data.AkCVObjek)
+                {
+                    AkAkaun akAkaun1 = new AkAkaun()
+                    {
+                        JKWId = (int)item.JKWPTJBahagian!.JKWId,
+                        JPTJId = item.JKWPTJBahagian?.JPTJId,
+                        JBahagianId = item.JKWPTJBahagian?.JBahagianId,
+                        NoRujukan = data.NoRujukan,
+                        Tarikh = data.Tarikh,
+                        AkCarta1Id = data.DPanjar!.AkCartaId,
+                        AkCarta2Id = item.AkCartaId,
+                        Kredit = item.Amaun
+                    };
+                    akAkaunList.Add(akAkaun1);
+
+                    AkAkaun akAkaun2 = new AkAkaun()
+                    {
+                        JKWId = (int)item.JKWPTJBahagian!.JKWId,
+                        JPTJId = item.JKWPTJBahagian?.JPTJId,
+                        JBahagianId = item.JKWPTJBahagian?.JBahagianId,
+                        NoRujukan = data.NoRujukan,
+                        Tarikh = data.Tarikh,
+                        AkCarta1Id = item.AkCartaId,
+                        AkCarta2Id = data.DPanjar!.AkCartaId,
+                        Debit = item.Amaun
+                    };
+
+                    akAkaunList.Add(akAkaun2);
+                }
             }
         }
 
@@ -173,6 +211,17 @@ namespace YIT._DataAccess.Repositories.Implementations
                 _context.Update(data);
 
                 RemovePostingFromAkPanjarLejar(data);
+                RemovePostingFromAkAkaun(data);
+            }
+        }
+
+        private void RemovePostingFromAkAkaun(AkCV data)
+        {
+            var akAkaunList = _context.AkAkaun.Where(b => b.NoRujukan == data.NoRujukan).ToList();
+
+            if (akAkaunList != null && akAkaunList.Count > 0)
+            {
+                _context.RemoveRange(akAkaunList);
             }
         }
 

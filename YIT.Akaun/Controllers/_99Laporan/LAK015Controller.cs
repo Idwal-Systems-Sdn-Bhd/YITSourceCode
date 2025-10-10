@@ -49,49 +49,54 @@ namespace YIT.Akaun.Controllers._99Laporan
         }
         public IActionResult Index(PrintFormModel model)
         {
-            PopulateSelectList(model.AkCartaId);
+            if (model.Tahun1 == null)
+            {
+                model.Tahun1 = DateTime.Now.Year.ToString();
+            }
+
+            PopulateSelectList(model.AkCartaId, model.Tahun1);
             return View(model);
         }
 
         [HttpPost]
         public async Task<JsonResult> ExportExcel(PrintFormModel model)
         {
-            LAK015PrintModel printModel = await PrepareData(model.kodLaporan, model.AkCartaId, model.tahun);
+            LAK015PrintModel printModel = await PrepareData(model.kodLaporan, model.AkCartaId, model.AkCartaId1, model.Tahun1);
 
             // Generate a new unique identifier against which the file can be stored
             string handle = string.Format("attachment;" + model.kodLaporan + ".xlsx;", string.IsNullOrEmpty(model.kodLaporan) ? Guid.NewGuid().ToString() : WebUtility.UrlEncode(model.kodLaporan));
 
             // save viewmodel into workbook
-            if (model.kodLaporan == "LAK00201")
+            if (model.kodLaporan == "LAK01501")
             {
                 // construct and insert data into dataTable 
-                var excelData = GenerateDataTableLAK00201(printModel, model.AkCartaId, model.tahun);
+                var excelData = await GenerateDataTableLAK01501(printModel, model.AkCartaId, model.AkCartaId1, model.Tahun1);
 
                 // insert dataTable into Workbook
-                RunWorkBookLAK00201(printModel, excelData, handle);
+                RunWorkBookLAK01501(printModel, excelData, handle);
             }
             // save viewmodel into workbook
-            else if (model.kodLaporan == "LAK00202")
+            else if (model.kodLaporan == "LAK01502")
             {
                 //construct and insert data into dataTable
-                var excelData = GenerateDataTableLAK00202(printModel, model.AkCartaId, model.tahun);
+                var excelData = await GenerateDataTableLAK01502(printModel, model.AkCartaId, model.AkCartaId1, model.Tahun1);
 
                 //insert dataTable into Workbook
-                RunWorkBookLAK00202(printModel, excelData, handle);
+                RunWorkBookLAK01502(printModel, excelData, handle);
             }
-            else if (model.kodLaporan == "LAK00203")
+            else if (model.kodLaporan == "LAK01503")
             {
                 //construct and insert data into dataTable
-                var excelData = GenerateDataTableLAK00203(printModel, model.AkCartaId, model.tahun);
+                var excelData = await GenerateDataTableLAK01503(printModel, model.AkCartaId, model.AkCartaId1, model.Tahun1);
 
                 //insert dataTable into Workbook
-                RunWorkBookLAK00203(printModel, excelData, handle);
+                RunWorkBookLAK01503(printModel, excelData, handle);
             }
 
             return Json(new { FileGuid = handle, FileName = model.kodLaporan + ".xlsx" });
         }
 
-        private async Task<LAK015PrintModel> PrepareData(string? kodLaporan, int? akCartaId, string? tahun)
+        private async Task<LAK015PrintModel> PrepareData(string? kodLaporan, int? akCartaId, int? akCartaId1, string? tahun1)
         {
             LAK015PrintModel reportModel = new LAK015PrintModel();
 
@@ -106,18 +111,38 @@ namespace YIT.Akaun.Controllers._99Laporan
 
             string? selectedKod = "";
             string? selectedPerihal = "";
+            string? selectedKod1 = "";
+            string? selectedPerihal1 = "";
 
             if (akCartaId.HasValue)
             {
-                var selectedItem = await _unitOfWork.AkCartaRepo.GetByIdAsync(akCartaId.Value);
-                if (selectedItem != null)
+                var akCartaDetails = await _context.AkCarta
+                                    .Where(j => j.Id == akCartaId)
+                                    .Select(j => new { j.Kod, j.Perihal })
+                                    .FirstOrDefaultAsync();
+
+                if (akCartaDetails != null)
                 {
-                    selectedKod = selectedItem.Kod;
-                    selectedPerihal = selectedItem.Perihal;
+                    selectedKod = akCartaDetails.Kod;
+                    selectedPerihal = akCartaDetails?.Perihal?.Trim() ?? String.Empty;
                 }
             }
 
-            var akCartaList = await _unitOfWork.AkCartaRepo.GetResults(akCartaId, tahun);
+            if (akCartaId1.HasValue)
+            {
+                var akCartaDetails1 = await _context.AkCarta
+                                      .Where(j => j.Id == akCartaId1)
+                                      .Select(j => new { j.Kod, j.Perihal })
+                                      .FirstOrDefaultAsync();
+
+                if (akCartaDetails1 != null)
+                {
+                    selectedKod1 = akCartaDetails1.Kod;
+                    selectedPerihal1 = akCartaDetails1?.Perihal?.Trim() ?? string.Empty;
+                }
+            }
+
+            var akCartaList = await _unitOfWork.AkCartaRepo.GetResults(akCartaId, akCartaId1, tahun1);
             reportModel.JumlahJan = akCartaList.Sum(r => r.Jan);
             reportModel.JumlahFeb = akCartaList.Sum(r => r.Feb);
             reportModel.JumlahMac = akCartaList.Sum(r => r.Mac);
@@ -133,25 +158,25 @@ namespace YIT.Akaun.Controllers._99Laporan
 
             reportModel.AkCartaResult = akCartaList;
 
-            if (kodLaporan == "LAK00201")
+            if (kodLaporan == "LAK01501")
             {
-                reportModel.CommonModels.Tajuk1 = $"Laporan SiBerhutang Pada Tahun {tahun} Mengikut Kod Akaun {selectedKod} - {selectedPerihal} ";
+                reportModel.CommonModels.Tajuk1 = $"Laporan SiBerhutang Pada Tahun {tahun1} Mengikut Kod Akaun {selectedKod} - {selectedPerihal} Hingga {selectedKod1} - {selectedPerihal1}";
 
                 reportModel.JumlahBaki = akCartaList.Sum(r => r.BakiAwal); 
                 reportModel.JumlahAkhir = akCartaList.Sum(r => r.Jumlah);
                 reportModel.Jumlah1 = akCartaList.Sum(r => r.BakiAwal + r.Jan + r.Feb + r.Mac + r.Apr + r.Mei + r.Jun + r.Jul + r.Ogo + r.Sep + r.Okt + r.Nov + r.Dis); 
             }
-            else if (kodLaporan == "LAK00202")
+            else if (kodLaporan == "LAK01502")
             {
-                reportModel.CommonModels.Tajuk1 = $"Laporan SiBerhutang Setengah Tahun Pertama Pada Tahun {tahun} Mengikut Kod Akaun {selectedKod} - {selectedPerihal} ";
+                reportModel.CommonModels.Tajuk1 = $"Laporan SiBerhutang Setengah Tahun Pertama Pada Tahun {tahun1} Mengikut Kod Akaun {selectedKod} - {selectedPerihal} Hingga {selectedKod1} - {selectedPerihal1} ";
 
                 reportModel.JumlahBaki = akCartaList.Sum(r => r.BakiAwal); 
                 reportModel.JumlahAkhir = akCartaList.Sum(r => r.JumlahH1);
                 reportModel.Jumlah1 = akCartaList.Sum(r => r.BakiAwal + r.Jan + r.Feb + r.Mac + r.Apr + r.Mei + r.Jun); 
             }
-            else if (kodLaporan == "LAK00203")
+            else if (kodLaporan == "LAK01503")
             {
-                reportModel.CommonModels.Tajuk1 = $"Laporan Siberhutang Setengah Tahun Kedua Pada Tahun {tahun} Mengikut Kod Akaun {selectedKod} - {selectedPerihal} ";
+                reportModel.CommonModels.Tajuk1 = $"Laporan Siberhutang Setengah Tahun Kedua Pada Tahun {tahun1} Mengikut Kod Akaun {selectedKod} - {selectedPerihal} Hingga {selectedKod1} - {selectedPerihal1} ";
 
                 reportModel.JumlahBaki = akCartaList.Sum(r => r.BakiAwalH2);  
                 reportModel.JumlahAkhir = akCartaList.Sum(r => r.JumlahH2);
@@ -161,8 +186,10 @@ namespace YIT.Akaun.Controllers._99Laporan
             return reportModel;
         }
 
-        private DataTable GenerateDataTableLAK00201(LAK015PrintModel printModel, int? akCartaId, string? tahun)
+        private async Task<DataTable> GenerateDataTableLAK01501(LAK015PrintModel printModel, int? akCartaId, int? akCartaId1, string? tahun1)
         {
+            var akCartaList = await _unitOfWork.AkCartaRepo.GetResults(akCartaId, akCartaId1, tahun1);
+
             DataTable dt = new DataTable();
             dt.TableName = "Laporan SiBerhutang";
             dt.Columns.Add("Kod", typeof(string));
@@ -183,129 +210,59 @@ namespace YIT.Akaun.Controllers._99Laporan
             dt.Columns.Add("Jumlah RM", typeof(decimal));
             dt.Columns.Add("Baki Pada 31/12", typeof(decimal));
 
-            if (akCartaId != null && !string.IsNullOrEmpty(tahun))
+            decimal totalBakiAwal = 0, totalJumlah = 0, totalBakiAkhir = 0;
+            decimal totalJan = 0, totalFeb = 0, totalMac = 0, totalApr = 0, totalMei = 0, totalJun = 0;
+            decimal totalJul = 0, totalOgo = 0, totalSep = 0, totalOkt = 0, totalNov = 0, totalDis = 0;
+
+            foreach (var akCarta in akCartaList)
             {
-                int year = int.Parse(tahun);
+                decimal bakiAwal = akCarta.BakiAwal;
+                decimal jan = akCarta.Jan, feb = akCarta.Feb, mac = akCarta.Mac, apr = akCarta.Apr, mei = akCarta.Mei, jun = akCarta.Jun;
+                decimal jul = akCarta.Jul, ogo = akCarta.Ogo, sep = akCarta.Sep, okt = akCarta.Okt, nov = akCarta.Nov, dis = akCarta.Dis;
+                decimal jumlah = jan + feb + mac + apr + mei + jun + jul + ogo + sep + okt + nov + dis;
+                decimal bakiAkhir = bakiAwal + jumlah;
 
-                var akCartaList = _context.AkCarta
-                    .Include(a => a.AkAkaun1)
-                    .Where(a => a.Id == akCartaId)
-                    .ToList(); 
+                totalBakiAwal += bakiAwal;
+                totalJan += jan; totalFeb += feb; totalMac += mac; totalApr += apr;
+                totalMei += mei; totalJun += jun; totalJul += jul; totalOgo += ogo;
+                totalSep += sep; totalOkt += okt; totalNov += nov; totalDis += dis;
+                totalJumlah += jumlah;
+                totalBakiAkhir += bakiAkhir;
 
-                decimal totalBakiAwal = 0;
-                decimal totalJan = 0, totalFeb = 0, totalMac = 0, totalApr = 0;
-                decimal totalMei = 0, totalJun = 0, totalJul = 0, totalOgo = 0;
-                decimal totalSep = 0, totalOkt = 0, totalNov = 0, totalDis = 0;
-                decimal totalJumlah = 0;
-                decimal totalBakiAkhir = 0;
-
-                foreach (var akCarta in akCartaList)
-                {
-                    var akAkaun1List = akCarta.AkAkaun1!.ToList();
-
-                    var bakiAwal = akAkaun1List
-                        .Where(b => b.Tarikh.Year < year)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var jumlah = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var jan = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 1)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var feb = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 2)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var mac = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 3)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var apr = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 4)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var mei = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 5)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var jun = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 6)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var jul = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 7)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var ogo = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 8)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var sep = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 9)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var okt = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 10)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var nov = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 11)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var dis = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 12)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var bakiAkhir = bakiAwal + jumlah;
-
-                    string cleanedKod = akCarta.Kod!.Trim();
-                    string cleanedPerihal = akCarta.Perihal!.Trim();
-
-                    dt.Rows.Add(
-                        cleanedKod,
-                        cleanedPerihal,
-                        bakiAwal,
-                        jan, feb, mac, apr, mei, jun, jul, ogo, sep, okt, nov, dis,
-                        jumlah,
-                        bakiAkhir
-                    );
-
-                    totalBakiAwal += bakiAwal;
-                    totalJan += jan; totalFeb += feb; totalMac += mac; totalApr += apr;
-                    totalMei += mei; totalJun += jun; totalJul += jul; totalOgo += ogo;
-                    totalSep += sep; totalOkt += okt; totalNov += nov; totalDis += dis;
-                    totalJumlah += jumlah;
-                    totalBakiAkhir += bakiAkhir;
-                }
-
-                var grandTotalRow = dt.NewRow();
-                grandTotalRow["Nama Akaun"] = "JUMLAH RM";
-                grandTotalRow["Baki Pada 01/01"] = totalBakiAwal;
-                grandTotalRow["Jan"] = totalJan;
-                grandTotalRow["Feb"] = totalFeb;
-                grandTotalRow["Mac"] = totalMac;
-                grandTotalRow["Apr"] = totalApr;
-                grandTotalRow["Mei"] = totalMei;
-                grandTotalRow["Jun"] = totalJun;
-                grandTotalRow["Jul"] = totalJul;
-                grandTotalRow["Ogo"] = totalOgo;
-                grandTotalRow["Sep"] = totalSep;
-                grandTotalRow["Okt"] = totalOkt;
-                grandTotalRow["Nov"] = totalNov;
-                grandTotalRow["Dis"] = totalDis;
-                grandTotalRow["Jumlah RM"] = totalJumlah;
-                grandTotalRow["Baki Pada 31/12"] = totalBakiAkhir;
-
-                dt.Rows.Add(grandTotalRow);
+                dt.Rows.Add(
+                    akCarta?.Kod?.Trim(),
+                    akCarta?.Perihal?.Trim(),
+                    totalBakiAwal,
+                    jan, feb, mac, apr, mei, jun, jul, ogo, sep, okt, nov, dis,
+                    totalJumlah,
+                    totalBakiAkhir
+                );
             }
+
+            var grandTotalRow = dt.NewRow();
+            grandTotalRow["Nama Akaun"] = "JUMLAH RM";
+            grandTotalRow["Baki Pada 01/01"] = totalBakiAwal;
+            grandTotalRow["Jan"] = totalJan;
+            grandTotalRow["Feb"] = totalFeb;
+            grandTotalRow["Mac"] = totalMac;
+            grandTotalRow["Apr"] = totalApr;
+            grandTotalRow["Mei"] = totalMei;
+            grandTotalRow["Jun"] = totalJun;
+            grandTotalRow["Jul"] = totalJul;
+            grandTotalRow["Ogo"] = totalOgo;
+            grandTotalRow["Sep"] = totalSep;
+            grandTotalRow["Okt"] = totalOkt;
+            grandTotalRow["Nov"] = totalNov;
+            grandTotalRow["Dis"] = totalDis;
+            grandTotalRow["Jumlah RM"] = totalJumlah;
+            grandTotalRow["Baki Pada 31/12"] = totalBakiAkhir;
+
+            dt.Rows.Add(grandTotalRow);
 
             return dt;
         }
 
-        private void RunWorkBookLAK00201(LAK015PrintModel printModel, DataTable excelData, string handle)
+        private void RunWorkBookLAK01501(LAK015PrintModel printModel, DataTable excelData, string handle)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -382,8 +339,10 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
         }
 
-        private DataTable GenerateDataTableLAK00202(LAK015PrintModel printModel, int? akCartaId, string? tahun)
+        private async Task<DataTable> GenerateDataTableLAK01502(LAK015PrintModel printModel, int? akCartaId, int? akCartaId1, string? tahun1)
         {
+            var akCartaList = await _unitOfWork.AkCartaRepo.GetResults(akCartaId, akCartaId1, tahun1);
+
             DataTable dt = new DataTable();
             dt.TableName = "Laporan SiBerhutang (Pertama)";
             dt.Columns.Add("Kod", typeof(string));
@@ -398,97 +357,53 @@ namespace YIT.Akaun.Controllers._99Laporan
             dt.Columns.Add("Jumlah RM", typeof(decimal));
             dt.Columns.Add("Baki Pada 30/06", typeof(decimal));
 
-            if (akCartaId != null && !string.IsNullOrEmpty(tahun))
+            decimal totalBakiAwal = 0;
+            decimal totalJan = 0, totalFeb = 0, totalMac = 0, totalApr = 0;
+            decimal totalMei = 0, totalJun = 0;
+            decimal totalJumlah = 0;
+            decimal totalBakiAkhir = 0;
+
+            foreach (var akCarta in akCartaList)
             {
-                int year = int.Parse(tahun);
+                decimal bakiAwal = akCarta.BakiAwal;
+                decimal jan = akCarta.Jan, feb = akCarta.Feb, mac = akCarta.Mac, apr = akCarta.Apr, mei = akCarta.Mei, jun = akCarta.Jun;
+                decimal jumlah = jan + feb + mac + apr + mei + jun;
+                decimal bakiAkhir = bakiAwal + jumlah;
 
-                var akCartaList = _context.AkCarta
-                    .Include(a => a.AkAkaun1)
-                    .Where(a => a.Id == akCartaId)
-                    .ToList(); 
+                dt.Rows.Add(
+                akCarta?.Kod?.Trim(),
+                akCarta?.Perihal?.Trim(),
+                bakiAwal,
+                jan, feb, mac, apr, mei, jun,
+                jumlah,
+                bakiAkhir
+                );
 
-                decimal totalBakiAwal = 0;
-                decimal totalJan = 0, totalFeb = 0, totalMac = 0, totalApr = 0;
-                decimal totalMei = 0, totalJun = 0;
-                decimal totalJumlah = 0;
-                decimal totalBakiAkhir = 0;
-
-                foreach (var akCarta in akCartaList)
-                {
-                    var akAkaun1List = akCarta.AkAkaun1!.ToList();
-
-                    var bakiAwal = akAkaun1List
-                        .Where(b => b.Tarikh.Year < year)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var jumlah = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month >= 1 && b.Tarikh.Month <= 6)
-                    .Sum(b => b.Debit - b.Kredit);
-
-                    var jan = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 1)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var feb = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 2)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var mac = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 3)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var apr = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 4)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var mei = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 5)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var jun = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 6)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var bakiAkhir = bakiAwal + jumlah;
-
-                    string cleanedKod = akCarta.Kod!.Trim();
-                    string cleanedPerihal = akCarta.Perihal!.Trim();
-
-                    dt.Rows.Add(
-                        cleanedKod,
-                        cleanedPerihal,
-                        bakiAwal,
-                        jan, feb, mac, apr, mei, jun,
-                        jumlah,
-                        bakiAkhir
-                    );
-
-                    totalBakiAwal += bakiAwal;
-                    totalJan += jan; totalFeb += feb; totalMac += mac; totalApr += apr;
-                    totalMei += mei; totalJun += jun;
-                    totalJumlah += jumlah;
-                    totalBakiAkhir += bakiAkhir;
-                }
-
-                var grandTotalRow = dt.NewRow();
-                grandTotalRow["Nama Akaun"] = "JUMLAH RM";
-                grandTotalRow["Baki Pada 01/01"] = totalBakiAwal;
-                grandTotalRow["Jan"] = totalJan;
-                grandTotalRow["Feb"] = totalFeb;
-                grandTotalRow["Mac"] = totalMac;
-                grandTotalRow["Apr"] = totalApr;
-                grandTotalRow["Mei"] = totalMei;
-                grandTotalRow["Jun"] = totalJun;
-                grandTotalRow["Jumlah RM"] = totalJumlah;
-                grandTotalRow["Baki Pada 30/06"] = totalBakiAkhir;
-
-                dt.Rows.Add(grandTotalRow);
+                totalBakiAwal += bakiAwal;
+                totalJan += jan; totalFeb += feb; totalMac += mac; totalApr += apr;
+                totalMei += mei; totalJun += jun;
+                totalJumlah += jumlah;
+                totalBakiAkhir += bakiAkhir;
             }
+
+            var grandTotalRow = dt.NewRow();
+            grandTotalRow["Nama Akaun"] = "JUMLAH RM";
+            grandTotalRow["Baki Pada 01/01"] = totalBakiAwal;
+            grandTotalRow["Jan"] = totalJan;
+            grandTotalRow["Feb"] = totalFeb;
+            grandTotalRow["Mac"] = totalMac;
+            grandTotalRow["Apr"] = totalApr;
+            grandTotalRow["Mei"] = totalMei;
+            grandTotalRow["Jun"] = totalJun;
+            grandTotalRow["Jumlah RM"] = totalJumlah;
+            grandTotalRow["Baki Pada 30/06"] = totalBakiAkhir;
+
+            dt.Rows.Add(grandTotalRow);
 
             return dt;
         }
 
-        private void RunWorkBookLAK00202(LAK015PrintModel printModel, DataTable excelData, string handle)
+        private void RunWorkBookLAK01502(LAK015PrintModel printModel, DataTable excelData, string handle)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -547,8 +462,10 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
         }
 
-        private DataTable GenerateDataTableLAK00203(LAK015PrintModel printModel, int? akCartaId, string? tahun)
+        private async Task <DataTable> GenerateDataTableLAK01503(LAK015PrintModel printModel, int? akCartaId, int? akCartaId1, string? tahun1)
         {
+            var akCartaList = await _unitOfWork.AkCartaRepo.GetResults(akCartaId, akCartaId1, tahun1);
+
             DataTable dt = new DataTable();
             dt.TableName = "Laporan SiBerhutang (Kedua)";
             dt.Columns.Add("Kod", typeof(string));
@@ -563,97 +480,53 @@ namespace YIT.Akaun.Controllers._99Laporan
             dt.Columns.Add("Jumlah RM", typeof(decimal));
             dt.Columns.Add("Baki Pada 31/12", typeof(decimal));
 
-            if (akCartaId != null && !string.IsNullOrEmpty(tahun))
+            decimal totalBakiAwal = 0;
+            decimal totalJul = 0, totalOgo = 0;
+            decimal totalSep = 0, totalOkt = 0, totalNov = 0, totalDis = 0;
+            decimal totalJumlah = 0;
+            decimal totalBakiAkhir = 0;
+
+            foreach (var akCarta in akCartaList)
             {
-                int year = int.Parse(tahun);
+                decimal bakiAwal = akCarta.BakiAwal;
+                decimal jul = akCarta.Jul, ogo = akCarta.Ogo, sep = akCarta.Sep, okt = akCarta.Okt, nov = akCarta.Nov, dis = akCarta.Dis;
+                decimal jumlah = jul + ogo + sep + okt + nov + dis;
+                decimal bakiAkhir = bakiAwal + jumlah;
 
-                var akCartaList = _context.AkCarta
-                    .Include(a => a.AkAkaun1)
-                    .Where(a => a.Id == akCartaId)
-                    .ToList();  
+                dt.Rows.Add(
+                    akCarta?.Kod?.Trim(),
+                    akCarta?.Perihal?.Trim(),
+                    bakiAwal,
+                    jul, ogo, sep, okt, nov, dis,
+                    jumlah,
+                    bakiAkhir
+                );
 
-                decimal totalBakiAwal = 0;
-                decimal totalJul = 0, totalOgo = 0;
-                decimal totalSep = 0, totalOkt = 0, totalNov = 0, totalDis = 0;
-                decimal totalJumlah = 0;
-                decimal totalBakiAkhir = 0;
-
-                foreach (var akCarta in akCartaList)
-                {
-                    var akAkaun1List = akCarta.AkAkaun1!.ToList();
-
-                    var bakiAwal = akAkaun1List
-                    .Where(b => (b.Tarikh.Year == year && b.Tarikh.Month >= 1 && b.Tarikh.Month <= 6) ||  b.Tarikh.Year < year)
-                    .Sum(b => b.Debit - b.Kredit);
-
-                    var jumlah = akAkaun1List
-                    .Where(b => b.Tarikh.Year == year && b.Tarikh.Month >= 7 && b.Tarikh.Month <= 12)
-                    .Sum(b => b.Debit - b.Kredit);
-
-                    var jul = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 7)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var ogo = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 8)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var sep = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 9)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var okt = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 10)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var nov = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 11)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var dis = akAkaun1List
-                        .Where(b => b.Tarikh.Year == year && b.Tarikh.Month == 12)
-                        .Sum(b => b.Debit - b.Kredit);
-
-                    var bakiAkhir = bakiAwal + jumlah;
-
-                    string cleanedKod = akCarta.Kod!.Trim();
-                    string cleanedPerihal = akCarta.Perihal!.Trim();
-
-                    dt.Rows.Add(
-                        cleanedKod,
-                        cleanedPerihal,
-                        bakiAwal,
-                        jul, ogo, sep, okt, nov, dis,
-                        jumlah,
-                        bakiAkhir
-                    );
-
-                    totalBakiAwal += bakiAwal;
-                    totalJul += jul; totalOgo += ogo;
-                    totalSep += sep; totalOkt += okt; totalNov += nov; totalDis += dis;
-                    totalJumlah += jumlah;
-                    totalBakiAkhir += bakiAkhir;
-                }
-
-                var grandTotalRow = dt.NewRow();
-                grandTotalRow["Nama Akaun"] = "JUMLAH RM";
-                grandTotalRow["Baki Pada 01/07"] = totalBakiAwal;
-                grandTotalRow["Jul"] = totalJul;
-                grandTotalRow["Ogo"] = totalOgo;
-                grandTotalRow["Sep"] = totalSep;
-                grandTotalRow["Okt"] = totalOkt;
-                grandTotalRow["Nov"] = totalNov;
-                grandTotalRow["Dis"] = totalDis;
-                grandTotalRow["Jumlah RM"] = totalJumlah;
-                grandTotalRow["Baki Pada 31/12"] = totalBakiAkhir;
-
-                dt.Rows.Add(grandTotalRow);
+                totalBakiAwal += bakiAwal;
+                totalJul += jul; totalOgo += ogo;
+                totalSep += sep; totalOkt += okt; totalNov += nov; totalDis += dis;
+                totalJumlah += jumlah;
+                totalBakiAkhir += bakiAkhir;
             }
+
+            var grandTotalRow = dt.NewRow();
+            grandTotalRow["Nama Akaun"] = "JUMLAH RM";
+            grandTotalRow["Baki Pada 01/07"] = totalBakiAwal;
+            grandTotalRow["Jul"] = totalJul;
+            grandTotalRow["Ogo"] = totalOgo;
+            grandTotalRow["Sep"] = totalSep;
+            grandTotalRow["Okt"] = totalOkt;
+            grandTotalRow["Nov"] = totalNov;
+            grandTotalRow["Dis"] = totalDis;
+            grandTotalRow["Jumlah RM"] = totalJumlah;
+            grandTotalRow["Baki Pada 31/12"] = totalBakiAkhir;
+
+            dt.Rows.Add(grandTotalRow);
 
             return dt;
         }
 
-        private void RunWorkBookLAK00203(LAK015PrintModel printModel, DataTable excelData, string handle)
+        private void RunWorkBookLAK01503(LAK015PrintModel printModel, DataTable excelData, string handle)
         {
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -712,7 +585,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
         }
 
-        private void PopulateSelectList(int? akCartaId)
+        private void PopulateSelectList(int? akCartaId, string? tahun1)
         {
             var cartaList = _unitOfWork.AkCartaRepo.GetResultsByParas(EnParas.Paras4);
             var cartaSelect = new List<SelectListItem>();
@@ -751,16 +624,25 @@ namespace YIT.Akaun.Controllers._99Laporan
                 }
             }
 
+            if (String.IsNullOrWhiteSpace(tahun1))
+            {
+                ViewData["Tahun1"] = DateTime.Now.Year.ToString();
+            }
+            else
+            {
+                ViewData["Tahun1"] = tahun1;
+            }
+
         }
 
         // printing List of Laporan
         [AllowAnonymous]
-        public async Task<IActionResult> Print(string? kodLaporan, int? akCartaId, string? tahun)
+        public async Task<IActionResult> Print(string? kodLaporan, int? akCartaId, int? akCartaId1, string? tahun1)
         {
-            var reportModel = await PrepareData(kodLaporan, akCartaId, tahun);
+            var reportModel = await PrepareData(kodLaporan, akCartaId, akCartaId1, tahun1);
             var company = await _userServices.GetCompanyDetails();
 
-            ViewBag.Tahun = tahun;
+            ViewBag.Tahun = tahun1;
 
             if (akCartaId.HasValue)
             {
@@ -776,11 +658,25 @@ namespace YIT.Akaun.Controllers._99Laporan
                 }
             }
 
-            if (kodLaporan == "LAK00201")
+            if (akCartaId1.HasValue)
             {
-                reportModel = await PrepareData(kodLaporan, akCartaId, tahun);
+                var akCartaDetails1 = await _context.AkCarta
+                                      .Where(j => j.Id == akCartaId1)
+                                      .Select(j => new { j.Kod, j.Perihal })
+                                      .FirstOrDefaultAsync();
 
-                return new ViewAsPdf("LAK00201PDF", reportModel, new ViewDataDictionary(ViewData)
+                if (akCartaDetails1 != null)
+                {
+                    ViewBag.SelectedKod1 = akCartaDetails1.Kod;
+                    ViewBag.SelectedPerihal1 = akCartaDetails1.Perihal;
+                }
+            }
+
+            if (kodLaporan == "LAK01501")
+            {
+                reportModel = await PrepareData(kodLaporan, akCartaId, akCartaId1, tahun1);
+
+                return new ViewAsPdf("LAK01501PDF", reportModel, new ViewDataDictionary(ViewData)
                 {
                     { "NamaSyarikat", company.NamaSyarikat },
                     { "AlamatSyarikat1", company.AlamatSyarikat1 },
@@ -795,11 +691,11 @@ namespace YIT.Akaun.Controllers._99Laporan
                     PageSize = Rotativa.AspNetCore.Options.Size.A4,
                 };
             }
-            else if (kodLaporan == "LAK00202")
+            else if (kodLaporan == "LAK01502")
             {
-                reportModel = await PrepareData(kodLaporan, akCartaId, tahun);
+                reportModel = await PrepareData(kodLaporan, akCartaId, akCartaId1, tahun1);
 
-                return new ViewAsPdf("LAK00202PDF", reportModel, new ViewDataDictionary(ViewData)
+                return new ViewAsPdf("LAK01502PDF", reportModel, new ViewDataDictionary(ViewData)
                 {
                     { "NamaSyarikat", company.NamaSyarikat },
                     { "AlamatSyarikat1", company.AlamatSyarikat1 },
@@ -814,11 +710,11 @@ namespace YIT.Akaun.Controllers._99Laporan
                     PageSize = Rotativa.AspNetCore.Options.Size.A4,
                 };
             }
-            else if (kodLaporan == "LAK00203")
+            else if (kodLaporan == "LAK01503")
             {
-                reportModel = await PrepareData(kodLaporan, akCartaId, tahun);
+                reportModel = await PrepareData(kodLaporan, akCartaId, akCartaId1, tahun1);
 
-                return new ViewAsPdf("LAK00203PDF", reportModel, new ViewDataDictionary(ViewData)
+                return new ViewAsPdf("LAK01503PDF", reportModel, new ViewDataDictionary(ViewData)
                 {
                     { "NamaSyarikat", company.NamaSyarikat },
                     { "AlamatSyarikat1", company.AlamatSyarikat1 },

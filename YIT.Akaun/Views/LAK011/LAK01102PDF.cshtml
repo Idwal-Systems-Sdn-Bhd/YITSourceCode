@@ -1,9 +1,11 @@
 ﻿@model LAK011PrintModel
 
 @{
-    ViewData["Title"] = "LAK00202 Laporan Daftar Inden Kerja";
+    ViewData["Title"] = "LAK01102 Laporan Daftar Inden Kerja";
     Layout = "~/Views/Shared/_PrintLayout.cshtml";
     decimal jumlah = 0;
+    int bil = 0;
+    decimal totalAmaun = 0;
 }
 
 <div class="row flexrow mb-1 text-center">
@@ -33,10 +35,9 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.AkInden != null)
+        @if (Model.AkInden != null && Model.AkInden.Any())
         {
-            int bil = 0;
-            decimal totalAmaun = 0;
+            
 
             @foreach (var akInden in Model.AkInden)
             {
@@ -65,6 +66,19 @@
                     </tr>
                 }
             }
+
+            <tr class="font-weight-bold">
+                <td colspan="4" class="text-right text-uppercase table-warning">Jumlah RM</td>
+                <td class="text-right">@jumlah.ToString("#,##0.00")</td>
+                <td colspan="1" class="text-right text-uppercase"></td>
+                <td class="text-right">@totalAmaun.ToString("#,##0.00")</td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center">Tiada data</td>
+            </tr>
 
             <tr class="font-weight-bold">
                 <td colspan="4" class="text-right text-uppercase table-warning">Jumlah RM</td>

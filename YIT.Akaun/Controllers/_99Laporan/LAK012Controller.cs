@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Rotativa.AspNetCore;
 using System.Data;
+using System.Diagnostics;
 using System.Net;
 using YIT.__Domain.Entities._Enums;
 using YIT.__Domain.Entities._Statics;
@@ -49,14 +50,20 @@ namespace YIT.Akaun.Controllers._99Laporan
         }
         public IActionResult Index(PrintFormModel model)
         {
-            PopulateSelectList(model.dDaftarAwamId);
+            if (model.tarDari1 == null && model.tarHingga1 == null)
+            {
+                model.tarDari1 = new DateTime(DateTime.Now.Year, 1, 1);
+                model.tarHingga1 = DateTime.Now;
+            }
+
+            PopulateSelectList(model.dDaftarAwamId, model.tarDari1, model.tarHingga1);
             return View(model);
         }
 
         [HttpPost]
         public async Task<JsonResult> ExportExcel(PrintFormModel model)
         {
-            LAK012PrintModel printModel = await PrepareData(model.kodLaporan, model.tarikhDari, model.tarikhHingga, model.dDaftarAwamId);
+            LAK012PrintModel printModel = await PrepareData(model.kodLaporan, model.tarikhDari, model.tarikhHingga, model.dDaftarAwamId, model.dDaftarAwamId1);
 
             // Generate a new unique identifier against which the file can be stored
             string handle = string.Format("attachment;" + model.kodLaporan + ".xlsx;", string.IsNullOrEmpty(model.kodLaporan) ? Guid.NewGuid().ToString() : WebUtility.UrlEncode(model.kodLaporan));
@@ -75,7 +82,7 @@ namespace YIT.Akaun.Controllers._99Laporan
             return Json(new { FileGuid = handle, FileName = model.kodLaporan + ".xlsx" });
         }
 
-        private async Task<LAK012PrintModel> PrepareData(string? kodLaporan, string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
+        private async Task<LAK012PrintModel> PrepareData(string? kodLaporan, string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId, int? dDaftarAwamId1)
         {
             LAK012PrintModel reportModel = new LAK012PrintModel();
 
@@ -97,14 +104,28 @@ namespace YIT.Akaun.Controllers._99Laporan
 
             string? selectedKod = "";
             string? selectedNama = "";
+            string? selectedKod1 = "";
+            string? selectedNama1 = "";
 
             if (dDaftarAwamId.HasValue)
             {
-                var selectedItem = await _unitOfWork.DDaftarAwamRepo.GetByIdAsync(dDaftarAwamId.Value);
-                if (selectedItem != null)
+                var ddaDetails = await _context.DDaftarAwam.Where(j => j.Id == dDaftarAwamId).Select(j => new { j.Kod, j.Nama }).FirstOrDefaultAsync();
+
+                if (ddaDetails != null)
                 {
-                    selectedKod = selectedItem.Kod;
-                    selectedNama = selectedItem.Nama;
+                    selectedKod = ddaDetails.Kod;
+                    selectedNama = ddaDetails.Nama;
+                }
+            }
+
+            if (dDaftarAwamId1.HasValue)
+            {
+                var ddaDetails1 = await _context.DDaftarAwam.Where(j => j.Id == dDaftarAwamId1).Select(j => new { j.Kod, j.Nama }).FirstOrDefaultAsync();
+
+                if (ddaDetails1 != null)
+                {
+                    selectedKod1 = ddaDetails1.Kod;
+                    selectedNama1 = ddaDetails1.Nama;
                 }
             }
 
@@ -112,10 +133,10 @@ namespace YIT.Akaun.Controllers._99Laporan
             {
                 reportModel.CommonModels.Tajuk1 = $"Penyata Akaun Pembekal Dari Tarikh : {date1?.ToString("dd/MM/yyyy")} Hingga {date2?.ToString("dd/MM/yyyy")}, Kod Pembekal: {selectedKod}, Nama: {selectedKod} - {selectedNama}";
 
-                reportModel.AkPV = _unitOfWork.AkPVRepo.GetResults1("", date1, date2, null, EnStatusBorang.Semua, null, null, null, dDaftarAwamId);
-                reportModel.AkBelian = _unitOfWork.AkBelianRepo.GetResults1("", date1, date2, dDaftarAwamId, null);
+                reportModel.AkPV = _unitOfWork.AkPVRepo.GetResults1("", date1, date2, null, EnStatusBorang.Semua, null, null, null, dDaftarAwamId, dDaftarAwamId1);
+                reportModel.AkBelian = _unitOfWork.AkBelianRepo.GetResults1("", date1, date2, dDaftarAwamId, dDaftarAwamId1, null);
 
-                var kredit = await _unitOfWork.AkBelianRepo.GetKredit(tarikhDari, tarikhHingga, dDaftarAwamId);
+                var kredit = await _unitOfWork.AkBelianRepo.GetKredit(tarikhDari, tarikhHingga, dDaftarAwamId, dDaftarAwamId1);
 
                 if (kredit > 0)
                 {
@@ -269,17 +290,16 @@ namespace YIT.Akaun.Controllers._99Laporan
             }
         }
 
-        private void PopulateSelectList(int? dDaftarAwamId)
+        private void PopulateSelectList(int? dDaftarAwamId, DateTime? tarDari1, DateTime? tarHingga1)
         {
-            var dDAList = _unitOfWork.DDaftarAwamRepo.GetAllDetails();
-            var daSelect = new List<SelectListItem>
+            if (tarDari1 != null && tarHingga1 != null)
             {
-                new SelectListItem
-                {
-                    Text = "-- SEMUA PEMBEKAL --",
-                    Value = "0"
-                }
-            };
+                ViewData["DateFrom"] = tarDari1?.ToString("yyyy-MM-dd");
+                ViewData["DateTo"] = tarHingga1?.ToString("yyyy-MM-dd");
+            }
+
+            var dDAList = _unitOfWork.DDaftarAwamRepo.GetAllDetails();
+            var daSelect = new List<SelectListItem>();
 
             if (dDAList != null && dDAList.Any())
             {
@@ -318,17 +338,37 @@ namespace YIT.Akaun.Controllers._99Laporan
 
         // printing List of Laporan
         [AllowAnonymous]
-        public async Task<IActionResult> Print(string? kodLaporan, string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId)
+        public async Task<IActionResult> Print(string? kodLaporan, string? tarikhDari, string? tarikhHingga, int? dDaftarAwamId, int? dDaftarAwamId1)
         {
-            PopulateSelectList(dDaftarAwamId);
-
-            var reportModel = await PrepareData(kodLaporan, tarikhDari, tarikhHingga, dDaftarAwamId);
+            var reportModel = await PrepareData(kodLaporan, tarikhDari, tarikhHingga, dDaftarAwamId, dDaftarAwamId1);
             var company = await _userServices.GetCompanyDetails();
 
-            var akpv = await _unitOfWork.AkPVRepo.GetResultsGroupByTarikh1(tarikhDari, tarikhHingga, dDaftarAwamId);
-            var akbelian = await _unitOfWork.AkBelianRepo.GetResultsGroupByTarikh(tarikhDari, tarikhHingga, dDaftarAwamId);
+            var akpv = await _unitOfWork.AkPVRepo.GetResultsGroupByTarikh1(tarikhDari, tarikhHingga, dDaftarAwamId, dDaftarAwamId1);
+            var akbelian = await _unitOfWork.AkBelianRepo.GetResultsGroupByTarikh(tarikhDari, tarikhHingga, dDaftarAwamId, dDaftarAwamId1);
 
-            var kredit = await _unitOfWork.AkBelianRepo.GetKredit(tarikhDari, tarikhHingga, dDaftarAwamId);
+            if (dDaftarAwamId.HasValue)
+            {
+                var ddaDetails = await _context.DDaftarAwam.Where(j => j.Id == dDaftarAwamId).Select(j => new { j.Kod, j.Nama }).FirstOrDefaultAsync();
+
+                if (ddaDetails != null)
+                {
+                    ViewBag.SelectedKod = ddaDetails.Kod;
+                    ViewBag.SelectedNama = ddaDetails.Nama;
+                }
+            }
+
+            if (dDaftarAwamId1.HasValue)
+            {
+                var ddaDetails1 = await _context.DDaftarAwam.Where(j => j.Id == dDaftarAwamId1).Select(j => new { j.Kod, j.Nama }).FirstOrDefaultAsync();
+
+                if (ddaDetails1 != null)
+                {
+                    ViewBag.SelectedKod1 = ddaDetails1.Kod;
+                    ViewBag.SelectedNama1 = ddaDetails1.Nama;
+                }
+            }
+
+            var kredit = await _unitOfWork.AkBelianRepo.GetKredit(tarikhDari, tarikhHingga, dDaftarAwamId, dDaftarAwamId1);
 
             if (kredit > 0)
             {
@@ -337,6 +377,12 @@ namespace YIT.Akaun.Controllers._99Laporan
 
             var baki = kredit;
 
+            var ddaKod = ViewBag.SelectedKod;
+            var ddaNama = ViewBag.SelectedNama;
+            var ddaKod1 = ViewBag.SelectedKod1;
+            var ddaNama1 = ViewBag.SelectedNama1;
+
+            // Combine data from AkBelian and AkPV
             var combinedData = akbelian
                 .Select(ab => new CombinedData
                 {
@@ -344,27 +390,63 @@ namespace YIT.Akaun.Controllers._99Laporan
                     NoRujukan = ab.NoRujukan!,
                     Perihal = ab.AkBelianPerihal?.FirstOrDefault()?.Perihal ?? "",
                     Jumlah = ab.Jumlah,
-                    Type = "Kredit"
+                    Type = "Kredit",
+                    DDaftarAwamKod = ab.DDaftarAwam?.Kod ?? "",
+                    DDaftarAwamNama = ab.DDaftarAwam?.Nama ?? ""
                 })
                 .Concat(
-                    akpv.Select(apv => new CombinedData
+                    akpv.Select(apv =>
+                    {
+                        var kod = apv.AkPVPenerima?.FirstOrDefault()?.DDaftarAwam?.Kod ?? "";
+                        var nama = apv.AkPVPenerima?.FirstOrDefault()?.DDaftarAwam?.Nama ?? "";
+
+                    return new CombinedData
                     {
                         Tarikh = apv.Tarikh,
                         NoRujukan = apv.NoRujukan!,
                         Perihal = apv.Ringkasan!,
                         Jumlah = apv.Jumlah,
-                        Type = "Debit"
+                        Type = "Debit",
+                        DDaftarAwamKod = kod,
+                        DDaftarAwamNama = nama
+                    };
                     })
                 )
                 .OrderBy(cd => cd.Tarikh)
                 .ThenBy(cd => cd.NoRujukan)
                 .ToList();
 
+            var groupedData = combinedData
+                .GroupBy(i => new { i.DDaftarAwamKod, i.DDaftarAwamNama })
+                .Select(group => new GroupedData
+                {
+                    DDaftarAwam1Kod = group.Key.DDaftarAwamKod,
+                    DDaftarAwam1Nama = group.Key.DDaftarAwamNama,
+                    Entries = group.ToList()
+                })
+                .OrderBy(group => group.DDaftarAwam1Kod).ToList();
+
+            foreach (var group in groupedData)
+            {
+                int kod = int.Parse(group.DDaftarAwam1Kod!);
+
+                var groupKredit = await _unitOfWork.AkBelianRepo.GetKredit(tarikhDari, tarikhHingga, dDaftarAwamId: kod, dDaftarAwamId1: dDaftarAwamId1);
+
+                group.Kredit = groupKredit;
+            }
+
+            Debug.WriteLine($"Total Kredit: {kredit}"); // Check total kredit
+            foreach (var group in groupedData)
+            {
+                Debug.WriteLine($"Group: {group.DDaftarAwam1Kod} - Kredit: {group.Kredit}");
+            }
+
             reportModel = new LAK012PrintModel
             {
                 AkPV = akpv.ToList(),
                 AkBelian = akbelian.ToList(),
                 CombinedData = combinedData,
+                GroupedData = groupedData,
                 CommonModels = new CommonPrintModel
                 {
                     CompanyDetails = company,

@@ -24,9 +24,8 @@
                     $("#objekJKWPTJBahagianId").empty();
                     $("#moObjekJKWPTJBahagianId").empty();
 
-
                     //append new options
-                    $("#objekJKWPTJBahagianId").append("<option value='0' disable> -- Pilih Bahagian -- </option>");
+                    $("#objekJKWPTJBahagianId").append("<option value='' disabled selected> -- Pilih Bahagian -- </option>");
                     for (var i = 0; i < msg.list.length; i++) {
                         var item = msg.list[i];
 
@@ -196,25 +195,69 @@
     // populate tables in pages end
 
     //add tbl objek
-    $("body").on("click", "#btnAddObjek", function () {
-        //Reference the Name and Country TextBoxes.
-        var Id = $("#Id");
-        var akCartaId = $("#objekAkCartaId");
-        var jKWPTJBahagianId = $("#objekJKWPTJBahagianId");
-        if ($("#objekAmaun").val() == 0.00) {
-            toastr.error("Amaun 0.00 tidak dibenarkan");
-            toastr.options.timeOut = 2000; // 2s
-        }
-        else {
-            if (jKWPTJBahagianId.val() != null && akCartaId.val() != null) {
-                GetJKWPTJBahagianAkCarta(Id.val(), jKWPTJBahagianId.val(), akCartaId.val());
-            } else {
-                toastr.error("Sila pilih bahagian / kod akaun");
+    // $("body").on("click", "#btnAddObjek", function () {
+    //     //Reference the Name and Country TextBoxes.
+    //     var Id = $("#Id");
+    //     var akCartaId = $("#objekAkCartaId");
+    //     var jKWPTJBahagianId = $("#objekJKWPTJBahagianId");
+    //     if ($("#objekAmaun").val() == 0.00) {
+    //         toastr.error("Amaun 0.00 tidak dibenarkan");
+    //         toastr.options.timeOut = 2000; // 2s
+    //     }
+    //     else {
+    //         if (jKWPTJBahagianId.val() != null && akCartaId.val() != null) {
+    //             GetJKWPTJBahagianAkCarta(Id.val(), jKWPTJBahagianId.val(), akCartaId.val());
+    //         } else {
+    //             toastr.error("Sila pilih bahagian / kod akaun");
+    //             toastr.options.timeOut = 2000; // 2s
+    //         }
+    //     }
+
+
+    // });
+
+    $(document).ready(function () {
+        // Handle BahagianId change to dynamically update AkCartaId options
+        $("#objekJKWPTJBahagianId").on("change", function (){
+            var selectedJKWPTJBahagianId = $(this).val();
+
+            $("#objekAkCartaId option").prop("disabled", false);
+
+            // Loop through each option in the AkCartaId dropdown
+            $("#tblObjek tbody tr").each(function () {
+                var bahagianId = $(this).find("td:eq(0)").text();
+                var akcartaIdInRow = $(this).find("td:eq(2)").text();
+
+                if (bahagianId == selectedJKWPTJBahagianId) {
+                    // Disable AkCartaId options that have been already selected for this BahagianId
+                    $("#objekAkCartaId option[value='" + akcartaIdInRow + "']").prop("disabled", true);
+                }
+            });
+        });
+
+       //add tbl objek
+        $("body").on("click", "#btnAddObjek", function () {
+            //Reference the Name and Country TextBoxes.
+            var Id = $("#Id");
+            var akCartaId = $("#objekAkCartaId");
+            var jKWPTJBahagianId = $("#objekJKWPTJBahagianId");
+
+            if ($("#objekAmaun").val() == 0.00) {
+                toastr.error("Amaun 0.00 tidak dibenarkan");
                 toastr.options.timeOut = 2000; // 2s
             }
-        }
+            else {
+                // Check if both dropdowns have values (explicitly checking for null)
+                if (jKWPTJBahagianId.val() != null && akCartaId.val() != null) {
 
+                   GetJKWPTJBahagianAkCarta(Id.val(), jKWPTJBahagianId.val(), akCartaId.val());
 
+                } else {
+                    toastr.error("Sila pilih bahagian / kod akaun");
+                    toastr.options.timeOut = 2000; // 2s
+                }
+            }
+        });
     });
 
     function GetJKWPTJBahagianAkCarta(Id, jKWPTJBahagianId, akCartaId) {

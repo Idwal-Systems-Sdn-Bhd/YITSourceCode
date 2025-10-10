@@ -1,7 +1,7 @@
 ﻿@model LAK013PrintModel
 
 @{
-    ViewData["Title"] = "LAK00202 Daftar Baucer Bayaran";
+    ViewData["Title"] = "LAK01303 Laporan Baucer Bayaran Yang Dibatalkan";
     Layout = "~/Views/Shared/_PrintLayout.cshtml";
     decimal jumlah = 0;
 }
@@ -19,7 +19,7 @@
 <div>
     <p>
         <strong>
-            DAFTAR BAUCER BAYARAN DARI @ViewBag.SearchString1.ToUpper() HINGGA @ViewBag.SearchString2.ToUpper()
+            LAPORAN BAUCER BAYARAN YANG DIBATALKAN DARI TARIKH : @ViewData["TarikhDari"] HINGGA @ViewData["TarikhHingga"]<br>
         </strong>
     </p>
 </div>
@@ -27,7 +27,7 @@
 <table class="table table-bordered table-sm topic" id="mytable">
     <thead>
         <tr class="bg-dark text-white">
-            <th colspan="6" class="text-center bg-dark text-white" style="line-height: 1.8rem;"><strong>CETAKAN DAFTAR BAUCER BAYARAN</strong></th>
+            <th colspan="6" class="text-center bg-dark text-white" style="line-height: 1.8rem;"><strong>CETAKAN BAUCER BAYARAN YANG DIBATALKAN</strong></th>
         </tr>
         <tr style="line-height:0.8rem;" class="bg-secondary text-white">
             <th>Bil</th>
@@ -72,7 +72,7 @@
         else
         {
             <tr>
-                <td colspan="6" class="text-center"></td>
+                <td colspan="6" class="text-center">Tiada data</td>
             </tr>
         }
         <tr class="font-weight-bold">
